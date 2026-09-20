@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>إنشاء حساب | منصة أرض الأحياء</title>
+
+  <link rel="icon" href="../favicon.png">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Tahoma, Arial, sans-serif;
+      background: #f5f7f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .register-box {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.08);
+      text-align: center;
+    }
+
+    .logo {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      color: #075e4d;
+      margin: 5px 0 8px;
+      font-size: 25px;
+    }
+
+    .subtitle {
+      color: #777;
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 14px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+      font-family: Tahoma, Arial, sans-serif;
+    }
+
+    input:focus {
+      border-color: #075e4d;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: 0;
+      border-radius: 10px;
+      background: #075e4d;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      font-family: Tahoma, Arial, sans-serif;
+    }
+
+    button:hover {
+      opacity: .9;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    #message {
+      margin-top: 15px;
+      min-height: 22px;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .login {
+      margin-top: 20px;
+      color: #666;
+    }
+
+    .login a {
+      color: #075e4d;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .login a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="register-box">
+
+    <img
+      src="../logo.png"
+      class="logo"
+      alt="منصة أرض الأحياء"
+    >
+
+    <h1>
+      منصة أرض الأحياء
+    </h1>
+
+    <div class="subtitle">
+      إنشاء حساب طالب
+    </div>
+
+
+    <form id="registerForm">
+
+      <input
+        type="text"
+        id="fullName"
+        placeholder="الاسم الكامل"
+        autocomplete="name"
+        required
+      >
+
+      <input
+        type="email"
+        id="email"
+        placeholder="البريد الإلكتروني"
+        autocomplete="email"
+        required
+      >
+
+      <input
+        type="password"
+        id="password"
+        placeholder="كلمة المرور"
+        autocomplete="new-password"
+        minlength="6"
+        required
+      >
+
+      <input
+        type="password"
+        id="confirmPassword"
+        placeholder="تأكيد كلمة المرور"
+        autocomplete="new-password"
+        minlength="6"
+        required
+      >
+
+      <button
+        type="submit"
+        id="registerBtn"
+      >
+        إنشاء الحساب
+      </button>
+
+    </form>
+
+
+    <div id="message"></div>
+
+
+    <div class="login">
+
+      لديك حساب بالفعل؟
+
+      <a href="../login/index.html">
+        تسجيل الدخول
+      </a>
+
+    </div>
+
+  </div>
+
+
+<script>
+
+  /* =========================
+     بيانات Supabase
+  ========================== */
+
+  const SUPABASE_URL =
+    "https://cmnmebchevejxhibvgwl.supabase.co";
+
+  const SUPABASE_KEY =
+    "sb_publishable_54UK-Ys41c5wGQvYkeFmYQ_5efdHAQu";
+
+
+  /* =========================
+     إنشاء الاتصال
+  ========================== */
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  /* =========================
+     عناصر الصفحة
+  ========================== */
+
+  const form =
+    document.getElementById("registerForm");
+
+  const fullName =
+    document.getElementById("fullName");
+
+  const email =
+    document.getElementById("email");
+
+  const password =
+    document.getElementById("password");
+
+  const confirmPassword =
+    document.getElementById("confirmPassword");
+
+  const registerBtn =
+    document.getElementById("registerBtn");
+
+  const message =
+    document.getElementById("message");
+
+
+  /* =========================
+     إنشاء الحساب
+  ========================== */
+
+  form.addEventListener(
+    "submit",
+    async function(event) {
+
+      event.preventDefault();
+
+
+      const name =
+        fullName.value.trim();
+
+      const userEmail =
+        email.value.trim();
+
+      const userPassword =
+        password.value;
+
+      const userConfirmPassword =
+        confirmPassword.value;
+
+
+      /* التحقق من كلمة المرور */
+
+      if (
+        userPassword !==
+        userConfirmPassword
+      ) {
+
+        message.textContent =
+          "كلمتا المرور غير متطابقتين.";
+
+        message.style.color =
+          "#c0392b";
+
+        return;
+      }
+
+
+      if (userPassword.length < 6) {
+
+        message.textContent =
+          "كلمة المرور يجب أن تكون 6 أحرف على الأقل.";
+
+        message.style.color =
+          "#c0392b";
+
+        return;
+      }
+
+
+      registerBtn.disabled = true;
+
+      message.textContent =
+        "جاري إنشاء الحساب...";
+
+      message.style.color =
+        "#075e4d";
+
+
+      try {
+
+        /* =========================
+           إنشاء المستخدم في Auth
+        ========================== */
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient.auth.signUp({
+
+            email: userEmail,
+
+            password: userPassword,
+
+            options: {
+
+              data: {
+                full_name: name
+              }
+
+            }
+
+          });
+
+
+        if (error) {
+
+          console.error(error);
+
+          message.textContent =
+            error.message ||
+            "حدث خطأ أثناء إنشاء الحساب.";
+
+          message.style.color =
+            "#c0392b";
+
+          registerBtn.disabled = false;
+
+          return;
+        }
+
+
+        if (!data.user) {
+
+          message.textContent =
+            "لم يتم إنشاء الحساب.";
+
+          message.style.color =
+            "#c0392b";
+
+          registerBtn.disabled = false;
+
+          return;
+        }
+
+
+        /* =========================
+           إضافة Profile للطالب
+        ========================== */
+
+        const {
+          error: profileError
+        } =
+          await supabaseClient
+            .from("profiles")
+            .insert({
+
+              id: data.user.id,
+
+              full_name: name,
+
+              role: "student"
+
+            });
+
+
+        /*
+          لو كان تأكيد البريد الإلكتروني
+          مفعلاً في Supabase، قد لا يكون
+          المستخدم مسجلاً للدخول مباشرة.
+        */
+
+        if (profileError) {
+
+          console.error(profileError);
+
+          message.textContent =
+            "تم إنشاء الحساب، لكن تعذر إنشاء ملف الطالب. سيتم معالجة ذلك من لوحة الإدارة.";
+
+          message.style.color =
+            "#d68910";
+
+        } else {
+
+          message.textContent =
+            "تم إنشاء الحساب بنجاح. يمكنك الآن تسجيل الدخول.";
+
+          message.style.color =
+            "#075e4d";
+
+        }
+
+
+        form.reset();
+
+
+        setTimeout(function() {
+
+          window.location.href =
+            "../login/index.html";
+
+        }, 1800);
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+          "حدث خطأ غير متوقع. حاول مرة أخرى.";
+
+        message.style.color =
+          "#c0392b";
+
+        registerBtn.disabled = false;
+
+      }
+
+    }
+  );
+
+</script>
+
+</body>
+</html>
