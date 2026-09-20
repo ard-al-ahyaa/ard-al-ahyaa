@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>تسجيل الدخول | منصة أرض الأحياء</title>
 
@@ -10,112 +16,241 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
   <style>
+
     * {
       box-sizing: border-box;
     }
 
     body {
+
       margin: 0;
+
       min-height: 100vh;
-      font-family: Tahoma, Arial, sans-serif;
+
+      font-family:
+        Arial,
+        Tahoma,
+        sans-serif;
+
       background: #f5f7f6;
+
       display: flex;
+
       align-items: center;
+
       justify-content: center;
+
       padding: 20px;
+
     }
+
 
     .login-box {
+
       width: 100%;
-      max-width: 420px;
-      background: #fff;
-      padding: 30px;
+
+      max-width: 430px;
+
+      background: white;
+
       border-radius: 18px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, .08);
-      text-align: center;
+
+      padding: 30px;
+
+      box-shadow:
+        0 8px 30px
+        rgba(0, 0, 0, 0.10);
+
     }
+
 
     .logo {
+
       width: 90px;
+
       height: 90px;
+
       object-fit: contain;
-      margin-bottom: 10px;
+
+      display: block;
+
+      margin: 0 auto 15px;
+
     }
+
 
     h1 {
+
+      text-align: center;
+
       color: #075e4d;
-      margin: 5px 0 8px;
-      font-size: 25px;
+
+      margin: 0 0 8px;
+
+      font-size: 27px;
+
     }
+
 
     .subtitle {
+
+      text-align: center;
+
       color: #777;
+
       margin-bottom: 25px;
+
     }
+
+
+    label {
+
+      display: block;
+
+      margin-bottom: 7px;
+
+      color: #333;
+
+      font-weight: bold;
+
+    }
+
 
     input {
+
       width: 100%;
-      padding: 14px;
-      margin-bottom: 14px;
+
+      padding: 13px;
+
+      margin-bottom: 17px;
+
       border: 1px solid #ddd;
+
       border-radius: 10px;
-      font-size: 15px;
+
+      font-size: 16px;
+
       outline: none;
-      font-family: Tahoma, Arial, sans-serif;
+
     }
+
 
     input:focus {
+
       border-color: #075e4d;
+
     }
+
 
     button {
+
       width: 100%;
-      padding: 14px;
-      border: 0;
-      border-radius: 10px;
+
+      border: none;
+
       background: #075e4d;
+
       color: white;
-      font-size: 16px;
+
+      padding: 14px;
+
+      border-radius: 10px;
+
+      font-size: 17px;
+
       cursor: pointer;
-      font-family: Tahoma, Arial, sans-serif;
+
     }
+
 
     button:hover {
-      opacity: .9;
+
+      background: #064d40;
+
     }
+
 
     button:disabled {
-      opacity: .6;
+
+      opacity: 0.6;
+
       cursor: not-allowed;
+
     }
 
-    #message {
+
+    .message {
+
+      display: none;
+
       margin-top: 15px;
-      min-height: 22px;
-      font-size: 14px;
+
+      padding: 12px;
+
+      border-radius: 9px;
+
+      text-align: center;
+
+      line-height: 1.6;
+
     }
 
-    .register {
+
+    .success {
+
+      display: block;
+
+      background: #e8f7ef;
+
+      color: #176b3a;
+
+    }
+
+
+    .error {
+
+      display: block;
+
+      background: #fdeaea;
+
+      color: #a11;
+
+    }
+
+
+    .register-link {
+
+      text-align: center;
+
       margin-top: 20px;
+
       color: #666;
+
     }
 
-    .register a {
+
+    .register-link a {
+
       color: #075e4d;
+
       text-decoration: none;
+
       font-weight: bold;
+
     }
 
-    .register a:hover {
-      text-decoration: underline;
-    }
   </style>
+
 </head>
+
 
 <body>
 
+
   <div class="login-box">
+
 
     <img
       src="../logo.png"
@@ -123,248 +258,304 @@
       alt="منصة أرض الأحياء"
     >
 
-    <h1>منصة أرض الأحياء</h1>
+
+    <h1>
+      تسجيل الدخول
+    </h1>
+
 
     <div class="subtitle">
-      تسجيل الدخول
+      منصة أرض الأحياء التعليمية
     </div>
 
+
     <form id="loginForm">
+
+
+      <label for="email">
+        البريد الإلكتروني
+      </label>
+
 
       <input
         type="email"
         id="email"
-        placeholder="البريد الإلكتروني"
-        autocomplete="email"
+        placeholder="example@email.com"
         required
       >
+
+
+      <label for="password">
+        كلمة المرور
+      </label>
+
 
       <input
         type="password"
         id="password"
         placeholder="كلمة المرور"
-        autocomplete="current-password"
         required
       >
 
+
       <button
         type="submit"
-        id="loginBtn"
+        id="loginButton"
       >
         تسجيل الدخول
       </button>
 
+
     </form>
 
-    <div id="message"></div>
 
-    <div class="register">
+    <div
+      id="message"
+      class="message"
+    ></div>
+
+
+    <div class="register-link">
+
       ليس لديك حساب؟
+
       <a href="../register/index.html">
-        إنشاء حساب
+        إنشاء حساب جديد
       </a>
+
     </div>
+
 
   </div>
 
 
-<script>
+  <script>
 
-  /* =========================
-     بيانات Supabase
-  ========================= */
 
-  const SUPABASE_URL =
-    "https://cmnmebchevejxhibvgwl.supabase.co";
+    const SUPABASE_URL =
+      "https://cmnmebchevejxhibvgwl.supabase.co";
 
-  const SUPABASE_KEY =
-    "sb_publishable_54UK-Ys41c5wGQvYkeFmYQ_5efdHAQu";
 
+    const SUPABASE_KEY =
+      "sb_publishable_54UK-Ys41c5wGQvYkeFmYQ_5efdHAQu";
 
-  /* =========================
-     إنشاء اتصال Supabase
-  ========================= */
 
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
 
 
-  /* =========================
-     عناصر الصفحة
-  ========================= */
+    const loginForm =
+      document.getElementById("loginForm");
 
-  const loginForm =
-    document.getElementById("loginForm");
 
-  const emailInput =
-    document.getElementById("email");
+    const loginButton =
+      document.getElementById("loginButton");
 
-  const passwordInput =
-    document.getElementById("password");
 
-  const loginBtn =
-    document.getElementById("loginBtn");
+    const message =
+      document.getElementById("message");
 
-  const message =
-    document.getElementById("message");
 
+    function showMessage(text, type) {
 
-  /* =========================
-     تسجيل الدخول
-  ========================= */
+      message.textContent = text;
 
-  loginForm.addEventListener("submit", async function(event) {
-
-    event.preventDefault();
-
-    const email =
-      emailInput.value.trim();
-
-    const password =
-      passwordInput.value;
-
-
-    message.textContent =
-      "جاري تسجيل الدخول...";
-
-    message.style.color =
-      "#075e4d";
-
-    loginBtn.disabled = true;
-
-
-    try {
-
-      /* تسجيل الدخول من Supabase */
-
-      const {
-        data,
-        error
-      } = await supabaseClient.auth.signInWithPassword({
-
-        email: email,
-
-        password: password
-
-      });
-
-
-      if (error) {
-
-        message.textContent =
-          "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
-
-        message.style.color =
-          "#c0392b";
-
-        loginBtn.disabled = false;
-
-        return;
-      }
-
-
-      const user =
-        data.user;
-
-
-      if (!user) {
-
-        message.textContent =
-          "حدث خطأ أثناء تسجيل الدخول.";
-
-        message.style.color =
-          "#c0392b";
-
-        loginBtn.disabled = false;
-
-        return;
-      }
-
-
-      /* =========================
-         الحصول على صلاحية المستخدم
-      ========================= */
-
-      const {
-        data: profile,
-        error: profileError
-      } = await supabaseClient
-        .from("profiles")
-        .select("role")
-        .eq("id", user.id)
-        .single();
-
-
-      if (profileError || !profile) {
-
-        message.textContent =
-          "تم تسجيل الدخول، لكن لم يتم العثور على صلاحيات الحساب.";
-
-        message.style.color =
-          "#c0392b";
-
-        loginBtn.disabled = false;
-
-        return;
-      }
-
-
-      /* =========================
-         تحديد نوع الحساب
-      ========================= */
-
-      if (profile.role === "admin") {
-
-        message.textContent =
-          "تم تسجيل الدخول كمسؤول...";
-
-        message.style.color =
-          "#075e4d";
-
-        setTimeout(function() {
-
-          window.location.href =
-            "../admin/index.html";
-
-        }, 500);
-
-      } else {
-
-        message.textContent =
-          "تم تسجيل الدخول بنجاح...";
-
-        message.style.color =
-          "#075e4d";
-
-        setTimeout(function() {
-
-          window.location.href =
-            "../index.html";
-
-        }, 500);
-
-      }
-
-    } catch (error) {
-
-      console.error(error);
-
-      message.textContent =
-        "حدث خطأ غير متوقع. حاول مرة أخرى.";
-
-      message.style.color =
-        "#c0392b";
-
-      loginBtn.disabled = false;
+      message.className =
+        "message " + type;
 
     }
 
-  });
 
-</script>
+    loginForm.addEventListener(
+      "submit",
+      async function(event) {
+
+        event.preventDefault();
+
+
+        const email =
+          document.getElementById("email")
+            .value.trim();
+
+
+        const password =
+          document.getElementById("password")
+            .value;
+
+
+        loginButton.disabled = true;
+
+        loginButton.textContent =
+          "جاري تسجيل الدخول...";
+
+
+        try {
+
+
+          const { data, error } =
+            await supabaseClient.auth
+              .signInWithPassword({
+
+                email: email,
+
+                password: password
+
+              });
+
+
+          if (error) {
+
+            throw error;
+
+          }
+
+
+          if (!data.user) {
+
+            throw new Error(
+              "تعذر العثور على المستخدم."
+            );
+
+          }
+
+
+          const user =
+            data.user;
+
+
+          const { data: profile, error: profileError } =
+            await supabaseClient
+              .from("profiles")
+              .select(
+                "id, full_name, role"
+              )
+              .eq("id", user.id)
+              .maybeSingle();
+
+
+          if (profileError) {
+
+            console.error(profileError);
+
+            throw new Error(
+              "حدث خطأ أثناء قراءة بيانات الحساب."
+            );
+
+          }
+
+
+          /*
+            لو الحساب موجود في Auth
+            ولكن Profile غير موجود،
+            ننشئه تلقائيًا كطالب.
+          */
+
+
+          if (!profile) {
+
+
+            const name =
+              user.user_metadata?.full_name ||
+              user.email?.split("@")[0] ||
+              "طالب";
+
+
+            const { data: newProfile, error: insertError } =
+              await supabaseClient
+                .from("profiles")
+                .insert({
+
+                  id: user.id,
+
+                  full_name: name,
+
+                  role: "student"
+
+                })
+                .select()
+                .single();
+
+
+            if (insertError) {
+
+              console.error(insertError);
+
+              throw new Error(
+                "تم تسجيل الدخول ولكن تعذر إنشاء بيانات الحساب. تأكد من تشغيل SQL الخاص بـ profiles."
+              );
+
+            }
+
+
+            if (newProfile.role === "admin") {
+
+              window.location.href =
+                "../admin/index.html";
+
+            } else {
+
+              window.location.href =
+                "../index.html";
+
+            }
+
+
+            return;
+
+          }
+
+
+          /*
+            تحديد نوع الحساب
+          */
+
+
+          if (profile.role === "admin") {
+
+            window.location.href =
+              "../admin/index.html";
+
+          } else {
+
+            window.location.href =
+              "../index.html";
+
+          }
+
+
+        } catch (error) {
+
+
+          console.error(error);
+
+
+          showMessage(
+
+            error.message ||
+            "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+
+            "error"
+
+          );
+
+
+          loginButton.disabled = false;
+
+          loginButton.textContent =
+            "تسجيل الدخول";
+
+        }
+
+      }
+
+    );
+
+  </script>
+
 
 </body>
+
 </html>
