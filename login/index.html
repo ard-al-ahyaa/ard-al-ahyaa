@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول | منصة أرض الأحياء</title>
+
+  <link rel="icon" href="../favicon.png">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Tahoma, Arial, sans-serif;
+      background: #f5f7f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 420px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.08);
+      text-align: center;
+    }
+
+    .logo {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      color: #075e4d;
+      margin: 5px 0 8px;
+      font-size: 25px;
+    }
+
+    .subtitle {
+      color: #777;
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 14px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #075e4d;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: 0;
+      border-radius: 10px;
+      background: #075e4d;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: .9;
+    }
+
+    #message {
+      margin-top: 15px;
+      min-height: 22px;
+      font-size: 14px;
+    }
+
+    .register {
+      margin-top: 20px;
+      color: #666;
+    }
+
+    .register a {
+      color: #075e4d;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-box">
+
+    <img src="../logo.png" class="logo" alt="منصة أرض الأحياء">
+
+    <h1>منصة أرض الأحياء</h1>
+
+    <div class="subtitle">تسجيل الدخول</div>
+
+    <form id="loginForm">
+
+      <input
+        type="email"
+        id="email"
+        placeholder="البريد الإلكتروني"
+        required
+      >
+
+      <input
+        type="password"
+        id="password"
+        placeholder="كلمة المرور"
+        required
+      >
+
+      <button type="submit">
+        تسجيل الدخول
+      </button>
+
+    </form>
+
+    <div id="message"></div>
+
+    <div class="register">
+      ليس لديك حساب؟
+      <a href="../register/index.html">إنشاء حساب</a>
+    </div>
+
+  </div>
+
+<script>
+  const SUPABASE_URL = "https://cmnmebchevejxhibvgwl.supabase.co";
+
+  const SUPABASE_KEY = "ضع_الـ_PUBLISHABLE_KEY_هنا";
+
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+  const form = document.getElementById("loginForm");
+  const message = document.getElementById("message");
+
+  form.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    message.textContent = "جاري تسجيل الدخول...";
+
+    const { data, error } =
+      await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+    if (error) {
+      message.textContent = "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+      return;
+    }
+
+    const user = data.user;
+
+    const { data: profile, error: profileError } =
+      await supabaseClient
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+    if (profileError) {
+      message.textContent =
+        "تم تسجيل الدخول، لكن لم يتم العثور على صلاحيات الحساب.";
+      return;
+    }
+
+    if (profile.role === "admin") {
+      window.location.href = "../admin/index.html";
+    } else {
+      window.location.href = "../index.html";
+    }
+
+  });
+</script>
+
+</body>
+</html>
