@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="ar" dir="rtl"><head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>المنتدى | منصة أرض الأحياء</title><link rel="icon" type="image/png" href="../favicon.png"><style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>المذكرات | منصة أرض الأحياء</title><link rel="icon" type="image/png" href="../favicon.png"><style>
 
 *{
     margin:0;
@@ -15,14 +15,13 @@ body{
     direction:rtl;
 }
 
-/* =========================
-   الشريط الجانبي
-========================= */
+/* الشريط الجانبي */
 
 .sidebar{
     position:fixed;
     right:0;
     top:0;
+
     width:250px;
     height:100vh;
 
@@ -38,15 +37,21 @@ body{
 
 .logo{
     text-align:center;
+
     padding-bottom:25px;
-    border-bottom:1px solid rgba(255,255,255,.18);
+
+    border-bottom:
+        1px solid rgba(255,255,255,.18);
 }
 
 .logo img{
     width:65px;
     height:65px;
+
     object-fit:contain;
+
     border-radius:15px;
+
     margin-bottom:8px;
 }
 
@@ -56,11 +61,11 @@ body{
 
 .logo p{
     font-size:12px;
+
     opacity:.75;
+
     margin-top:5px;
 }
-
-/* روابط الشريط */
 
 .menu{
     margin-top:25px;
@@ -68,13 +73,17 @@ body{
 
 .menu a{
     display:flex;
+
     align-items:center;
+
     gap:12px;
 
     color:white;
+
     text-decoration:none;
 
     padding:13px 14px;
+
     margin-bottom:7px;
 
     border-radius:10px;
@@ -96,13 +105,13 @@ body{
     font-size:18px;
 }
 
-/* =========================
-   المحتوى
-========================= */
+/* المحتوى */
 
 .main{
     margin-right:250px;
+
     min-height:100vh;
+
     padding:25px;
 }
 
@@ -114,21 +123,26 @@ body{
     padding:15px 20px;
 
     display:flex;
+
     align-items:center;
+
     justify-content:space-between;
 
-    box-shadow:0 4px 16px rgba(0,0,0,.05);
+    box-shadow:
+        0 4px 16px rgba(0,0,0,.05);
 
     margin-bottom:20px;
 }
 
 .page-title{
     color:#075e4d;
+
     font-size:23px;
 }
 
-.back-home{
+.home-btn{
     background:#075e4d;
+
     color:white;
 
     text-decoration:none;
@@ -138,183 +152,122 @@ body{
     border-radius:9px;
 }
 
-/* =========================
-   المنتدى
-========================= */
+/* عنوان الصفحة */
 
-.forum-header{
+.page-box{
     background:white;
-
-    padding:22px;
 
     border-radius:15px;
 
-    box-shadow:0 4px 16px rgba(0,0,0,.05);
+    padding:22px;
+
+    box-shadow:
+        0 4px 16px rgba(0,0,0,.05);
 
     margin-bottom:18px;
 }
 
-.forum-header h1{
+.page-box h1{
     color:#075e4d;
+
     font-size:25px;
+
     margin-bottom:8px;
 }
 
-.forum-header p{
+.page-box p{
     color:#687772;
+
     line-height:1.8;
 }
 
-.new-topic{
-    display:inline-block;
+/* المذكرات */
 
-    margin-top:15px;
+.notes{
+    display:grid;
 
-    background:#075e4d;
-    color:white;
+    grid-template-columns:
+        repeat(3,1fr);
 
-    border:none;
-
-    padding:11px 17px;
-
-    border-radius:9px;
-
-    cursor:pointer;
-
-    font-family:inherit;
+    gap:15px;
 }
 
-/* المواضيع */
-
-.topic{
+.note{
     background:white;
 
-    padding:20px;
+    border:1px solid #e4eae7;
 
     border-radius:14px;
 
-    margin-bottom:12px;
+    padding:20px;
 
-    box-shadow:0 3px 13px rgba(0,0,0,.04);
-
-    border:1px solid #e5ebe8;
+    box-shadow:
+        0 3px 13px rgba(0,0,0,.04);
 }
 
-.topic h3{
+.note-icon{
+    font-size:35px;
+
+    margin-bottom:10px;
+}
+
+.note h2{
     color:#075e4d;
+
     font-size:18px;
+
     margin-bottom:8px;
 }
 
-.topic p{
+.note p{
     color:#687772;
-    line-height:1.8;
+
+    line-height:1.7;
 }
 
-.topic-info{
-    margin-top:10px;
-    color:#929d99;
-    font-size:12px;
+.note-btn{
+    display:inline-block;
+
+    margin-top:13px;
+
+    background:#075e4d;
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:9px 14px;
+
+    border-radius:8px;
+
+    font-size:14px;
 }
 
-/* =========================
-   النافذة
-========================= */
+/* تنبيه */
 
-.modal{
-    display:none;
+.notice{
+    margin-top:18px;
 
-    position:fixed;
+    background:#fff8e6;
 
-    inset:0;
+    border:1px solid #f0d58a;
 
-    background:rgba(0,0,0,.5);
-
-    align-items:center;
-    justify-content:center;
+    border-radius:12px;
 
     padding:15px;
 
-    z-index:2000;
+    color:#6d5a20;
+
+    line-height:1.8;
 }
 
-.modal-box{
-    width:100%;
-    max-width:500px;
-
-    background:white;
-
-    border-radius:15px;
-
-    padding:22px;
-}
-
-.modal-box h2{
-    color:#075e4d;
-    margin-bottom:15px;
-}
-
-.modal-box input,
-.modal-box textarea{
-    width:100%;
-
-    padding:12px;
-
-    margin-bottom:12px;
-
-    border:1px solid #dce4e1;
-
-    border-radius:9px;
-
-    font-family:inherit;
-
-    outline:none;
-}
-
-.modal-box textarea{
-    min-height:120px;
-    resize:vertical;
-}
-
-.modal-buttons{
-    display:flex;
-    gap:8px;
-}
-
-.save{
-    background:#075e4d;
-    color:white;
-
-    border:none;
-
-    padding:10px 18px;
-
-    border-radius:8px;
-
-    cursor:pointer;
-}
-
-.close{
-    background:#e8edeb;
-    color:#18352e;
-
-    border:none;
-
-    padding:10px 18px;
-
-    border-radius:8px;
-
-    cursor:pointer;
-}
-
-/* =========================
-   الموبايل
-========================= */
+/* الموبايل */
 
 @media(max-width:750px){
 
     .sidebar{
         width:75px;
+
         padding:15px 8px;
     }
 
@@ -331,16 +284,18 @@ body{
 
     .menu a{
         justify-content:center;
+
         padding:13px 5px;
     }
 
     .main{
         margin-right:75px;
+
         padding:15px;
     }
 
-    .topbar{
-        padding:13px;
+    .notes{
+        grid-template-columns:1fr;
     }
 
     .page-title{
@@ -349,9 +304,7 @@ body{
 
 }
 
-</style></head><body><!-- =========================
-     الشريط الجانبي
-========================= --><aside class="sidebar"><div class="logo">
+</style></head><body><!-- الشريط الجانبي --><aside class="sidebar"><div class="logo">
 
     <img
         src="../logo.png"
@@ -373,7 +326,9 @@ body{
 
     <a href="../index.html">
 
-        <span class="menu-icon">🏠</span>
+        <span class="menu-icon">
+            🏠
+        </span>
 
         <span class="menu-text">
             الرئيسية
@@ -384,21 +339,12 @@ body{
 
     <a href="../videos/index.html">
 
-        <span class="menu-icon">🎥</span>
+        <span class="menu-icon">
+            🎥
+        </span>
 
         <span class="menu-text">
             المحاضرات
-        </span>
-
-    </a>
-
-
-    <a href="../notes/index.html">
-
-        <span class="menu-icon">📚</span>
-
-        <span class="menu-text">
-            المذكرات
         </span>
 
     </a>
@@ -409,7 +355,22 @@ body{
         class="active"
     >
 
-        <span class="menu-icon">💬</span>
+        <span class="menu-icon">
+            📚
+        </span>
+
+        <span class="menu-text">
+            المذكرات
+        </span>
+
+    </a>
+
+
+    <a href="../forum/index.html">
+
+        <span class="menu-icon">
+            💬
+        </span>
 
         <span class="menu-text">
             المنتدى
@@ -420,7 +381,9 @@ body{
 
     <a href="../classes/index.html">
 
-        <span class="menu-icon">🎓</span>
+        <span class="menu-icon">
+            🎓
+        </span>
 
         <span class="menu-text">
             الصفوف
@@ -430,17 +393,15 @@ body{
 
 </nav>
 
-</aside><!-- =========================
-     المحتوى الرئيسي
-========================= --><main class="main"><div class="topbar">
+</aside><!-- المحتوى --><main class="main"><div class="topbar">
 
     <div class="page-title">
-        💬 المنتدى
+        📚 المذكرات
     </div>
 
     <a
         href="../index.html"
-        class="back-home"
+        class="home-btn"
     >
         الرئيسية
     </a>
@@ -448,240 +409,127 @@ body{
 </div>
 
 
-<section class="forum-header">
+<section class="page-box">
 
     <h1>
-        منتدى أرض الأحياء
+        مذكرات الصف الثالث الثانوي
     </h1>
 
     <p>
-        مكان بسيط لمناقشة دروس الأحياء
-        وطرح الأسئلة بين الطلاب.
+        هنا ستجد مذكرات وملخصات
+        ومراجعات مادة الأحياء
+        للصف الثالث الثانوي.
     </p>
 
-    <button
-        class="new-topic"
-        onclick="openModal()"
-    >
-        + إنشاء موضوع جديد
-    </button>
+</section>
+
+
+<section class="notes">
+
+
+    <article class="note">
+
+        <div class="note-icon">
+            📘
+        </div>
+
+        <h2>
+            مذكرة الأحياء
+        </h2>
+
+        <p>
+            مذكرة شاملة لمنهج الأحياء
+            للصف الثالث الثانوي.
+        </p>
+
+        <a
+            href="#"
+            class="note-btn"
+            onclick="comingSoon(event)"
+        >
+            تحميل المذكرة
+        </a>
+
+    </article>
+
+
+    <article class="note">
+
+        <div class="note-icon">
+            📝
+        </div>
+
+        <h2>
+            مراجعة الأحياء
+        </h2>
+
+        <p>
+            مراجعة شاملة لأهم أجزاء
+            منهج الأحياء.
+        </p>
+
+        <a
+            href="#"
+            class="note-btn"
+            onclick="comingSoon(event)"
+        >
+            تحميل المراجعة
+        </a>
+
+    </article>
+
+
+    <article class="note">
+
+        <div class="note-icon">
+            📑
+        </div>
+
+        <h2>
+            ملخص الأحياء
+        </h2>
+
+        <p>
+            ملخص مبسط يساعد على
+            مراجعة المنهج.
+        </p>
+
+        <a
+            href="#"
+            class="note-btn"
+            onclick="comingSoon(event)"
+        >
+            فتح الملخص
+        </a>
+
+    </article>
+
 
 </section>
 
 
-<!-- المواضيع -->
+<div class="notice">
 
-<section id="topics">
+    💡
+    <strong>ملاحظة:</strong>
 
+    سيتم وضع ملفات المذكرات الحقيقية
+    وروابط التحميل هنا عند رفعها.
 
-    <article class="topic">
-
-        <h3>
-            🧬 أسئلة عامة في الأحياء
-        </h3>
-
-        <p>
-            يمكنك هنا طرح أي سؤال متعلق
-            بمادة الأحياء ومناقشته.
-        </p>
-
-        <div class="topic-info">
-            👤 منصة أرض الأحياء
-            · 💬 مناقشة تعليمية
-        </div>
-
-    </article>
-
-
-    <article class="topic">
-
-        <h3>
-            🔬 مناقشة درس الخلية
-        </h3>
-
-        <p>
-            مساحة لمناقشة درس الخلية
-            وأهم النقاط والأسئلة.
-        </p>
-
-        <div class="topic-info">
-            👤 منصة أرض الأحياء
-            · 💬 مناقشة تعليمية
-        </div>
-
-    </article>
-
-
-    <article class="topic">
-
-        <h3>
-            🌱 أسئلة النبات
-        </h3>
-
-        <p>
-            اطرح أسئلتك المتعلقة
-            بموضوعات النبات.
-        </p>
-
-        <div class="topic-info">
-            👤 منصة أرض الأحياء
-            · 💬 مناقشة تعليمية
-        </div>
-
-    </article>
-
-
-</section>
-
-</main><!-- =========================
-     نافذة موضوع جديد
-========================= --><div
-    class="modal"
-    id="modal"
-><div class="modal-box">
-
-    <h2>
-        إنشاء موضوع جديد
-    </h2>
-
-
-    <input
-        type="text"
-        id="title"
-        placeholder="عنوان الموضوع"
-    >
-
-
-    <textarea
-        id="content"
-        placeholder="اكتب سؤالك أو موضوعك..."
-    ></textarea>
-
-
-    <div class="modal-buttons">
-
-        <button
-            class="save"
-            onclick="addTopic()"
-        >
-            نشر الموضوع
-        </button>
-
-
-        <button
-            class="close"
-            onclick="closeModal()"
-        >
-            إلغاء
-        </button>
-
-    </div>
+    لن نضع روابط وهمية تسبب 404.
 
 </div>
 
-</div><script>
+</main><script>
 
-function openModal(){
+function comingSoon(event){
 
-    document
-        .getElementById("modal")
-        .style.display = "flex";
+    event.preventDefault();
 
-}
-
-
-function closeModal(){
-
-    document
-        .getElementById("modal")
-        .style.display = "none";
+    alert(
+        "📚 سيتم إضافة ملف المذكرة هنا."
+    );
 
 }
 
-
-function addTopic(){
-
-    const title =
-        document
-        .getElementById("title")
-        .value
-        .trim();
-
-
-    const content =
-        document
-        .getElementById("content")
-        .value
-        .trim();
-
-
-    if(!title || !content){
-
-        alert(
-            "اكتب عنوان الموضوع والمحتوى أولاً."
-        );
-
-        return;
-    }
-
-
-    const article =
-        document.createElement("article");
-
-
-    article.className = "topic";
-
-
-    const h3 =
-        document.createElement("h3");
-
-    h3.textContent =
-        "💬 " + title;
-
-
-    const p =
-        document.createElement("p");
-
-    p.textContent =
-        content;
-
-
-    const info =
-        document.createElement("div");
-
-    info.className =
-        "topic-info";
-
-    info.textContent =
-        "👤 عضو جديد · 💬 موضوع جديد";
-
-
-    article.appendChild(h3);
-
-    article.appendChild(p);
-
-    article.appendChild(info);
-
-
-    document
-        .getElementById("topics")
-        .prepend(article);
-
-
-    document
-        .getElementById("title")
-        .value = "";
-
-
-    document
-        .getElementById("content")
-        .value = "";
-
-
-    closeModal();
-
-}
-
-
-</script></body>
-</html>
+</script></body></html>
