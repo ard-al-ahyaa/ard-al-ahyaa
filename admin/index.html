@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>لوحة تحكم الإدارة | منصة أرض الأحياء</title>
+
+  <link rel="icon" href="../favicon.png">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Tahoma, Arial, sans-serif;
+      background: #f5f7f6;
+      color: #222;
+    }
+
+    .sidebar {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 250px;
+      height: 100vh;
+      background: #075e4d;
+      color: white;
+      padding: 20px 15px;
+      overflow-y: auto;
+    }
+
+    .logo-box {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .logo {
+      width: 75px;
+      height: 75px;
+      object-fit: contain;
+      display: block;
+      margin: auto;
+    }
+
+    .site-name {
+      margin-top: 8px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .admin-title {
+      font-size: 13px;
+      opacity: .8;
+      margin-top: 5px;
+    }
+
+    .menu a,
+    .logout {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 8px;
+      border-radius: 10px;
+      color: white;
+      text-decoration: none;
+      border: 0;
+      background: transparent;
+      text-align: right;
+      font-family: inherit;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .menu a:hover,
+    .logout:hover {
+      background: rgba(255,255,255,.15);
+    }
+
+    .active {
+      background: rgba(255,255,255,.18) !important;
+    }
+
+    .main {
+      margin-right: 250px;
+      padding: 25px;
+    }
+
+    .topbar {
+      background: white;
+      border-radius: 15px;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,.05);
+      margin-bottom: 20px;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      color: #075e4d;
+      font-size: 24px;
+    }
+
+    .admin-email {
+      color: #777;
+      font-size: 14px;
+    }
+
+    .welcome {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.05);
+    }
+
+    .welcome h2 {
+      margin-top: 0;
+      color: #075e4d;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 15px;
+      padding: 22px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.05);
+      border: 1px solid #eee;
+    }
+
+    .card-icon {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    .card h3 {
+      margin: 5px 0 8px;
+      color: #075e4d;
+    }
+
+    .card p {
+      color: #777;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .card button {
+      border: 0;
+      background: #075e4d;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .card button:hover {
+      opacity: .9;
+    }
+
+    #loading {
+      text-align: center;
+      padding: 40px;
+      color: #777;
+    }
+
+    #content {
+      display: none;
+    }
+
+    @media (max-width: 850px) {
+
+      .sidebar {
+        width: 75px;
+        padding: 15px 8px;
+      }
+
+      .logo {
+        width: 50px;
+        height: 50px;
+      }
+
+      .site-name,
+      .admin-title,
+      .menu-text {
+        display: none;
+      }
+
+      .menu a,
+      .logout {
+        text-align: center;
+        font-size: 22px;
+        padding: 12px 5px;
+      }
+
+      .main {
+        margin-right: 75px;
+        padding: 15px;
+      }
+
+      .topbar {
+        display: block;
+      }
+
+      .admin-email {
+        display: block;
+        margin-top: 8px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <aside class="sidebar">
+
+    <div class="logo-box">
+
+      <img
+        src="../logo.png"
+        class="logo"
+        alt="منصة أرض الأحياء"
+      >
+
+      <div class="site-name">
+        منصة أرض الأحياء
+      </div>
+
+      <div class="admin-title">
+        لوحة الإدارة
+      </div>
+
+    </div>
+
+    <div class="menu">
+
+      <a href="../index.html">
+        🏠 <span class="menu-text">المنصة الرئيسية</span>
+      </a>
+
+      <a href="../videos/index.html">
+        🎥 <span class="menu-text">المحاضرات</span>
+      </a>
+
+      <a href="../notes/index.html">
+        📚 <span class="menu-text">المذكرات</span>
+      </a>
+
+      <a href="../forum/index.html">
+        💬 <span class="menu-text">المنتدى</span>
+      </a>
+
+      <a href="index.html" class="active">
+        ⚙️ <span class="menu-text">لوحة التحكم</span>
+      </a>
+
+      <button class="logout" id="logoutBtn">
+        🚪 <span class="menu-text">تسجيل الخروج</span>
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <main class="main">
+
+    <div id="loading">
+      جاري التحقق من صلاحيات الحساب...
+    </div>
+
+
+    <div id="content">
+
+      <div class="topbar">
+
+        <h1>
+          لوحة تحكم الإدارة
+        </h1>
+
+        <div class="admin-email" id="adminEmail">
+        </div>
+
+      </div>
+
+
+      <div class="welcome">
+
+        <h2>
+          👋 أهلاً بك في لوحة الإدارة
+        </h2>
+
+        <p>
+          من هنا يمكنك إدارة محتوى منصة أرض الأحياء.
+        </p>
+
+      </div>
+
+
+      <div class="cards">
+
+        <div class="card">
+
+          <div class="card-icon">
+            👨‍🎓
+          </div>
+
+          <h3>
+            الطلاب
+          </h3>
+
+          <p>
+            إدارة حسابات الطلاب والصلاحيات.
+          </p>
+
+          <button onclick="comingSoon()">
+            إدارة الطلاب
+          </button>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-icon">
+            🎥
+          </div>
+
+          <h3>
+            المحاضرات
+          </h3>
+
+          <p>
+            إدارة المحاضرات والمحتوى التعليمي.
+          </p>
+
+          <button onclick="location.href='../videos/index.html'">
+            المحاضرات
+          </button>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-icon">
+            📚
+          </div>
+
+          <h3>
+            المذكرات
+          </h3>
+
+          <p>
+            إدارة مذكرات الصف الثالث الثانوي.
+          </p>
+
+          <button onclick="location.href='../notes/index.html'">
+            المذكرات
+          </button>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-icon">
+            💬
+          </div>
+
+          <h3>
+            المنتدى
+          </h3>
+
+          <p>
+            متابعة ومراجعة منشورات المنتدى.
+          </p>
+
+          <button onclick="location.href='../forum/index.html'">
+            فتح المنتدى
+          </button>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-icon">
+            ⚙️
+          </div>
+
+          <h3>
+            إعدادات المنصة
+          </h3>
+
+          <p>
+            إعدادات الإدارة سيتم إضافتها لاحقًا.
+          </p>
+
+          <button onclick="comingSoon()">
+            الإعدادات
+          </button>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-icon">
+            🔐
+          </div>
+
+          <h3>
+            الصلاحيات
+          </h3>
+
+          <p>
+            نظام الصلاحيات مرتبط بحسابات Supabase.
+          </p>
+
+          <button onclick="comingSoon()">
+            عرض الصلاحيات
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+<script>
+
+  const SUPABASE_URL =
+    "https://cmnmebchevejxhibvgwl.supabase.co";
+
+  const SUPABASE_KEY =
+    "ضع_الـ_PUBLISHABLE_KEY_هنا";
+
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  async function checkAdmin() {
+
+    const {
+      data: { user },
+      error
+    } = await supabaseClient.auth.getUser();
+
+
+    if (error || !user) {
+
+      window.location.href = "../login/index.html";
+
+      return;
+    }
+
+
+    const { data: profile, error: profileError } =
+      await supabaseClient
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+
+    if (
+      profileError ||
+      !profile ||
+      profile.role !== "admin"
+    ) {
+
+      alert("ليس لديك صلاحية الدخول إلى لوحة الإدارة.");
+
+      window.location.href = "../index.html";
+
+      return;
+    }
+
+
+    document.getElementById("adminEmail").textContent =
+      user.email || "حساب الإدارة";
+
+
+    document.getElementById("loading").style.display =
+      "none";
+
+
+    document.getElementById("content").style.display =
+      "block";
+  }
+
+
+  document
+    .getElementById("logoutBtn")
+    .addEventListener("click", async function() {
+
+      await supabaseClient.auth.signOut();
+
+      window.location.href =
+        "../login/index.html";
+
+    });
+
+
+  function comingSoon() {
+
+    alert("سيتم إضافة هذه الخاصية قريبًا.");
+
+  }
+
+
+  checkAdmin();
+
+</script>
+
+</body>
+</html>
