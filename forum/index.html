@@ -1,0 +1,465 @@
+<!DOCTYPE html><html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>منتدى أرض الأحياء</title>
+  <meta name="description" content="منتدى منصة أرض الأحياء للمناقشات والأسئلة التعليمية">  <link rel="icon" type="image/png" href="../favicon.png">  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Tahoma, sans-serif;
+      background: #f4f7f6;
+      color: #18352e;
+      direction: rtl;
+    }
+
+    .container {
+      width: 92%;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    /* الهيدر */
+    header {
+      background: #ffffff;
+      margin-top: 15px;
+      border-radius: 18px;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-area img {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      border-radius: 12px;
+    }
+
+    .logo-area h2 {
+      color: #075e4d;
+      font-size: 20px;
+    }
+
+    .home-btn {
+      background: #075e4d;
+      color: white;
+      text-decoration: none;
+      padding: 10px 17px;
+      border-radius: 10px;
+      transition: 0.2s;
+    }
+
+    .home-btn:hover {
+      opacity: 0.85;
+    }
+
+    /* العنوان */
+    .hero {
+      margin-top: 25px;
+      background: linear-gradient(135deg, #075e4d, #17866f);
+      color: white;
+      padding: 35px 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(7,94,77,0.15);
+    }
+
+    .hero h1 {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      line-height: 1.9;
+      font-size: 16px;
+    }
+
+    /* زر موضوع جديد */
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 22px 0;
+      gap: 10px;
+    }
+
+    .new-topic {
+      border: none;
+      background: #075e4d;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .new-topic:hover {
+      opacity: 0.9;
+    }
+
+    /* المنتدى */
+    .forum-list {
+      display: grid;
+      gap: 15px;
+    }
+
+    .topic {
+      background: white;
+      border: 1px solid #e1e8e5;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.04);
+      transition: 0.2s;
+    }
+
+    .topic:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.07);
+    }
+
+    .topic h3 {
+      color: #075e4d;
+      font-size: 19px;
+      margin-bottom: 8px;
+    }
+
+    .topic p {
+      color: #687772;
+      line-height: 1.8;
+      margin-bottom: 10px;
+    }
+
+    .topic-info {
+      color: #89948f;
+      font-size: 13px;
+    }
+
+    /* رسالة عدم وجود مواضيع */
+    .empty {
+      text-align: center;
+      background: white;
+      border-radius: 16px;
+      padding: 40px 20px;
+      color: #687772;
+      border: 1px solid #e1e8e5;
+    }
+
+    .empty .emoji {
+      font-size: 45px;
+      margin-bottom: 12px;
+    }
+
+    /* النافذة */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 520px;
+      background: white;
+      border-radius: 18px;
+      padding: 25px;
+    }
+
+    .modal-box h2 {
+      color: #075e4d;
+      margin-bottom: 18px;
+    }
+
+    .modal-box input,
+    .modal-box textarea {
+      width: 100%;
+      border: 1px solid #d8e1dd;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 12px;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .modal-box textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    .modal-box input:focus,
+    .modal-box textarea:focus {
+      border-color: #075e4d;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .save-btn,
+    .close-btn {
+      border: none;
+      padding: 11px 18px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .save-btn {
+      background: #075e4d;
+      color: white;
+    }
+
+    .close-btn {
+      background: #e9eeec;
+      color: #18352e;
+    }
+
+    footer {
+      text-align: center;
+      color: #74817d;
+      padding: 35px 0 20px;
+      line-height: 1.8;
+    }
+
+    /* الموبايل */
+    @media (max-width: 700px) {
+
+      .container {
+        width: 94%;
+      }
+
+      header {
+        position: static;
+      }
+
+      .logo-area h2 {
+        font-size: 16px;
+      }
+
+      .logo-area img {
+        width: 42px;
+        height: 42px;
+      }
+
+      .home-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+      }
+
+      .hero {
+        padding: 28px 20px;
+      }
+
+      .hero h1 {
+        font-size: 25px;
+      }
+
+      .actions {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .new-topic {
+        width: 100%;
+      }
+    }
+  </style></head><body><div class="container">  <!-- الهيدر -->  <header><div class="logo-area">
+  <img src="../logo.png" alt="شعار منصة أرض الأحياء">
+  <h2>منصة أرض الأحياء</h2>
+</div>
+
+<a href="../index.html" class="home-btn">
+  الرئيسية
+</a>
+
+  </header>  <!-- عنوان المنتدى -->  <section class="hero"><h1>💬 منتدى أرض الأحياء</h1>
+
+<p>
+  مكان مخصص للطلاب لطرح الأسئلة ومناقشة دروس الأحياء
+  ومشاركة الأفكار التعليمية.
+</p>
+
+  </section>  <!-- الأزرار -->  <div class="actions"><h2>المناقشات</h2>
+
+<button class="new-topic" onclick="openModal()">
+  + إنشاء موضوع جديد
+</button>
+
+  </div>  <!-- قائمة المواضيع -->  <section class="forum-list" id="forumList"><div class="topic">
+
+  <h3>🧬 أسئلة عامة في مادة الأحياء</h3>
+
+  <p>
+    يمكنك طرح الأسئلة المتعلقة بالدروس والمناهج
+    ومناقشتها مع الطلاب.
+  </p>
+
+  <div class="topic-info">
+    👤 منصة أرض الأحياء
+    · 💬 مناقشة تعليمية
+  </div>
+
+</div>
+
+<div class="topic">
+
+  <h3>🔬 مناقشة درس الخلية</h3>
+
+  <p>
+    مساحة لمناقشة درس الخلية وأهم النقاط والأسئلة
+    المتعلقة به.
+  </p>
+
+  <div class="topic-info">
+    👤 منصة أرض الأحياء
+    · 💬 مناقشة تعليمية
+  </div>
+
+</div>
+
+<div class="topic">
+
+  <h3>🌱 أسئلة ومناقشات النبات</h3>
+
+  <p>
+    شارك أسئلتك وملاحظاتك حول دروس النبات.
+  </p>
+
+  <div class="topic-info">
+    👤 منصة أرض الأحياء
+    · 💬 مناقشة تعليمية
+  </div>
+
+</div>
+
+  </section>  <!-- رسالة -->  <div class="empty" style="margin-top:18px;"><div class="emoji">📚</div>
+
+<h3>شارك في المنتدى</h3>
+
+<p style="margin-top:8px;">
+  يمكنك إنشاء موضوع جديد وكتابة سؤالك أو مناقشتك.
+</p>
+
+  </div>  <footer>
+    منصة أرض الأحياء<br>
+    جميع الحقوق محفوظة © 2026
+  </footer></div><!-- نافذة إنشاء موضوع --><div class="modal" id="topicModal">  <div class="modal-box"><h2>إنشاء موضوع جديد</h2>
+
+<input
+  type="text"
+  id="topicTitle"
+  placeholder="عنوان الموضوع"
+>
+
+<textarea
+  id="topicContent"
+  placeholder="اكتب موضوعك أو سؤالك هنا..."
+></textarea>
+
+<div class="modal-buttons">
+
+  <button class="save-btn" onclick="addTopic()">
+    نشر الموضوع
+  </button>
+
+  <button class="close-btn" onclick="closeModal()">
+    إلغاء
+  </button>
+
+</div>
+
+  </div></div><script>
+
+function openModal() {
+  document.getElementById("topicModal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("topicModal").style.display = "none";
+}
+
+function addTopic() {
+
+  const title =
+    document.getElementById("topicTitle").value.trim();
+
+  const content =
+    document.getElementById("topicContent").value.trim();
+
+  if (!title || !content) {
+    alert("من فضلك اكتب عنوان الموضوع والمحتوى.");
+    return;
+  }
+
+  const topic = document.createElement("article");
+
+  topic.className = "topic";
+
+  topic.innerHTML = `
+    <h3>💬 ${escapeHTML(title)}</h3>
+
+    <p>
+      ${escapeHTML(content)}
+    </p>
+
+    <div class="topic-info">
+      👤 عضو جديد · 💬 موضوع جديد
+    </div>
+  `;
+
+  document
+    .getElementById("forumList")
+    .prepend(topic);
+
+  document.getElementById("topicTitle").value = "";
+  document.getElementById("topicContent").value = "";
+
+  closeModal();
+
+  alert("تم نشر الموضوع داخل الصفحة.");
+}
+
+
+/* حماية النص من إدخال HTML */
+function escapeHTML(text) {
+
+  const div = document.createElement("div");
+
+  div.textContent = text;
+
+  return div.innerHTML;
+}
+
+
+/* إغلاق النافذة عند الضغط خارجها */
+document
+  .getElementById("topicModal")
+  .addEventListener("click", function(e) {
+
+    if (e.target === this) {
+      closeModal();
+    }
+
+  });
+
+</script></body>
+</html>
