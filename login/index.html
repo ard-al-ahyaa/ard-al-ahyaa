@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>تسجيل الدخول | منصة أرض الأحياء</title>
 
   <link rel="icon" href="../favicon.png">
@@ -31,7 +32,7 @@
       background: #fff;
       padding: 30px;
       border-radius: 18px;
-      box-shadow: 0 8px 30px rgba(0,0,0,.08);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, .08);
       text-align: center;
     }
 
@@ -61,6 +62,7 @@
       border-radius: 10px;
       font-size: 15px;
       outline: none;
+      font-family: Tahoma, Arial, sans-serif;
     }
 
     input:focus {
@@ -76,10 +78,16 @@
       color: white;
       font-size: 16px;
       cursor: pointer;
+      font-family: Tahoma, Arial, sans-serif;
     }
 
     button:hover {
       opacity: .9;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
     }
 
     #message {
@@ -98,6 +106,10 @@
       text-decoration: none;
       font-weight: bold;
     }
+
+    .register a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 
@@ -105,11 +117,17 @@
 
   <div class="login-box">
 
-    <img src="../logo.png" class="logo" alt="منصة أرض الأحياء">
+    <img
+      src="../logo.png"
+      class="logo"
+      alt="منصة أرض الأحياء"
+    >
 
     <h1>منصة أرض الأحياء</h1>
 
-    <div class="subtitle">تسجيل الدخول</div>
+    <div class="subtitle">
+      تسجيل الدخول
+    </div>
 
     <form id="loginForm">
 
@@ -117,6 +135,7 @@
         type="email"
         id="email"
         placeholder="البريد الإلكتروني"
+        autocomplete="email"
         required
       >
 
@@ -124,10 +143,14 @@
         type="password"
         id="password"
         placeholder="كلمة المرور"
+        autocomplete="current-password"
         required
       >
 
-      <button type="submit">
+      <button
+        type="submit"
+        id="loginBtn"
+      >
         تسجيل الدخول
       </button>
 
@@ -137,66 +160,210 @@
 
     <div class="register">
       ليس لديك حساب؟
-      <a href="../register/index.html">إنشاء حساب</a>
+      <a href="../register/index.html">
+        إنشاء حساب
+      </a>
     </div>
 
   </div>
 
+
 <script>
-  const SUPABASE_URL = "https://cmnmebchevejxhibvgwl.supabase.co";
 
-  const SUPABASE_KEY = "sb_publishable_54UK-Ys41c5wGQvYkeFmYQ_5efdHAQu";
+  /* =========================
+     بيانات Supabase
+  ========================= */
 
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+  const SUPABASE_URL =
+    "https://cmnmebchevejxhibvgwl.supabase.co";
 
-  const form = document.getElementById("loginForm");
-  const message = document.getElementById("message");
+  const SUPABASE_KEY =
+    "sb_publishable_54UK-Ys41c5wGQvYkeFmYQ_5efdHAQu";
 
-  form.addEventListener("submit", async function(e) {
 
-    e.preventDefault();
+  /* =========================
+     إنشاء اتصال Supabase
+  ========================= */
 
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
 
-    message.textContent = "جاري تسجيل الدخول...";
 
-    const { data, error } =
-      await supabaseClient.auth.signInWithPassword({
+  /* =========================
+     عناصر الصفحة
+  ========================= */
+
+  const loginForm =
+    document.getElementById("loginForm");
+
+  const emailInput =
+    document.getElementById("email");
+
+  const passwordInput =
+    document.getElementById("password");
+
+  const loginBtn =
+    document.getElementById("loginBtn");
+
+  const message =
+    document.getElementById("message");
+
+
+  /* =========================
+     تسجيل الدخول
+  ========================= */
+
+  loginForm.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const email =
+      emailInput.value.trim();
+
+    const password =
+      passwordInput.value;
+
+
+    message.textContent =
+      "جاري تسجيل الدخول...";
+
+    message.style.color =
+      "#075e4d";
+
+    loginBtn.disabled = true;
+
+
+    try {
+
+      /* تسجيل الدخول من Supabase */
+
+      const {
+        data,
+        error
+      } = await supabaseClient.auth.signInWithPassword({
+
         email: email,
+
         password: password
+
       });
 
-    if (error) {
-      message.textContent = "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
-      return;
-    }
 
-    const user = data.user;
+      if (error) {
 
-    const { data: profile, error: profileError } =
-      await supabaseClient
+        message.textContent =
+          "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+
+        message.style.color =
+          "#c0392b";
+
+        loginBtn.disabled = false;
+
+        return;
+      }
+
+
+      const user =
+        data.user;
+
+
+      if (!user) {
+
+        message.textContent =
+          "حدث خطأ أثناء تسجيل الدخول.";
+
+        message.style.color =
+          "#c0392b";
+
+        loginBtn.disabled = false;
+
+        return;
+      }
+
+
+      /* =========================
+         الحصول على صلاحية المستخدم
+      ========================= */
+
+      const {
+        data: profile,
+        error: profileError
+      } = await supabaseClient
         .from("profiles")
         .select("role")
         .eq("id", user.id)
         .single();
 
-    if (profileError) {
-      message.textContent =
-        "تم تسجيل الدخول، لكن لم يتم العثور على صلاحيات الحساب.";
-      return;
-    }
 
-    if (profile.role === "admin") {
-      window.location.href = "../admin/index.html";
-    } else {
-      window.location.href = "../index.html";
+      if (profileError || !profile) {
+
+        message.textContent =
+          "تم تسجيل الدخول، لكن لم يتم العثور على صلاحيات الحساب.";
+
+        message.style.color =
+          "#c0392b";
+
+        loginBtn.disabled = false;
+
+        return;
+      }
+
+
+      /* =========================
+         تحديد نوع الحساب
+      ========================= */
+
+      if (profile.role === "admin") {
+
+        message.textContent =
+          "تم تسجيل الدخول كمسؤول...";
+
+        message.style.color =
+          "#075e4d";
+
+        setTimeout(function() {
+
+          window.location.href =
+            "../admin/index.html";
+
+        }, 500);
+
+      } else {
+
+        message.textContent =
+          "تم تسجيل الدخول بنجاح...";
+
+        message.style.color =
+          "#075e4d";
+
+        setTimeout(function() {
+
+          window.location.href =
+            "../index.html";
+
+        }, 500);
+
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      message.textContent =
+        "حدث خطأ غير متوقع. حاول مرة أخرى.";
+
+      message.style.color =
+        "#c0392b";
+
+      loginBtn.disabled = false;
+
     }
 
   });
+
 </script>
 
 </body>
