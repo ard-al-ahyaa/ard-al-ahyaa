@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +19,7 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: Tahoma, Arial, sans-serif;
+      font-family: Arial, Tahoma, sans-serif;
       background: #f5f7f6;
       display: flex;
       align-items: center;
@@ -28,41 +29,49 @@
 
     .register-box {
       width: 100%;
-      max-width: 420px;
+      max-width: 430px;
       background: white;
-      padding: 30px;
       border-radius: 18px;
-      box-shadow: 0 8px 30px rgba(0,0,0,.08);
-      text-align: center;
+      padding: 30px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
     }
 
     .logo {
       width: 90px;
       height: 90px;
       object-fit: contain;
-      margin-bottom: 10px;
+      display: block;
+      margin: 0 auto 15px;
     }
 
     h1 {
+      text-align: center;
       color: #075e4d;
-      margin: 5px 0 8px;
-      font-size: 25px;
+      margin: 0 0 8px;
+      font-size: 27px;
     }
 
     .subtitle {
+      text-align: center;
       color: #777;
       margin-bottom: 25px;
     }
 
+    label {
+      display: block;
+      margin-bottom: 7px;
+      color: #333;
+      font-weight: bold;
+    }
+
     input {
       width: 100%;
-      padding: 14px;
-      margin-bottom: 14px;
+      padding: 13px;
+      margin-bottom: 17px;
       border: 1px solid #ddd;
       border-radius: 10px;
-      font-size: 15px;
+      font-size: 16px;
       outline: none;
-      font-family: Tahoma, Arial, sans-serif;
     }
 
     input:focus {
@@ -71,45 +80,55 @@
 
     button {
       width: 100%;
-      padding: 14px;
-      border: 0;
-      border-radius: 10px;
+      border: none;
       background: #075e4d;
       color: white;
-      font-size: 16px;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 17px;
       cursor: pointer;
-      font-family: Tahoma, Arial, sans-serif;
     }
 
     button:hover {
-      opacity: .9;
+      background: #064d40;
     }
 
     button:disabled {
-      opacity: .6;
+      opacity: 0.6;
       cursor: not-allowed;
     }
 
-    #message {
+    .message {
+      display: none;
       margin-top: 15px;
-      min-height: 22px;
-      font-size: 14px;
-      line-height: 1.7;
+      padding: 12px;
+      border-radius: 9px;
+      text-align: center;
+      line-height: 1.6;
     }
 
-    .login {
+    .success {
+      display: block;
+      background: #e8f7ef;
+      color: #176b3a;
+    }
+
+    .error {
+      display: block;
+      background: #fdeaea;
+      color: #a11;
+    }
+
+    .login-link {
+      text-align: center;
       margin-top: 20px;
       color: #666;
     }
 
-    .login a {
+    .login-link a {
       color: #075e4d;
       text-decoration: none;
       font-weight: bold;
-    }
-
-    .login a:hover {
-      text-decoration: underline;
     }
   </style>
 </head>
@@ -118,329 +137,251 @@
 
   <div class="register-box">
 
-    <img
-      src="../logo.png"
-      class="logo"
-      alt="منصة أرض الأحياء"
-    >
+    <img src="../logo.png" class="logo" alt="منصة أرض الأحياء">
 
-    <h1>
-      منصة أرض الأحياء
-    </h1>
+    <h1>إنشاء حساب</h1>
 
     <div class="subtitle">
-      إنشاء حساب طالب
+      منصة أرض الأحياء التعليمية
     </div>
-
 
     <form id="registerForm">
 
+      <label for="name">اسم الطالب</label>
       <input
         type="text"
-        id="fullName"
-        placeholder="الاسم الكامل"
-        autocomplete="name"
+        id="name"
+        placeholder="اكتب اسمك"
         required
       >
 
+      <label for="email">البريد الإلكتروني</label>
       <input
         type="email"
         id="email"
-        placeholder="البريد الإلكتروني"
-        autocomplete="email"
+        placeholder="example@email.com"
         required
       >
 
+      <label for="password">كلمة المرور</label>
       <input
         type="password"
         id="password"
         placeholder="كلمة المرور"
-        autocomplete="new-password"
         minlength="6"
         required
       >
 
+      <label for="confirmPassword">تأكيد كلمة المرور</label>
       <input
         type="password"
         id="confirmPassword"
-        placeholder="تأكيد كلمة المرور"
-        autocomplete="new-password"
+        placeholder="أعد كتابة كلمة المرور"
         minlength="6"
         required
       >
 
-      <button
-        type="submit"
-        id="registerBtn"
-      >
+      <button type="submit" id="registerButton">
         إنشاء الحساب
       </button>
 
     </form>
 
+    <div id="message" class="message"></div>
 
-    <div id="message"></div>
-
-
-    <div class="login">
-
+    <div class="login-link">
       لديك حساب بالفعل؟
-
-      <a href="../login/index.html">
-        تسجيل الدخول
-      </a>
-
+      <a href="../login/index.html">تسجيل الدخول</a>
     </div>
 
   </div>
 
 
-<script>
+  <script>
 
-  /* =========================
-     بيانات Supabase
-  ========================== */
+    const SUPABASE_URL =
+      "https://cmnmebchevejxhibvgwl.supabase.co";
 
-  const SUPABASE_URL =
-    "https://cmnmebchevejxhibvgwl.supabase.co";
+    const SUPABASE_KEY =
+      "sb_publishable_54UK-Ys41c5wGQvYkeFmYQ_5efdHAQu";
 
-  const SUPABASE_KEY =
-    "sb_publishable_54UK-Ys41c5wGQvYkeFmYQ_5efdHAQu";
-
-
-  /* =========================
-     إنشاء الاتصال
-  ========================== */
-
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
 
 
-  /* =========================
-     عناصر الصفحة
-  ========================== */
+    const registerForm =
+      document.getElementById("registerForm");
 
-  const form =
-    document.getElementById("registerForm");
+    const registerButton =
+      document.getElementById("registerButton");
 
-  const fullName =
-    document.getElementById("fullName");
-
-  const email =
-    document.getElementById("email");
-
-  const password =
-    document.getElementById("password");
-
-  const confirmPassword =
-    document.getElementById("confirmPassword");
-
-  const registerBtn =
-    document.getElementById("registerBtn");
-
-  const message =
-    document.getElementById("message");
+    const message =
+      document.getElementById("message");
 
 
-  /* =========================
-     إنشاء الحساب
-  ========================== */
+    function showMessage(text, type) {
 
-  form.addEventListener(
-    "submit",
-    async function(event) {
+      message.textContent = text;
 
-      event.preventDefault();
+      message.className =
+        "message " + type;
+    }
 
 
-      const name =
-        fullName.value.trim();
+    registerForm.addEventListener(
+      "submit",
+      async function (event) {
 
-      const userEmail =
-        email.value.trim();
+        event.preventDefault();
 
-      const userPassword =
-        password.value;
+        const name =
+          document.getElementById("name")
+            .value.trim();
 
-      const userConfirmPassword =
-        confirmPassword.value;
+        const email =
+          document.getElementById("email")
+            .value.trim();
 
+        const password =
+          document.getElementById("password")
+            .value;
 
-      /* التحقق من كلمة المرور */
-
-      if (
-        userPassword !==
-        userConfirmPassword
-      ) {
-
-        message.textContent =
-          "كلمتا المرور غير متطابقتين.";
-
-        message.style.color =
-          "#c0392b";
-
-        return;
-      }
+        const confirmPassword =
+          document.getElementById("confirmPassword")
+            .value;
 
 
-      if (userPassword.length < 6) {
+        if (!name) {
 
-        message.textContent =
-          "كلمة المرور يجب أن تكون 6 أحرف على الأقل.";
+          showMessage(
+            "اكتب اسم الطالب.",
+            "error"
+          );
 
-        message.style.color =
-          "#c0392b";
-
-        return;
-      }
-
-
-      registerBtn.disabled = true;
-
-      message.textContent =
-        "جاري إنشاء الحساب...";
-
-      message.style.color =
-        "#075e4d";
+          return;
+        }
 
 
-      try {
+        if (password.length < 6) {
 
-        /* =========================
-           إنشاء المستخدم في Auth
-        ========================== */
+          showMessage(
+            "كلمة المرور يجب أن تكون 6 أحرف أو أكثر.",
+            "error"
+          );
 
-        const {
-          data,
-          error
-        } =
-          await supabaseClient.auth.signUp({
+          return;
+        }
 
-            email: userEmail,
 
-            password: userPassword,
+        if (password !== confirmPassword) {
 
-            options: {
+          showMessage(
+            "كلمتا المرور غير متطابقتين.",
+            "error"
+          );
 
-              data: {
-                full_name: name
+          return;
+        }
+
+
+        registerButton.disabled = true;
+
+        registerButton.textContent =
+          "جاري إنشاء الحساب...";
+
+
+        try {
+
+          const { data, error } =
+            await supabaseClient.auth.signUp({
+
+              email: email,
+
+              password: password,
+
+              options: {
+
+                data: {
+                  full_name: name
+                }
+
               }
-
-            }
-
-          });
-
-
-        if (error) {
-
-          console.error(error);
-
-          message.textContent =
-            error.message ||
-            "حدث خطأ أثناء إنشاء الحساب.";
-
-          message.style.color =
-            "#c0392b";
-
-          registerBtn.disabled = false;
-
-          return;
-        }
-
-
-        if (!data.user) {
-
-          message.textContent =
-            "لم يتم إنشاء الحساب.";
-
-          message.style.color =
-            "#c0392b";
-
-          registerBtn.disabled = false;
-
-          return;
-        }
-
-
-        /* =========================
-           إضافة Profile للطالب
-        ========================== */
-
-        const {
-          error: profileError
-        } =
-          await supabaseClient
-            .from("profiles")
-            .insert({
-
-              id: data.user.id,
-
-              full_name: name,
-
-              role: "student"
 
             });
 
 
-        /*
-          لو كان تأكيد البريد الإلكتروني
-          مفعلاً في Supabase، قد لا يكون
-          المستخدم مسجلاً للدخول مباشرة.
-        */
+          if (error) {
 
-        if (profileError) {
+            throw error;
 
-          console.error(profileError);
+          }
 
-          message.textContent =
-            "تم إنشاء الحساب، لكن تعذر إنشاء ملف الطالب. سيتم معالجة ذلك من لوحة الإدارة.";
 
-          message.style.color =
-            "#d68910";
+          if (!data.user) {
 
-        } else {
+            throw new Error(
+              "تعذر إنشاء المستخدم."
+            );
 
-          message.textContent =
-            "تم إنشاء الحساب بنجاح. يمكنك الآن تسجيل الدخول.";
+          }
 
-          message.style.color =
-            "#075e4d";
+
+          /*
+            الـ Trigger الموجود في Supabase
+            سيقوم بإنشاء profiles تلقائيًا.
+          */
+
+
+          if (!data.session) {
+
+            showMessage(
+              "تم إنشاء الحساب بنجاح. راجع بريدك الإلكتروني لتأكيد الحساب، ثم سجل الدخول.",
+              "success"
+            );
+
+          } else {
+
+            showMessage(
+              "تم إنشاء الحساب بنجاح. سيتم نقلك لتسجيل الدخول...",
+              "success"
+            );
+
+            setTimeout(function () {
+
+              window.location.href =
+                "../login/index.html";
+
+            }, 1800);
+
+          }
+
+
+        } catch (error) {
+
+          console.error(error);
+
+          showMessage(
+            error.message ||
+            "حدث خطأ أثناء إنشاء الحساب.",
+            "error"
+          );
 
         }
 
 
-        form.reset();
+        registerButton.disabled = false;
 
-
-        setTimeout(function() {
-
-          window.location.href =
-            "../login/index.html";
-
-        }, 1800);
-
-
-      } catch (error) {
-
-        console.error(error);
-
-        message.textContent =
-          "حدث خطأ غير متوقع. حاول مرة أخرى.";
-
-        message.style.color =
-          "#c0392b";
-
-        registerBtn.disabled = false;
+        registerButton.textContent =
+          "إنشاء الحساب";
 
       }
+    );
 
-    }
-  );
-
-</script>
+  </script>
 
 </body>
+
 </html>
