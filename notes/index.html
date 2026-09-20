@@ -1,0 +1,647 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>مذكرات الأحياء | منصة أرض الأحياء</title><meta name="description"
+content="مذكرات وملخصات مادة الأحياء لجميع الصفوف على منصة أرض الأحياء">
+
+  <link rel="icon" type="image/png" href="../favicon.png">  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Tahoma, sans-serif;
+      background: #f4f7f6;
+      color: #18352e;
+      direction: rtl;
+    }
+
+    .container {
+      width: 92%;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    /* الهيدر */
+
+    header {
+      background: #fff;
+      margin-top: 15px;
+      padding: 15px 20px;
+      border-radius: 18px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      box-shadow: 0 5px 20px rgba(0,0,0,.07);
+
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-area img {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      border-radius: 12px;
+    }
+
+    .logo-area h2 {
+      color: #075e4d;
+      font-size: 20px;
+    }
+
+    .home-btn {
+      background: #075e4d;
+      color: #fff;
+      text-decoration: none;
+
+      padding: 10px 17px;
+      border-radius: 10px;
+
+      transition: .2s;
+    }
+
+    .home-btn:hover {
+      opacity: .85;
+    }
+
+    /* العنوان */
+
+    .hero {
+      margin-top: 25px;
+
+      background: linear-gradient(
+        135deg,
+        #075e4d,
+        #17866f
+      );
+
+      color: #fff;
+
+      padding: 35px 25px;
+
+      border-radius: 20px;
+
+      box-shadow:
+        0 10px 30px rgba(7,94,77,.15);
+    }
+
+    .hero h1 {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      line-height: 1.9;
+      font-size: 16px;
+    }
+
+    /* البحث */
+
+    .search-box {
+      margin-top: 22px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 14px;
+
+      box-shadow:
+        0 5px 18px rgba(0,0,0,.05);
+    }
+
+    .search-box input {
+      width: 100%;
+
+      border: 1px solid #dce5e1;
+
+      padding: 13px;
+
+      border-radius: 10px;
+
+      outline: none;
+
+      font-family: inherit;
+      font-size: 15px;
+    }
+
+    .search-box input:focus {
+      border-color: #075e4d;
+    }
+
+    /* المذكرات */
+
+    .notes-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 18px;
+
+      margin-top: 22px;
+    }
+
+    .note-card {
+
+      background: #fff;
+
+      border: 1px solid #e1e8e5;
+
+      border-radius: 16px;
+
+      padding: 22px;
+
+      box-shadow:
+        0 5px 18px rgba(0,0,0,.04);
+
+      transition: .2s;
+    }
+
+    .note-card:hover {
+
+      transform:
+        translateY(-3px);
+
+      box-shadow:
+        0 9px 24px rgba(0,0,0,.08);
+    }
+
+    .note-icon {
+
+      font-size: 40px;
+
+      margin-bottom: 12px;
+    }
+
+    .note-card h2 {
+
+      color: #075e4d;
+
+      font-size: 20px;
+
+      margin-bottom: 10px;
+    }
+
+    .note-card p {
+
+      color: #687772;
+
+      line-height: 1.8;
+
+      min-height: 55px;
+    }
+
+    .note-btn {
+
+      display: inline-block;
+
+      margin-top: 15px;
+
+      background: #075e4d;
+
+      color: #fff;
+
+      text-decoration: none;
+
+      padding: 10px 16px;
+
+      border-radius: 9px;
+
+      transition: .2s;
+    }
+
+    .note-btn:hover {
+      opacity: .88;
+    }
+
+    /* تنبيه */
+
+    .notice {
+
+      margin-top: 20px;
+
+      background: #fff8e6;
+
+      border:
+        1px solid #f0d58a;
+
+      padding: 16px;
+
+      border-radius: 12px;
+
+      line-height: 1.8;
+
+      color: #6d5a20;
+    }
+
+    /* لا توجد نتائج */
+
+    .no-results {
+
+      display: none;
+
+      text-align: center;
+
+      background: #fff;
+
+      padding: 35px;
+
+      margin-top: 20px;
+
+      border-radius: 16px;
+
+      color: #687772;
+    }
+
+    footer {
+
+      text-align: center;
+
+      color: #74817d;
+
+      padding:
+        35px 0 20px;
+
+      line-height: 1.8;
+    }
+
+    /* الموبايل */
+
+    @media(max-width:800px) {
+
+      .container {
+        width: 94%;
+      }
+
+      header {
+        position: static;
+      }
+
+      .logo-area h2 {
+        font-size: 16px;
+      }
+
+      .logo-area img {
+        width: 42px;
+        height: 42px;
+      }
+
+      .home-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+      }
+
+      .hero {
+        padding: 28px 20px;
+      }
+
+      .hero h1 {
+        font-size: 25px;
+      }
+
+      .notes-grid {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+  </style></head><body><div class="container">  <!-- الهيدر -->  <header><div class="logo-area">
+
+  <img
+    src="../logo.png"
+    alt="شعار منصة أرض الأحياء"
+  >
+
+  <h2>
+    منصة أرض الأحياء
+  </h2>
+
+</div>
+
+<a
+  href="../index.html"
+  class="home-btn"
+>
+  الرئيسية
+</a>
+
+  </header>  <!-- العنوان -->  <section class="hero"><h1>
+  📚 مذكرات الأحياء
+</h1>
+
+<p>
+  مجموعة المذكرات والملخصات التعليمية
+  الخاصة بمادة الأحياء.
+</p>
+
+  </section>  <!-- البحث -->  <div class="search-box"><input
+  type="text"
+  id="searchInput"
+  placeholder="🔎 ابحث عن الصف أو المذكرة..."
+>
+
+  </div>  <!-- المذكرات -->  <section
+    class="notes-grid"
+    id="notesGrid"
+  ><!-- أولى ثانوي -->
+
+<article
+  class="note-card"
+  data-search="الصف الأول الأول الثانوي أحياء"
+>
+
+  <div class="note-icon">
+    📘
+  </div>
+
+  <h2>
+    الصف الأول الثانوي
+  </h2>
+
+  <p>
+    مذكرات وملخصات مادة الأحياء
+    للصف الأول الثانوي.
+  </p>
+
+  <a
+    href="#"
+    class="note-btn"
+    onclick="comingSoon(event)"
+  >
+    المذكرات قريبًا
+  </a>
+
+</article>
+
+
+<!-- ثانية ثانوي -->
+
+<article
+  class="note-card"
+  data-search="الصف الثاني الثاني الثانوي أحياء"
+>
+
+  <div class="note-icon">
+    📗
+  </div>
+
+  <h2>
+    الصف الثاني الثانوي
+  </h2>
+
+  <p>
+    مذكرات وملخصات مادة الأحياء
+    للصف الثاني الثانوي.
+  </p>
+
+  <a
+    href="#"
+    class="note-btn"
+    onclick="comingSoon(event)"
+  >
+    المذكرات قريبًا
+  </a>
+
+</article>
+
+
+<!-- ثالثة ثانوي -->
+
+<article
+  class="note-card"
+  data-search="الصف الثالث الثالث الثانوي أحياء"
+>
+
+  <div class="note-icon">
+    📕
+  </div>
+
+  <h2>
+    الصف الثالث الثانوي
+  </h2>
+
+  <p>
+    مذكرات وملخصات مادة الأحياء
+    للصف الثالث الثانوي.
+  </p>
+
+  <a
+    href="#"
+    class="note-btn"
+    onclick="comingSoon(event)"
+  >
+    المذكرات قريبًا
+  </a>
+
+</article>
+
+
+<!-- مراجعات -->
+
+<article
+  class="note-card"
+  data-search="مراجعات نهائية أحياء"
+>
+
+  <div class="note-icon">
+    📝
+  </div>
+
+  <h2>
+    المراجعات النهائية
+  </h2>
+
+  <p>
+    مراجعات شاملة وأسئلة تدريبية
+    لمادة الأحياء.
+  </p>
+
+  <a
+    href="#"
+    class="note-btn"
+    onclick="comingSoon(event)"
+  >
+    قريبًا
+  </a>
+
+</article>
+
+
+<!-- ملخصات -->
+
+<article
+  class="note-card"
+  data-search="ملخصات أحياء"
+>
+
+  <div class="note-icon">
+    📑
+  </div>
+
+  <h2>
+    ملخصات الأحياء
+  </h2>
+
+  <p>
+    ملخصات مبسطة تساعدك على
+    مراجعة الدروس.
+  </p>
+
+  <a
+    href="#"
+    class="note-btn"
+    onclick="comingSoon(event)"
+  >
+    قريبًا
+  </a>
+
+</article>
+
+
+<!-- أسئلة -->
+
+<article
+  class="note-card"
+  data-search="أسئلة أحياء امتحانات"
+>
+
+  <div class="note-icon">
+    📋
+  </div>
+
+  <h2>
+    نماذج وأسئلة
+  </h2>
+
+  <p>
+    نماذج وأسئلة تدريبية
+    للمراجعة قبل الاختبارات.
+  </p>
+
+  <a
+    href="#"
+    class="note-btn"
+    onclick="comingSoon(event)"
+  >
+    قريبًا
+  </a>
+
+</article>
+
+  </section>  <!-- لا توجد نتائج -->  <div
+    class="no-results"
+    id="noResults"
+  >🔎
+
+<br><br>
+
+لا توجد مذكرات مطابقة للبحث.
+
+  </div>  <!-- تنبيه -->  <div class="notice">💡
+<strong>
+  ملاحظة:
+</strong>
+
+سيتم إضافة ملفات المذكرات وروابط التحميل
+إلى هذه الأقسام عند تجهيزها.
+
+لا توجد روابط تحميل وهمية حتى لا تظهر
+أخطاء 404.
+
+  </div>  <!-- الفوتر -->  <footer>منصة أرض الأحياء
+
+<br>
+
+جميع الحقوق محفوظة © 2026
+
+  </footer></div><script>
+
+  /* البحث */
+
+  const searchInput =
+    document.getElementById("searchInput");
+
+  const cards =
+    document.querySelectorAll(".note-card");
+
+  const noResults =
+    document.getElementById("noResults");
+
+
+  searchInput.addEventListener(
+    "input",
+    function() {
+
+      const value =
+        this.value
+          .trim()
+          .toLowerCase();
+
+      let found = false;
+
+
+      cards.forEach(function(card) {
+
+        const text =
+          card.dataset.search
+            .toLowerCase();
+
+        if (
+          text.includes(value)
+        ) {
+
+          card.style.display =
+            "block";
+
+          found = true;
+
+        } else {
+
+          card.style.display =
+            "none";
+
+        }
+
+      });
+
+
+      if(found) {
+
+        noResults.style.display =
+          "none";
+
+      } else {
+
+        noResults.style.display =
+          "block";
+
+      }
+
+    }
+  );
+
+
+  /* زر قريبًا */
+
+  function comingSoon(event) {
+
+    event.preventDefault();
+
+    alert(
+      "📚 سيتم إضافة المذكرة هنا قريبًا."
+    );
+
+  }
+
+</script></body></html>
