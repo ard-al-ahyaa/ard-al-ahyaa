@@ -22,6 +22,8 @@
       color: #222;
     }
 
+    /* الشريط الجانبي */
+
     .sidebar {
       position: fixed;
       right: 0;
@@ -32,6 +34,7 @@
       color: white;
       padding: 20px 15px;
       overflow-y: auto;
+      z-index: 1000;
     }
 
     .logo-box {
@@ -85,6 +88,8 @@
       background: rgba(255,255,255,.18) !important;
     }
 
+    /* المحتوى */
+
     .main {
       margin-right: 250px;
       padding: 25px;
@@ -125,6 +130,13 @@
       color: #075e4d;
     }
 
+    .welcome p {
+      color: #666;
+      line-height: 1.8;
+    }
+
+    /* البطاقات */
+
     .cards {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -153,6 +165,7 @@
       color: #777;
       line-height: 1.7;
       font-size: 14px;
+      min-height: 48px;
     }
 
     .card button {
@@ -169,15 +182,20 @@
       opacity: .9;
     }
 
+    /* حالة التحميل */
+
     #loading {
       text-align: center;
-      padding: 40px;
+      padding: 60px 20px;
       color: #777;
+      font-size: 16px;
     }
 
     #content {
       display: none;
     }
+
+    /* الموبايل */
 
     @media (max-width: 850px) {
 
@@ -227,6 +245,10 @@
 
 <body>
 
+  <!-- =========================
+       الشريط الجانبي
+  ========================== -->
+
   <aside class="sidebar">
 
     <div class="logo-box">
@@ -250,27 +272,36 @@
     <div class="menu">
 
       <a href="../index.html">
-        🏠 <span class="menu-text">المنصة الرئيسية</span>
+        🏠
+        <span class="menu-text">المنصة الرئيسية</span>
       </a>
 
       <a href="../videos/index.html">
-        🎥 <span class="menu-text">المحاضرات</span>
+        🎥
+        <span class="menu-text">المحاضرات</span>
       </a>
 
       <a href="../notes/index.html">
-        📚 <span class="menu-text">المذكرات</span>
+        📚
+        <span class="menu-text">المذكرات</span>
       </a>
 
       <a href="../forum/index.html">
-        💬 <span class="menu-text">المنتدى</span>
+        💬
+        <span class="menu-text">المنتدى</span>
       </a>
 
       <a href="index.html" class="active">
-        ⚙️ <span class="menu-text">لوحة التحكم</span>
+        ⚙️
+        <span class="menu-text">لوحة التحكم</span>
       </a>
 
-      <button class="logout" id="logoutBtn">
-        🚪 <span class="menu-text">تسجيل الخروج</span>
+      <button
+        class="logout"
+        id="logoutBtn"
+      >
+        🚪
+        <span class="menu-text">تسجيل الخروج</span>
       </button>
 
     </div>
@@ -278,14 +309,20 @@
   </aside>
 
 
+  <!-- =========================
+       المحتوى الرئيسي
+  ========================== -->
+
   <main class="main">
 
     <div id="loading">
-      جاري التحقق من صلاحيات الحساب...
+      جاري التحقق من صلاحيات حساب الإدارة...
     </div>
 
 
     <div id="content">
+
+      <!-- الشريط العلوي -->
 
       <div class="topbar">
 
@@ -293,26 +330,35 @@
           لوحة تحكم الإدارة
         </h1>
 
-        <div class="admin-email" id="adminEmail">
-        </div>
+        <div
+          class="admin-email"
+          id="adminEmail"
+        ></div>
 
       </div>
 
 
+      <!-- الترحيب -->
+
       <div class="welcome">
 
         <h2>
-          👋 أهلاً بك في لوحة الإدارة
+          👋 أهلاً بك في لوحة إدارة منصة أرض الأحياء
         </h2>
 
         <p>
-          من هنا يمكنك إدارة محتوى منصة أرض الأحياء.
+          من هنا يمكنك الوصول إلى أقسام المنصة وإدارة المحتوى.
         </p>
 
       </div>
 
 
+      <!-- البطاقات -->
+
       <div class="cards">
+
+
+        <!-- الطلاب -->
 
         <div class="card">
 
@@ -335,6 +381,8 @@
         </div>
 
 
+        <!-- المحاضرات -->
+
         <div class="card">
 
           <div class="card-icon">
@@ -346,15 +394,19 @@
           </h3>
 
           <p>
-            إدارة المحاضرات والمحتوى التعليمي.
+            الوصول إلى قسم المحاضرات التعليمية.
           </p>
 
-          <button onclick="location.href='../videos/index.html'">
+          <button
+            onclick="location.href='../videos/index.html'"
+          >
             المحاضرات
           </button>
 
         </div>
 
+
+        <!-- المذكرات -->
 
         <div class="card">
 
@@ -370,12 +422,16 @@
             إدارة مذكرات الصف الثالث الثانوي.
           </p>
 
-          <button onclick="location.href='../notes/index.html'">
+          <button
+            onclick="location.href='../notes/index.html'"
+          >
             المذكرات
           </button>
 
         </div>
 
+
+        <!-- المنتدى -->
 
         <div class="card">
 
@@ -388,15 +444,19 @@
           </h3>
 
           <p>
-            متابعة ومراجعة منشورات المنتدى.
+            متابعة قسم المنتدى والمنشورات.
           </p>
 
-          <button onclick="location.href='../forum/index.html'">
+          <button
+            onclick="location.href='../forum/index.html'"
+          >
             فتح المنتدى
           </button>
 
         </div>
 
+
+        <!-- الإعدادات -->
 
         <div class="card">
 
@@ -419,6 +479,8 @@
         </div>
 
 
+        <!-- الصلاحيات -->
+
         <div class="card">
 
           <div class="card-icon">
@@ -430,11 +492,11 @@
           </h3>
 
           <p>
-            نظام الصلاحيات مرتبط بحسابات Supabase.
+            صلاحيات الحساب مرتبطة بنظام Supabase.
           </p>
 
           <button onclick="comingSoon()">
-            عرض الصلاحيات
+            الصلاحيات
           </button>
 
         </div>
@@ -448,12 +510,20 @@
 
 <script>
 
+  /* =========================
+     بيانات Supabase
+  ========================== */
+
   const SUPABASE_URL =
     "https://cmnmebchevejxhibvgwl.supabase.co";
 
   const SUPABASE_KEY =
-    "ضع_الـ_PUBLISHABLE_KEY_هنا";
+    "sb_publishable_54UK-Ys41c5wGQvYkeFmYQ_5efdHAQu";
 
+
+  /* =========================
+     الاتصال بـ Supabase
+  ========================== */
 
   const supabaseClient =
     window.supabase.createClient(
@@ -462,75 +532,148 @@
     );
 
 
+  /* =========================
+     التحقق من Admin
+  ========================== */
+
   async function checkAdmin() {
 
-    const {
-      data: { user },
-      error
-    } = await supabaseClient.auth.getUser();
+    try {
+
+      const {
+        data: {
+          user
+        },
+        error
+      } = await supabaseClient.auth.getUser();
 
 
-    if (error || !user) {
+      /* لا يوجد تسجيل دخول */
 
-      window.location.href = "../login/index.html";
+      if (error || !user) {
 
-      return;
-    }
+        window.location.href =
+          "../login/index.html";
+
+        return;
+      }
 
 
-    const { data: profile, error: profileError } =
-      await supabaseClient
+      /* الحصول على بيانات الحساب */
+
+      const {
+        data: profile,
+        error: profileError
+      } = await supabaseClient
         .from("profiles")
         .select("role")
         .eq("id", user.id)
         .single();
 
 
-    if (
-      profileError ||
-      !profile ||
-      profile.role !== "admin"
-    ) {
+      /* الحساب ليس له Profile */
 
-      alert("ليس لديك صلاحية الدخول إلى لوحة الإدارة.");
+      if (profileError || !profile) {
 
-      window.location.href = "../index.html";
+        alert(
+          "لم يتم العثور على بيانات صلاحيات هذا الحساب."
+        );
 
-      return;
-    }
+        window.location.href =
+          "../index.html";
 
-
-    document.getElementById("adminEmail").textContent =
-      user.email || "حساب الإدارة";
+        return;
+      }
 
 
-    document.getElementById("loading").style.display =
-      "none";
+      /* الحساب ليس Admin */
+
+      if (profile.role !== "admin") {
+
+        alert(
+          "ليس لديك صلاحية الدخول إلى لوحة الإدارة."
+        );
+
+        window.location.href =
+          "../index.html";
+
+        return;
+      }
 
 
-    document.getElementById("content").style.display =
-      "block";
-  }
+      /* عرض الإيميل */
+
+      document.getElementById(
+        "adminEmail"
+      ).textContent =
+        user.email || "حساب الإدارة";
 
 
-  document
-    .getElementById("logoutBtn")
-    .addEventListener("click", async function() {
+      /* إخفاء التحميل */
 
-      await supabaseClient.auth.signOut();
+      document.getElementById(
+        "loading"
+      ).style.display = "none";
+
+
+      /* إظهار لوحة التحكم */
+
+      document.getElementById(
+        "content"
+      ).style.display = "block";
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "حدث خطأ أثناء التحقق من الحساب."
+      );
 
       window.location.href =
         "../login/index.html";
 
-    });
-
-
-  function comingSoon() {
-
-    alert("سيتم إضافة هذه الخاصية قريبًا.");
+    }
 
   }
 
+
+  /* =========================
+     تسجيل الخروج
+  ========================== */
+
+  document
+    .getElementById("logoutBtn")
+    .addEventListener(
+      "click",
+      async function() {
+
+        await supabaseClient.auth.signOut();
+
+        window.location.href =
+          "../login/index.html";
+
+      }
+    );
+
+
+  /* =========================
+     خصائص لم تُجهز بعد
+  ========================== */
+
+  function comingSoon() {
+
+    alert(
+      "سيتم إضافة هذه الخاصية في لوحة الإدارة قريبًا."
+    );
+
+  }
+
+
+  /* =========================
+     تشغيل التحقق
+  ========================== */
 
   checkAdmin();
 
