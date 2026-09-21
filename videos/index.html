@@ -2,406 +2,415 @@
 <html lang="ar" dir="rtl">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>المحاضرات | منصة أرض الأحياء</title>
+  <title>المحاضرات | منصة أرض الأحياء</title>
 
-    <meta name="description"
-        content="محاضرات الصف الثالث الثانوي في الأحياء - منصة أرض الأحياء">
+  <link rel="icon" href="../favicon.png">
 
-    <link rel="icon" href="../favicon.png">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Tahoma, sans-serif;
+    }
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    body {
+      background: #f5f7f7;
+      color: #222;
+    }
 
-        body {
-            font-family: Tahoma, Arial, sans-serif;
-            background: #f5f7f9;
-            color: #222;
-        }
+    /* الشريط الجانبي */
+    .sidebar {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 250px;
+      height: 100vh;
+      background: #075e4d;
+      color: white;
+      padding: 25px 15px;
+      z-index: 1000;
+    }
 
-        /* الشريط الجانبي */
+    .logo-box {
+      text-align: center;
+      margin-bottom: 35px;
+    }
 
-        .sidebar {
-            position: fixed;
-            right: 0;
-            top: 0;
-            width: 250px;
-            height: 100vh;
-            background: #ffffff;
-            border-left: 1px solid #ddd;
-            padding: 25px 15px;
-            z-index: 1000;
-        }
+    .logo-box img {
+      width: 75px;
+      height: 75px;
+      object-fit: contain;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
 
-        .logo-box {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+    .logo-box h2 {
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
 
-        .logo-box img {
-            width: 70px;
-            height: 70px;
-            object-fit: contain;
-            margin-bottom: 8px;
-        }
+    .logo-box p {
+      font-size: 13px;
+      opacity: 0.8;
+    }
 
-        .logo-box h2 {
-            font-size: 19px;
-            color: #116b5f;
-        }
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
 
-        .menu a {
-            display: block;
-            text-decoration: none;
-            color: #333;
-            padding: 13px 15px;
-            margin-bottom: 7px;
-            border-radius: 8px;
-            font-size: 15px;
-            transition: 0.2s;
-        }
+    .menu a {
+      text-decoration: none;
+      color: white;
+      padding: 14px 15px;
+      border-radius: 10px;
+      transition: 0.2s;
+      font-size: 15px;
+    }
 
-        .menu a:hover,
-        .menu a.active {
-            background: #e8f5f2;
-            color: #116b5f;
-        }
+    .menu a:hover,
+    .menu a.active {
+      background: rgba(255, 255, 255, 0.15);
+    }
 
-        /* المحتوى */
+    /* المحتوى */
+    .main {
+      margin-right: 250px;
+      padding: 30px;
+      min-height: 100vh;
+    }
 
-        .content {
-            margin-right: 250px;
-            min-height: 100vh;
-        }
+    .topbar {
+      background: white;
+      border-radius: 15px;
+      padding: 20px 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+    }
 
-        .topbar {
-            background: #fff;
-            border-bottom: 1px solid #ddd;
-            padding: 18px 30px;
-        }
+    .topbar h1 {
+      color: #075e4d;
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
 
-        .topbar h1 {
-            font-size: 24px;
-            color: #116b5f;
-        }
+    .topbar p {
+      color: #666;
+      font-size: 15px;
+    }
 
-        .main {
-            max-width: 1050px;
-            margin: auto;
-            padding: 30px;
-        }
+    /* المحاضرات */
+    .lectures-container {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+    }
 
-        .page-title {
-            margin-bottom: 25px;
-        }
+    .section-title {
+      color: #075e4d;
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
 
-        .page-title h2 {
-            font-size: 28px;
-            margin-bottom: 8px;
-        }
+    .lecture-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
 
-        .page-title p {
-            color: #777;
-        }
+    .lecture-card {
+      border: 1px solid #e5e5e5;
+      border-radius: 14px;
+      padding: 20px;
+      background: #fff;
+      transition: 0.2s;
+    }
 
-        /* الكروت */
+    .lecture-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+    }
 
-        .courses {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
+    .lecture-card h3 {
+      color: #075e4d;
+      font-size: 19px;
+      margin-bottom: 10px;
+    }
 
-        .course {
-            background: #fff;
-            border: 1px solid #e1e1e1;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: 0.2s;
-        }
+    .lecture-card p {
+      color: #666;
+      line-height: 1.7;
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
 
-        .course:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
-        }
+    .watch-btn {
+      display: inline-block;
+      text-decoration: none;
+      background: #075e4d;
+      color: white;
+      padding: 11px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: 0.2s;
+    }
 
-        .course-image {
-            height: 150px;
-            background: #e8f5f2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 55px;
-        }
+    .watch-btn:hover {
+      background: #064c3f;
+    }
 
-        .course-body {
-            padding: 18px;
-        }
+    .loading,
+    .empty,
+    .error {
+      text-align: center;
+      padding: 40px 15px;
+      color: #777;
+      font-size: 16px;
+    }
 
-        .course-body h3 {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
+    .error {
+      color: #b00020;
+    }
 
-        .course-body p {
-            color: #777;
-            font-size: 14px;
-            line-height: 1.7;
-            margin-bottom: 15px;
-        }
+    /* الموبايل */
+    @media (max-width: 700px) {
 
-        .course-button {
-            display: block;
-            text-align: center;
-            background: #116b5f;
-            color: white;
-            text-decoration: none;
-            padding: 10px;
-            border-radius: 7px;
-        }
+      .sidebar {
+        width: 75px;
+        padding: 20px 8px;
+      }
 
-        .course-button:hover {
-            background: #0d554c;
-        }
+      .logo-box h2,
+      .logo-box p {
+        display: none;
+      }
 
-        footer {
-            margin-top: 40px;
-            padding: 20px;
-            text-align: center;
-            color: #888;
-            font-size: 13px;
-        }
+      .logo-box img {
+        width: 55px;
+        height: 55px;
+      }
 
-        /* الهاتف */
+      .menu a {
+        text-align: center;
+        font-size: 0;
+        padding: 14px 5px;
+      }
 
-        .mobile-menu {
-            display: none;
-        }
+      .menu a::first-letter {
+        font-size: 20px;
+      }
 
-        @media (max-width: 800px) {
+      .main {
+        margin-right: 75px;
+        padding: 15px;
+      }
 
-            .sidebar {
-                width: 220px;
-            }
+      .topbar h1 {
+        font-size: 22px;
+      }
 
-            .content {
-                margin-right: 220px;
-            }
-
-            .courses {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        @media (max-width: 600px) {
-
-            .sidebar {
-                position: relative;
-                width: 100%;
-                height: auto;
-                border-left: none;
-                border-bottom: 1px solid #ddd;
-            }
-
-            .content {
-                margin-right: 0;
-            }
-
-            .courses {
-                grid-template-columns: 1fr;
-            }
-
-            .main {
-                padding: 20px;
-            }
-
-            .topbar {
-                padding: 15px 20px;
-            }
-        }
-    </style>
+      .lecture-list {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-    <!-- الشريط الجانبي -->
+  <!-- الشريط الجانبي -->
+  <aside class="sidebar">
 
-    <aside class="sidebar">
+    <div class="logo-box">
+      <img src="../logo.png" alt="شعار منصة أرض الأحياء">
 
-        <div class="logo-box">
+      <h2>منصة أرض الأحياء</h2>
+      <p>منصة تعليمية</p>
+    </div>
 
-            <img src="../logo.png" alt="شعار منصة أرض الأحياء">
+    <nav class="menu">
 
-            <h2>منصة أرض الأحياء</h2>
+      <a href="../index.html">
+        🏠 الرئيسية
+      </a>
 
+      <a href="index.html" class="active">
+        🎥 المحاضرات
+      </a>
+
+      <a href="../forum/index.html">
+        💬 المنتدى
+      </a>
+
+      <a href="../notes/index.html">
+        📚 المذكرات
+      </a>
+
+    </nav>
+
+  </aside>
+
+
+  <!-- المحتوى -->
+  <main class="main">
+
+    <div class="topbar">
+      <h1>🎥 المحاضرات</h1>
+      <p>محاضرات الصف الثالث الثانوي</p>
+    </div>
+
+    <section class="lectures-container">
+
+      <h2 class="section-title">
+        محاضرات الأحياء
+      </h2>
+
+      <div id="lectureList" class="lecture-list">
+
+        <div class="loading">
+          جاري تحميل المحاضرات...
         </div>
 
-        <nav class="menu">
+      </div>
 
-            <a href="../index.html">
-                🏠 الرئيسية
-            </a>
+    </section>
 
-            <a href="index.html" class="active">
-                🎥 المحاضرات
-            </a>
-
-            <a href="../notes/index.html">
-                📚 المذكرات
-            </a>
-
-            <a href="../forum/index.html">
-                💬 المنتدى
-            </a>
-
-        </nav>
-
-    </aside>
+  </main>
 
 
-    <!-- المحتوى -->
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <div class="content">
+  <script>
 
-        <header class="topbar">
+    const SUPABASE_URL =
+      "https://cmnmebchevejxhibvgwl.supabase.co";
 
-            <h1>🎥 المحاضرات</h1>
+    const SUPABASE_KEY =
+      "sb_publishable_54UK-Ys41c5wGQvYkeFmYQ_5efdHAQu";
 
-        </header>
-
-
-        <main class="main">
-
-            <section class="page-title">
-
-                <h2>محاضرات الصف الثالث الثانوي</h2>
-
-                <p>
-                    اختر المحاضرة التي تريد مشاهدتها.
-                </p>
-
-            </section>
+    const supabaseClient =
+      supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
 
 
-            <section class="courses">
+    async function loadLectures() {
+
+      const lectureList =
+        document.getElementById("lectureList");
+
+      try {
+
+        const { data, error } =
+          await supabaseClient
+            .from("lectures")
+            .select("*")
+            .order("created_at", {
+              ascending: false
+            });
 
 
-                <!-- الكارت الأول -->
-
-                <article class="course">
-
-                    <div class="course-image">
-                        🧬
-                    </div>
-
-                    <div class="course-body">
-
-                        <h3>
-                            الدعامة والحركة
-                        </h3>
-
-                        <p>
-                            شرح درس الدعامة والحركة في الكائنات الحية.
-                        </p>
-
-                        <!-- ضع رابط الفيديو الحقيقي هنا -->
-
-                        <a
-                            class="course-button"
-                            href="https://www.youtube.com/"
-                            target="_blank"
-                            rel="noopener"
-                        >
-                            ▶ مشاهدة المحاضرة
-                        </a>
-
-                    </div>
-
-                </article>
+        if (error) {
+          throw error;
+        }
 
 
-                <!-- الكارت الثاني -->
+        if (!data || data.length === 0) {
 
-                <article class="course">
+          lectureList.innerHTML = `
+            <div class="empty">
+              لا توجد محاضرات مضافة حاليًا.
+            </div>
+          `;
 
-                    <div class="course-image">
-                        🧫
-                    </div>
-
-                    <div class="course-body">
-
-                        <h3>
-                            النقل في الكائنات الحية
-                        </h3>
-
-                        <p>
-                            شرح النقل في الإنسان والنبات بطريقة مبسطة.
-                        </p>
-
-                        <a
-                            class="course-button"
-                            href="https://www.youtube.com/"
-                            target="_blank"
-                            rel="noopener"
-                        >
-                            ▶ مشاهدة المحاضرة
-                        </a>
-
-                    </div>
-
-                </article>
+          return;
+        }
 
 
-                <!-- الكارت الثالث -->
-
-                <article class="course">
-
-                    <div class="course-image">
-                        🧬
-                    </div>
-
-                    <div class="course-body">
-
-                        <h3>
-                            التكاثر
-                        </h3>
-
-                        <p>
-                            شرح أهم المفاهيم الخاصة بالتكاثر في الكائنات الحية.
-                        </p>
-
-                        <a
-                            class="course-button"
-                            href="https://www.youtube.com/"
-                            target="_blank"
-                            rel="noopener"
-                        >
-                            ▶ مشاهدة المحاضرة
-                        </a>
-
-                    </div>
-
-                </article>
+        lectureList.innerHTML = "";
 
 
-            </section>
+        data.forEach(lecture => {
+
+          const card =
+            document.createElement("div");
+
+          card.className =
+            "lecture-card";
 
 
-            <footer>
+          const title =
+            document.createElement("h3");
 
-                © 2026 منصة أرض الأحياء
+          title.textContent =
+            lecture.title || "محاضرة بدون عنوان";
 
-            </footer>
 
-        </main>
+          const description =
+            document.createElement("p");
 
-    </div>
+          description.textContent =
+            lecture.description ||
+            "لا يوجد وصف لهذه المحاضرة.";
+
+
+          const button =
+            document.createElement("a");
+
+          button.className =
+            "watch-btn";
+
+          button.href =
+            lecture.video_url;
+
+          button.target =
+            "_blank";
+
+          button.rel =
+            "noopener noreferrer";
+
+          button.textContent =
+            "▶ مشاهدة المحاضرة";
+
+
+          card.appendChild(title);
+          card.appendChild(description);
+          card.appendChild(button);
+
+          lectureList.appendChild(card);
+
+        });
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        lectureList.innerHTML = `
+          <div class="error">
+            تعذر تحميل المحاضرات حاليًا.
+            <br>
+            تأكد من إعداد جدول المحاضرات في Supabase.
+          </div>
+        `;
+
+      }
+
+    }
+
+
+    loadLectures();
+
+  </script>
 
 </body>
 
