@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>لوحة تحكم الإدارة | منصة أرض الأحياء</title>
+  <title>لوحة الإدارة | منصة أرض الأحياء</title>
 
   <link rel="icon" href="../favicon.png">
 
@@ -14,16 +14,15 @@
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Tahoma, sans-serif;
     }
 
     body {
-      margin: 0;
-      font-family: Tahoma, Arial, sans-serif;
-      background: #f5f7f6;
+      background: #f5f7f7;
       color: #222;
     }
-
-    /* الشريط الجانبي */
 
     .sidebar {
       position: fixed;
@@ -33,102 +32,89 @@
       height: 100vh;
       background: #075e4d;
       color: white;
-      padding: 20px 15px;
-      overflow-y: auto;
+      padding: 25px 15px;
       z-index: 1000;
     }
 
     .logo-box {
       text-align: center;
-      margin-bottom: 25px;
+      margin-bottom: 35px;
     }
 
-    .logo {
+    .logo-box img {
       width: 75px;
       height: 75px;
       object-fit: contain;
-      display: block;
-      margin: auto;
+      border-radius: 50%;
+      margin-bottom: 10px;
     }
 
-    .site-name {
-      margin-top: 8px;
-      font-size: 18px;
-      font-weight: bold;
+    .logo-box h2 {
+      font-size: 20px;
+      margin-bottom: 5px;
     }
 
-    .admin-title {
+    .logo-box p {
       font-size: 13px;
-      opacity: .8;
-      margin-top: 5px;
+      opacity: 0.8;
     }
 
-    .menu a,
-    .logout {
-      display: block;
-      width: 100%;
-      padding: 13px;
-      margin-bottom: 8px;
-      border-radius: 10px;
-      color: white;
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .menu a {
       text-decoration: none;
-      border: 0;
-      background: transparent;
-      text-align: right;
-      font-family: inherit;
+      color: white;
+      padding: 14px 15px;
+      border-radius: 10px;
+      transition: 0.2s;
       font-size: 15px;
-      cursor: pointer;
     }
 
     .menu a:hover,
-    .logout:hover {
-      background: rgba(255,255,255,.15);
+    .menu a.active {
+      background: rgba(255, 255, 255, 0.15);
     }
-
-    .active {
-      background: rgba(255,255,255,.18) !important;
-    }
-
-    /* المحتوى */
 
     .main {
       margin-right: 250px;
-      padding: 25px;
+      padding: 30px;
+      min-height: 100vh;
     }
 
     .topbar {
       background: white;
       border-radius: 15px;
-      padding: 18px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,.05);
-      margin-bottom: 20px;
+      padding: 20px 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
     }
 
     .topbar h1 {
-      margin: 0;
       color: #075e4d;
-      font-size: 24px;
+      font-size: 28px;
+      margin-bottom: 8px;
     }
 
-    .admin-email {
-      color: #777;
-      font-size: 14px;
+    .topbar p {
+      color: #666;
+      font-size: 15px;
     }
 
     .welcome {
       background: white;
       border-radius: 15px;
       padding: 25px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,.05);
+      margin-bottom: 25px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
     }
 
     .welcome h2 {
-      margin-top: 0;
       color: #075e4d;
+      margin-bottom: 10px;
     }
 
     .welcome p {
@@ -136,70 +122,70 @@
       line-height: 1.8;
     }
 
-    /* البطاقات */
-
     .cards {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
+      gap: 20px;
     }
 
     .card {
       background: white;
       border-radius: 15px;
-      padding: 22px;
-      box-shadow: 0 4px 15px rgba(0,0,0,.05);
-      border: 1px solid #eee;
+      padding: 25px;
+      min-height: 150px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+      transition: 0.2s;
     }
 
-    .card-icon {
-      font-size: 30px;
-      margin-bottom: 10px;
+    .card:hover {
+      transform: translateY(-3px);
+    }
+
+    .card .icon {
+      font-size: 32px;
+      margin-bottom: 12px;
     }
 
     .card h3 {
-      margin: 5px 0 8px;
       color: #075e4d;
+      margin-bottom: 8px;
     }
 
     .card p {
       color: #777;
-      line-height: 1.7;
       font-size: 14px;
-      min-height: 48px;
+      line-height: 1.6;
     }
 
     .card button {
-      border: 0;
+      margin-top: 15px;
+      border: none;
       background: #075e4d;
       color: white;
-      padding: 10px 16px;
+      padding: 10px 15px;
       border-radius: 8px;
       cursor: pointer;
-      font-family: inherit;
+      font-size: 14px;
     }
 
     .card button:hover {
-      opacity: .9;
+      background: #064d40;
     }
-
-    /* قسم المحاضرات */
 
     #lecturesSection {
       display: none;
-      margin-top: 20px;
     }
 
     .lecture-manager {
       background: white;
       border-radius: 15px;
       padding: 25px;
-      box-shadow: 0 4px 15px rgba(0,0,0,.05);
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
     }
 
     .lecture-manager h2 {
       color: #075e4d;
-      margin-top: 0;
+      margin-bottom: 20px;
     }
 
     .form-group {
@@ -210,7 +196,6 @@
       display: block;
       margin-bottom: 7px;
       font-weight: bold;
-      color: #444;
     }
 
     .form-group input,
@@ -219,156 +204,130 @@
       padding: 12px;
       border: 1px solid #ddd;
       border-radius: 9px;
-      font-family: inherit;
-      font-size: 14px;
       outline: none;
+      font-size: 15px;
     }
 
     .form-group textarea {
-      min-height: 90px;
+      min-height: 100px;
       resize: vertical;
     }
 
-    .form-group input:focus,
-    .form-group textarea:focus {
-      border-color: #075e4d;
-    }
-
     .save-btn {
-      border: 0;
+      border: none;
       background: #075e4d;
       color: white;
-      padding: 12px 22px;
+      padding: 12px 20px;
       border-radius: 9px;
       cursor: pointer;
-      font-family: inherit;
       font-size: 15px;
     }
 
-    .save-btn:hover {
-      opacity: .9;
-    }
-
-    .cancel-btn {
-      border: 0;
-      background: #777;
-      color: white;
-      padding: 12px 22px;
-      border-radius: 9px;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 15px;
-      margin-right: 7px;
+    .save-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     .status {
       margin-top: 15px;
-      padding: 12px;
+      padding: 10px;
       border-radius: 8px;
       display: none;
     }
 
     .status.success {
       display: block;
-      background: #e8f5f1;
-      color: #075e4d;
+      background: #e8f7ef;
+      color: #176b3a;
     }
 
     .status.error {
       display: block;
-      background: #fdecec;
-      color: #b42318;
+      background: #fdeaea;
+      color: #a11;
     }
 
     .lecture-list {
-      margin-top: 30px;
+      margin-top: 25px;
+      display: grid;
+      gap: 15px;
     }
 
     .lecture-item {
-      background: #f8faf9;
-      border: 1px solid #eee;
+      border: 1px solid #e5e5e5;
       border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 12px;
+      padding: 18px;
+      background: #fafafa;
     }
 
     .lecture-item h3 {
-      margin: 0 0 7px;
       color: #075e4d;
+      margin-bottom: 8px;
     }
 
     .lecture-item p {
-      margin: 5px 0;
       color: #666;
-      line-height: 1.6;
+      line-height: 1.7;
+      margin-bottom: 12px;
     }
 
-    .lecture-url {
-      color: #777;
-      font-size: 12px;
-      word-break: break-all;
-      margin-top: 8px;
+    .lecture-item a {
+      color: #075e4d;
+      font-weight: bold;
+      text-decoration: none;
     }
 
     .delete-btn {
       margin-top: 12px;
-      border: 0;
+      border: none;
       background: #b42318;
       color: white;
-      padding: 8px 14px;
+      padding: 8px 12px;
       border-radius: 7px;
       cursor: pointer;
-      font-family: inherit;
     }
 
-    .delete-btn:hover {
-      opacity: .9;
+    .back-btn {
+      border: none;
+      background: #eee;
+      color: #333;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 20px;
     }
 
-    .no-lectures {
-      text-align: center;
-      color: #777;
-      padding: 25px;
+    @media (max-width: 900px) {
+      .cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
-    /* حالة التحميل */
-
-    #loading {
-      text-align: center;
-      padding: 60px 20px;
-      color: #777;
-      font-size: 16px;
-    }
-
-    #content {
-      display: none;
-    }
-
-    /* الموبايل */
-
-    @media (max-width: 850px) {
+    @media (max-width: 700px) {
 
       .sidebar {
         width: 75px;
-        padding: 15px 8px;
+        padding: 20px 8px;
       }
 
-      .logo {
-        width: 50px;
-        height: 50px;
-      }
-
-      .site-name,
-      .admin-title,
-      .menu-text {
+      .logo-box h2,
+      .logo-box p {
         display: none;
       }
 
-      .menu a,
-      .logout {
+      .logo-box img {
+        width: 55px;
+        height: 55px;
+      }
+
+      .menu a {
         text-align: center;
-        font-size: 22px;
-        padding: 12px 5px;
+        font-size: 0;
+        padding: 14px 5px;
+      }
+
+      .menu a::first-letter {
+        font-size: 20px;
       }
 
       .main {
@@ -376,17 +335,12 @@
         padding: 15px;
       }
 
-      .topbar {
-        display: block;
-      }
-
-      .admin-email {
-        display: block;
-        margin-top: 8px;
-      }
-
       .cards {
         grid-template-columns: 1fr;
+      }
+
+      .topbar h1 {
+        font-size: 22px;
       }
     }
   </style>
@@ -394,9 +348,7 @@
 
 <body>
 
-  <!-- =========================
-       الشريط الجانبي
-  ========================== -->
+  <!-- الشريط الجانبي -->
 
   <aside class="sidebar">
 
@@ -404,114 +356,87 @@
 
       <img
         src="../logo.png"
-        class="logo"
-        alt="منصة أرض الأحياء"
+        alt="شعار منصة أرض الأحياء"
       >
 
-      <div class="site-name">
-        منصة أرض الأحياء
-      </div>
+      <h2>منصة أرض الأحياء</h2>
 
-      <div class="admin-title">
-        لوحة الإدارة
-      </div>
+      <p>لوحة الإدارة</p>
 
     </div>
 
-    <div class="menu">
+
+    <nav class="menu">
 
       <a href="../index.html">
-        🏠
-        <span class="menu-text">المنصة الرئيسية</span>
+        🏠 المنصة
       </a>
 
       <a href="../videos/index.html">
-        🎥
-        <span class="menu-text">المحاضرات</span>
+        🎥 المحاضرات
       </a>
 
       <a href="../notes/index.html">
-        📚
-        <span class="menu-text">المذكرات</span>
+        📚 المذكرات
       </a>
 
       <a href="../forum/index.html">
-        💬
-        <span class="menu-text">المنتدى</span>
+        💬 المنتدى
       </a>
 
       <a href="index.html" class="active">
-        ⚙️
-        <span class="menu-text">لوحة التحكم</span>
+        ⚙️ لوحة الإدارة
       </a>
 
-      <button
-        class="logout"
-        id="logoutBtn"
-      >
-        🚪
-        <span class="menu-text">تسجيل الخروج</span>
-      </button>
+      <a href="#" id="logoutBtn">
+        🚪 تسجيل الخروج
+      </a>
 
-    </div>
+    </nav>
 
   </aside>
 
 
-  <!-- =========================
-       المحتوى الرئيسي
-  ========================== -->
+  <!-- المحتوى -->
 
   <main class="main">
 
-    <div id="loading">
-      جاري التحقق من صلاحيات حساب الإدارة...
+    <div class="topbar">
+
+      <h1>
+        ⚙️ لوحة الإدارة
+      </h1>
+
+      <p id="adminEmail">
+        جاري التحقق من الحساب...
+      </p>
+
     </div>
 
 
-    <div id="content">
+    <!-- الصفحة الرئيسية -->
 
-      <!-- الشريط العلوي -->
-
-      <div class="topbar">
-
-        <h1>
-          لوحة تحكم الإدارة
-        </h1>
-
-        <div
-          class="admin-email"
-          id="adminEmail"
-        ></div>
-
-      </div>
-
-
-      <!-- الترحيب -->
+    <section id="dashboardSection">
 
       <div class="welcome">
 
         <h2>
-          👋 أهلاً بك في لوحة إدارة منصة أرض الأحياء
+          أهلاً بك في لوحة الإدارة 👋
         </h2>
 
         <p>
-          من هنا يمكنك الوصول إلى أقسام المنصة وإدارة المحتوى.
+          من هنا يمكنك إدارة محتوى منصة أرض الأحياء
+          وإضافة المحاضرات والمذكرات ومتابعة أقسام المنصة.
         </p>
 
       </div>
 
 
-      <!-- البطاقات -->
-
       <div class="cards">
-
-
-        <!-- الطلاب -->
 
         <div class="card">
 
-          <div class="card-icon">
+          <div class="icon">
             👨‍🎓
           </div>
 
@@ -520,21 +445,15 @@
           </h3>
 
           <p>
-            إدارة حسابات الطلاب والصلاحيات.
+            إدارة ومتابعة حسابات الطلاب المسجلين في المنصة.
           </p>
-
-          <button onclick="comingSoon()">
-            إدارة الطلاب
-          </button>
 
         </div>
 
 
-        <!-- المحاضرات -->
-
         <div class="card">
 
-          <div class="card-icon">
+          <div class="icon">
             🎥
           </div>
 
@@ -543,7 +462,7 @@
           </h3>
 
           <p>
-            إضافة وتعديل وحذف محاضرات الصف الثالث الثانوي.
+            إضافة وإدارة محاضرات الصف الثالث الثانوي.
           </p>
 
           <button onclick="openLectures()">
@@ -553,11 +472,9 @@
         </div>
 
 
-        <!-- المذكرات -->
-
         <div class="card">
 
-          <div class="card-icon">
+          <div class="icon">
             📚
           </div>
 
@@ -566,23 +483,15 @@
           </h3>
 
           <p>
-            إدارة مذكرات الصف الثالث الثانوي.
+            إدارة المذكرات والملفات التعليمية.
           </p>
-
-          <button
-            onclick="location.href='../notes/index.html'"
-          >
-            المذكرات
-          </button>
 
         </div>
 
 
-        <!-- المنتدى -->
-
         <div class="card">
 
-          <div class="card-icon">
+          <div class="icon">
             💬
           </div>
 
@@ -591,46 +500,32 @@
           </h3>
 
           <p>
-            متابعة قسم المنتدى والمنشورات.
+            متابعة محتوى المنتدى والمشاركات.
           </p>
-
-          <button
-            onclick="location.href='../forum/index.html'"
-          >
-            فتح المنتدى
-          </button>
 
         </div>
 
 
-        <!-- الإعدادات -->
-
         <div class="card">
 
-          <div class="card-icon">
+          <div class="icon">
             ⚙️
           </div>
 
           <h3>
-            إعدادات المنصة
+            الإعدادات
           </h3>
 
           <p>
-            إعدادات الإدارة سيتم إضافتها لاحقًا.
+            إعدادات وإدارة المنصة.
           </p>
-
-          <button onclick="comingSoon()">
-            الإعدادات
-          </button>
 
         </div>
 
 
-        <!-- الصلاحيات -->
-
         <div class="card">
 
-          <div class="card-icon">
+          <div class="icon">
             🔐
           </div>
 
@@ -639,293 +534,335 @@
           </h3>
 
           <p>
-            صلاحيات الحساب مرتبطة بنظام Supabase.
+            إدارة صلاحيات المستخدمين والمديرين.
           </p>
-
-          <button onclick="comingSoon()">
-            الصلاحيات
-          </button>
 
         </div>
 
       </div>
 
-
-      <!-- =========================
-           إدارة المحاضرات
-      ========================== -->
-
-      <section id="lecturesSection">
-
-        <div class="lecture-manager">
-
-          <h2>
-            🎥 إدارة محاضرات الصف الثالث الثانوي
-          </h2>
-
-          <p>
-            أضف المحاضرة من هنا، وستظهر في صفحة المحاضرات.
-          </p>
+    </section>
 
 
-          <form id="lectureForm">
+    <!-- إدارة المحاضرات -->
 
-            <div class="form-group">
+    <section id="lecturesSection">
 
-              <label for="lectureTitle">
-                عنوان المحاضرة
-              </label>
-
-              <input
-                type="text"
-                id="lectureTitle"
-                placeholder="مثال: الدعامة والحركة"
-                required
-              >
-
-            </div>
+      <button
+        class="back-btn"
+        onclick="closeLectures()"
+      >
+        ← العودة للوحة الإدارة
+      </button>
 
 
-            <div class="form-group">
+      <div class="lecture-manager">
 
-              <label for="lectureDescription">
-                وصف المحاضرة
-              </label>
-
-              <textarea
-                id="lectureDescription"
-                placeholder="اكتب وصفًا مختصرًا للمحاضرة..."
-              ></textarea>
-
-            </div>
+        <h2>
+          🎥 إدارة المحاضرات
+        </h2>
 
 
-            <div class="form-group">
+        <form id="lectureForm">
 
-              <label for="lectureUrl">
-                رابط الفيديو
-              </label>
+          <div class="form-group">
 
-              <input
-                type="url"
-                id="lectureUrl"
-                placeholder="https://www.youtube.com/..."
-                required
-              >
+            <label for="lectureTitle">
+              عنوان المحاضرة
+            </label>
 
-            </div>
-
-
-            <button
-              type="submit"
-              class="save-btn"
-              id="saveLectureBtn"
+            <input
+              type="text"
+              id="lectureTitle"
+              placeholder="مثال: الدعامة في النبات"
+              required
             >
-              ➕ إضافة المحاضرة
-            </button>
-
-          </form>
-
-
-          <div
-            id="lectureStatus"
-            class="status"
-          ></div>
-
-
-          <div class="lecture-list">
-
-            <h3>
-              المحاضرات المضافة
-            </h3>
-
-            <div id="lectureList">
-              جاري تحميل المحاضرات...
-            </div>
 
           </div>
 
-        </div>
 
-      </section>
+          <div class="form-group">
+
+            <label for="lectureDescription">
+              وصف المحاضرة
+            </label>
+
+            <textarea
+              id="lectureDescription"
+              placeholder="اكتب وصفًا مختصرًا للمحاضرة"
+            ></textarea>
+
+          </div>
 
 
-    </div>
+          <div class="form-group">
+
+            <label for="lectureUrl">
+              رابط الفيديو
+            </label>
+
+            <input
+              type="url"
+              id="lectureUrl"
+              placeholder="https://..."
+              required
+            >
+
+          </div>
+
+
+          <button
+            type="submit"
+            class="save-btn"
+            id="saveLectureBtn"
+          >
+            إضافة المحاضرة
+          </button>
+
+        </form>
+
+
+        <div
+          id="lectureStatus"
+          class="status"
+        ></div>
+
+
+        <div
+          id="lectureList"
+          class="lecture-list"
+        ></div>
+
+      </div>
+
+    </section>
 
   </main>
 
 
-<script>
+  <script>
 
-  /* =========================
-     بيانات Supabase
-  ========================== */
+    /* =====================================
+       Supabase - المشروع الحالي
+       ===================================== */
 
-  const SUPABASE_URL =
-    "https://cmnmebchevejxhibvgwl.supabase.co";
+    const SUPABASE_URL =
+      "https://otvdxcvikjqgdajjvkib.supabase.co";
 
-  const SUPABASE_KEY =
-    "sb_publishable_54UK-Ys41c5wGQvYkeFmYQ_5efdHAQu";
-
-
-  /* =========================
-     الاتصال بـ Supabase
-  ========================== */
-
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
+    const SUPABASE_KEY =
+      "sb_publishable_25gtJgsUpaJX843Pbq2Fcg_sVYlSAK5";
 
 
-  /* =========================
-     التحقق من Admin
-  ========================== */
-
-  async function checkAdmin() {
-
-    try {
-
-      const {
-        data: {
-          user
-        },
-        error
-      } = await supabaseClient.auth.getUser();
-
-
-      if (error || !user) {
-
-        window.location.href =
-          "../login/index.html";
-
-        return;
-      }
-
-
-      const {
-        data: profile,
-        error: profileError
-      } = await supabaseClient
-        .from("profiles")
-        .select("role")
-        .eq("id", user.id)
-        .single();
-
-
-      if (profileError || !profile) {
-
-        alert(
-          "لم يتم العثور على بيانات صلاحيات هذا الحساب."
-        );
-
-        window.location.href =
-          "../index.html";
-
-        return;
-      }
-
-
-      if (profile.role !== "admin") {
-
-        alert(
-          "ليس لديك صلاحية الدخول إلى لوحة الإدارة."
-        );
-
-        window.location.href =
-          "../index.html";
-
-        return;
-      }
-
-
-      document.getElementById(
-        "adminEmail"
-      ).textContent =
-        user.email || "حساب الإدارة";
-
-
-      document.getElementById(
-        "loading"
-      ).style.display = "none";
-
-
-      document.getElementById(
-        "content"
-      ).style.display = "block";
-
-
-      loadLectures();
-
-    } catch (error) {
-
-      console.error(error);
-
-      alert(
-        "حدث خطأ أثناء التحقق من الحساب."
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
       );
 
-      window.location.href =
-        "../login/index.html";
 
-    }
+    const dashboardSection =
+      document.getElementById(
+        "dashboardSection"
+      );
 
-  }
 
-
-  /* =========================
-     فتح إدارة المحاضرات
-  ========================== */
-
-  function openLectures() {
-
-    const section =
+    const lecturesSection =
       document.getElementById(
         "lecturesSection"
       );
 
-    section.style.display = "block";
 
-    section.scrollIntoView({
-      behavior: "smooth"
-    });
-
-    loadLectures();
-
-  }
+    const adminEmail =
+      document.getElementById(
+        "adminEmail"
+      );
 
 
-  /* =========================
-     إضافة محاضرة
-  ========================== */
+    const lectureForm =
+      document.getElementById(
+        "lectureForm"
+      );
 
-  document
-    .getElementById("lectureForm")
-    .addEventListener(
+
+    const saveLectureBtn =
+      document.getElementById(
+        "saveLectureBtn"
+      );
+
+
+    const lectureStatus =
+      document.getElementById(
+        "lectureStatus"
+      );
+
+
+    const lectureList =
+      document.getElementById(
+        "lectureList"
+      );
+
+
+    /* =====================================
+       التحقق من المدير
+       ===================================== */
+
+    async function checkAdmin() {
+
+      try {
+
+        const {
+          data: {
+            user
+          },
+          error: userError
+        } =
+          await supabaseClient.auth.getUser();
+
+
+        if (userError || !user) {
+
+          window.location.href =
+            "../login/index.html";
+
+          return;
+
+        }
+
+
+        adminEmail.textContent =
+          "الحساب: " +
+          (user.email || "");
+
+
+        const {
+          data: profile,
+          error: profileError
+        } =
+          await supabaseClient
+            .from("profiles")
+            .select("role, full_name")
+            .eq("id", user.id)
+            .maybeSingle();
+
+
+        if (profileError) {
+
+          console.error(
+            profileError
+          );
+
+          adminEmail.textContent =
+            "تعذر قراءة صلاحيات الحساب.";
+
+          return;
+
+        }
+
+
+        if (
+          !profile ||
+          profile.role !== "admin"
+        ) {
+
+          adminEmail.textContent =
+            "هذا الحساب ليس لديه صلاحية الإدارة.";
+
+          dashboardSection.innerHTML = `
+            <div class="welcome">
+              <h2>ليس لديك صلاحية دخول لوحة الإدارة</h2>
+              <p>
+                يجب أن يكون دور الحساب
+                <strong>admin</strong>
+                في جدول profiles.
+              </p>
+            </div>
+          `;
+
+          return;
+
+        }
+
+
+        adminEmail.textContent =
+          "مرحبًا " +
+          (
+            profile.full_name ||
+            user.email ||
+            "مدير المنصة"
+          );
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        adminEmail.textContent =
+          "حدث خطأ أثناء التحقق من الحساب.";
+
+      }
+
+    }
+
+
+    /* =====================================
+       فتح إدارة المحاضرات
+       ===================================== */
+
+    function openLectures() {
+
+      dashboardSection.style.display =
+        "none";
+
+      lecturesSection.style.display =
+        "block";
+
+      loadLectures();
+
+    }
+
+
+    /* =====================================
+       إغلاق إدارة المحاضرات
+       ===================================== */
+
+    function closeLectures() {
+
+      lecturesSection.style.display =
+        "none";
+
+      dashboardSection.style.display =
+        "block";
+
+    }
+
+
+    /* =====================================
+       إضافة محاضرة
+       ===================================== */
+
+    lectureForm.addEventListener(
       "submit",
-      async function(event) {
+      async function (event) {
 
         event.preventDefault();
 
 
         const title =
-          document
-            .getElementById("lectureTitle")
-            .value
-            .trim();
+          document.getElementById(
+            "lectureTitle"
+          ).value.trim();
+
 
         const description =
-          document
-            .getElementById("lectureDescription")
-            .value
-            .trim();
+          document.getElementById(
+            "lectureDescription"
+          ).value.trim();
+
 
         const videoUrl =
-          document
-            .getElementById("lectureUrl")
-            .value
-            .trim();
+          document.getElementById(
+            "lectureUrl"
+          ).value.trim();
 
 
         if (!title || !videoUrl) {
@@ -936,315 +873,360 @@
           );
 
           return;
+
         }
 
 
-        const saveButton =
-          document.getElementById(
-            "saveLectureBtn"
+        saveLectureBtn.disabled =
+          true;
+
+        saveLectureBtn.textContent =
+          "جاري الإضافة...";
+
+
+        try {
+
+          const {
+            data: {
+              user
+            }
+          } =
+            await supabaseClient.auth.getUser();
+
+
+          if (!user) {
+
+            throw new Error(
+              "يجب تسجيل الدخول أولًا."
+            );
+
+          }
+
+
+          const {
+            data: profile,
+            error: profileError
+          } =
+            await supabaseClient
+              .from("profiles")
+              .select("role")
+              .eq("id", user.id)
+              .maybeSingle();
+
+
+          if (
+            profileError ||
+            !profile ||
+            profile.role !== "admin"
+          ) {
+
+            throw new Error(
+              "هذا الحساب ليس لديه صلاحية إضافة المحاضرات."
+            );
+
+          }
+
+
+          const {
+            error
+          } =
+            await supabaseClient
+              .from("lectures")
+              .insert({
+
+                title: title,
+
+                description: description,
+
+                video_url: videoUrl
+
+              });
+
+
+          if (error) {
+
+            throw error;
+
+          }
+
+
+          showStatus(
+            "تمت إضافة المحاضرة بنجاح.",
+            "success"
           );
 
-        saveButton.disabled = true;
 
-        saveButton.textContent =
-          "جاري الحفظ...";
+          lectureForm.reset();
 
-
-        const {
-          error
-        } = await supabaseClient
-          .from("lectures")
-          .insert([
-            {
-              title: title,
-              description: description,
-              video_url: videoUrl
-            }
-          ]);
+          loadLectures();
 
 
-        saveButton.disabled = false;
-
-        saveButton.textContent =
-          "➕ إضافة المحاضرة";
-
-
-        if (error) {
+        } catch (error) {
 
           console.error(error);
 
           showStatus(
-            "حدث خطأ أثناء إضافة المحاضرة: " +
-            error.message,
+            error.message ||
+            "حدث خطأ أثناء إضافة المحاضرة.",
             "error"
           );
 
-          return;
         }
 
 
-        document
-          .getElementById("lectureForm")
-          .reset();
+        saveLectureBtn.disabled =
+          false;
+
+        saveLectureBtn.textContent =
+          "إضافة المحاضرة";
+
+      }
+    );
+
+
+    /* =====================================
+       تحميل المحاضرات
+       ===================================== */
+
+    async function loadLectures() {
+
+      lectureList.innerHTML =
+        "<p>جاري تحميل المحاضرات...</p>";
+
+
+      try {
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .from("lectures")
+            .select("*")
+            .order(
+              "created_at",
+              {
+                ascending: false
+              }
+            );
+
+
+        if (error) {
+
+          throw error;
+
+        }
+
+
+        if (!data || data.length === 0) {
+
+          lectureList.innerHTML =
+            "<p>لا توجد محاضرات مضافة حتى الآن.</p>";
+
+          return;
+
+        }
+
+
+        lectureList.innerHTML = "";
+
+
+        data.forEach(function (lecture) {
+
+          const item =
+            document.createElement("div");
+
+          item.className =
+            "lecture-item";
+
+
+          item.innerHTML = `
+
+            <h3>
+              ${escapeHtml(
+                lecture.title || ""
+              )}
+            </h3>
+
+            <p>
+              ${escapeHtml(
+                lecture.description || "بدون وصف"
+              )}
+            </p>
+
+            <a
+              href="${escapeAttribute(
+                lecture.video_url || "#"
+              )}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ▶ فتح الفيديو
+            </a>
+
+            <br>
+
+            <button
+              class="delete-btn"
+              onclick="deleteLecture('${lecture.id}')"
+            >
+              حذف المحاضرة
+            </button>
+
+          `;
+
+
+          lectureList.appendChild(item);
+
+        });
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        lectureList.innerHTML =
+          "<p style='color:#b42318'>تعذر تحميل المحاضرات.</p>";
+
+      }
+
+    }
+
+
+    /* =====================================
+       حذف محاضرة
+       ===================================== */
+
+    async function deleteLecture(id) {
+
+      const confirmed =
+        confirm(
+          "هل أنت متأكد من حذف هذه المحاضرة؟"
+        );
+
+
+      if (!confirmed) {
+
+        return;
+
+      }
+
+
+      try {
+
+        const {
+          error
+        } =
+          await supabaseClient
+            .from("lectures")
+            .delete()
+            .eq("id", id);
+
+
+        if (error) {
+
+          throw error;
+
+        }
 
 
         showStatus(
-          "تمت إضافة المحاضرة بنجاح ✅",
+          "تم حذف المحاضرة.",
           "success"
         );
 
 
         loadLectures();
 
+
+      } catch (error) {
+
+        console.error(error);
+
+        showStatus(
+          error.message ||
+          "تعذر حذف المحاضرة.",
+          "error"
+        );
+
       }
-    );
+
+    }
 
 
-  /* =========================
-     تحميل المحاضرات
-  ========================== */
+    /* =====================================
+       رسائل الحالة
+       ===================================== */
 
-  async function loadLectures() {
+    function showStatus(
+      text,
+      type
+    ) {
 
-    const list =
-      document.getElementById(
-        "lectureList"
-      );
+      lectureStatus.textContent =
+        text;
+
+      lectureStatus.className =
+        "status " + type;
+
+    }
 
 
-    const {
-      data,
-      error
-    } = await supabaseClient
-      .from("lectures")
-      .select("*")
-      .order(
-        "created_at",
-        {
-          ascending: false
+    /* =====================================
+       حماية النصوص
+       ===================================== */
+
+    function escapeHtml(text) {
+
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    function escapeAttribute(text) {
+
+      return String(text)
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    /* =====================================
+       تسجيل الخروج
+       ===================================== */
+
+    document
+      .getElementById("logoutBtn")
+      .addEventListener(
+        "click",
+        async function (event) {
+
+          event.preventDefault();
+
+
+          await supabaseClient.auth.signOut();
+
+
+          window.location.href =
+            "../login/index.html";
+
         }
       );
 
 
-    if (error) {
+    /* =====================================
+       تشغيل التحقق
+       ===================================== */
 
-      console.error(error);
+    checkAdmin();
 
-      list.innerHTML =
-        "<p class='no-lectures'>تعذر تحميل المحاضرات.</p>";
-
-      return;
-    }
-
-
-    if (!data || data.length === 0) {
-
-      list.innerHTML =
-        "<p class='no-lectures'>لا توجد محاضرات مضافة حتى الآن.</p>";
-
-      return;
-    }
-
-
-    list.innerHTML = "";
-
-
-    data.forEach(
-      lecture => {
-
-        const item =
-          document.createElement("div");
-
-        item.className =
-          "lecture-item";
-
-
-        const title =
-          document.createElement("h3");
-
-        title.textContent =
-          lecture.title;
-
-
-        const description =
-          document.createElement("p");
-
-        description.textContent =
-          lecture.description ||
-          "لا يوجد وصف.";
-
-
-        const url =
-          document.createElement("div");
-
-        url.className =
-          "lecture-url";
-
-        url.textContent =
-          lecture.video_url;
-
-
-        const deleteButton =
-          document.createElement("button");
-
-        deleteButton.className =
-          "delete-btn";
-
-        deleteButton.textContent =
-          "🗑 حذف المحاضرة";
-
-
-        deleteButton.onclick =
-          function() {
-
-            deleteLecture(
-              lecture.id
-            );
-
-          };
-
-
-        item.appendChild(title);
-
-        item.appendChild(description);
-
-        item.appendChild(url);
-
-        item.appendChild(deleteButton);
-
-
-        list.appendChild(item);
-
-      }
-    );
-
-  }
-
-
-  /* =========================
-     حذف محاضرة
-  ========================== */
-
-  async function deleteLecture(id) {
-
-    const confirmDelete =
-      confirm(
-        "هل أنت متأكد من حذف هذه المحاضرة؟"
-      );
-
-
-    if (!confirmDelete) {
-      return;
-    }
-
-
-    const {
-      error
-    } = await supabaseClient
-      .from("lectures")
-      .delete()
-      .eq("id", id);
-
-
-    if (error) {
-
-      console.error(error);
-
-      showStatus(
-        "تعذر حذف المحاضرة: " +
-        error.message,
-        "error"
-      );
-
-      return;
-    }
-
-
-    showStatus(
-      "تم حذف المحاضرة بنجاح.",
-      "success"
-    );
-
-
-    loadLectures();
-
-  }
-
-
-  /* =========================
-     رسائل الحالة
-  ========================== */
-
-  function showStatus(
-    message,
-    type
-  ) {
-
-    const status =
-      document.getElementById(
-        "lectureStatus"
-      );
-
-
-    status.textContent =
-      message;
-
-    status.className =
-      "status " + type;
-
-
-    setTimeout(
-      function() {
-
-        status.className =
-          "status";
-
-      },
-      4000
-    );
-
-  }
-
-
-  /* =========================
-     تسجيل الخروج
-  ========================== */
-
-  document
-    .getElementById("logoutBtn")
-    .addEventListener(
-      "click",
-      async function() {
-
-        await supabaseClient.auth.signOut();
-
-        window.location.href =
-          "../login/index.html";
-
-      }
-    );
-
-
-  /* =========================
-     خصائص لم تُجهز بعد
-  ========================== */
-
-  function comingSoon() {
-
-    alert(
-      "سيتم إضافة هذه الخاصية في لوحة الإدارة قريبًا."
-    );
-
-  }
-
-
-  /* =========================
-     تشغيل التحقق
-  ========================== */
-
-  checkAdmin();
-
-</script>
+  </script>
 
 </body>
 
