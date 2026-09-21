@@ -148,6 +148,7 @@
     <form id="registerForm">
 
       <label for="name">اسم الطالب</label>
+
       <input
         type="text"
         id="name"
@@ -156,6 +157,7 @@
       >
 
       <label for="email">البريد الإلكتروني</label>
+
       <input
         type="email"
         id="email"
@@ -164,6 +166,7 @@
       >
 
       <label for="password">كلمة المرور</label>
+
       <input
         type="password"
         id="password"
@@ -173,6 +176,7 @@
       >
 
       <label for="confirmPassword">تأكيد كلمة المرور</label>
+
       <input
         type="password"
         id="confirmPassword"
@@ -199,11 +203,16 @@
 
   <script>
 
+    /* =====================================
+       Supabase - المشروع الحالي
+       ===================================== */
+
     const SUPABASE_URL =
-      "https://cmnmebchevejxhibvgwl.supabase.co";
+      "https://otvdxcvikjqgdajjvkib.supabase.co";
 
     const SUPABASE_KEY =
-      "sb_publishable_54UK-Ys41c5wGQvYkeFmYQ_5efdHAQu";
+      "sb_publishable_25gtJgsUpaJX843Pbq2Fcg_sVYlSAK5";
+
 
     const supabaseClient =
       window.supabase.createClient(
@@ -237,22 +246,28 @@
 
         event.preventDefault();
 
+
         const name =
           document.getElementById("name")
             .value.trim();
+
 
         const email =
           document.getElementById("email")
             .value.trim();
 
+
         const password =
           document.getElementById("password")
             .value;
+
 
         const confirmPassword =
           document.getElementById("confirmPassword")
             .value;
 
+
+        /* التحقق من الاسم */
 
         if (!name) {
 
@@ -265,6 +280,8 @@
         }
 
 
+        /* التحقق من كلمة المرور */
+
         if (password.length < 6) {
 
           showMessage(
@@ -275,6 +292,8 @@
           return;
         }
 
+
+        /* تأكيد كلمة المرور */
 
         if (password !== confirmPassword) {
 
@@ -294,6 +313,11 @@
 
 
         try {
+
+
+          /* =====================================
+             إنشاء المستخدم في Supabase Auth
+             ===================================== */
 
           const { data, error } =
             await supabaseClient.auth.signUp({
@@ -320,20 +344,57 @@
           }
 
 
-          if (!data.user) {
+          if (!data || !data.user) {
 
             throw new Error(
-              "تعذر إنشاء المستخدم."
+              "تعذر إنشاء المستخدم في Supabase."
             );
 
           }
 
 
+          /* =====================================
+             إنشاء Profile
+             ===================================== */
+
+          const userId =
+            data.user.id;
+
+
+          const { error: profileError } =
+            await supabaseClient
+              .from("profiles")
+              .upsert({
+
+                id: userId,
+
+                email: email,
+
+                full_name: name,
+
+                role: "student"
+
+              });
+
+
           /*
-            الـ Trigger الموجود في Supabase
-            سيقوم بإنشاء profiles تلقائيًا.
+            لو فشل إنشاء profile ولكن المستخدم
+            نفسه تم إنشاؤه، لا نعتبر التسجيل فاشلًا.
           */
 
+          if (profileError) {
+
+            console.error(
+              "Profile error:",
+              profileError
+            );
+
+          }
+
+
+          /* =====================================
+             النتيجة
+             ===================================== */
 
           if (!data.session) {
 
@@ -349,6 +410,7 @@
               "success"
             );
 
+
             setTimeout(function () {
 
               window.location.href =
@@ -361,11 +423,45 @@
 
         } catch (error) {
 
-          console.error(error);
+          console.error(
+            "Registration error:",
+            error
+          );
+
+
+          let errorMessage =
+            error.message ||
+            "حدث خطأ أثناء إنشاء الحساب.";
+
+
+          /* رسائل أوضح للمستخدم */
+
+          if (
+            errorMessage
+              .toLowerCase()
+              .includes("already registered")
+          ) {
+
+            errorMessage =
+              "هذا البريد الإلكتروني مسجل بالفعل.";
+
+          }
+
+
+          if (
+            errorMessage
+              .toLowerCase()
+              .includes("invalid email")
+          ) {
+
+            errorMessage =
+              "البريد الإلكتروني غير صحيح.";
+
+          }
+
 
           showMessage(
-            error.message ||
-            "حدث خطأ أثناء إنشاء الحساب.",
+            errorMessage,
             "error"
           );
 
