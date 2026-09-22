@@ -6,10 +6,8 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- اسم الموقع -->
   <title>منصة أرض الأحياء</title>
 
-  <!-- وصف الموقع -->
   <meta
     name="description"
     content="منصة أرض الأحياء التعليمية - محاضرات ومذكرات وأسئلة ومنتدى لطلاب الأحياء."
@@ -18,28 +16,20 @@
   <meta name="author" content="منصة أرض الأحياء">
   <meta name="robots" content="index, follow">
 
-  <!-- الرابط الأساسي -->
   <link
     rel="canonical"
     href="https://mohamed-tool-grafix.github.io/ard-al-ahyaa/"
   >
 
-  <!-- الشعار والأيقونة -->
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="apple-touch-icon" href="logo.png">
-
-  <!-- =========================
-       Google / Search Engine
-  ========================== -->
 
   <meta
     name="google-site-verification"
     content=""
   >
 
-  <!-- =========================
-       Open Graph
-  ========================== -->
+  <!-- Open Graph -->
 
   <meta property="og:type" content="website">
 
@@ -71,23 +61,25 @@
   <meta property="og:locale" content="ar_AR">
 
   <!-- Twitter -->
+
   <meta name="twitter:card" content="summary">
+
   <meta
     name="twitter:title"
     content="منصة أرض الأحياء"
   >
+
   <meta
     name="twitter:description"
     content="منصة أرض الأحياء التعليمية"
   >
+
   <meta
     name="twitter:image"
     content="https://mohamed-tool-grafix.github.io/ard-al-ahyaa/logo.png"
   >
 
-  <!-- =========================
-       بيانات Google / Schema
-  ========================== -->
+  <!-- Schema -->
 
   <script type="application/ld+json">
   {
@@ -113,14 +105,18 @@
   </script>
 
   <!-- Supabase -->
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
   <style>
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
+
 
     body {
       font-family: Tahoma, Arial, sans-serif;
@@ -128,6 +124,7 @@
       color: #17202a;
       min-height: 100vh;
     }
+
 
     /* =========================
        Header
@@ -149,11 +146,13 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
 
+
     .brand {
       display: flex;
       align-items: center;
       gap: 12px;
     }
+
 
     .brand img {
       width: 48px;
@@ -162,11 +161,13 @@
       border-radius: 12px;
     }
 
+
     .brand-name {
       font-size: 21px;
       font-weight: bold;
       color: #176b45;
     }
+
 
     .logout-btn {
       border: none;
@@ -178,9 +179,11 @@
       font-size: 14px;
     }
 
+
     .logout-btn:hover {
       opacity: 0.9;
     }
+
 
     /* =========================
        Sidebar
@@ -204,12 +207,14 @@
       z-index: 900;
     }
 
+
     .sidebar-title {
       text-align: center;
       font-weight: bold;
       color: #777;
       margin-bottom: 12px;
     }
+
 
     .sidebar a {
       text-decoration: none;
@@ -221,11 +226,13 @@
       font-size: 15px;
     }
 
+
     .sidebar a:hover,
     .sidebar a.active {
       background: #e8f5ee;
       color: #176b45;
     }
+
 
     /* =========================
        Main
@@ -237,6 +244,7 @@
       min-height: 100vh;
     }
 
+
     .welcome {
       background: linear-gradient(135deg, #176b45, #2b9565);
       color: white;
@@ -246,15 +254,18 @@
       box-shadow: 0 8px 25px rgba(23,107,69,0.15);
     }
 
+
     .welcome h1 {
       font-size: 30px;
       margin-bottom: 12px;
     }
 
+
     .welcome p {
       font-size: 16px;
       line-height: 1.8;
     }
+
 
     /* =========================
        Cards
@@ -265,6 +276,7 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
     }
+
 
     .card {
       background: white;
@@ -277,15 +289,18 @@
       box-shadow: 0 5px 18px rgba(0,0,0,0.04);
     }
 
+
     .card:hover {
       transform: translateY(-4px);
       box-shadow: 0 10px 25px rgba(0,0,0,0.08);
     }
 
+
     .card-icon {
       font-size: 35px;
       margin-bottom: 15px;
     }
+
 
     .card h2 {
       color: #176b45;
@@ -293,11 +308,89 @@
       margin-bottom: 10px;
     }
 
+
     .card p {
       color: #667085;
       line-height: 1.7;
       font-size: 14px;
     }
+
+
+    /* =========================
+       Telegram Card
+    ========================== */
+
+    .telegram-card {
+      margin-top: 25px;
+      background: linear-gradient(135deg, #0088cc, #0077b5);
+      color: white;
+      border-radius: 18px;
+      padding: 22px 25px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      box-shadow: 0 8px 25px rgba(0,136,204,0.18);
+      transition: 0.25s;
+    }
+
+
+    .telegram-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0,136,204,0.25);
+    }
+
+
+    .telegram-icon {
+      width: 60px;
+      height: 60px;
+      min-width: 60px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+    }
+
+
+    .telegram-info {
+      flex: 1;
+    }
+
+
+    .telegram-info h2 {
+      color: white;
+      font-size: 20px;
+      margin-bottom: 7px;
+    }
+
+
+    .telegram-info p {
+      color: white;
+      opacity: 0.95;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+
+    .telegram-btn {
+      display: inline-block;
+      background: white;
+      color: #0077b5;
+      text-decoration: none;
+      padding: 11px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 14px;
+      white-space: nowrap;
+      transition: 0.2s;
+    }
+
+
+    .telegram-btn:hover {
+      transform: scale(1.04);
+    }
+
 
     /* =========================
        Login
@@ -312,6 +405,7 @@
       background: linear-gradient(135deg, #eef8f2, #f4f7fb);
     }
 
+
     .login-box {
       width: 100%;
       max-width: 420px;
@@ -322,6 +416,7 @@
       text-align: center;
     }
 
+
     .login-logo {
       width: 90px;
       height: 90px;
@@ -329,15 +424,18 @@
       margin-bottom: 15px;
     }
 
+
     .login-box h1 {
       color: #176b45;
       margin-bottom: 10px;
     }
 
+
     .login-box p {
       color: #777;
       margin-bottom: 25px;
     }
+
 
     .login-box input {
       width: 100%;
@@ -349,9 +447,11 @@
       outline: none;
     }
 
+
     .login-box input:focus {
       border-color: #176b45;
     }
+
 
     .login-box button {
       width: 100%;
@@ -365,17 +465,20 @@
       margin-top: 5px;
     }
 
+
     .switch-btn {
       background: transparent !important;
       color: #176b45 !important;
       margin-top: 10px;
     }
 
+
     #message {
       margin-top: 15px;
       font-size: 14px;
       line-height: 1.6;
     }
+
 
     /* =========================
        Mobile
@@ -386,6 +489,7 @@
       .cards {
         grid-template-columns: 1fr;
       }
+
 
       .sidebar {
         top: auto;
@@ -402,9 +506,11 @@
         border-top: 1px solid #e4e8ee;
       }
 
+
       .sidebar-title {
         display: none;
       }
+
 
       .sidebar a {
         font-size: 12px;
@@ -412,27 +518,54 @@
         text-align: center;
       }
 
+
       main {
         margin-right: 0;
         padding: 95px 15px 90px;
       }
 
+
       .brand-name {
         font-size: 16px;
       }
+
 
       header {
         padding: 0 12px;
       }
 
+
       .logout-btn {
         padding: 8px 12px;
       }
+
+
+      .telegram-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 25px 18px;
+      }
+
+
+      .telegram-info h2 {
+        font-size: 18px;
+      }
+
+
+      .telegram-btn {
+        width: 100%;
+        text-align: center;
+      }
+
     }
+
   </style>
+
 </head>
 
+
 <body>
+
 
   <!-- =========================
        شاشة تسجيل الدخول
@@ -448,7 +581,9 @@
         class="login-logo"
       >
 
-      <h1>منصة أرض الأحياء</h1>
+      <h1>
+        منصة أرض الأحياء
+      </h1>
 
       <p>
         المنصة التعليمية المتخصصة في مادة الأحياء
@@ -488,7 +623,11 @@
        الموقع
   ========================== -->
 
-  <div id="site" style="display:none;">
+  <div
+    id="site"
+    style="display:none;"
+  >
+
 
     <!-- Header -->
 
@@ -506,6 +645,7 @@
         </div>
 
       </div>
+
 
       <button
         class="logout-btn"
@@ -525,6 +665,7 @@
         أقسام المنصة
       </div>
 
+
       <a
         href="index.html"
         class="active"
@@ -532,13 +673,16 @@
         🏠 الرئيسية
       </a>
 
+
       <a href="videos/index.html">
         🎥 المحاضرات
       </a>
 
+
       <a href="forum/index.html">
         💬 المنتدى
       </a>
+
 
       <a href="notes/index.html">
         📚 المذكرات
@@ -550,6 +694,9 @@
     <!-- Main -->
 
     <main>
+
+
+      <!-- الترحيب -->
 
       <section class="welcome">
 
@@ -565,7 +712,10 @@
       </section>
 
 
+      <!-- الأقسام -->
+
       <section class="cards">
+
 
         <a
           href="videos/index.html"
@@ -626,7 +776,48 @@
 
         </a>
 
+
       </section>
+
+
+      <!-- =========================
+           مجموعة تيليجرام
+      ========================== -->
+
+      <section class="telegram-card">
+
+
+        <div class="telegram-icon">
+          ✈️
+        </div>
+
+
+        <div class="telegram-info">
+
+          <h2>
+            مجموعة منصة أرض الأحياء على تيليجرام
+          </h2>
+
+          <p>
+            انضم إلى المجموعة لمتابعة المحاضرات
+            والتنبيهات والتحديثات الجديدة للمنصة.
+          </p>
+
+        </div>
+
+
+        <a
+          href="https://t.me/+KB1Z0dws0f01YjNk"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="telegram-btn"
+        >
+          انضم إلى المجموعة
+        </a>
+
+
+      </section>
+
 
     </main>
 
@@ -639,8 +830,10 @@
 
   <script>
 
+
     const SUPABASE_URL =
       "https://gvehygqxjqucxwussaye.supabase.co";
+
 
     const SUPABASE_ANON_KEY =
       "sb_publishable_0Hxtm1KuZQ7paMyZQwRLQQ_NQ2wRaRX";
@@ -667,6 +860,7 @@
       document.getElementById("loginScreen").style.display =
         "none";
 
+
       document.getElementById("site").style.display =
         "block";
 
@@ -691,6 +885,7 @@
       document.getElementById("loginScreen").style.display =
         "flex";
 
+
       document.getElementById("site").style.display =
         "none";
 
@@ -703,6 +898,7 @@
 
       const email =
         document.getElementById("email").value.trim();
+
 
       const password =
         document.getElementById("password").value;
@@ -717,7 +913,8 @@
         message.textContent =
           "اكتب البريد الإلكتروني وكلمة المرور.";
 
-        message.style.color = "#c0392b";
+        message.style.color =
+          "#c0392b";
 
         return;
       }
@@ -726,7 +923,8 @@
       message.textContent =
         "جاري تسجيل الدخول...";
 
-      message.style.color = "#176b45";
+      message.style.color =
+        "#176b45";
 
 
       const { data, error } =
@@ -741,7 +939,8 @@
         message.textContent =
           "تعذر تسجيل الدخول: " + error.message;
 
-        message.style.color = "#c0392b";
+        message.style.color =
+          "#c0392b";
 
         return;
       }
@@ -759,6 +958,7 @@
       const email =
         document.getElementById("email").value.trim();
 
+
       const password =
         document.getElementById("password").value;
 
@@ -772,7 +972,8 @@
         message.textContent =
           "اكتب البريد الإلكتروني وكلمة المرور أولاً.";
 
-        message.style.color = "#c0392b";
+        message.style.color =
+          "#c0392b";
 
         return;
       }
@@ -783,7 +984,8 @@
         message.textContent =
           "كلمة المرور يجب أن تكون 6 أحرف على الأقل.";
 
-        message.style.color = "#c0392b";
+        message.style.color =
+          "#c0392b";
 
         return;
       }
@@ -792,7 +994,8 @@
       message.textContent =
         "جاري إنشاء الحساب...";
 
-      message.style.color = "#176b45";
+      message.style.color =
+        "#176b45";
 
 
       const { data, error } =
@@ -807,7 +1010,8 @@
         message.textContent =
           "تعذر إنشاء الحساب: " + error.message;
 
-        message.style.color = "#c0392b";
+        message.style.color =
+          "#c0392b";
 
         return;
       }
@@ -822,7 +1026,8 @@
         message.textContent =
           "تم إنشاء الحساب. تحقق من بريدك الإلكتروني إذا طُلب منك ذلك.";
 
-        message.style.color = "#176b45";
+        message.style.color =
+          "#176b45";
 
       }
 
@@ -887,7 +1092,9 @@
 
     checkUser();
 
+
   </script>
+
 
 </body>
 
