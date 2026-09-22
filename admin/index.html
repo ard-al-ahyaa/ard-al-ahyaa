@@ -1,189 +1,115 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-  <title>لوحة الإدارة | منصة أرض الأحياء</title>
-
-  <link rel="icon" href="../favicon.png">
+  <title>لوحة تحكم الأدمن | منصة أرض الأحياء</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Tahoma, Arial, sans-serif;
     }
 
     body {
-      margin: 0;
-      font-family: Tahoma, Arial, sans-serif;
-      background: #f3f7f6;
-      color: #164b43;
+      background: #f4f7fb;
+      color: #172033;
     }
 
-    /* =========================
-       الشريط الجانبي
-    ========================= */
-
-    .sidebar {
-      position: fixed;
-      right: 0;
-      top: 0;
-      width: 250px;
-      height: 100vh;
-      background: #075e4d;
+    .header {
+      background: linear-gradient(135deg, #087f5b, #12a66f);
       color: white;
-      padding: 25px 15px;
-      z-index: 1000;
+      padding: 18px 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 3px 15px rgba(0,0,0,.12);
     }
 
-    .logo-box {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .logo-box img {
-      width: 80px;
-      height: 80px;
-      object-fit: contain;
-      border-radius: 50%;
-    }
-
-    .logo-box h2 {
-      margin: 10px 0 5px;
+    .header h1 {
       font-size: 22px;
     }
 
-    .logo-box p {
-      margin: 0;
-      opacity: .8;
-      font-size: 14px;
-    }
-
-    .menu {
-      margin-top: 25px;
-    }
-
-    .menu a {
-      display: block;
-      color: white;
-      text-decoration: none;
-      padding: 15px 12px;
-      border-radius: 12px;
-      margin-bottom: 8px;
-      transition: .2s;
-    }
-
-    .menu a:hover,
-    .menu a.active {
-      background: rgba(255,255,255,.15);
-    }
-
-    .logout {
-      cursor: pointer;
-    }
-
-    /* =========================
-       المحتوى
-    ========================= */
-
-    .main {
-      margin-right: 250px;
-      padding: 35px;
-      min-height: 100vh;
-    }
-
-    .topbar {
+    .header button {
       background: white;
-      border-radius: 18px;
-      padding: 25px;
-      margin-bottom: 25px;
-      box-shadow: 0 5px 18px rgba(0,0,0,.06);
+      color: #087f5b;
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 18px;
+      cursor: pointer;
+      font-weight: bold;
     }
 
-    .topbar h1 {
-      margin: 0 0 10px;
-      color: #075e4d;
-      font-size: 28px;
+    .container {
+      width: 95%;
+      max-width: 1200px;
+      margin: 25px auto;
     }
 
-    .topbar p {
-      margin: 0;
-      color: #666;
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
     }
 
-    /* =========================
-       البطاقات
-    ========================= */
+    .tab {
+      border: 0;
+      padding: 13px 20px;
+      border-radius: 10px;
+      background: white;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    }
 
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-      margin-bottom: 25px;
+    .tab.active {
+      background: #087f5b;
+      color: white;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
     }
 
     .card {
       background: white;
-      border-radius: 18px;
+      border-radius: 15px;
       padding: 22px;
-      box-shadow: 0 5px 18px rgba(0,0,0,.05);
+      margin-bottom: 20px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.07);
     }
 
-    .card h3 {
-      margin-top: 0;
-      color: #075e4d;
-    }
-
-    .number {
-      font-size: 32px;
-      font-weight: bold;
-      color: #087f69;
-    }
-
-    /* =========================
-       إضافة محاضرة
-    ========================= */
-
-    .section {
-      background: white;
-      border-radius: 18px;
-      padding: 25px;
-      margin-bottom: 25px;
-      box-shadow: 0 5px 18px rgba(0,0,0,.05);
-    }
-
-    .section h2 {
-      margin-top: 0;
-      color: #075e4d;
+    .card h2 {
+      margin-bottom: 18px;
+      color: #087f5b;
+      font-size: 21px;
     }
 
     label {
       display: block;
-      margin: 15px 0 7px;
+      margin: 12px 0 7px;
       font-weight: bold;
     }
 
     input,
+    select,
     textarea {
       width: 100%;
-      padding: 13px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      font-family: inherit;
-      font-size: 15px;
+      padding: 12px;
+      border: 1px solid #d8dee8;
+      border-radius: 9px;
       outline: none;
-    }
-
-    input:focus,
-    textarea:focus {
-      border-color: #087f69;
+      font-size: 15px;
     }
 
     textarea {
@@ -191,379 +117,399 @@
       resize: vertical;
     }
 
-    .file-box {
-      border: 2px dashed #0a806c;
-      background: #f4fbf9;
-      padding: 25px;
-      text-align: center;
-      border-radius: 14px;
-      margin-top: 10px;
-    }
-
-    .file-box input {
-      border: none;
-      background: transparent;
-    }
-
-    .selected-file {
-      margin-top: 10px;
-      color: #075e4d;
-      font-size: 14px;
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #087f5b;
     }
 
     .btn {
-      border: none;
-      background: #075e4d;
-      color: white;
-      padding: 13px 22px;
-      border-radius: 10px;
+      border: 0;
+      border-radius: 9px;
+      padding: 12px 18px;
+      margin-top: 15px;
       cursor: pointer;
-      font-family: inherit;
-      font-size: 16px;
-      margin-top: 18px;
+      font-weight: bold;
+      background: #087f5b;
+      color: white;
     }
 
     .btn:hover {
-      background: #064c40;
+      opacity: .9;
     }
 
-    .btn:disabled {
-      opacity: .6;
-      cursor: not-allowed;
+    .btn-danger {
+      background: #d93636;
     }
 
-    .message {
+    .btn-secondary {
+      background: #596579;
+    }
+
+    .btn-blue {
+      background: #276ef1;
+    }
+
+    .upload-box {
+      border: 2px dashed #b9c5d5;
+      border-radius: 12px;
+      padding: 25px;
+      text-align: center;
+      margin-top: 10px;
+      background: #fafcff;
+    }
+
+    .upload-box input {
+      border: 0;
+      padding: 10px;
+    }
+
+    .progress {
+      display: none;
       margin-top: 15px;
-      padding: 12px;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 8px;
       border-radius: 10px;
+      background: #087f5b;
+      transition: width .2s;
+    }
+
+    .progress-bg {
+      background: #e1e7ee;
+      height: 8px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .status {
+      padding: 12px;
+      border-radius: 9px;
+      margin-top: 15px;
       display: none;
     }
 
     .success {
-      display: block;
-      background: #e7f8f2;
-      color: #08705c;
+      background: #dff6e9;
+      color: #12643f;
     }
 
     .error {
-      display: block;
-      background: #ffeaea;
-      color: #a00000;
+      background: #ffe2e2;
+      color: #9d2222;
     }
 
-    .progress {
-      width: 100%;
-      height: 10px;
-      background: #eee;
-      border-radius: 10px;
-      margin-top: 15px;
-      overflow: hidden;
-      display: none;
+    .info {
+      background: #e5f0ff;
+      color: #1754a5;
     }
 
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: #087f69;
-      transition: width .2s;
+    .content-list,
+    .users-list {
+      display: grid;
+      gap: 12px;
     }
 
-    /* =========================
-       قائمة المحاضرات
-    ========================= */
-
-    .lecture {
-      border: 1px solid #e5e5e5;
-      border-radius: 14px;
-      padding: 18px;
-      margin-bottom: 12px;
-      background: #fafdfc;
+    .item {
+      border: 1px solid #e0e5ec;
+      border-radius: 12px;
+      padding: 15px;
+      background: #fff;
     }
 
-    .lecture h3 {
-      margin: 0 0 8px;
-      color: #075e4d;
+    .item h3 {
+      color: #087f5b;
+      margin-bottom: 7px;
     }
 
-    .lecture p {
-      color: #666;
-      margin: 5px 0;
+    .item p {
+      color: #626d7d;
+      margin-bottom: 7px;
     }
 
-    .lecture-actions {
-      margin-top: 12px;
+    .badge {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 7px;
+      background: #e8f6f1;
+      color: #087f5b;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .actions {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
-    .watch {
-      display: inline-block;
-      text-decoration: none;
-      background: #087f69;
-      color: white;
-      padding: 9px 15px;
-      border-radius: 8px;
-    }
-
-    .delete {
-      background: #b3261e;
-      color: white;
-      border: none;
-      padding: 9px 15px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-family: inherit;
+    .actions button {
+      margin-top: 8px;
     }
 
     .empty {
       text-align: center;
       color: #777;
-      padding: 25px;
+      padding: 30px;
     }
 
-    /* =========================
-       الموبايل
-    ========================= */
-
-    @media (max-width: 900px) {
-
-      .sidebar {
-        width: 75px;
-        padding: 15px 8px;
-      }
-
-      .logo-box h2,
-      .logo-box p {
-        display: none;
-      }
-
-      .logo-box img {
-        width: 55px;
-        height: 55px;
-      }
-
-      .menu a {
-        text-align: center;
-        font-size: 0;
-        padding: 15px 5px;
-      }
-
-      .menu a::first-letter {
-        font-size: 20px;
-      }
-
-      .main {
-        margin-right: 75px;
-        padding: 18px;
-      }
-
-      .cards {
-        grid-template-columns: 1fr;
-      }
+    .small {
+      font-size: 13px;
+      color: #697586;
+      margin-top: 7px;
     }
 
+    .danger-note {
+      background: #fff1f1;
+      border-right: 4px solid #d93636;
+      padding: 13px;
+      border-radius: 8px;
+      margin-top: 12px;
+      color: #8e2525;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 600px) {
+      .header {
+        padding: 15px;
+      }
+
+      .header h1 {
+        font-size: 17px;
+      }
+
+      .container {
+        width: 93%;
+      }
+
+      .card {
+        padding: 16px;
+      }
+    }
   </style>
-
 </head>
 
 <body>
 
-<!-- =========================
-     الشريط الجانبي
-========================= -->
+<header class="header">
+  <h1>⚙️ لوحة تحكم منصة أرض الأحياء</h1>
+  <button onclick="logout()">تسجيل الخروج</button>
+</header>
 
-<aside class="sidebar">
+<main class="container">
 
-  <div class="logo-box">
+  <div class="tabs">
 
-    <img src="../logo.png" alt="منصة أرض الأحياء">
-
-    <h2>منصة أرض الأحياء</h2>
-
-    <p>لوحة الإدارة</p>
-
-  </div>
-
-  <div class="menu">
-
-    <a href="../index.html">
-      🏠 المنصة
-    </a>
-
-    <a href="../videos/index.html">
-      🎥 المحاضرات
-    </a>
-
-    <a href="../notes/index.html">
-      📚 المذكرات
-    </a>
-
-    <a href="../forum/index.html">
-      💬 المنتدى
-    </a>
-
-    <a href="index.html" class="active">
-      ⚙️ لوحة الإدارة
-    </a>
-
-    <a class="logout" onclick="logout()">
-      🚪 تسجيل الخروج
-    </a>
-
-  </div>
-
-</aside>
-
-
-<!-- =========================
-     المحتوى
-========================= -->
-
-<main class="main">
-
-  <div class="topbar">
-
-    <h1>⚙️ لوحة الإدارة</h1>
-
-    <p id="welcome">
-      جاري التحقق من صلاحيات الحساب...
-    </p>
-
-  </div>
-
-
-  <!-- الإحصائيات -->
-
-  <div class="cards">
-
-    <div class="card">
-
-      <h3>🎥 المحاضرات</h3>
-
-      <div class="number" id="lectureCount">
-        0
-      </div>
-
-    </div>
-
-    <div class="card">
-
-      <h3>👨‍🎓 الطلاب</h3>
-
-      <div class="number" id="studentCount">
-        -
-      </div>
-
-    </div>
-
-    <div class="card">
-
-      <h3>🟢 حالة النظام</h3>
-
-      <div class="number" style="font-size:22px;">
-        يعمل
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- =========================
-       إضافة محاضرة
-  ========================= -->
-
-  <section class="section">
-
-    <h2>➕ إضافة محاضرة جديدة</h2>
-
-    <p>
-      يمكنك رفع الفيديو من جهازك مباشرة بدون استخدام YouTube.
-    </p>
-
-
-    <label>
-      عنوان المحاضرة
-    </label>
-
-    <input
-      type="text"
-      id="title"
-      placeholder="مثال: الدعامة في النبات"
-    >
-
-
-    <label>
-      وصف المحاضرة
-    </label>
-
-    <textarea
-      id="description"
-      placeholder="اكتب وصفًا مختصرًا للمحاضرة..."
-    ></textarea>
-
-
-    <label>
-      فيديو المحاضرة
-    </label>
-
-    <div class="file-box">
-
-      <input
-        type="file"
-        id="videoFile"
-        accept="video/*"
-      >
-
-      <div class="selected-file" id="selectedFile">
-        لم يتم اختيار فيديو
-      </div>
-
-    </div>
-
-
-    <div class="progress" id="progress">
-
-      <div
-        class="progress-bar"
-        id="progressBar">
-      </div>
-
-    </div>
-
-
-    <button
-      class="btn"
-      id="uploadBtn"
-      onclick="uploadLecture()">
-
-      🎥 رفع المحاضرة
-
+    <button class="tab active" onclick="showTab('contentTab', this)">
+      📚 المحتوى
     </button>
 
+    <button class="tab" onclick="showTab('uploadTab', this)">
+      ⬆️ رفع PDF / فيديو
+    </button>
 
-    <div
-      id="message"
-      class="message">
+    <button class="tab" onclick="showTab('usersTab', this)">
+      👥 المستخدمون
+    </button>
+
+  </div>
+
+
+  <!-- المحتوى -->
+
+  <section id="contentTab" class="section active">
+
+    <div class="card">
+
+      <h2>📚 المحتوى المرفوع</h2>
+
+      <button class="btn btn-secondary" onclick="loadContent()">
+        🔄 تحديث المحتوى
+      </button>
+
+      <div id="contentList" class="content-list" style="margin-top:18px;">
+        <div class="empty">جاري تحميل المحتوى...</div>
+      </div>
+
     </div>
 
   </section>
 
 
-  <!-- =========================
-       المحاضرات الموجودة
-  ========================= -->
+  <!-- رفع المحتوى -->
 
-  <section class="section">
+  <section id="uploadTab" class="section">
 
-    <h2>🎥 المحاضرات المضافة</h2>
+    <div class="card">
 
-    <div id="lecturesList">
+      <h2>📤 رفع محتوى جديد</h2>
 
-      <div class="empty">
-        جاري تحميل المحاضرات...
+      <label>عنوان المحتوى</label>
+
+      <input
+        id="contentTitle"
+        type="text"
+        placeholder="مثال: شرح درس الدعامة"
+      >
+
+      <label>الوصف</label>
+
+      <textarea
+        id="contentDescription"
+        placeholder="اكتب وصفًا مختصرًا للمحتوى..."
+      ></textarea>
+
+
+      <label>نوع المحتوى</label>
+
+      <select id="contentType" onchange="changeUploadType()">
+
+        <option value="pdf">
+          📄 ملف PDF
+        </option>
+
+        <option value="video">
+          🎥 فيديو
+        </option>
+
+        <option value="link">
+          🔗 رابط فيديو
+        </option>
+
+      </select>
+
+
+      <div id="fileBox" class="upload-box">
+
+        <p id="fileText">
+          اختر ملف PDF من جهازك
+        </p>
+
+        <input
+          id="contentFile"
+          type="file"
+          accept=".pdf,application/pdf"
+        >
+
       </div>
+
+
+      <div id="linkBox" style="display:none;">
+
+        <label>رابط الفيديو</label>
+
+        <input
+          id="videoLink"
+          type="url"
+          placeholder="https://..."
+        >
+
+      </div>
+
+
+      <label>القسم</label>
+
+      <select id="contentCategory">
+
+        <option value="general">عام</option>
+
+        <option value="lectures">
+          المحاضرات
+        </option>
+
+        <option value="notes">
+          المذكرات
+        </option>
+
+        <option value="questions">
+          الأسئلة
+        </option>
+
+      </select>
+
+
+      <label>الصف</label>
+
+      <select id="contentGrade">
+
+        <option value="all">كل الصفوف</option>
+
+        <option value="first_secondary">
+          أولى ثانوي
+        </option>
+
+        <option value="second_secondary">
+          ثانية ثانوي
+        </option>
+
+        <option value="third_secondary">
+          ثالثة ثانوي
+        </option>
+
+      </select>
+
+
+      <button class="btn" onclick="uploadContent()">
+        🚀 رفع المحتوى
+      </button>
+
+
+      <div id="progress" class="progress">
+
+        <div class="progress-bg">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+
+        <p class="small">
+          جاري رفع الملف...
+        </p>
+
+      </div>
+
+
+      <div id="uploadStatus" class="status"></div>
+
+    </div>
+
+  </section>
+
+
+  <!-- المستخدمون -->
+
+  <section id="usersTab" class="section">
+
+    <div class="card">
+
+      <h2>👥 إدارة المستخدمين</h2>
+
+      <button class="btn btn-secondary" onclick="loadUsers()">
+        🔄 تحديث المستخدمين
+      </button>
+
+      <div id="usersList" class="users-list" style="margin-top:18px;">
+        <div class="empty">جاري تحميل المستخدمين...</div>
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>🔐 إعادة تعيين كلمة السر</h2>
+
+      <p>
+        اختر مستخدمًا من القائمة واضغط على
+        <b>إرسال إعادة تعيين كلمة السر</b>.
+      </p>
+
+      <div class="danger-note">
+        لأمان المنصة، لا يتم وضع مفتاح Supabase السري داخل صفحة الأدمن.
+        تغيير كلمة سر مستخدم آخر مباشرة يحتاج إلى Edge Function بصلاحيات Admin.
+      </div>
+
+      <div id="passwordStatus" class="status"></div>
 
     </div>
 
@@ -574,381 +520,446 @@
 
 <script>
 
-  /* =================================
-     Supabase
-  ================================= */
+  /* =====================================================
+     إعداد Supabase
+     ===================================================== */
 
   const SUPABASE_URL =
-    "https://otvdxcvikjqgdajjvkib.supabase.co";
+    "https://gvehygqxjqucx.supabase.co";
 
-  const SUPABASE_KEY =
-    "sb_publishable_25gtJgsUpaJX843Pbq2Fcg_sVYlSAK5";
+  const SUPABASE_ANON_KEY =
+    "sb_publishable_54UK-Ys41c5wGQvYkeFmYQ_5efdHAQu";
 
   const supabaseClient =
     window.supabase.createClient(
       SUPABASE_URL,
-      SUPABASE_KEY
+      SUPABASE_ANON_KEY
     );
 
 
-  let currentUser = null;
+  /* =====================================================
+     اسم Bucket للملفات
+     ===================================================== */
+
+  const PDF_BUCKET = "pdfs";
+  const VIDEO_BUCKET = "videos";
 
 
-  /* =================================
-     التحقق من Admin
-  ================================= */
+  /* =====================================================
+     عند فتح الصفحة
+     ===================================================== */
 
-  async function checkAdmin() {
+  window.addEventListener("DOMContentLoaded", async () => {
 
     const {
       data: {
-        user
-      },
-      error
-    } = await supabaseClient.auth.getUser();
-
-
-    if (error || !user) {
-
-      document.getElementById("welcome").textContent =
-        "يجب تسجيل الدخول أولًا.";
-
-      setTimeout(() => {
-        location.href = "../login/index.html";
-      }, 1500);
-
-      return false;
-    }
-
-
-    currentUser = user;
-
-
-    const {
-      data: profile,
-      error: profileError
-    } = await supabaseClient
-      .from("profiles")
-      .select("role, full_name")
-      .eq("id", user.id)
-      .maybeSingle();
-
-
-    if (
-      profileError ||
-      !profile ||
-      profile.role !== "admin"
-    ) {
-
-      document.getElementById("welcome").textContent =
-        "هذا الحساب ليس لديه صلاحية الإدارة.";
-
-      return false;
-    }
-
-
-    document.getElementById("welcome").textContent =
-      "مرحبًا " +
-      (profile.full_name || user.email) +
-      " — يمكنك إدارة المحاضرات من هنا.";
-
-
-    return true;
-  }
-
-
-  /* =================================
-     اختيار الفيديو
-  ================================= */
-
-  document
-    .getElementById("videoFile")
-    .addEventListener("change", function () {
-
-      const file = this.files[0];
-
-      const selected =
-        document.getElementById("selectedFile");
-
-
-      if (!file) {
-
-        selected.textContent =
-          "لم يتم اختيار فيديو";
-
-        return;
+        session
       }
+    } = await supabaseClient.auth.getSession();
+
+    if (!session) {
+
+      alert("يجب تسجيل الدخول أولًا.");
+
+      window.location.href =
+        "../login/index.html";
+
+      return;
+    }
+
+    loadContent();
+    loadUsers();
+
+  });
 
 
-      const sizeMB =
-        (file.size / 1024 / 1024).toFixed(1);
+  /* =====================================================
+     التبويبات
+     ===================================================== */
 
+  function showTab(id, button) {
 
-      selected.textContent =
-        "🎥 " +
-        file.name +
-        " — " +
-        sizeMB +
-        " MB";
+    document
+      .querySelectorAll(".section")
+      .forEach(section => {
+        section.classList.remove("active");
+      });
 
-    });
+    document
+      .querySelectorAll(".tab")
+      .forEach(tab => {
+        tab.classList.remove("active");
+      });
 
+    document
+      .getElementById(id)
+      .classList.add("active");
 
-  /* =================================
-     رسالة
-  ================================= */
-
-  function showMessage(text, type) {
-
-    const box =
-      document.getElementById("message");
-
-    box.textContent = text;
-
-    box.className =
-      "message " + type;
+    button.classList.add("active");
 
   }
 
 
-  /* =================================
-     رفع المحاضرة
-  ================================= */
+  /* =====================================================
+     تغيير نوع المحتوى
+     ===================================================== */
 
-  async function uploadLecture() {
+  function changeUploadType() {
+
+    const type =
+      document.getElementById("contentType").value;
+
+    const fileBox =
+      document.getElementById("fileBox");
+
+    const linkBox =
+      document.getElementById("linkBox");
+
+    const file =
+      document.getElementById("contentFile");
+
+    const fileText =
+      document.getElementById("fileText");
+
+    if (type === "link") {
+
+      fileBox.style.display = "none";
+      linkBox.style.display = "block";
+
+      return;
+    }
+
+    fileBox.style.display = "block";
+    linkBox.style.display = "none";
+
+    if (type === "pdf") {
+
+      file.accept =
+        ".pdf,application/pdf";
+
+      fileText.textContent =
+        "اختر ملف PDF من جهازك";
+
+    }
+
+    if (type === "video") {
+
+      file.accept =
+        "video/*";
+
+      fileText.textContent =
+        "اختر فيديو من جهازك";
+
+    }
+
+  }
+
+
+  /* =====================================================
+     رفع المحتوى
+     ===================================================== */
+
+  async function uploadContent() {
 
     const title =
-      document.getElementById("title")
+      document
+        .getElementById("contentTitle")
         .value
         .trim();
 
     const description =
-      document.getElementById("description")
+      document
+        .getElementById("contentDescription")
         .value
         .trim();
 
-    const file =
-      document.getElementById("videoFile")
-        .files[0];
+    const type =
+      document
+        .getElementById("contentType")
+        .value;
 
-    const button =
-      document.getElementById("uploadBtn");
+    const category =
+      document
+        .getElementById("contentCategory")
+        .value;
 
+    const grade =
+      document
+        .getElementById("contentGrade")
+        .value;
+
+    const status =
+      document.getElementById("uploadStatus");
 
     if (!title) {
 
-      showMessage(
-        "اكتب عنوان المحاضرة أولًا.",
+      showStatus(
+        status,
+        "اكتب عنوان المحتوى أولًا.",
         "error"
       );
 
       return;
     }
-
-
-    if (!file) {
-
-      showMessage(
-        "اختر فيديو من جهازك أولًا.",
-        "error"
-      );
-
-      return;
-    }
-
-
-    if (!file.type.startsWith("video/")) {
-
-      showMessage(
-        "الملف المختار ليس فيديو.",
-        "error"
-      );
-
-      return;
-    }
-
-
-    button.disabled = true;
-
-    button.textContent =
-      "⏳ جاري رفع الفيديو...";
-
-
-    document.getElementById("progress").style.display =
-      "block";
-
-    document.getElementById("progressBar").style.width =
-      "10%";
 
 
     try {
 
-      /*
-        إنشاء اسم آمن وفريد للفيديو
-      */
-
-      const extension =
-        file.name.split(".").pop();
-
-      const safeName =
-        file.name
-          .replace(/\.[^/.]+$/, "")
-          .replace(/[^a-zA-Z0-9\u0600-\u06FF_-]/g, "-")
-          .substring(0, 60);
-
-      const fileName =
-        Date.now() +
-        "-" +
-        safeName +
-        "." +
-        extension;
+      let fileUrl = "";
+      let fileName = "";
 
 
-      const filePath =
-        "videos/" + fileName;
+      /* ==========================
+         رابط فيديو
+         ========================== */
 
+      if (type === "link") {
 
-      document.getElementById("progressBar").style.width =
-        "30%";
+        fileUrl =
+          document
+            .getElementById("videoLink")
+            .value
+            .trim();
 
+        if (!fileUrl) {
 
-      /*
-        رفع الفيديو إلى Storage
-      */
+          showStatus(
+            status,
+            "ضع رابط الفيديو أولًا.",
+            "error"
+          );
 
-      const {
-        error: uploadError
-      } = await supabaseClient
-        .storage
-        .from("lectures")
-        .upload(
-          filePath,
-          file,
-          {
-            cacheControl: "3600",
-            upsert: false,
-            contentType: file.type
-          }
-        );
-
-
-      if (uploadError) {
-
-        throw uploadError;
+          return;
+        }
 
       }
 
 
-      document.getElementById("progressBar").style.width =
-        "75%";
+      /* ==========================
+         PDF / فيديو
+         ========================== */
+
+      else {
+
+        const file =
+          document
+            .getElementById("contentFile")
+            .files[0];
+
+        if (!file) {
+
+          showStatus(
+            status,
+            "اختر الملف أولًا.",
+            "error"
+          );
+
+          return;
+        }
 
 
-      /*
-        الحصول على الرابط
-      */
+        /* منع الملفات الكبيرة جدًا */
+
+        const maxSize =
+          type === "pdf"
+            ? 50 * 1024 * 1024
+            : 500 * 1024 * 1024;
+
+
+        if (file.size > maxSize) {
+
+          showStatus(
+            status,
+            type === "pdf"
+              ? "حجم PDF أكبر من 50MB."
+              : "حجم الفيديو أكبر من 500MB.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        document
+          .getElementById("progress")
+          .style.display = "block";
+
+
+        const bucket =
+          type === "pdf"
+            ? PDF_BUCKET
+            : VIDEO_BUCKET;
+
+
+        const safeName =
+          file.name
+            .replace(/[^a-zA-Z0-9._-]/g, "_");
+
+
+        const path =
+          Date.now() +
+          "_" +
+          Math.random()
+            .toString(36)
+            .substring(2, 8) +
+          "_" +
+          safeName;
+
+
+        const {
+          error: uploadError
+        } =
+          await supabaseClient
+            .storage
+            .from(bucket)
+            .upload(path, file, {
+              cacheControl: "3600",
+              upsert: false
+            });
+
+
+        if (uploadError)
+          throw uploadError;
+
+
+        const {
+          data: publicData
+        } =
+          supabaseClient
+            .storage
+            .from(bucket)
+            .getPublicUrl(path);
+
+
+        fileUrl =
+          publicData.publicUrl;
+
+        fileName =
+          file.name;
+
+
+        document
+          .getElementById("progressBar")
+          .style.width = "100%";
+
+      }
+
+
+      /* ==========================
+         حفظ بيانات المحتوى
+         ========================== */
 
       const {
-        data: publicData
+        data: {
+          user
+        }
       } =
-        supabaseClient
-          .storage
-          .from("lectures")
-          .getPublicUrl(filePath);
+        await supabaseClient.auth.getUser();
 
-
-      const videoUrl =
-        publicData.publicUrl;
-
-
-      /*
-        إضافة المحاضرة إلى جدول lectures
-      */
 
       const {
-        error: lectureError
+        error: dbError
       } =
         await supabaseClient
-          .from("lectures")
+          .from("library_content")
           .insert({
+
             title: title,
+
             description: description,
-            video_url: videoUrl
+
+            type: type,
+
+            category: category,
+
+            grade: grade,
+
+            url: fileUrl,
+
+            file_name: fileName,
+
+            created_by: user
+              ? user.id
+              : null
+
           });
 
 
-      if (lectureError) {
-
-        /*
-          إذا فشل إدخال المحاضرة،
-          نحاول حذف الفيديو الذي تم رفعه
-        */
-
-        await supabaseClient
-          .storage
-          .from("lectures")
-          .remove([filePath]);
-
-        throw lectureError;
-
-      }
+      if (dbError)
+        throw dbError;
 
 
-      document.getElementById("progressBar").style.width =
-        "100%";
-
-
-      showMessage(
-        "✅ تم رفع الفيديو وإضافة المحاضرة بنجاح.",
+      showStatus(
+        status,
+        "تم رفع المحتوى وحفظه بنجاح ✅",
         "success"
       );
 
 
-      /*
-        تنظيف النموذج
-      */
+      document
+        .getElementById("contentTitle")
+        .value = "";
 
-      document.getElementById("title").value = "";
+      document
+        .getElementById("contentDescription")
+        .value = "";
 
-      document.getElementById("description").value = "";
+      document
+        .getElementById("contentFile")
+        .value = "";
 
-      document.getElementById("videoFile").value = "";
-
-      document.getElementById("selectedFile").textContent =
-        "لم يتم اختيار فيديو";
-
-
-      loadLectures();
+      document
+        .getElementById("videoLink")
+        .value = "";
 
 
-    } catch (error) {
+      loadContent();
+
+    }
+
+    catch (error) {
 
       console.error(error);
 
-      showMessage(
-        "❌ حدث خطأ أثناء رفع الفيديو: " +
-        (error.message || "خطأ غير معروف"),
+      showStatus(
+        status,
+        "حدث خطأ: " +
+        (error.message || "تعذر رفع المحتوى"),
         "error"
       );
 
     }
 
+    finally {
 
-    button.disabled = false;
+      setTimeout(() => {
 
-    button.textContent =
-      "🎥 رفع المحاضرة";
+        document
+          .getElementById("progress")
+          .style.display = "none";
+
+        document
+          .getElementById("progressBar")
+          .style.width = "0%";
+
+      }, 1000);
+
+    }
 
   }
 
 
-  /* =================================
-     تحميل المحاضرات
-  ================================= */
+  /* =====================================================
+     تحميل المحتوى
+     ===================================================== */
 
-  async function loadLectures() {
+  async function loadContent() {
 
     const list =
-      document.getElementById("lecturesList");
+      document.getElementById("contentList");
+
+    list.innerHTML =
+      '<div class="empty">جاري التحميل...</div>';
 
 
     const {
@@ -956,33 +967,29 @@
       error
     } =
       await supabaseClient
-        .from("lectures")
+        .from("library_content")
         .select("*")
-        .order(
-          "created_at",
-          {
-            ascending: false
-          }
-        );
+        .order("created_at", {
+          ascending: false
+        });
 
 
     if (error) {
 
       list.innerHTML =
-        '<div class="empty">تعذر تحميل المحاضرات.</div>';
+        `<div class="empty">
+          تعذر تحميل المحتوى.<br>
+          ${escapeHtml(error.message)}
+        </div>`;
 
       return;
     }
 
 
-    document.getElementById("lectureCount").textContent =
-      data.length;
-
-
-    if (!data.length) {
+    if (!data || data.length === 0) {
 
       list.innerHTML =
-        '<div class="empty">لا توجد محاضرات حتى الآن.</div>';
+        '<div class="empty">لا يوجد محتوى حتى الآن.</div>';
 
       return;
     }
@@ -991,119 +998,355 @@
     list.innerHTML = "";
 
 
-    data.forEach(lecture => {
+    data.forEach(item => {
 
-      const item =
+      const div =
         document.createElement("div");
 
-      item.className =
-        "lecture";
+      div.className = "item";
 
 
-      item.innerHTML = `
+      let icon = "📚";
+
+      if (item.type === "pdf")
+        icon = "📄";
+
+      if (item.type === "video")
+        icon = "🎥";
+
+      if (item.type === "link")
+        icon = "🔗";
+
+
+      div.innerHTML = `
+
+        <span class="badge">
+          ${icon}
+          ${escapeHtml(item.type || "")}
+        </span>
 
         <h3>
-          ${escapeHtml(lecture.title)}
+          ${escapeHtml(item.title || "بدون عنوان")}
         </h3>
 
         <p>
-          ${escapeHtml(
-            lecture.description || "بدون وصف"
-          )}
+          ${escapeHtml(item.description || "")}
         </p>
 
-        <div class="lecture-actions">
+        <p class="small">
+          القسم:
+          ${escapeHtml(item.category || "")}
+          |
+          الصف:
+          ${escapeHtml(item.grade || "")}
+        </p>
 
-          <a
-            class="watch"
-            href="${lecture.video_url}"
-            target="_blank">
-            ▶ مشاهدة الفيديو
-          </a>
+        <div class="actions">
 
           <button
-            class="delete"
-            onclick="deleteLecture('${lecture.id}', '${encodeURIComponent(lecture.video_url || "")}')">
-            🗑 حذف المحاضرة
+            class="btn btn-blue"
+            onclick="openContent('${encodeURIComponent(item.url || "")}')">
+            👁️ فتح
+          </button>
+
+          <button
+            class="btn btn-danger"
+            onclick="deleteContent('${item.id}')">
+            🗑️ حذف
           </button>
 
         </div>
       `;
 
 
-      list.appendChild(item);
+      list.appendChild(div);
 
     });
 
   }
 
 
-  /* =================================
-     حذف المحاضرة
-  ================================= */
+  /* =====================================================
+     فتح المحتوى
+     ===================================================== */
 
-  async function deleteLecture(id, encodedUrl) {
+  function openContent(encodedUrl) {
 
-    const confirmDelete =
-      confirm(
-        "هل أنت متأكد من حذف هذه المحاضرة؟"
-      );
+    const url =
+      decodeURIComponent(encodedUrl);
 
+    if (!url)
+      return;
 
-    if (!confirmDelete) return;
-
-
-    try {
-
-      /*
-        حذف سجل المحاضرة
-      */
-
-      const {
-        error
-      } =
-        await supabaseClient
-          .from("lectures")
-          .delete()
-          .eq("id", id);
-
-
-      if (error) {
-
-        throw error;
-
-      }
-
-
-      showMessage(
-        "تم حذف المحاضرة.",
-        "success"
-      );
-
-
-      loadLectures();
-
-
-    } catch (error) {
-
-      showMessage(
-        "تعذر حذف المحاضرة: " +
-        error.message,
-        "error"
-      );
-
-    }
+    window.open(
+      url,
+      "_blank"
+    );
 
   }
 
 
-  /* =================================
-     حماية النصوص
-  ================================= */
+  /* =====================================================
+     حذف المحتوى
+     ===================================================== */
 
-  function escapeHtml(text) {
+  async function deleteContent(id) {
 
-    return String(text)
+    const ok =
+      confirm(
+        "هل أنت متأكد من حذف هذا المحتوى؟"
+      );
+
+    if (!ok)
+      return;
+
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from("library_content")
+        .delete()
+        .eq("id", id);
+
+
+    if (error) {
+
+      alert(
+        "تعذر حذف المحتوى:\n" +
+        error.message
+      );
+
+      return;
+    }
+
+
+    alert("تم حذف المحتوى.");
+
+    loadContent();
+
+  }
+
+
+  /* =====================================================
+     المستخدمون
+     ===================================================== */
+
+  async function loadUsers() {
+
+    const list =
+      document.getElementById("usersList");
+
+    list.innerHTML =
+      '<div class="empty">جاري تحميل المستخدمين...</div>';
+
+
+    /*
+      هذه الصفحة تقرأ جدول profiles.
+
+      يجب أن يحتوي الجدول على:
+      id
+      email
+      full_name
+    */
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("profiles")
+        .select("*")
+        .order("created_at", {
+          ascending: false
+        });
+
+
+    if (error) {
+
+      list.innerHTML =
+        `<div class="empty">
+          تعذر تحميل المستخدمين.<br><br>
+          ${escapeHtml(error.message)}
+        </div>`;
+
+      return;
+    }
+
+
+    if (!data || data.length === 0) {
+
+      list.innerHTML =
+        '<div class="empty">لا يوجد مستخدمون.</div>';
+
+      return;
+    }
+
+
+    list.innerHTML = "";
+
+
+    data.forEach(user => {
+
+      const div =
+        document.createElement("div");
+
+      div.className = "item";
+
+
+      const email =
+        user.email || "بدون بريد";
+
+      const name =
+        user.full_name ||
+        user.name ||
+        "بدون اسم";
+
+
+      div.innerHTML = `
+
+        <span class="badge">
+          👤 مستخدم
+        </span>
+
+        <h3>
+          ${escapeHtml(name)}
+        </h3>
+
+        <p>
+          📧 ${escapeHtml(email)}
+        </p>
+
+        <p class="small">
+          UID:
+          ${escapeHtml(user.id || "")}
+        </p>
+
+        <div class="actions">
+
+          <button
+            class="btn btn-blue"
+            onclick="sendResetEmail('${encodeURIComponent(email)}')">
+            🔐 إعادة تعيين كلمة السر
+          </button>
+
+        </div>
+
+      `;
+
+
+      list.appendChild(div);
+
+    });
+
+  }
+
+
+  /* =====================================================
+     إرسال إعادة تعيين كلمة السر
+     ===================================================== */
+
+  async function sendResetEmail(encodedEmail) {
+
+    const email =
+      decodeURIComponent(encodedEmail);
+
+
+    const ok =
+      confirm(
+        "إرسال رابط إعادة تعيين كلمة السر إلى:\n\n" +
+        email
+      );
+
+
+    if (!ok)
+      return;
+
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .auth
+        .resetPasswordForEmail(
+          email,
+          {
+            redirectTo:
+              window.location.origin +
+              "/login/reset-password.html"
+          }
+        );
+
+
+    const status =
+      document.getElementById(
+        "passwordStatus"
+      );
+
+
+    if (error) {
+
+      showStatus(
+        status,
+        "تعذر إرسال الرابط: " +
+        error.message,
+        "error"
+      );
+
+      return;
+    }
+
+
+    showStatus(
+      status,
+      "تم إرسال رابط إعادة تعيين كلمة السر إلى " +
+      email,
+      "success"
+    );
+
+  }
+
+
+  /* =====================================================
+     تسجيل الخروج
+     ===================================================== */
+
+  async function logout() {
+
+    await supabaseClient.auth.signOut();
+
+    window.location.href =
+      "../login/index.html";
+
+  }
+
+
+  /* =====================================================
+     الرسائل
+     ===================================================== */
+
+  function showStatus(element, message, type) {
+
+    element.textContent =
+      message;
+
+    element.className =
+      "status " + type;
+
+    element.style.display =
+      "block";
+
+  }
+
+
+  /* =====================================================
+     حماية النصوص من HTML
+     ===================================================== */
+
+  function escapeHtml(value) {
+
+    return String(value)
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
@@ -1111,39 +1354,6 @@
       .replace(/'/g, "&#039;");
 
   }
-
-
-  /* =================================
-     تسجيل الخروج
-  ================================= */
-
-  async function logout() {
-
-    await supabaseClient.auth.signOut();
-
-    location.href =
-      "../login/index.html";
-
-  }
-
-
-  /* =================================
-     التشغيل
-  ================================= */
-
-  (async function () {
-
-    const isAdmin =
-      await checkAdmin();
-
-
-    if (isAdmin) {
-
-      await loadLectures();
-
-    }
-
-  })();
 
 </script>
 
