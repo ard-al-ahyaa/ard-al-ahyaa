@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>لوحة تحكم الأدمن | منصة أرض الأحياء</title>
+  <title>لوحة التحكم | منصة أرض الأحياء</title>
+
+  <link rel="icon" href="../favicon.png">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -13,103 +16,177 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: Tahoma, Arial, sans-serif;
+      font-family: Arial, Tahoma, sans-serif;
     }
 
     body {
-      background: #f4f7fb;
-      color: #172033;
+      background: #f4f7f6;
+      color: #222;
     }
 
-    .header {
-      background: linear-gradient(135deg, #087f5b, #12a66f);
+    .sidebar {
+      position: fixed;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 250px;
+      background: #075e4d;
       color: white;
-      padding: 18px 25px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 3px 15px rgba(0,0,0,.12);
+      padding: 22px 15px;
+      z-index: 10;
+      overflow-y: auto;
     }
 
-    .header h1 {
+    .logo-area {
+      text-align: center;
+      padding-bottom: 22px;
+      border-bottom: 1px solid rgba(255,255,255,.2);
+      margin-bottom: 20px;
+    }
+
+    .logo-area img {
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
+      margin-bottom: 8px;
+    }
+
+    .logo-area h2 {
+      font-size: 18px;
+    }
+
+    .logo-area p {
+      font-size: 12px;
+      opacity: .75;
+      margin-top: 5px;
+    }
+
+    .menu button,
+    .menu a {
+      display: block;
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: white;
+      text-decoration: none;
+      text-align: right;
+      padding: 13px;
+      margin-bottom: 7px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .menu button:hover,
+    .menu a:hover {
+      background: rgba(255,255,255,.14);
+    }
+
+    .main {
+      margin-right: 250px;
+      padding: 25px;
+    }
+
+    .topbar,
+    .section {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.06);
+    }
+
+    .topbar {
+      padding: 20px;
+      margin-bottom: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .topbar h1 {
+      color: #075e4d;
       font-size: 22px;
     }
 
-    .header button {
-      background: white;
-      color: #087f5b;
-      border: 0;
-      border-radius: 8px;
-      padding: 10px 18px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .container {
-      width: 95%;
-      max-width: 1200px;
-      margin: 25px auto;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
-
-    .tab {
-      border: 0;
-      padding: 13px 20px;
-      border-radius: 10px;
-      background: white;
-      cursor: pointer;
-      font-weight: bold;
-      box-shadow: 0 2px 8px rgba(0,0,0,.06);
-    }
-
-    .tab.active {
-      background: #087f5b;
-      color: white;
+    .admin-badge {
+      background: #e7f5f1;
+      color: #075e4d;
+      padding: 9px 14px;
+      border-radius: 20px;
+      font-size: 13px;
     }
 
     .section {
-      display: none;
+      padding: 22px;
+      margin-bottom: 22px;
     }
 
-    .section.active {
-      display: block;
+    .section h2 {
+      color: #075e4d;
+      margin-bottom: 18px;
+      font-size: 19px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
     }
 
     .card {
-      background: white;
-      border-radius: 15px;
-      padding: 22px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 18px rgba(0,0,0,.07);
+      background: #f8faf9;
+      border: 1px solid #e6eeeb;
+      border-radius: 12px;
+      padding: 20px;
     }
 
-    .card h2 {
-      margin-bottom: 18px;
-      color: #087f5b;
-      font-size: 21px;
+    .card .icon {
+      font-size: 27px;
+      margin-bottom: 10px;
+    }
+
+    .card h3 {
+      font-size: 13px;
+      color: #777;
+      margin-bottom: 7px;
+    }
+
+    .card strong {
+      font-size: 25px;
+      color: #075e4d;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .field {
+      margin-bottom: 15px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
     }
 
     label {
       display: block;
-      margin: 12px 0 7px;
+      margin-bottom: 7px;
       font-weight: bold;
+      font-size: 14px;
     }
 
     input,
     select,
     textarea {
       width: 100%;
-      padding: 12px;
-      border: 1px solid #d8dee8;
+      border: 1px solid #d8dfdc;
       border-radius: 9px;
+      padding: 12px;
+      font-size: 14px;
       outline: none;
-      font-size: 15px;
+      background: white;
     }
 
     textarea {
@@ -120,172 +197,199 @@
     input:focus,
     select:focus,
     textarea:focus {
-      border-color: #087f5b;
+      border-color: #075e4d;
+    }
+
+    input[type="file"] {
+      padding: 10px;
     }
 
     .btn {
       border: 0;
       border-radius: 9px;
       padding: 12px 18px;
-      margin-top: 15px;
       cursor: pointer;
       font-weight: bold;
-      background: #087f5b;
+      font-size: 14px;
+    }
+
+    .btn-primary {
+      background: #075e4d;
       color: white;
     }
 
-    .btn:hover {
-      opacity: .9;
+    .btn-primary:hover {
+      background: #064d40;
     }
 
     .btn-danger {
-      background: #d93636;
+      background: #c62828;
+      color: white;
     }
 
     .btn-secondary {
-      background: #596579;
+      background: #e9efed;
+      color: #075e4d;
     }
 
-    .btn-blue {
-      background: #276ef1;
+    .btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
     }
 
-    .upload-box {
-      border: 2px dashed #b9c5d5;
-      border-radius: 12px;
-      padding: 25px;
-      text-align: center;
+    .status {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 9px;
+      line-height: 1.7;
+      font-size: 13px;
+    }
+
+    .success {
+      display: block;
+      background: #e9f8ef;
+      color: #176b3a;
+    }
+
+    .error {
+      display: block;
+      background: #fdeaea;
+      color: #a11;
+    }
+
+    .info {
+      display: block;
+      background: #eaf4fb;
+      color: #155d85;
+    }
+
+    .file-info {
+      display: none;
       margin-top: 10px;
-      background: #fafcff;
-    }
-
-    .upload-box input {
-      border: 0;
+      background: #f5f7f6;
       padding: 10px;
+      border-radius: 8px;
+      font-size: 12px;
     }
 
     .progress {
       display: none;
       margin-top: 15px;
+      height: 8px;
+      background: #e5e9e7;
+      border-radius: 20px;
+      overflow: hidden;
     }
 
     .progress-bar {
       width: 0%;
-      height: 8px;
-      border-radius: 10px;
-      background: #087f5b;
-      transition: width .2s;
+      height: 100%;
+      background: #075e4d;
+      transition: .3s;
     }
 
-    .progress-bg {
-      background: #e1e7ee;
-      height: 8px;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .status {
-      padding: 12px;
-      border-radius: 9px;
-      margin-top: 15px;
+    .url-box {
       display: none;
+      margin-top: 15px;
     }
 
-    .success {
-      background: #dff6e9;
-      color: #12643f;
-    }
-
-    .error {
-      background: #ffe2e2;
-      color: #9d2222;
-    }
-
-    .info {
-      background: #e5f0ff;
-      color: #1754a5;
-    }
-
-    .content-list,
-    .users-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .item {
-      border: 1px solid #e0e5ec;
-      border-radius: 12px;
-      padding: 15px;
-      background: #fff;
-    }
-
-    .item h3 {
-      color: #087f5b;
-      margin-bottom: 7px;
-    }
-
-    .item p {
-      color: #626d7d;
-      margin-bottom: 7px;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 5px 9px;
-      border-radius: 7px;
-      background: #e8f6f1;
-      color: #087f5b;
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-
-    .actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .actions button {
-      margin-top: 8px;
-    }
-
-    .empty {
-      text-align: center;
-      color: #777;
-      padding: 30px;
-    }
-
-    .small {
-      font-size: 13px;
-      color: #697586;
+    .url-box input {
+      direction: ltr;
       margin-top: 7px;
     }
 
-    .danger-note {
-      background: #fff1f1;
-      border-right: 4px solid #d93636;
-      padding: 13px;
-      border-radius: 8px;
-      margin-top: 12px;
-      color: #8e2525;
-      line-height: 1.7;
+    .small {
+      font-size: 11px;
+      color: #777;
+      margin-top: 6px;
     }
 
-    @media (max-width: 600px) {
-      .header {
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 650px;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      text-align: right;
+      font-size: 13px;
+    }
+
+    th {
+      background: #f5f8f7;
+      color: #075e4d;
+    }
+
+    .role {
+      background: #e8f4ff;
+      color: #17629a;
+      padding: 5px 9px;
+      border-radius: 15px;
+      font-size: 11px;
+    }
+
+    .role.admin {
+      background: #fff1d6;
+      color: #936000;
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 100;
+      background: #075e4d;
+      color: white;
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 13px;
+      font-size: 20px;
+    }
+
+    @media (max-width: 850px) {
+      .sidebar {
+        transform: translateX(100%);
+        transition: .25s;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .main {
+        margin-right: 0;
         padding: 15px;
       }
 
-      .header h1 {
-        font-size: 17px;
+      .topbar {
+        margin-top: 45px;
+        flex-direction: column;
+        align-items: flex-start;
       }
 
-      .container {
-        width: 93%;
+      .cards {
+        grid-template-columns: 1fr;
       }
 
-      .card {
-        padding: 16px;
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .full {
+        grid-column: auto;
       }
     }
   </style>
@@ -293,44 +397,93 @@
 
 <body>
 
-<header class="header">
-  <h1>⚙️ لوحة تحكم منصة أرض الأحياء</h1>
-  <button onclick="logout()">تسجيل الخروج</button>
-</header>
+<button class="mobile-menu" onclick="toggleSidebar()">☰</button>
 
-<main class="container">
+<aside class="sidebar" id="sidebar">
 
-  <div class="tabs">
+  <div class="logo-area">
 
-    <button class="tab active" onclick="showTab('contentTab', this)">
-      📚 المحتوى
+    <img src="../logo.png" alt="منصة أرض الأحياء">
+
+    <h2>منصة أرض الأحياء</h2>
+
+    <p>لوحة تحكم الإدارة</p>
+
+  </div>
+
+  <div class="menu">
+
+    <a href="../index.html">🏠 الرئيسية</a>
+
+    <a href="../videos/index.html">🎥 المحاضرات</a>
+
+    <a href="../notes/index.html">📚 المذكرات</a>
+
+    <a href="../forum/index.html">💬 المنتدى</a>
+
+    <button onclick="goTo('upload')">
+      📤 رفع PDF وفيديو
     </button>
 
-    <button class="tab" onclick="showTab('uploadTab', this)">
-      ⬆️ رفع PDF / فيديو
+    <button onclick="goTo('password')">
+      🔐 تغيير كلمة السر
     </button>
 
-    <button class="tab" onclick="showTab('usersTab', this)">
-      👥 المستخدمون
+    <button onclick="goTo('users')">
+      👨‍🎓 المستخدمون
+    </button>
+
+    <button onclick="logout()">
+      🚪 تسجيل الخروج
     </button>
 
   </div>
 
+</aside>
 
-  <!-- المحتوى -->
 
-  <section id="contentTab" class="section active">
+<main class="main">
 
-    <div class="card">
+  <div class="topbar">
 
-      <h2>📚 المحتوى المرفوع</h2>
+    <div>
+      <h1>لوحة تحكم منصة أرض الأحياء</h1>
+      <div class="small">
+        إدارة المحتوى والمستخدمين
+      </div>
+    </div>
 
-      <button class="btn btn-secondary" onclick="loadContent()">
-        🔄 تحديث المحتوى
-      </button>
+    <div class="admin-badge" id="adminName">
+      جاري التحقق...
+    </div>
 
-      <div id="contentList" class="content-list" style="margin-top:18px;">
-        <div class="empty">جاري تحميل المحتوى...</div>
+  </div>
+
+
+  <!-- Dashboard -->
+
+  <section class="section">
+
+    <h2>📊 الإحصائيات</h2>
+
+    <div class="cards">
+
+      <div class="card">
+        <div class="icon">👨‍🎓</div>
+        <h3>المستخدمون</h3>
+        <strong id="usersCount">0</strong>
+      </div>
+
+      <div class="card">
+        <div class="icon">🎥</div>
+        <h3>المحاضرات</h3>
+        <strong id="lecturesCount">0</strong>
+      </div>
+
+      <div class="card">
+        <div class="icon">📁</div>
+        <h3>حالة الحساب</h3>
+        <strong>Admin</strong>
       </div>
 
     </div>
@@ -338,178 +491,216 @@
   </section>
 
 
-  <!-- رفع المحتوى -->
+  <!-- Upload -->
 
-  <section id="uploadTab" class="section">
+  <section class="section" id="upload">
 
-    <div class="card">
+    <h2>📤 رفع PDF أو فيديو</h2>
 
-      <h2>📤 رفع محتوى جديد</h2>
+    <div class="grid">
 
-      <label>عنوان المحتوى</label>
+      <div class="field">
 
-      <input
-        id="contentTitle"
-        type="text"
-        placeholder="مثال: شرح درس الدعامة"
-      >
+        <label>نوع المحتوى</label>
 
-      <label>الوصف</label>
+        <select id="contentType" onchange="changeType()">
 
-      <textarea
-        id="contentDescription"
-        placeholder="اكتب وصفًا مختصرًا للمحتوى..."
-      ></textarea>
+          <option value="video">
+            🎥 فيديو
+          </option>
 
+          <option value="pdf">
+            📄 PDF
+          </option>
 
-      <label>نوع المحتوى</label>
+        </select>
 
-      <select id="contentType" onchange="changeUploadType()">
-
-        <option value="pdf">
-          📄 ملف PDF
-        </option>
-
-        <option value="video">
-          🎥 فيديو
-        </option>
-
-        <option value="link">
-          🔗 رابط فيديو
-        </option>
-
-      </select>
+      </div>
 
 
-      <div id="fileBox" class="upload-box">
+      <div class="field">
 
-        <p id="fileText">
-          اختر ملف PDF من جهازك
-        </p>
+        <label>عنوان المحتوى</label>
+
+        <input
+          id="contentTitle"
+          type="text"
+          placeholder="مثال: محاضرة الدعامة"
+        >
+
+      </div>
+
+
+      <div class="field full">
+
+        <label>الوصف</label>
+
+        <textarea
+          id="contentDescription"
+          placeholder="اكتب وصف المحتوى..."
+        ></textarea>
+
+      </div>
+
+
+      <div class="field full">
+
+        <label id="fileLabel">
+          اختر الفيديو
+        </label>
 
         <input
           id="contentFile"
           type="file"
-          accept=".pdf,application/pdf"
+          accept="video/*"
+          onchange="showFile()"
         >
+
+        <div
+          class="file-info"
+          id="fileInfo"
+        ></div>
 
       </div>
 
-
-      <div id="linkBox" style="display:none;">
-
-        <label>رابط الفيديو</label>
-
-        <input
-          id="videoLink"
-          type="url"
-          placeholder="https://..."
-        >
-
-      </div>
+    </div>
 
 
-      <label>القسم</label>
-
-      <select id="contentCategory">
-
-        <option value="general">عام</option>
-
-        <option value="lectures">
-          المحاضرات
-        </option>
-
-        <option value="notes">
-          المذكرات
-        </option>
-
-        <option value="questions">
-          الأسئلة
-        </option>
-
-      </select>
+    <button
+      class="btn btn-primary"
+      id="uploadButton"
+      onclick="uploadFile()"
+    >
+      📤 رفع المحتوى
+    </button>
 
 
-      <label>الصف</label>
-
-      <select id="contentGrade">
-
-        <option value="all">كل الصفوف</option>
-
-        <option value="first_secondary">
-          أولى ثانوي
-        </option>
-
-        <option value="second_secondary">
-          ثانية ثانوي
-        </option>
-
-        <option value="third_secondary">
-          ثالثة ثانوي
-        </option>
-
-      </select>
+    <div
+      class="progress"
+      id="progress"
+    >
+      <div
+        class="progress-bar"
+        id="progressBar"
+      ></div>
+    </div>
 
 
-      <button class="btn" onclick="uploadContent()">
-        🚀 رفع المحتوى
+    <div
+      class="status"
+      id="uploadStatus"
+    ></div>
+
+
+    <div
+      class="url-box"
+      id="urlBox"
+    >
+
+      <b>🔗 رابط الملف:</b>
+
+      <input
+        id="uploadedUrl"
+        readonly
+      >
+
+      <br><br>
+
+      <button
+        class="btn btn-secondary"
+        onclick="copyUrl()"
+      >
+        📋 نسخ الرابط
       </button>
-
-
-      <div id="progress" class="progress">
-
-        <div class="progress-bg">
-          <div id="progressBar" class="progress-bar"></div>
-        </div>
-
-        <p class="small">
-          جاري رفع الملف...
-        </p>
-
-      </div>
-
-
-      <div id="uploadStatus" class="status"></div>
 
     </div>
 
   </section>
 
 
-  <!-- المستخدمون -->
+  <!-- Password -->
 
-  <section id="usersTab" class="section">
+  <section class="section" id="password">
 
-    <div class="card">
+    <h2>🔐 تغيير كلمة سر مستخدم</h2>
 
-      <h2>👥 إدارة المستخدمين</h2>
+    <div class="field">
 
-      <button class="btn btn-secondary" onclick="loadUsers()">
-        🔄 تحديث المستخدمين
-      </button>
+      <label>اختر المستخدم</label>
 
-      <div id="usersList" class="users-list" style="margin-top:18px;">
-        <div class="empty">جاري تحميل المستخدمين...</div>
-      </div>
+      <select id="userSelect">
+
+        <option value="">
+          جاري تحميل المستخدمين...
+        </option>
+
+      </select>
 
     </div>
 
 
-    <div class="card">
+    <div class="field">
 
-      <h2>🔐 إعادة تعيين كلمة السر</h2>
+      <label>كلمة السر الجديدة</label>
 
-      <p>
-        اختر مستخدمًا من القائمة واضغط على
-        <b>إرسال إعادة تعيين كلمة السر</b>.
-      </p>
+      <input
+        type="password"
+        id="newPassword"
+        placeholder="6 أحرف على الأقل"
+      >
 
-      <div class="danger-note">
-        لأمان المنصة، لا يتم وضع مفتاح Supabase السري داخل صفحة الأدمن.
-        تغيير كلمة سر مستخدم آخر مباشرة يحتاج إلى Edge Function بصلاحيات Admin.
-      </div>
+    </div>
 
-      <div id="passwordStatus" class="status"></div>
+
+    <button
+      class="btn btn-primary"
+      id="passwordButton"
+      onclick="changePassword()"
+    >
+      🔑 تغيير كلمة السر
+    </button>
+
+
+    <div
+      class="status"
+      id="passwordStatus"
+    ></div>
+
+  </section>
+
+
+  <!-- Users -->
+
+  <section class="section" id="users">
+
+    <h2>👨‍🎓 المستخدمون</h2>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>الاسم</th>
+            <th>البريد</th>
+            <th>الصلاحية</th>
+            <th>UID</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="usersTable">
+
+          <tr>
+            <td colspan="4">
+              جاري تحميل المستخدمين...
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
 
     </div>
 
@@ -520,400 +711,467 @@
 
 <script>
 
-  /* =====================================================
-     إعداد Supabase
-     ===================================================== */
+  /* ==========================================
+     نفس بيانات Supabase الموجودة في login
+  ========================================== */
 
   const SUPABASE_URL =
-    "https://gvehygqxjqucx.supabase.co";
+    "https://otvdxcvikjqgdajjvkib.supabase.co";
 
-  const SUPABASE_ANON_KEY =
-    "sb_publishable_54UK-Ys41c5wGQvYkeFmYQ_5efdHAQu";
+  const SUPABASE_KEY =
+    "sb_publishable_25gtJgsUpaJX843Pbq2Fcg_sVYlSAK5";
+
 
   const supabaseClient =
     window.supabase.createClient(
       SUPABASE_URL,
-      SUPABASE_ANON_KEY
+      SUPABASE_KEY,
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      }
     );
 
 
-  /* =====================================================
-     اسم Bucket للملفات
-     ===================================================== */
-
-  const PDF_BUCKET = "pdfs";
-  const VIDEO_BUCKET = "videos";
+  const BUCKET =
+    "lectures";
 
 
-  /* =====================================================
-     عند فتح الصفحة
-     ===================================================== */
+  let currentUser = null;
 
-  window.addEventListener("DOMContentLoaded", async () => {
+
+  /* ==========================================
+     تشغيل الصفحة
+  ========================================== */
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    checkLogin
+  );
+
+
+  async function checkLogin() {
+
+    try {
+
+      /*
+        أولًا نحاول الحصول على الجلسة
+      */
+
+      let {
+        data: sessionData,
+        error: sessionError
+      } =
+        await supabaseClient.auth.getSession();
+
+
+      if (sessionError) {
+        console.error(sessionError);
+      }
+
+
+      let session =
+        sessionData?.session;
+
+
+      /*
+        لو لم تظهر الجلسة فورًا،
+        نعطي Supabase لحظة لاسترجاعها
+      */
+
+      if (!session) {
+
+        await new Promise(
+          resolve => setTimeout(resolve, 500)
+        );
+
+        const result =
+          await supabaseClient.auth.getSession();
+
+        session =
+          result.data?.session;
+
+      }
+
+
+      /*
+        لا توجد جلسة
+      */
+
+      if (!session) {
+
+        window.location.href =
+          "../login/index.html";
+
+        return;
+
+      }
+
+
+      currentUser =
+        session.user;
+
+
+      /*
+        الحصول على بيانات المستخدم
+      */
+
+      const {
+        data: profile,
+        error: profileError
+      } =
+        await supabaseClient
+          .from("profiles")
+          .select("id,full_name,email,role")
+          .eq("id", currentUser.id)
+          .maybeSingle();
+
+
+      if (profileError) {
+
+        console.error(
+          "Profile error:",
+          profileError
+        );
+
+        showPageError(
+          "تم تسجيل الدخول، ولكن تعذر قراءة بيانات حسابك من profiles."
+        );
+
+        return;
+
+      }
+
+
+      if (!profile) {
+
+        showPageError(
+          "تم تسجيل الدخول، ولكن حسابك غير موجود في جدول profiles."
+        );
+
+        return;
+
+      }
+
+
+      /*
+        التحقق من الأدمن
+      */
+
+      if (
+        String(profile.role || "")
+          .toLowerCase() !== "admin"
+      ) {
+
+        showPageError(
+          "هذا الحساب ليس لديه صلاحية الأدمن."
+        );
+
+        return;
+
+      }
+
+
+      /*
+        عرض اسم الأدمن
+      */
+
+      document.getElementById(
+        "adminName"
+      ).textContent =
+        profile.full_name ||
+        profile.email ||
+        "Admin";
+
+
+      /*
+        تحميل البيانات
+      */
+
+      await loadUsers();
+
+      await loadLectures();
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "Admin error:",
+        error
+      );
+
+      showPageError(
+        "حدث خطأ أثناء فتح لوحة التحكم: " +
+        (error.message || "")
+      );
+
+    }
+
+  }
+
+
+  /* ==========================================
+     رسالة الخطأ
+  ========================================== */
+
+  function showPageError(text) {
+
+    document.getElementById(
+      "adminName"
+    ).textContent = "خطأ";
+
+    alert(text);
+
+  }
+
+
+  /* ==========================================
+     المستخدمون
+  ========================================== */
+
+  async function loadUsers() {
+
+    const table =
+      document.getElementById("usersTable");
+
+    const select =
+      document.getElementById("userSelect");
+
 
     const {
-      data: {
-        session
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("profiles")
+        .select(
+          "id,full_name,email,role"
+        )
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        );
+
+
+    if (error) {
+
+      console.error(error);
+
+      table.innerHTML = `
+        <tr>
+          <td colspan="4">
+            تعذر تحميل المستخدمين.
+          </td>
+        </tr>
+      `;
+
+      return;
+
+    }
+
+
+    document.getElementById(
+      "usersCount"
+    ).textContent =
+      data.length;
+
+
+    table.innerHTML = "";
+
+    select.innerHTML = `
+      <option value="">
+        -- اختر المستخدم --
+      </option>
+    `;
+
+
+    data.forEach(user => {
+
+      const name =
+        user.full_name ||
+        "بدون اسم";
+
+      const email =
+        user.email ||
+        "بدون بريد";
+
+
+      const tr =
+        document.createElement("tr");
+
+
+      tr.innerHTML = `
+
+        <td>
+          ${escapeHtml(name)}
+        </td>
+
+        <td>
+          ${escapeHtml(email)}
+        </td>
+
+        <td>
+
+          <span class="role ${
+            user.role === "admin"
+              ? "admin"
+              : ""
+          }">
+
+            ${
+              user.role === "admin"
+                ? "أدمن"
+                : "طالب"
+            }
+
+          </span>
+
+        </td>
+
+        <td dir="ltr">
+          ${escapeHtml(user.id)}
+        </td>
+
+      `;
+
+
+      table.appendChild(tr);
+
+
+      /*
+        لا نضع الأدمن في قائمة تغيير كلمة السر
+      */
+
+      if (user.role !== "admin") {
+
+        const option =
+          document.createElement("option");
+
+        option.value =
+          user.id;
+
+        option.textContent =
+          `${name} — ${email}`;
+
+        select.appendChild(option);
+
       }
-    } = await supabaseClient.auth.getSession();
 
-    if (!session) {
-
-      alert("يجب تسجيل الدخول أولًا.");
-
-      window.location.href =
-        "../login/index.html";
-
-      return;
-    }
-
-    loadContent();
-    loadUsers();
-
-  });
-
-
-  /* =====================================================
-     التبويبات
-     ===================================================== */
-
-  function showTab(id, button) {
-
-    document
-      .querySelectorAll(".section")
-      .forEach(section => {
-        section.classList.remove("active");
-      });
-
-    document
-      .querySelectorAll(".tab")
-      .forEach(tab => {
-        tab.classList.remove("active");
-      });
-
-    document
-      .getElementById(id)
-      .classList.add("active");
-
-    button.classList.add("active");
+    });
 
   }
 
 
-  /* =====================================================
-     تغيير نوع المحتوى
-     ===================================================== */
+  /* ==========================================
+     تغيير كلمة السر
+  ========================================== */
 
-  function changeUploadType() {
+  async function changePassword() {
 
-    const type =
-      document.getElementById("contentType").value;
+    const userId =
+      document.getElementById(
+        "userSelect"
+      ).value;
 
-    const fileBox =
-      document.getElementById("fileBox");
+    const password =
+      document.getElementById(
+        "newPassword"
+      ).value;
 
-    const linkBox =
-      document.getElementById("linkBox");
-
-    const file =
-      document.getElementById("contentFile");
-
-    const fileText =
-      document.getElementById("fileText");
-
-    if (type === "link") {
-
-      fileBox.style.display = "none";
-      linkBox.style.display = "block";
-
-      return;
-    }
-
-    fileBox.style.display = "block";
-    linkBox.style.display = "none";
-
-    if (type === "pdf") {
-
-      file.accept =
-        ".pdf,application/pdf";
-
-      fileText.textContent =
-        "اختر ملف PDF من جهازك";
-
-    }
-
-    if (type === "video") {
-
-      file.accept =
-        "video/*";
-
-      fileText.textContent =
-        "اختر فيديو من جهازك";
-
-    }
-
-  }
-
-
-  /* =====================================================
-     رفع المحتوى
-     ===================================================== */
-
-  async function uploadContent() {
-
-    const title =
-      document
-        .getElementById("contentTitle")
-        .value
-        .trim();
-
-    const description =
-      document
-        .getElementById("contentDescription")
-        .value
-        .trim();
-
-    const type =
-      document
-        .getElementById("contentType")
-        .value;
-
-    const category =
-      document
-        .getElementById("contentCategory")
-        .value;
-
-    const grade =
-      document
-        .getElementById("contentGrade")
-        .value;
 
     const status =
-      document.getElementById("uploadStatus");
+      document.getElementById(
+        "passwordStatus"
+      );
 
-    if (!title) {
+    const button =
+      document.getElementById(
+        "passwordButton"
+      );
+
+
+    if (!userId) {
 
       showStatus(
         status,
-        "اكتب عنوان المحتوى أولًا.",
+        "اختر مستخدمًا أولًا.",
         "error"
       );
 
       return;
+
     }
+
+
+    if (
+      !password ||
+      password.length < 6
+    ) {
+
+      showStatus(
+        status,
+        "كلمة السر يجب أن تكون 6 أحرف على الأقل.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    button.disabled = true;
+
+    button.textContent =
+      "جاري التغيير...";
 
 
     try {
 
-      let fileUrl = "";
-      let fileName = "";
+      /*
+        دالة Supabase Edge Function
+      */
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.functions.invoke(
+          "admin-change-password",
+          {
+            body: {
+              user_id: userId,
+              new_password: password
+            }
+          }
+        );
 
 
-      /* ==========================
-         رابط فيديو
-         ========================== */
-
-      if (type === "link") {
-
-        fileUrl =
-          document
-            .getElementById("videoLink")
-            .value
-            .trim();
-
-        if (!fileUrl) {
-
-          showStatus(
-            status,
-            "ضع رابط الفيديو أولًا.",
-            "error"
-          );
-
-          return;
-        }
-
+      if (error) {
+        throw error;
       }
 
 
-      /* ==========================
-         PDF / فيديو
-         ========================== */
-
-      else {
-
-        const file =
-          document
-            .getElementById("contentFile")
-            .files[0];
-
-        if (!file) {
-
-          showStatus(
-            status,
-            "اختر الملف أولًا.",
-            "error"
-          );
-
-          return;
-        }
-
-
-        /* منع الملفات الكبيرة جدًا */
-
-        const maxSize =
-          type === "pdf"
-            ? 50 * 1024 * 1024
-            : 500 * 1024 * 1024;
-
-
-        if (file.size > maxSize) {
-
-          showStatus(
-            status,
-            type === "pdf"
-              ? "حجم PDF أكبر من 50MB."
-              : "حجم الفيديو أكبر من 500MB.",
-            "error"
-          );
-
-          return;
-        }
-
-
-        document
-          .getElementById("progress")
-          .style.display = "block";
-
-
-        const bucket =
-          type === "pdf"
-            ? PDF_BUCKET
-            : VIDEO_BUCKET;
-
-
-        const safeName =
-          file.name
-            .replace(/[^a-zA-Z0-9._-]/g, "_");
-
-
-        const path =
-          Date.now() +
-          "_" +
-          Math.random()
-            .toString(36)
-            .substring(2, 8) +
-          "_" +
-          safeName;
-
-
-        const {
-          error: uploadError
-        } =
-          await supabaseClient
-            .storage
-            .from(bucket)
-            .upload(path, file, {
-              cacheControl: "3600",
-              upsert: false
-            });
-
-
-        if (uploadError)
-          throw uploadError;
-
-
-        const {
-          data: publicData
-        } =
-          supabaseClient
-            .storage
-            .from(bucket)
-            .getPublicUrl(path);
-
-
-        fileUrl =
-          publicData.publicUrl;
-
-        fileName =
-          file.name;
-
-
-        document
-          .getElementById("progressBar")
-          .style.width = "100%";
-
+      if (data?.error) {
+        throw new Error(data.error);
       }
-
-
-      /* ==========================
-         حفظ بيانات المحتوى
-         ========================== */
-
-      const {
-        data: {
-          user
-        }
-      } =
-        await supabaseClient.auth.getUser();
-
-
-      const {
-        error: dbError
-      } =
-        await supabaseClient
-          .from("library_content")
-          .insert({
-
-            title: title,
-
-            description: description,
-
-            type: type,
-
-            category: category,
-
-            grade: grade,
-
-            url: fileUrl,
-
-            file_name: fileName,
-
-            created_by: user
-              ? user.id
-              : null
-
-          });
-
-
-      if (dbError)
-        throw dbError;
 
 
       showStatus(
         status,
-        "تم رفع المحتوى وحفظه بنجاح ✅",
+        "✅ تم تغيير كلمة السر بنجاح.",
         "success"
       );
 
 
-      document
-        .getElementById("contentTitle")
-        .value = "";
-
-      document
-        .getElementById("contentDescription")
-        .value = "";
-
-      document
-        .getElementById("contentFile")
-        .value = "";
-
-      document
-        .getElementById("videoLink")
-        .value = "";
-
-
-      loadContent();
+      document.getElementById(
+        "newPassword"
+      ).value = "";
 
     }
 
@@ -923,8 +1181,8 @@
 
       showStatus(
         status,
-        "حدث خطأ: " +
-        (error.message || "تعذر رفع المحتوى"),
+        "❌ لم يتم تغيير كلمة السر: " +
+        (error.message || ""),
         "error"
       );
 
@@ -932,385 +1190,488 @@
 
     finally {
 
-      setTimeout(() => {
+      button.disabled = false;
 
-        document
-          .getElementById("progress")
-          .style.display = "none";
-
-        document
-          .getElementById("progressBar")
-          .style.width = "0%";
-
-      }, 1000);
+      button.textContent =
+        "🔑 تغيير كلمة السر";
 
     }
 
   }
 
 
-  /* =====================================================
-     تحميل المحتوى
-     ===================================================== */
+  /* ==========================================
+     تغيير نوع الملف
+  ========================================== */
 
-  async function loadContent() {
+  function changeType() {
 
-    const list =
-      document.getElementById("contentList");
+    const type =
+      document.getElementById(
+        "contentType"
+      ).value;
 
-    list.innerHTML =
-      '<div class="empty">جاري التحميل...</div>';
-
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .from("library_content")
-        .select("*")
-        .order("created_at", {
-          ascending: false
-        });
-
-
-    if (error) {
-
-      list.innerHTML =
-        `<div class="empty">
-          تعذر تحميل المحتوى.<br>
-          ${escapeHtml(error.message)}
-        </div>`;
-
-      return;
-    }
-
-
-    if (!data || data.length === 0) {
-
-      list.innerHTML =
-        '<div class="empty">لا يوجد محتوى حتى الآن.</div>';
-
-      return;
-    }
-
-
-    list.innerHTML = "";
-
-
-    data.forEach(item => {
-
-      const div =
-        document.createElement("div");
-
-      div.className = "item";
-
-
-      let icon = "📚";
-
-      if (item.type === "pdf")
-        icon = "📄";
-
-      if (item.type === "video")
-        icon = "🎥";
-
-      if (item.type === "link")
-        icon = "🔗";
-
-
-      div.innerHTML = `
-
-        <span class="badge">
-          ${icon}
-          ${escapeHtml(item.type || "")}
-        </span>
-
-        <h3>
-          ${escapeHtml(item.title || "بدون عنوان")}
-        </h3>
-
-        <p>
-          ${escapeHtml(item.description || "")}
-        </p>
-
-        <p class="small">
-          القسم:
-          ${escapeHtml(item.category || "")}
-          |
-          الصف:
-          ${escapeHtml(item.grade || "")}
-        </p>
-
-        <div class="actions">
-
-          <button
-            class="btn btn-blue"
-            onclick="openContent('${encodeURIComponent(item.url || "")}')">
-            👁️ فتح
-          </button>
-
-          <button
-            class="btn btn-danger"
-            onclick="deleteContent('${item.id}')">
-            🗑️ حذف
-          </button>
-
-        </div>
-      `;
-
-
-      list.appendChild(div);
-
-    });
-
-  }
-
-
-  /* =====================================================
-     فتح المحتوى
-     ===================================================== */
-
-  function openContent(encodedUrl) {
-
-    const url =
-      decodeURIComponent(encodedUrl);
-
-    if (!url)
-      return;
-
-    window.open(
-      url,
-      "_blank"
-    );
-
-  }
-
-
-  /* =====================================================
-     حذف المحتوى
-     ===================================================== */
-
-  async function deleteContent(id) {
-
-    const ok =
-      confirm(
-        "هل أنت متأكد من حذف هذا المحتوى؟"
+    const input =
+      document.getElementById(
+        "contentFile"
       );
 
-    if (!ok)
-      return;
-
-
-    const {
-      error
-    } =
-      await supabaseClient
-        .from("library_content")
-        .delete()
-        .eq("id", id);
-
-
-    if (error) {
-
-      alert(
-        "تعذر حذف المحتوى:\n" +
-        error.message
-      );
-
-      return;
-    }
-
-
-    alert("تم حذف المحتوى.");
-
-    loadContent();
-
-  }
-
-
-  /* =====================================================
-     المستخدمون
-     ===================================================== */
-
-  async function loadUsers() {
-
-    const list =
-      document.getElementById("usersList");
-
-    list.innerHTML =
-      '<div class="empty">جاري تحميل المستخدمين...</div>';
-
-
-    /*
-      هذه الصفحة تقرأ جدول profiles.
-
-      يجب أن يحتوي الجدول على:
-      id
-      email
-      full_name
-    */
-
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .from("profiles")
-        .select("*")
-        .order("created_at", {
-          ascending: false
-        });
-
-
-    if (error) {
-
-      list.innerHTML =
-        `<div class="empty">
-          تعذر تحميل المستخدمين.<br><br>
-          ${escapeHtml(error.message)}
-        </div>`;
-
-      return;
-    }
-
-
-    if (!data || data.length === 0) {
-
-      list.innerHTML =
-        '<div class="empty">لا يوجد مستخدمون.</div>';
-
-      return;
-    }
-
-
-    list.innerHTML = "";
-
-
-    data.forEach(user => {
-
-      const div =
-        document.createElement("div");
-
-      div.className = "item";
-
-
-      const email =
-        user.email || "بدون بريد";
-
-      const name =
-        user.full_name ||
-        user.name ||
-        "بدون اسم";
-
-
-      div.innerHTML = `
-
-        <span class="badge">
-          👤 مستخدم
-        </span>
-
-        <h3>
-          ${escapeHtml(name)}
-        </h3>
-
-        <p>
-          📧 ${escapeHtml(email)}
-        </p>
-
-        <p class="small">
-          UID:
-          ${escapeHtml(user.id || "")}
-        </p>
-
-        <div class="actions">
-
-          <button
-            class="btn btn-blue"
-            onclick="sendResetEmail('${encodeURIComponent(email)}')">
-            🔐 إعادة تعيين كلمة السر
-          </button>
-
-        </div>
-
-      `;
-
-
-      list.appendChild(div);
-
-    });
-
-  }
-
-
-  /* =====================================================
-     إرسال إعادة تعيين كلمة السر
-     ===================================================== */
-
-  async function sendResetEmail(encodedEmail) {
-
-    const email =
-      decodeURIComponent(encodedEmail);
-
-
-    const ok =
-      confirm(
-        "إرسال رابط إعادة تعيين كلمة السر إلى:\n\n" +
-        email
+    const label =
+      document.getElementById(
+        "fileLabel"
       );
 
 
-    if (!ok)
+    document.getElementById(
+      "fileInfo"
+    ).style.display = "none";
+
+
+    if (type === "pdf") {
+
+      label.textContent =
+        "اختر ملف PDF";
+
+      input.accept =
+        ".pdf,application/pdf";
+
+    } else {
+
+      label.textContent =
+        "اختر الفيديو";
+
+      input.accept =
+        "video/*";
+
+    }
+
+  }
+
+
+  /* ==========================================
+     معلومات الملف
+  ========================================== */
+
+  function showFile() {
+
+    const file =
+      document.getElementById(
+        "contentFile"
+      ).files[0];
+
+    const info =
+      document.getElementById(
+        "fileInfo"
+      );
+
+
+    if (!file) {
+
+      info.style.display = "none";
+
       return;
 
+    }
 
-    const {
-      error
-    } =
-      await supabaseClient
-        .auth
-        .resetPasswordForEmail(
-          email,
-          {
-            redirectTo:
-              window.location.origin +
-              "/login/reset-password.html"
-          }
-        );
 
+    info.innerHTML =
+      "📁 " +
+      escapeHtml(file.name) +
+      "<br>📦 الحجم: " +
+      formatSize(file.size);
+
+
+    info.style.display =
+      "block";
+
+  }
+
+
+  /* ==========================================
+     رفع PDF / فيديو
+  ========================================== */
+
+  async function uploadFile() {
+
+    const type =
+      document.getElementById(
+        "contentType"
+      ).value;
+
+    const title =
+      document.getElementById(
+        "contentTitle"
+      ).value.trim();
+
+    const description =
+      document.getElementById(
+        "contentDescription"
+      ).value.trim();
+
+    const file =
+      document.getElementById(
+        "contentFile"
+      ).files[0];
+
+
+    const button =
+      document.getElementById(
+        "uploadButton"
+      );
 
     const status =
       document.getElementById(
-        "passwordStatus"
+        "uploadStatus"
+      );
+
+    const progress =
+      document.getElementById(
+        "progress"
+      );
+
+    const bar =
+      document.getElementById(
+        "progressBar"
       );
 
 
-    if (error) {
+    if (!title) {
 
       showStatus(
         status,
-        "تعذر إرسال الرابط: " +
-        error.message,
+        "اكتب عنوان المحتوى.",
         "error"
       );
 
       return;
+
     }
 
 
-    showStatus(
-      status,
-      "تم إرسال رابط إعادة تعيين كلمة السر إلى " +
-      email,
-      "success"
-    );
+    if (!file) {
+
+      showStatus(
+        status,
+        "اختر الملف أولًا.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    if (
+      type === "pdf" &&
+      !file.name
+        .toLowerCase()
+        .endsWith(".pdf")
+    ) {
+
+      showStatus(
+        status,
+        "اختر ملف PDF صحيح.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    if (
+      type === "video" &&
+      !file.type.startsWith("video/")
+    ) {
+
+      showStatus(
+        status,
+        "اختر ملف فيديو صحيح.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    button.disabled = true;
+
+    button.textContent =
+      "جاري الرفع...";
+
+
+    progress.style.display =
+      "block";
+
+    bar.style.width =
+      "15%";
+
+
+    try {
+
+      const folder =
+        type === "pdf"
+          ? "pdf"
+          : "videos";
+
+
+      const safeName =
+        file.name
+          .replace(
+            /[^\w\u0600-\u06FF.\- ]+/g,
+            "_"
+          )
+          .replace(
+            /\s+/g,
+            "_"
+          );
+
+
+      const path =
+        folder +
+        "/" +
+        Date.now() +
+        "_" +
+        safeName;
+
+
+      bar.style.width =
+        "35%";
+
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .storage
+          .from(BUCKET)
+          .upload(
+            path,
+            file,
+            {
+              cacheControl: "3600",
+              upsert: false,
+              contentType: file.type
+            }
+          );
+
+
+      if (error) {
+        throw error;
+      }
+
+
+      bar.style.width =
+        "75%";
+
+
+      const {
+        data: publicData
+      } =
+        supabaseClient
+          .storage
+          .from(BUCKET)
+          .getPublicUrl(path);
+
+
+      const url =
+        publicData.publicUrl;
+
+
+      document.getElementById(
+        "uploadedUrl"
+      ).value = url;
+
+
+      document.getElementById(
+        "urlBox"
+      ).style.display =
+        "block";
+
+
+      /*
+        الفيديو يدخل في جدول lectures
+        إذا كان الجدول موجودًا بهذا الشكل.
+      */
+
+      if (type === "video") {
+
+        const {
+          error: lectureError
+        } =
+          await supabaseClient
+            .from("lectures")
+            .insert({
+              title: title,
+              description: description,
+              video_url: url
+            });
+
+
+        if (lectureError) {
+
+          console.warn(
+            lectureError
+          );
+
+          showStatus(
+            status,
+            "✅ تم رفع الفيديو، لكن لم يتم حفظه في جدول المحاضرات. الرابط موجود أسفل.",
+            "info"
+          );
+
+        } else {
+
+          showStatus(
+            status,
+            "✅ تم رفع الفيديو وإضافته للمحاضرات.",
+            "success"
+          );
+
+        }
+
+      } else {
+
+        showStatus(
+          status,
+          "✅ تم رفع ملف PDF بنجاح.",
+          "success"
+        );
+
+      }
+
+
+      bar.style.width =
+        "100%";
+
+
+      document.getElementById(
+        "contentTitle"
+      ).value = "";
+
+      document.getElementById(
+        "contentDescription"
+      ).value = "";
+
+      document.getElementById(
+        "contentFile"
+      ).value = "";
+
+      document.getElementById(
+        "fileInfo"
+      ).style.display =
+        "none";
+
+
+      await loadLectures();
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+      showStatus(
+        status,
+        "❌ فشل رفع الملف: " +
+        (error.message || ""),
+        "error"
+      );
+
+    }
+
+    finally {
+
+      button.disabled = false;
+
+      button.textContent =
+        "📤 رفع المحتوى";
+
+      setTimeout(() => {
+
+        progress.style.display =
+          "none";
+
+        bar.style.width =
+          "0%";
+
+      }, 1200);
+
+    }
 
   }
 
 
-  /* =====================================================
+  /* ==========================================
+     عدد المحاضرات
+  ========================================== */
+
+  async function loadLectures() {
+
+    const {
+      count,
+      error
+    } =
+      await supabaseClient
+        .from("lectures")
+        .select(
+          "*",
+          {
+            count: "exact",
+            head: true
+          }
+        );
+
+
+    if (!error) {
+
+      document.getElementById(
+        "lecturesCount"
+      ).textContent =
+        count || 0;
+
+    }
+
+  }
+
+
+  /* ==========================================
+     نسخ الرابط
+  ========================================== */
+
+  async function copyUrl() {
+
+    const input =
+      document.getElementById(
+        "uploadedUrl"
+      );
+
+    try {
+
+      await navigator.clipboard
+        .writeText(input.value);
+
+      alert("✅ تم نسخ الرابط.");
+
+    }
+
+    catch {
+
+      input.select();
+
+      document.execCommand("copy");
+
+      alert("✅ تم نسخ الرابط.");
+
+    }
+
+  }
+
+
+  /* ==========================================
      تسجيل الخروج
-     ===================================================== */
+  ========================================== */
 
   async function logout() {
 
@@ -1322,36 +1683,108 @@
   }
 
 
-  /* =====================================================
-     الرسائل
-     ===================================================== */
+  /* ==========================================
+     التنقل
+  ========================================== */
 
-  function showStatus(element, message, type) {
+  function goTo(id) {
 
-    element.textContent =
-      message;
+    document.getElementById(id)
+      .scrollIntoView({
+        behavior: "smooth"
+      });
 
-    element.className =
-      "status " + type;
-
-    element.style.display =
-      "block";
+    document.getElementById(
+      "sidebar"
+    ).classList.remove("open");
 
   }
 
 
-  /* =====================================================
-     حماية النصوص من HTML
-     ===================================================== */
+  function toggleSidebar() {
 
-  function escapeHtml(value) {
+    document.getElementById(
+      "sidebar"
+    ).classList.toggle("open");
 
-    return String(value)
+  }
+
+
+  /* ==========================================
+     الرسائل
+  ========================================== */
+
+  function showStatus(
+    element,
+    text,
+    type
+  ) {
+
+    element.textContent =
+      text;
+
+    element.className =
+      "status " + type;
+
+  }
+
+
+  /* ==========================================
+     أدوات
+  ========================================== */
+
+  function formatSize(bytes) {
+
+    if (!bytes) {
+      return "0 Bytes";
+    }
+
+    const units = [
+      "Bytes",
+      "KB",
+      "MB",
+      "GB"
+    ];
+
+    const index =
+      Math.floor(
+        Math.log(bytes) /
+        Math.log(1024)
+      );
+
+    return (
+      Math.round(
+        bytes /
+        Math.pow(1024, index) *
+        100
+      ) / 100
+    ) +
+    " " +
+    units[index];
+
+  }
+
+
+  function escapeHtml(text) {
+
+    return String(text ?? "")
       .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
 
   }
 
