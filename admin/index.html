@@ -2,7 +2,9 @@
 <html lang="ar" dir="rtl">
 
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>لوحة التحكم | منصة أرض الأحياء</title>
@@ -24,6 +26,10 @@ body{
   background:#f4f7f6;
   color:#222;
 }
+
+/* =========================
+   الشريط الجانبي
+========================= */
 
 .sidebar{
   position:fixed;
@@ -83,6 +89,10 @@ body{
   background:rgba(255,255,255,.14);
 }
 
+/* =========================
+   المحتوى
+========================= */
+
 .main{
   margin-right:250px;
   padding:25px;
@@ -117,6 +127,10 @@ body{
   font-size:13px;
 }
 
+/* =========================
+   الأقسام
+========================= */
+
 .section{
   padding:22px;
   margin-bottom:22px;
@@ -127,6 +141,10 @@ body{
   margin-bottom:18px;
   font-size:19px;
 }
+
+/* =========================
+   الكروت
+========================= */
 
 .cards{
   display:grid;
@@ -156,6 +174,10 @@ body{
   font-size:25px;
   color:#075e4d;
 }
+
+/* =========================
+   الحقول
+========================= */
 
 .grid{
   display:grid;
@@ -205,6 +227,10 @@ input[type="file"]{
   padding:10px;
 }
 
+/* =========================
+   الأزرار
+========================= */
+
 .btn{
   border:0;
   border-radius:9px;
@@ -238,6 +264,10 @@ input[type="file"]{
   cursor:not-allowed;
 }
 
+/* =========================
+   الرسائل
+========================= */
+
 .status{
   display:none;
   margin-top:15px;
@@ -265,6 +295,10 @@ input[type="file"]{
   color:#155d85;
 }
 
+/* =========================
+   معلومات الملف
+========================= */
+
 .file-info{
   display:none;
   margin-top:10px;
@@ -289,6 +323,10 @@ input[type="file"]{
   margin-top:6px;
 }
 
+/* =========================
+   التقدم
+========================= */
+
 .progress{
   display:none;
   margin-top:15px;
@@ -305,6 +343,10 @@ input[type="file"]{
   transition:.3s;
 }
 
+/* =========================
+   الرابط الناتج
+========================= */
+
 .result-url{
   display:none;
   margin-top:15px;
@@ -313,6 +355,10 @@ input[type="file"]{
 .result-url input{
   direction:ltr;
 }
+
+/* =========================
+   الجدول
+========================= */
 
 table{
   width:100%;
@@ -349,6 +395,10 @@ th{
   background:#fff1d6;
   color:#936000;
 }
+
+/* =========================
+   الهاتف
+========================= */
 
 .mobile-menu{
   display:none;
@@ -401,25 +451,46 @@ th{
   .full{
     grid-column:auto;
   }
+
 }
 
 </style>
+
 </head>
 
 <body>
 
-<button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+<button
+  class="mobile-menu"
+  onclick="toggleSidebar()"
+>
+  ☰
+</button>
 
 
-<aside class="sidebar" id="sidebar">
+<!-- =========================
+     الشريط الجانبي
+========================= -->
+
+<aside
+  class="sidebar"
+  id="sidebar"
+>
 
   <div class="logo-area">
 
-    <img src="../logo.png" alt="منصة أرض الأحياء">
+    <img
+      src="../logo.png"
+      alt="منصة أرض الأحياء"
+    >
 
-    <h2>منصة أرض الأحياء</h2>
+    <h2>
+      منصة أرض الأحياء
+    </h2>
 
-    <p>لوحة تحكم الإدارة</p>
+    <p>
+      لوحة تحكم الإدارة
+    </p>
 
   </div>
 
@@ -463,6 +534,10 @@ th{
 </aside>
 
 
+<!-- =========================
+     المحتوى
+========================= -->
+
 <main class="main">
 
 
@@ -491,7 +566,9 @@ th{
   </div>
 
 
-  <!-- الإحصائيات -->
+  <!-- =========================
+       الإحصائيات
+  ========================= -->
 
   <section class="section">
 
@@ -556,7 +633,9 @@ th{
   </section>
 
 
-  <!-- إضافة المحتوى -->
+  <!-- =========================
+       إضافة المحتوى
+  ========================= -->
 
   <section
     class="section"
@@ -684,7 +763,7 @@ th{
         ></div>
 
         <div class="help">
-          يمكنك اختيار فيديو من الهاتف أو الكمبيوتر.
+          يمكنك اختيار فيديو أو ملف PDF من الهاتف أو الكمبيوتر.
         </div>
 
       </div>
@@ -709,7 +788,7 @@ th{
         >
 
         <div class="help">
-          الصق رابط الفيديو هنا.
+          الصق رابط الفيديو المباشر هنا.
         </div>
 
       </div>
@@ -774,7 +853,9 @@ th{
   </section>
 
 
-  <!-- تغيير كلمة السر -->
+  <!-- =========================
+       تغيير كلمة السر
+  ========================= -->
 
   <section
     class="section"
@@ -835,7 +916,9 @@ th{
   </section>
 
 
-  <!-- المستخدمون -->
+  <!-- =========================
+       المستخدمون
+  ========================= -->
 
   <section
     class="section"
@@ -900,16 +983,16 @@ th{
 
 <script>
 
-
-/* ==========================================
-   نفس بيانات login/index.html
-========================================== */
+/* =====================================================
+   بيانات Supabase
+   نفس المشروع المستخدم في صفحة المذكرات
+===================================================== */
 
 const SUPABASE_URL =
-  "https://otvdxcvikjqgdajjvkib.supabase.co";
+  "https://gvehygqxjqucxwussaye.supabase.co";
 
 const SUPABASE_KEY =
-  "sb_publishable_25gtJgsUpaJX843Pbq2Fcg_sVYlSAK5";
+  "sb_publishable_0Hxtm1KuZQ7paMyZQwRLQQ_NQ2wRaRX";
 
 
 const supabaseClient =
@@ -926,6 +1009,8 @@ const supabaseClient =
   );
 
 
+/* اسم Storage Bucket */
+
 const BUCKET =
   "lectures";
 
@@ -933,9 +1018,9 @@ const BUCKET =
 let currentUser = null;
 
 
-/* ==========================================
+/* =====================================================
    تشغيل لوحة التحكم
-========================================== */
+===================================================== */
 
 document.addEventListener(
   "DOMContentLoaded",
@@ -947,7 +1032,7 @@ async function checkAdmin(){
 
   try{
 
-    let {
+    const {
       data,
       error
     } =
@@ -999,6 +1084,8 @@ async function checkAdmin(){
       session.user;
 
 
+    /* قراءة بيانات الأدمن */
+
     const {
       data:profile,
       error:profileError
@@ -1038,6 +1125,8 @@ async function checkAdmin(){
 
     }
 
+
+    /* التأكد من صلاحية الأدمن */
 
     if(
       String(profile.role || "")
@@ -1082,9 +1171,9 @@ async function checkAdmin(){
 }
 
 
-/* ==========================================
+/* =====================================================
    تغيير نوع المحتوى
-========================================== */
+===================================================== */
 
 function changeContentType(){
 
@@ -1099,20 +1188,24 @@ function changeContentType(){
       "videoMethodField"
     );
 
+
   const deviceArea =
     document.getElementById(
       "deviceArea"
     );
+
 
   const urlArea =
     document.getElementById(
       "urlArea"
     );
 
+
   const file =
     document.getElementById(
       "contentFile"
     );
+
 
   const label =
     document.getElementById(
@@ -1125,14 +1218,18 @@ function changeContentType(){
     methodField.style.display =
       "none";
 
+
     deviceArea.style.display =
       "block";
+
 
     urlArea.style.display =
       "none";
 
+
     label.textContent =
-      "اختر ملف PDF من جهازك";
+      "📄 اختر ملف PDF من جهازك";
+
 
     file.accept =
       ".pdf,application/pdf";
@@ -1143,6 +1240,7 @@ function changeContentType(){
     methodField.style.display =
       "block";
 
+
     changeVideoMethod();
 
   }
@@ -1150,9 +1248,9 @@ function changeContentType(){
 }
 
 
-/* ==========================================
+/* =====================================================
    طريقة الفيديو
-========================================== */
+===================================================== */
 
 function changeVideoMethod(){
 
@@ -1167,10 +1265,12 @@ function changeVideoMethod(){
       "deviceArea"
     );
 
+
   const urlArea =
     document.getElementById(
       "urlArea"
     );
+
 
   const file =
     document.getElementById(
@@ -1183,8 +1283,10 @@ function changeVideoMethod(){
     deviceArea.style.display =
       "block";
 
+
     urlArea.style.display =
       "none";
+
 
     file.accept =
       "video/*";
@@ -1195,6 +1297,7 @@ function changeVideoMethod(){
     deviceArea.style.display =
       "none";
 
+
     urlArea.style.display =
       "block";
 
@@ -1203,9 +1306,9 @@ function changeVideoMethod(){
 }
 
 
-/* ==========================================
+/* =====================================================
    معلومات الملف
-========================================== */
+===================================================== */
 
 function showFileInfo(){
 
@@ -1213,6 +1316,7 @@ function showFileInfo(){
     document.getElementById(
       "contentFile"
     ).files[0];
+
 
   const info =
     document.getElementById(
@@ -1244,9 +1348,9 @@ function showFileInfo(){
 }
 
 
-/* ==========================================
+/* =====================================================
    إضافة المحتوى
-========================================== */
+===================================================== */
 
 async function addContent(){
 
@@ -1255,25 +1359,30 @@ async function addContent(){
       "contentType"
     ).value;
 
+
   const method =
     document.getElementById(
       "videoMethod"
     ).value;
+
 
   const title =
     document.getElementById(
       "contentTitle"
     ).value.trim();
 
+
   const description =
     document.getElementById(
       "contentDescription"
     ).value.trim();
 
+
   const file =
     document.getElementById(
       "contentFile"
     ).files[0];
+
 
   const externalUrl =
     document.getElementById(
@@ -1286,11 +1395,14 @@ async function addContent(){
       "uploadButton"
     );
 
+
   const status =
     document.getElementById(
       "uploadStatus"
     );
 
+
+  /* التأكد من العنوان */
 
   if(!title){
 
@@ -1305,9 +1417,9 @@ async function addContent(){
   }
 
 
-  /* =========================
+  /* ===================================================
      فيديو عن طريق رابط
-  ========================= */
+  =================================================== */
 
   if(
     type === "video" &&
@@ -1329,6 +1441,7 @@ async function addContent(){
 
     button.disabled =
       true;
+
 
     button.textContent =
       "جاري إضافة الفيديو...";
@@ -1380,9 +1493,11 @@ async function addContent(){
         "contentTitle"
       ).value = "";
 
+
       document.getElementById(
         "contentDescription"
       ).value = "";
+
 
       document.getElementById(
         "videoUrl"
@@ -1409,19 +1524,21 @@ async function addContent(){
       button.disabled =
         false;
 
+
       button.textContent =
         "📤 إضافة المحتوى";
 
     }
+
 
     return;
 
   }
 
 
-  /* =========================
+  /* ===================================================
      PDF أو فيديو من الجهاز
-  ========================= */
+  =================================================== */
 
   if(!file){
 
@@ -1435,6 +1552,8 @@ async function addContent(){
 
   }
 
+
+  /* التحقق من PDF */
 
   if(
     type === "pdf" &&
@@ -1453,6 +1572,8 @@ async function addContent(){
 
   }
 
+
+  /* التحقق من الفيديو */
 
   if(
     type === "video" &&
@@ -1473,6 +1594,7 @@ async function addContent(){
   button.disabled =
     true;
 
+
   button.textContent =
     "جاري الرفع...";
 
@@ -1481,6 +1603,7 @@ async function addContent(){
     document.getElementById(
       "progress"
     );
+
 
   const bar =
     document.getElementById(
@@ -1491,17 +1614,22 @@ async function addContent(){
   progress.style.display =
     "block";
 
+
   bar.style.width =
-    "20%";
+    "15%";
 
 
   try{
+
+    /* مجلد الفيديو أو PDF */
 
     const folder =
       type === "pdf"
         ? "pdf"
         : "videos";
 
+
+    /* اسم آمن للملف */
 
     const safeName =
       file.name
@@ -1524,8 +1652,10 @@ async function addContent(){
 
 
     bar.style.width =
-      "40%";
+      "35%";
 
+
+    /* رفع الملف */
 
     const {
       error
@@ -1539,7 +1669,13 @@ async function addContent(){
           {
             cacheControl:"3600",
             upsert:false,
-            contentType:file.type
+            contentType:
+              file.type ||
+              (
+                type === "pdf"
+                  ? "application/pdf"
+                  : "video/mp4"
+              )
           }
         );
 
@@ -1550,8 +1686,10 @@ async function addContent(){
 
 
     bar.style.width =
-      "75%";
+      "70%";
 
+
+    /* الحصول على الرابط */
 
     const {
       data
@@ -1566,10 +1704,9 @@ async function addContent(){
       data.publicUrl;
 
 
-    /*
-      لو فيديو:
-      نحفظه في lectures
-    */
+    /* =================================================
+       فيديو
+    ================================================= */
 
     if(type === "video"){
 
@@ -1591,13 +1728,14 @@ async function addContent(){
 
       if(lectureError){
 
-        console.warn(
+        console.error(
           lectureError
         );
 
+
         showStatus(
           status,
-          "✅ تم رفع الفيديو، لكن لم يتم حفظه في المحاضرات. الرابط موجود بالأسفل.",
+          "⚠️ تم رفع الفيديو، لكن لم يتم حفظه في المحاضرات.",
           "info"
         );
 
@@ -1606,24 +1744,24 @@ async function addContent(){
 
         showStatus(
           status,
-          "✅ تم رفع الفيديو وإضافته للمحاضرات.",
+          "✅ تم رفع الفيديو وإضافته للمحاضرات بنجاح.",
           "success"
         );
 
       }
 
     }
-    else{
 
-      /*
-        PDF:
-        يتم رفعه إلى Storage
-        وإظهار الرابط لك.
-      */
+
+    /* =================================================
+       PDF
+    ================================================= */
+
+    else{
 
       showStatus(
         status,
-        "✅ تم رفع ملف PDF بنجاح.",
+        "✅ تم رفع ملف PDF بنجاح إلى المذكرات.",
         "success"
       );
 
@@ -1633,6 +1771,8 @@ async function addContent(){
     bar.style.width =
       "100%";
 
+
+    /* عرض الرابط */
 
     document.getElementById(
       "resultUrlInput"
@@ -1646,17 +1786,22 @@ async function addContent(){
       "block";
 
 
+    /* تنظيف النموذج */
+
     document.getElementById(
       "contentTitle"
     ).value = "";
+
 
     document.getElementById(
       "contentDescription"
     ).value = "";
 
+
     document.getElementById(
       "contentFile"
     ).value = "";
+
 
     document.getElementById(
       "fileInfo"
@@ -1684,6 +1829,7 @@ async function addContent(){
     button.disabled =
       false;
 
+
     button.textContent =
       "📤 إضافة المحتوى";
 
@@ -1692,6 +1838,7 @@ async function addContent(){
 
       progress.style.display =
         "none";
+
 
       bar.style.width =
         "0%";
@@ -1703,9 +1850,9 @@ async function addContent(){
 }
 
 
-/* ==========================================
+/* =====================================================
    تحميل المستخدمين
-========================================== */
+===================================================== */
 
 async function loadUsers(){
 
@@ -1713,6 +1860,7 @@ async function loadUsers(){
     document.getElementById(
       "usersTable"
     );
+
 
   const select =
     document.getElementById(
@@ -1741,6 +1889,7 @@ async function loadUsers(){
 
     console.error(error);
 
+
     table.innerHTML = `
       <tr>
         <td colspan="4">
@@ -1748,6 +1897,7 @@ async function loadUsers(){
         </td>
       </tr>
     `;
+
 
     return;
 
@@ -1762,6 +1912,7 @@ async function loadUsers(){
 
   table.innerHTML = "";
 
+
   select.innerHTML = `
     <option value="">
       -- اختر المستخدم --
@@ -1775,13 +1926,16 @@ async function loadUsers(){
       user.full_name ||
       "بدون اسم";
 
+
     const email =
       user.email ||
       "بدون بريد";
 
 
     const tr =
-      document.createElement("tr");
+      document.createElement(
+        "tr"
+      );
 
 
     tr.innerHTML = `
@@ -1798,14 +1952,14 @@ async function loadUsers(){
 
         <span class="role ${
           user.role === "admin"
-          ? "admin"
-          : ""
+            ? "admin"
+            : ""
         }">
 
           ${
             user.role === "admin"
-            ? "أدمن"
-            : "طالب"
+              ? "أدمن"
+              : "طالب"
           }
 
         </span>
@@ -1822,10 +1976,16 @@ async function loadUsers(){
     table.appendChild(tr);
 
 
-    if(user.role !== "admin"){
+    /* لا نسمح بتغيير كلمة سر الأدمن من القائمة */
+
+    if(
+      user.role !== "admin"
+    ){
 
       const option =
-        document.createElement("option");
+        document.createElement(
+          "option"
+        );
 
 
       option.value =
@@ -1849,9 +2009,9 @@ async function loadUsers(){
 }
 
 
-/* ==========================================
+/* =====================================================
    تغيير كلمة السر
-========================================== */
+===================================================== */
 
 async function changePassword(){
 
@@ -1859,6 +2019,7 @@ async function changePassword(){
     document.getElementById(
       "userSelect"
     ).value;
+
 
   const password =
     document.getElementById(
@@ -1870,6 +2031,7 @@ async function changePassword(){
     document.getElementById(
       "passwordStatus"
     );
+
 
   const button =
     document.getElementById(
@@ -1909,6 +2071,7 @@ async function changePassword(){
   button.disabled =
     true;
 
+
   button.textContent =
     "جاري التغيير...";
 
@@ -1938,9 +2101,11 @@ async function changePassword(){
 
 
     if(data?.error){
+
       throw new Error(
         data.error
       );
+
     }
 
 
@@ -1960,6 +2125,7 @@ async function changePassword(){
 
     console.error(error);
 
+
     showStatus(
       status,
       "❌ لم يتم تغيير كلمة السر: " +
@@ -1973,6 +2139,7 @@ async function changePassword(){
     button.disabled =
       false;
 
+
     button.textContent =
       "🔑 تغيير كلمة السر";
 
@@ -1981,9 +2148,9 @@ async function changePassword(){
 }
 
 
-/* ==========================================
+/* =====================================================
    عدد المحاضرات
-========================================== */
+===================================================== */
 
 async function loadLectures(){
 
@@ -2014,9 +2181,9 @@ async function loadLectures(){
 }
 
 
-/* ==========================================
+/* =====================================================
    نسخ الرابط
-========================================== */
+===================================================== */
 
 async function copyResultUrl(){
 
@@ -2033,6 +2200,7 @@ async function copyResultUrl(){
         input.value
       );
 
+
     alert(
       "✅ تم نسخ الرابط."
     );
@@ -2042,9 +2210,11 @@ async function copyResultUrl(){
 
     input.select();
 
+
     document.execCommand(
       "copy"
     );
+
 
     alert(
       "✅ تم نسخ الرابط."
@@ -2055,9 +2225,9 @@ async function copyResultUrl(){
 }
 
 
-/* ==========================================
+/* =====================================================
    تسجيل الخروج
-========================================== */
+===================================================== */
 
 async function logout(){
 
@@ -2072,9 +2242,9 @@ async function logout(){
 }
 
 
-/* ==========================================
-   التنقل
-========================================== */
+/* =====================================================
+   الانتقال للقسم
+===================================================== */
 
 function goTo(id){
 
@@ -2100,6 +2270,10 @@ function goTo(id){
 }
 
 
+/* =====================================================
+   القائمة في الهاتف
+===================================================== */
+
 function toggleSidebar(){
 
   document.getElementById(
@@ -2111,9 +2285,9 @@ function toggleSidebar(){
 }
 
 
-/* ==========================================
+/* =====================================================
    الرسائل
-========================================== */
+===================================================== */
 
 function showStatus(
   element,
@@ -2124,15 +2298,16 @@ function showStatus(
   element.textContent =
     text;
 
+
   element.className =
     "status " + type;
 
 }
 
 
-/* ==========================================
-   أدوات
-========================================== */
+/* =====================================================
+   تحويل حجم الملف
+===================================================== */
 
 function formatSize(bytes){
 
@@ -2169,6 +2344,10 @@ function formatSize(bytes){
 }
 
 
+/* =====================================================
+   حماية النص
+===================================================== */
+
 function escapeHtml(text){
 
   return String(
@@ -2198,7 +2377,9 @@ function escapeHtml(text){
 }
 
 
-/* تشغيل الإعداد الافتراضي */
+/* =====================================================
+   الإعداد الافتراضي
+===================================================== */
 
 changeContentType();
 
