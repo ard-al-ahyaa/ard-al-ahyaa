@@ -1,6 +1,15 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>المذكرات | منصة أرض الأحياء</title><link rel="icon" type="image/png" href="../favicon.png"><style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>المذكرات | منصة أرض الأحياء</title>
+
+<link rel="icon" type="image/png" href="../favicon.png">
+
+<style>
 
 *{
     margin:0;
@@ -203,6 +212,15 @@ body{
 
     box-shadow:
         0 3px 13px rgba(0,0,0,.04);
+
+    transition:.2s;
+}
+
+.note:hover{
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 7px 20px rgba(0,0,0,.08);
 }
 
 .note-icon{
@@ -217,12 +235,16 @@ body{
     font-size:18px;
 
     margin-bottom:8px;
+
+    word-break:break-word;
 }
 
 .note p{
     color:#687772;
 
     line-height:1.7;
+
+    min-height:55px;
 }
 
 .note-btn{
@@ -241,6 +263,84 @@ body{
     border-radius:8px;
 
     font-size:14px;
+
+    border:none;
+
+    cursor:pointer;
+}
+
+.note-btn:hover{
+    background:#064c3e;
+}
+
+/* حالة التحميل */
+
+.loading{
+    grid-column:1/-1;
+
+    background:white;
+
+    border-radius:14px;
+
+    padding:35px;
+
+    text-align:center;
+
+    color:#687772;
+
+    box-shadow:
+        0 3px 13px rgba(0,0,0,.04);
+}
+
+.loading-icon{
+    font-size:40px;
+
+    margin-bottom:10px;
+}
+
+/* عدم وجود ملفات */
+
+.empty{
+    grid-column:1/-1;
+
+    background:white;
+
+    border-radius:14px;
+
+    padding:35px;
+
+    text-align:center;
+
+    color:#687772;
+
+    box-shadow:
+        0 3px 13px rgba(0,0,0,.04);
+}
+
+.empty-icon{
+    font-size:45px;
+
+    margin-bottom:10px;
+}
+
+/* خطأ */
+
+.error{
+    grid-column:1/-1;
+
+    background:#fff1f1;
+
+    border:1px solid #efb4b4;
+
+    border-radius:14px;
+
+    padding:20px;
+
+    text-align:center;
+
+    color:#9b2929;
+
+    line-height:1.8;
 }
 
 /* تنبيه */
@@ -304,232 +404,450 @@ body{
 
 }
 
-</style></head><body><!-- الشريط الجانبي --><aside class="sidebar"><div class="logo">
+</style>
+</head>
 
-    <img
-        src="../logo.png"
-        alt="منصة أرض الأحياء"
-    >
+<body>
 
-    <h2>
-        منصة أرض الأحياء
-    </h2>
+<!-- الشريط الجانبي -->
 
-    <p>
-        منصة تعليمية
-    </p>
+<aside class="sidebar">
 
-</div>
+    <div class="logo">
 
-
-<nav class="menu">
-
-    <a href="../index.html">
-
-        <span class="menu-icon">
-            🏠
-        </span>
-
-        <span class="menu-text">
-            الرئيسية
-        </span>
-
-    </a>
-
-
-    <a href="../videos/index.html">
-
-        <span class="menu-icon">
-            🎥
-        </span>
-
-        <span class="menu-text">
-            المحاضرات
-        </span>
-
-    </a>
-
-
-    <a
-        href="index.html"
-        class="active"
-    >
-
-        <span class="menu-icon">
-            📚
-        </span>
-
-        <span class="menu-text">
-            المذكرات
-        </span>
-
-    </a>
-
-
-    <a href="../forum/index.html">
-
-        <span class="menu-icon">
-            💬
-        </span>
-
-        <span class="menu-text">
-            المنتدى
-        </span>
-
-    </a>
-
-
-    <a href="../classes/index.html">
-
-        <span class="menu-icon">
-            🎓
-        </span>
-
-        <span class="menu-text">
-            الصفوف
-        </span>
-
-    </a>
-
-</nav>
-
-</aside><!-- المحتوى --><main class="main"><div class="topbar">
-
-    <div class="page-title">
-        📚 المذكرات
-    </div>
-
-    <a
-        href="../index.html"
-        class="home-btn"
-    >
-        الرئيسية
-    </a>
-
-</div>
-
-
-<section class="page-box">
-
-    <h1>
-        مذكرات الصف الثالث الثانوي
-    </h1>
-
-    <p>
-        هنا ستجد مذكرات وملخصات
-        ومراجعات مادة الأحياء
-        للصف الثالث الثانوي.
-    </p>
-
-</section>
-
-
-<section class="notes">
-
-
-    <article class="note">
-
-        <div class="note-icon">
-            📘
-        </div>
+        <img
+            src="../logo.png"
+            alt="منصة أرض الأحياء"
+        >
 
         <h2>
-            مذكرة الأحياء
+            منصة أرض الأحياء
         </h2>
 
         <p>
-            مذكرة شاملة لمنهج الأحياء
+            منصة تعليمية
+        </p>
+
+    </div>
+
+
+    <nav class="menu">
+
+        <a href="../index.html">
+
+            <span class="menu-icon">
+                🏠
+            </span>
+
+            <span class="menu-text">
+                الرئيسية
+            </span>
+
+        </a>
+
+
+        <a href="../videos/index.html">
+
+            <span class="menu-icon">
+                🎥
+            </span>
+
+            <span class="menu-text">
+                المحاضرات
+            </span>
+
+        </a>
+
+
+        <a
+            href="index.html"
+            class="active"
+        >
+
+            <span class="menu-icon">
+                📚
+            </span>
+
+            <span class="menu-text">
+                المذكرات
+            </span>
+
+        </a>
+
+
+        <a href="../forum/index.html">
+
+            <span class="menu-icon">
+                💬
+            </span>
+
+            <span class="menu-text">
+                المنتدى
+            </span>
+
+        </a>
+
+
+        <a href="../classes/index.html">
+
+            <span class="menu-icon">
+                🎓
+            </span>
+
+            <span class="menu-text">
+                الصفوف
+            </span>
+
+        </a>
+
+    </nav>
+
+</aside>
+
+
+<!-- المحتوى -->
+
+<main class="main">
+
+    <div class="topbar">
+
+        <div class="page-title">
+            📚 المذكرات
+        </div>
+
+        <a
+            href="../index.html"
+            class="home-btn"
+        >
+            الرئيسية
+        </a>
+
+    </div>
+
+
+    <section class="page-box">
+
+        <h1>
+            مذكرات الصف الثالث الثانوي
+        </h1>
+
+        <p>
+            هنا ستجد مذكرات وملخصات
+            ومراجعات مادة الأحياء
             للصف الثالث الثانوي.
         </p>
 
-        <a
-            href="#"
-            class="note-btn"
-            onclick="comingSoon(event)"
-        >
-            تحميل المذكرة
-        </a>
-
-    </article>
+    </section>
 
 
-    <article class="note">
+    <!-- المذكرات التي يتم تحميلها من Supabase -->
 
-        <div class="note-icon">
-            📝
+    <section
+        class="notes"
+        id="notesContainer"
+    >
+
+        <div class="loading">
+
+            <div class="loading-icon">
+                ⏳
+            </div>
+
+            جاري تحميل المذكرات...
+
         </div>
 
-        <h2>
-            مراجعة الأحياء
-        </h2>
-
-        <p>
-            مراجعة شاملة لأهم أجزاء
-            منهج الأحياء.
-        </p>
-
-        <a
-            href="#"
-            class="note-btn"
-            onclick="comingSoon(event)"
-        >
-            تحميل المراجعة
-        </a>
-
-    </article>
+    </section>
 
 
-    <article class="note">
+    <div class="notice">
 
-        <div class="note-icon">
-            📑
-        </div>
+        💡
 
-        <h2>
-            ملخص الأحياء
-        </h2>
+        <strong>ملاحظة:</strong>
 
-        <p>
-            ملخص مبسط يساعد على
-            مراجعة المنهج.
-        </p>
+        أي ملف PDF يتم رفعه من لوحة الإدارة
+        داخل قسم المذكرات سيظهر هنا تلقائيًا.
 
-        <a
-            href="#"
-            class="note-btn"
-            onclick="comingSoon(event)"
-        >
-            فتح الملخص
-        </a>
+    </div>
 
-    </article>
+</main>
 
 
-</section>
+<!-- Supabase -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
-<div class="notice">
+<script>
 
-    💡
-    <strong>ملاحظة:</strong>
+/* ================================
+   إعداد Supabase
+================================ */
 
-    سيتم وضع ملفات المذكرات الحقيقية
-    وروابط التحميل هنا عند رفعها.
+const SUPABASE_URL =
+    "https://gvehygqxjqucxwussaye.supabase.co";
 
-    لن نضع روابط وهمية تسبب 404.
+const SUPABASE_ANON_KEY =
+    "sb_publishable_0Hxtm1KuZQ7paMyZQwRLQQ_NQ2wRaRX";
 
-</div>
 
-</main><script>
-
-function comingSoon(event){
-
-    event.preventDefault();
-
-    alert(
-        "📚 سيتم إضافة ملف المذكرة هنا."
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
     );
+
+
+/* ================================
+   تحميل المذكرات
+================================ */
+
+async function loadNotes(){
+
+    const container =
+        document.getElementById("notesContainer");
+
+
+    try{
+
+        /*
+         * ملفات المذكرات التي يرفعها الأدمن
+         * تكون داخل:
+         *
+         * lectures/pdf/
+         */
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .storage
+            .from("lectures")
+            .list("pdf", {
+
+                limit:100,
+
+                sortBy:{
+                    column:"created_at",
+                    order:"desc"
+                }
+
+            });
+
+
+        if(error){
+
+            console.error(error);
+
+            container.innerHTML = `
+                <div class="error">
+
+                    ❌ تعذر تحميل المذكرات.
+
+                    <br>
+
+                    تأكد من إعدادات
+                    Supabase Storage.
+
+                </div>
+            `;
+
+            return;
+        }
+
+
+        /* إزالة المجلدات والملفات غير المدعومة */
+
+        const files =
+            (data || []).filter(file => {
+
+                if(!file.name){
+                    return false;
+                }
+
+                if(file.name.startsWith(".")){
+                    return false;
+                }
+
+                return (
+                    file.name
+                        .toLowerCase()
+                        .endsWith(".pdf")
+                );
+
+            });
+
+
+        /* لا توجد مذكرات */
+
+        if(files.length === 0){
+
+            container.innerHTML = `
+
+                <div class="empty">
+
+                    <div class="empty-icon">
+                        📚
+                    </div>
+
+                    <h2>
+                        لا توجد مذكرات حاليًا
+                    </h2>
+
+                    <p style="margin-top:8px;">
+                        سيتم ظهور المذكرات هنا
+                        بعد رفعها من لوحة الإدارة.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+
+        /* إنشاء البطاقات */
+
+        container.innerHTML = "";
+
+
+        files.forEach(file => {
+
+            const fileName =
+                file.name;
+
+
+            /* إزالة الامتداد */
+
+            let title =
+                fileName.replace(
+                    /\.pdf$/i,
+                    ""
+                );
+
+
+            /* تحويل _ إلى مسافات */
+
+            title =
+                title.replace(
+                    /_/g,
+                    " "
+                );
+
+
+            /* الرابط العام للملف */
+
+            const {
+                data:publicData
+            } = supabaseClient
+                .storage
+                .from("lectures")
+                .getPublicUrl(
+                    "pdf/" + fileName
+                );
+
+
+            const url =
+                publicData.publicUrl;
+
+
+            const card =
+                document.createElement("article");
+
+
+            card.className =
+                "note";
+
+
+            card.innerHTML = `
+
+                <div class="note-icon">
+                    📘
+                </div>
+
+                <h2>
+                    ${escapeHtml(title)}
+                </h2>
+
+                <p>
+                    مذكرة أحياء بصيغة PDF
+                    للصف الثالث الثانوي.
+                </p>
+
+                <a
+                    href="${url}"
+                    target="_blank"
+                    rel="noopener"
+                    class="note-btn"
+                >
+                    📖 فتح المذكرة
+                </a>
+
+                <a
+                    href="${url}"
+                    download
+                    class="note-btn"
+                    style="margin-right:5px;background:#168b72;"
+                >
+                    ⬇️ تحميل
+                </a>
+
+            `;
+
+
+            container.appendChild(card);
+
+        });
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        container.innerHTML = `
+
+            <div class="error">
+
+                ❌ حدث خطأ أثناء تحميل المذكرات.
+
+                <br>
+
+                حاول تحديث الصفحة مرة أخرى.
+
+            </div>
+
+        `;
+
+    }
 
 }
 
-</script></body></html>
+
+/* ================================
+   حماية النص من HTML
+================================ */
+
+function escapeHtml(text){
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        text;
+
+    return div.innerHTML;
+
+}
+
+
+/* تشغيل تحميل المذكرات */
+
+loadNotes();
+
+</script>
+
+</body>
+</html>
