@@ -1,659 +1,83 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-
-<head>
-  <meta charset="UTF-8">
-
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-  <title>تسجيل الدخول | منصة أرض الأحياء</title>
-
-  <link rel="icon"
-        href="../favicon.png">
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      min-height: 100vh;
-      font-family: Arial, Tahoma, sans-serif;
-      background: linear-gradient(
-        135deg,
-        #0d3b2b,
-        #176b4b
-      );
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .login-box {
-      width: 100%;
-      max-width: 430px;
-      background: #ffffff;
-      border-radius: 22px;
-      padding: 35px 25px;
-      box-shadow:
-        0 15px 40px rgba(0,0,0,.25);
-      text-align: center;
-    }
-
-    .logo {
-      width: 95px;
-      height: 95px;
-      object-fit: contain;
-      margin-bottom: 15px;
-      border-radius: 20px;
-    }
-
-    h1 {
-      color: #145c3d;
-      font-size: 27px;
-      margin-bottom: 8px;
-    }
-
-    .subtitle {
-      color: #777;
-      margin-bottom: 28px;
-      font-size: 14px;
-    }
-
-    .form-group {
-      text-align: right;
-      margin-bottom: 17px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 7px;
-      color: #214536;
-      font-weight: bold;
-    }
-
-    input {
-      width: 100%;
-      padding: 14px;
-      border: 1px solid #d8e3dd;
-      border-radius: 10px;
-      font-size: 16px;
-      font-family: inherit;
-      outline: none;
-      transition: .2s;
-    }
-
-    input:focus {
-      border-color: #188052;
-      box-shadow:
-        0 0 0 3px rgba(24,128,82,.10);
-    }
-
-    .password-box {
-      position: relative;
-    }
-
-    .password-box input {
-      padding-left: 48px;
-    }
-
-    .show-password {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      font-size: 20px;
-      padding: 3px;
-    }
-
-    .login-btn {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 10px;
-      background: #16734d;
-      color: white;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 8px;
-      transition: .2s;
-    }
-
-    .login-btn:hover {
-      background: #105b3c;
-    }
-
-    .login-btn:disabled {
-      background: #8ca99b;
-      cursor: not-allowed;
-    }
-
-    .message {
-      display: none;
-      padding: 12px;
-      margin-top: 18px;
-      border-radius: 9px;
-      font-size: 14px;
-      white-space: pre-wrap;
-      line-height: 1.6;
-    }
-
-    .error {
-      display: block;
-      background: #fdeaea;
-      color: #a51f1f;
-    }
-
-    .success {
-      display: block;
-      background: #e4f6eb;
-      color: #12633e;
-    }
-
-    .links {
-      margin-top: 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .links a {
-      color: #16734d;
-      text-decoration: none;
-      font-size: 14px;
-    }
-
-    .links a:hover {
-      text-decoration: underline;
-    }
-
-    .footer {
-      margin-top: 25px;
-      color: #999;
-      font-size: 12px;
-    }
-
-    @media (max-width: 480px) {
-
-      .login-box {
-        padding: 30px 20px;
-      }
-
-      h1 {
-        font-size: 24px;
-      }
-
-    }
-
-  </style>
-
-</head>
-
-<body>
-
-  <div class="login-box">
-
-    <img
-      src="../logo.png"
-      alt="منصة أرض الأحياء"
-      class="logo"
-      onerror="this.style.display='none'"
-    >
-
-    <h1>منصة أرض الأحياء</h1>
-
-    <p class="subtitle">
-      تسجيل الدخول إلى المنصة التعليمية
-    </p>
-
-
-    <form id="loginForm">
-
-      <div class="form-group">
-
-        <label for="email">
-          البريد الإلكتروني
-        </label>
-
-        <input
-          type="email"
-          id="email"
-          placeholder="example@email.com"
-          autocomplete="email"
-          required
-        >
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label for="password">
-          كلمة المرور
-        </label>
-
-        <div class="password-box">
-
-          <input
-            type="password"
-            id="password"
-            placeholder="اكتب كلمة المرور"
-            autocomplete="current-password"
-            required
-          >
-
-          <button
-            type="button"
-            class="show-password"
-            onclick="togglePassword()"
-            aria-label="إظهار كلمة المرور"
-          >
-            👁️
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <button
-        type="submit"
-        class="login-btn"
-        id="loginBtn"
-      >
-        تسجيل الدخول
-      </button>
-
-    </form>
-
-
-    <div
-      id="message"
-      class="message"
-    ></div>
-
-
-    <div class="links">
-
-      <a href="../register/index.html">
-        ليس لديك حساب؟ إنشاء حساب جديد
-      </a>
-
-      <a href="../index.html">
-        العودة إلى الرئيسية
-      </a>
-
-    </div>
-
-
-    <div class="footer">
-      © منصة أرض الأحياء
-    </div>
-
-  </div>
-
-
-<script>
-
-/* =========================================
-   Supabase
-========================================= */
-
-const SUPABASE_URL =
-  "https://gvehygqxjqucxwussaye.supabase.co";
-
-const SUPABASE_ANON_KEY =
-  "sb_publishable_0Hxtm1KuZQ7paMyZQwRLQQ_NQ2wRaRX";
-
-
-const supabaseClient =
-  supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
-
-
-/* =========================================
-   عناصر الصفحة
-========================================= */
-
-const loginForm =
-  document.getElementById("loginForm");
-
-const loginBtn =
-  document.getElementById("loginBtn");
-
-const message =
-  document.getElementById("message");
-
-
-/* =========================================
-   إظهار الرسائل
-========================================= */
-
-function showMessage(text, type) {
-
-  message.textContent = text;
-
-  message.className =
-    "message " + type;
-
-}
-
-
-/* =========================================
-   إظهار / إخفاء كلمة المرور
-========================================= */
-
-function togglePassword() {
-
-  const password =
-    document.getElementById("password");
-
-  const button =
-    document.querySelector(".show-password");
-
-
-  if (password.type === "password") {
-
-    password.type = "text";
-
-    button.textContent = "🙈";
-
-  } else {
-
-    password.type = "password";
-
-    button.textContent = "👁️";
-
-  }
-
-}
-
-
-/* =========================================
-   تسجيل الدخول
-========================================= */
-
-loginForm.addEventListener(
-  "submit",
-  async function(event) {
-
-    event.preventDefault();
-
-
-    const email =
-      document
-        .getElementById("email")
-        .value
-        .trim();
-
-    const password =
-      document
-        .getElementById("password")
-        .value;
-
-
-    if (!email || !password) {
-
-      showMessage(
-        "اكتب البريد الإلكتروني وكلمة المرور.",
-        "error"
-      );
-
-      return;
-
-    }
-
-
-    loginBtn.disabled = true;
-
-    loginBtn.textContent =
-      "جاري تسجيل الدخول...";
-
-
-    message.className =
-      "message";
-
-    message.textContent = "";
-
-
-    try {
-
-      /* تسجيل الدخول */
-
-      const {
-        data,
-        error
-      } = await supabaseClient.auth.signInWithPassword({
-
-        email: email,
-
-        password: password
-
-      });
-
-
-      if (error) {
-
-        console.error(
-          "Login error:",
-          error
-        );
-
-        showMessage(
-          getArabicError(error),
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      if (!data || !data.user) {
-
-        showMessage(
-          "تعذر العثور على بيانات الحساب.",
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      /* التأكد من وجود الجلسة */
-
-      const {
-        data: sessionData
-      } =
-        await supabaseClient.auth.getSession();
-
-
-      if (!sessionData.session) {
-
-        showMessage(
-          "تم تسجيل الدخول ولكن لم يتم إنشاء جلسة.",
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      showMessage(
-        "✅ تم تسجيل الدخول بنجاح.\nجاري فتح المنصة...",
-        "success"
-      );
-
-
-      /*
-        ننتظر قليلًا حتى يتم حفظ الجلسة
-        ثم نذهب للرئيسية.
-      */
-
-      setTimeout(
-        function() {
-
-          window.location.href =
-            "../index.html";
-
-        },
-        700
-      );
-
-    }
-
-    catch (error) {
-
-      console.error(error);
-
-      showMessage(
-        "حدث خطأ غير متوقع:\n" +
-        (
-          error.message ||
-          "خطأ غير معروف"
-        ),
-        "error"
-      );
-
-    }
-
-    finally {
-
-      loginBtn.disabled = false;
-
-      loginBtn.textContent =
-        "تسجيل الدخول";
-
-    }
-
-  }
+-- =========================================
+-- منصة أرض الأحياء - إعداد Supabase الجديد
+-- =========================================
+
+-- جدول بيانات المستخدمين
+create table if not exists public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  full_name text,
+  email text,
+  role text not null default 'student',
+  created_at timestamptz not null default now()
 );
 
+-- تفعيل RLS
+alter table public.profiles enable row level security;
 
-/* =========================================
-   ترجمة أخطاء Supabase
-========================================= */
+-- حذف السياسات القديمة إن وجدت
+drop policy if exists "Users can read own profile"
+on public.profiles;
 
-function getArabicError(error) {
+drop policy if exists "Users can insert own profile"
+on public.profiles;
 
-  const msg =
-    (
-      error.message ||
-      ""
-    ).toLowerCase();
+drop policy if exists "Users can update own profile"
+on public.profiles;
 
+-- قراءة الحساب الخاص بالمستخدم
+create policy "Users can read own profile"
+on public.profiles
+for select
+to authenticated
+using (auth.uid() = id);
 
-  if (
-    msg.includes("invalid login credentials")
-  ) {
+-- إنشاء ملف المستخدم
+create policy "Users can insert own profile"
+on public.profiles
+for insert
+to authenticated
+with check (auth.uid() = id);
 
-    return "❌ البريد الإلكتروني أو كلمة المرور غير صحيحة.";
-
-  }
-
-
-  if (
-    msg.includes("email not confirmed")
-  ) {
-
-    return "❌ يجب تأكيد البريد الإلكتروني أولًا.";
-
-  }
-
-
-  if (
-    msg.includes("too many requests")
-  ) {
-
-    return "❌ تم إجراء محاولات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.";
-
-  }
+-- تعديل ملف المستخدم
+create policy "Users can update own profile"
+on public.profiles
+for update
+to authenticated
+using (auth.uid() = id)
+with check (auth.uid() = id);
 
 
-  if (
-    msg.includes("network")
-  ) {
+-- =========================================
+-- إنشاء Storage للمحاضرات والمذكرات
+-- =========================================
 
-    return "❌ يوجد مشكلة في الاتصال بالإنترنت.";
-
-  }
-
-
-  return (
-    "❌ فشل تسجيل الدخول:\n" +
-    (
-      error.message ||
-      "خطأ غير معروف"
-    )
-  );
-
-}
+insert into storage.buckets (id, name, public)
+values ('lectures', 'lectures', true)
+on conflict (id)
+do update set public = true;
 
 
-/* =========================================
-   لو المستخدم مسجل بالفعل
-========================================= */
+-- حذف سياسات التخزين القديمة
+drop policy if exists "lectures_upload"
+on storage.objects;
 
-async function checkExistingSession() {
+drop policy if exists "lectures_read"
+on storage.objects;
 
-  try {
+-- السماح للمستخدمين المسجلين برفع الملفات
+create policy "lectures_upload"
+on storage.objects
+for insert
+to authenticated
+with check (
+  bucket_id = 'lectures'
+);
 
-    const {
-      data
-    } =
-      await supabaseClient.auth.getSession();
-
-
-    if (
-      data &&
-      data.session
-    ) {
-
-      /*
-        لا نحول المستخدم تلقائيًا
-        أثناء تحميل الصفحة حتى لا يحصل
-        تعارض مع تسجيل الدخول.
-      */
-
-      console.log(
-        "يوجد تسجيل دخول حالي:",
-        data.session.user.email
-      );
-
-    }
-
-  }
-
-  catch (error) {
-
-    console.error(
-      "Session error:",
-      error
-    );
-
-  }
-
-}
-
-
-checkExistingSession();
-
-</script>
-
-</body>
-</html>
+-- السماح بقراءة الملفات
+create policy "lectures_read"
+on storage.objects
+for select
+to public
+using (
+  bucket_id = 'lectures'
+);
