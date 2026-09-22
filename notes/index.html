@@ -2,435 +2,562 @@
 <html lang="ar" dir="rtl">
 
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>المذكرات | منصة أرض الأحياء</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link
+    rel="icon"
+    href="../favicon.png"
+  >
 
   <style>
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: Tahoma, Arial, sans-serif;
+      font-family: Arial, Tahoma, sans-serif;
     }
 
     body {
-      background: #f4f7f5;
+      background: #f5f7f7;
       color: #222;
     }
 
-    header {
-      background: #0f5132;
+    .sidebar {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 250px;
+      height: 100vh;
+      background: #075e4d;
       color: white;
-      padding: 18px 25px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.15);
+      padding: 25px 15px;
+      z-index: 1000;
     }
 
-    .header-inner {
-      max-width: 1100px;
-      margin: auto;
-      display: flex;
-      align-items: center;
-      gap: 15px;
+    .logo-box {
+      text-align: center;
+      margin-bottom: 35px;
     }
 
-    .logo {
-      width: 60px;
-      height: 60px;
+    .logo-box img {
+      width: 75px;
+      height: 75px;
       object-fit: contain;
+      border-radius: 50%;
+      margin-bottom: 10px;
     }
 
-    header h1 {
-      font-size: 23px;
+    .logo-box h2 {
+      font-size: 20px;
+      margin-bottom: 5px;
     }
 
-    header p {
+    .logo-box p {
       font-size: 13px;
       opacity: .8;
-      margin-top: 5px;
     }
 
-    .container {
-      max-width: 1100px;
-      margin: 30px auto;
-      padding: 0 18px;
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    .top {
+    .menu a {
+      text-decoration: none;
+      color: white;
+      padding: 14px 15px;
+      border-radius: 10px;
+      transition: .2s;
+      font-size: 15px;
+    }
+
+    .menu a:hover,
+    .menu a.active {
+      background: rgba(255,255,255,.15);
+    }
+
+    .main {
+      margin-right: 250px;
+      padding: 30px;
+      min-height: 100vh;
+    }
+
+    .topbar {
       background: white;
-      border-radius: 17px;
-      padding: 25px;
+      border-radius: 15px;
+      padding: 20px 25px;
       margin-bottom: 25px;
-      box-shadow: 0 3px 15px rgba(0,0,0,.06);
+      box-shadow: 0 3px 12px rgba(0,0,0,.06);
     }
 
-    .top h2 {
-      color: #0f5132;
+    .topbar h1 {
+      color: #075e4d;
+      font-size: 28px;
       margin-bottom: 8px;
     }
 
-    .top p {
-      color: #777;
-      font-size: 14px;
+    .topbar p {
+      color: #666;
+      font-size: 15px;
     }
 
-    .notes-grid {
+    .notes-container {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.06);
+    }
+
+    .section-title {
+      color: #075e4d;
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    .notes-list {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns:
+        repeat(
+          auto-fill,
+          minmax(280px, 1fr)
+        );
+
       gap: 20px;
     }
 
-    .note {
+    .note-card {
+      border: 1px solid #e5e5e5;
+      border-radius: 14px;
+      padding: 20px;
       background: white;
-      border-radius: 17px;
-      padding: 22px;
-      box-shadow: 0 3px 15px rgba(0,0,0,.06);
       transition: .2s;
     }
 
-    .note:hover {
+    .note-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 7px 22px rgba(0,0,0,.1);
+      box-shadow: 0 5px 18px rgba(0,0,0,.08);
     }
 
-    .pdf-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 14px;
-      background: #e8f5ee;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 30px;
-      margin-bottom: 15px;
+    .note-icon {
+      font-size: 42px;
+      margin-bottom: 12px;
     }
 
-    .note h3 {
-      color: #0f5132;
-      font-size: 17px;
+    .note-card h3 {
+      color: #075e4d;
+      font-size: 19px;
+      margin-bottom: 10px;
       line-height: 1.6;
-      word-break: break-word;
-      margin-bottom: 15px;
+    }
+
+    .note-date {
+      color: #777;
+      font-size: 13px;
+      margin-bottom: 18px;
     }
 
     .buttons {
       display: flex;
-      gap: 8px;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    .btn {
-      flex: 1;
-      text-align: center;
+    .note-btn {
+      display: inline-block;
       text-decoration: none;
-      border-radius: 9px;
-      padding: 11px 8px;
-      font-size: 13px;
-      font-weight: bold;
+      background: #075e4d;
+      color: white;
+      padding: 11px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: .2s;
     }
 
-    .open {
-      background: #198754;
-      color: white;
+    .note-btn:hover {
+      background: #064c3f;
     }
 
     .download {
-      background: #e9ecef;
-      color: #333;
+      background: #444;
     }
 
-    .status {
-      background: white;
-      border-radius: 15px;
-      padding: 30px;
+    .download:hover {
+      background: #333;
+    }
+
+    .loading,
+    .empty,
+    .error {
       text-align: center;
+      padding: 40px 15px;
       color: #777;
-      box-shadow: 0 3px 15px rgba(0,0,0,.05);
+      font-size: 16px;
+      grid-column: 1 / -1;
     }
 
     .error {
-      color: #842029;
-      background: #f8d7da;
+      color: #b00020;
     }
 
-    .back {
-      display: inline-block;
-      margin-top: 25px;
-      color: #198754;
-      text-decoration: none;
-      font-weight: bold;
-    }
+    @media(max-width:700px) {
 
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 19px;
+      .sidebar {
+        width: 75px;
+        padding: 20px 8px;
       }
 
-      .notes-grid {
+      .logo-box h2,
+      .logo-box p {
+        display: none;
+      }
+
+      .logo-box img {
+        width: 55px;
+        height: 55px;
+      }
+
+      .menu a {
+        text-align: center;
+        font-size: 0;
+        padding: 14px 5px;
+      }
+
+      .menu a::first-letter {
+        font-size: 20px;
+      }
+
+      .main {
+        margin-right: 75px;
+        padding: 15px;
+      }
+
+      .topbar h1 {
+        font-size: 22px;
+      }
+
+      .notes-list {
         grid-template-columns: 1fr;
       }
+
     }
+
   </style>
+
 </head>
+
 
 <body>
 
-<header>
 
-  <div class="header-inner">
+  <aside class="sidebar">
 
-    <img
-      src="../logo.png"
-      class="logo"
-      alt="منصة أرض الأحياء"
-      onerror="this.style.display='none'"
-    >
+    <div class="logo-box">
 
-    <div>
-      <h1>منصة أرض الأحياء</h1>
-      <p>المذكرات التعليمية</p>
+      <img
+        src="../logo.png"
+        alt="شعار منصة أرض الأحياء"
+      >
+
+      <h2>
+        منصة أرض الأحياء
+      </h2>
+
+      <p>
+        منصة تعليمية
+      </p>
+
     </div>
 
-  </div>
 
-</header>
+    <nav class="menu">
 
+      <a href="../index.html">
+        🏠 الرئيسية
+      </a>
 
-<main class="container">
+      <a href="../videos/index.html">
+        🎥 المحاضرات
+      </a>
 
-  <section class="top">
+      <a href="../forum/index.html">
+        💬 المنتدى
+      </a>
 
-    <h2>📚 المذكرات</h2>
+      <a
+        href="index.html"
+        class="active"
+      >
+        📚 المذكرات
+      </a>
 
-    <p>
-      جميع المذكرات والملفات التعليمية المتاحة للطلاب.
-    </p>
+    </nav>
 
-  </section>
-
-
-  <div
-    id="status"
-    class="status"
-  >
-    ⏳ جاري تحميل المذكرات...
-  </div>
-
-
-  <div
-    id="notesGrid"
-    class="notes-grid"
-  ></div>
+  </aside>
 
 
-  <a
-    href="../index.html"
-    class="back"
-  >
-    ← العودة إلى الرئيسية
-  </a>
-
-</main>
+  <main class="main">
 
 
-<script>
+    <div class="topbar">
 
-  /* ==========================================
-     Supabase الجديد
-     ========================================== */
+      <h1>
+        📚 المذكرات
+      </h1>
 
-  const SUPABASE_URL =
-    "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+      <p>
+        مذكرات وملفات مادة الأحياء
+      </p>
 
-  const SUPABASE_ANON_KEY =
-    "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
-
-
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+    </div>
 
 
-  const BUCKET =
-    "lectures";
+    <section class="notes-container">
+
+      <h2 class="section-title">
+        مذكرات الأحياء
+      </h2>
 
 
-  const status =
-    document.getElementById("status");
+      <div
+        id="notesList"
+        class="notes-list"
+      >
 
-  const notesGrid =
-    document.getElementById("notesGrid");
+        <div class="loading">
+          جاري تحميل المذكرات...
+        </div>
 
+      </div>
 
-  function escapeHtml(value) {
-
-    return String(value ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-
-  }
+    </section>
 
 
-  async function loadNotes() {
-
-    try {
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .storage
-          .from(BUCKET)
-          .list(
-            "pdf",
-            {
-              limit: 1000,
-              sortBy: {
-                column: "created_at",
-                order: "desc"
-              }
-            }
-          );
+  </main>
 
 
-      if (error) {
-
-        throw error;
-
-      }
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
-      const files =
-        (data || [])
-          .filter(
-            file =>
-              file.name &&
-              file.name
-                .toLowerCase()
-                .endsWith(".pdf")
-          );
+  <script>
+
+    const SUPABASE_URL =
+      "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 
 
-      if (!files.length) {
-
-        status.className =
-          "status";
-
-        status.textContent =
-          "📚 لا توجد مذكرات حاليًا.";
-
-        return;
-
-      }
+    const SUPABASE_KEY =
+      "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
 
 
-      status.style.display =
-        "none";
+    const BUCKET =
+      "lectures";
 
 
-      notesGrid.innerHTML =
-        "";
+    const supabaseClient =
+      supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
 
 
-      files.forEach(file => {
+    async function loadNotes() {
+
+      const notesList =
+        document.getElementById(
+          "notesList"
+        );
+
+
+      try {
 
         const {
-          data: urlData
+          data,
+          error
         } =
-          supabaseClient
-            .storage
-            .from(BUCKET)
-            .getPublicUrl(
-              "pdf/" + file.name
+          await supabaseClient
+            .from("notes")
+            .select(
+              "id, title, file_path, created_at"
+            )
+            .order(
+              "created_at",
+              {
+                ascending: false
+              }
             );
 
 
-        const url =
-          urlData.publicUrl;
+        if (error) {
+
+          throw error;
+
+        }
 
 
-        const card =
-          document.createElement("div");
+        if (!data || data.length === 0) {
 
-        card.className =
-          "note";
+          notesList.innerHTML = `
+            <div class="empty">
+              📚 لا توجد مذكرات حاليًا.
+            </div>
+          `;
+
+          return;
+
+        }
 
 
-        card.innerHTML = `
+        notesList.innerHTML = "";
 
-          <div class="pdf-icon">
-            📕
-          </div>
 
-          <h3>
-            ${escapeHtml(file.name)}
-          </h3>
+        data.forEach(note => {
 
-          <div class="buttons">
+          const {
+            data: publicData
+          } =
+            supabaseClient
+              .storage
+              .from(BUCKET)
+              .getPublicUrl(
+                note.file_path
+              );
 
-            <a
-              class="btn open"
-              href="${escapeHtml(url)}"
-              target="_blank"
-              rel="noopener"
-            >
-              📖 فتح المذكرة
-            </a>
 
-            <a
-              class="btn download"
-              href="${escapeHtml(url)}"
-              target="_blank"
-              rel="noopener"
-              download
-            >
-              ⬇️ تحميل
-            </a>
+          const card =
+            document.createElement(
+              "div"
+            );
+
+
+          card.className =
+            "note-card";
+
+
+          const date =
+            note.created_at
+              ? new Date(
+                  note.created_at
+                ).toLocaleDateString(
+                  "ar-EG"
+                )
+              : "";
+
+
+          card.innerHTML = `
+
+            <div class="note-icon">
+              📕
+            </div>
+
+            <h3>
+              ${escapeHtml(
+                note.title
+              )}
+            </h3>
+
+            <div class="note-date">
+              📅 ${date}
+            </div>
+
+            <div class="buttons">
+
+              <a
+                class="note-btn"
+                href="${publicData.publicUrl}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                📖 فتح المذكرة
+              </a>
+
+              <a
+                class="note-btn download"
+                href="${publicData.publicUrl}"
+                download
+              >
+                ⬇️ تحميل
+              </a>
+
+            </div>
+
+          `;
+
+
+          notesList.appendChild(
+            card
+          );
+
+        });
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+
+        notesList.innerHTML = `
+
+          <div class="error">
+
+            ❌ تعذر تحميل المذكرات.
+
+            <br><br>
+
+            ${escapeHtml(
+              error.message
+            )}
 
           </div>
 
         `;
 
-
-        notesGrid.appendChild(card);
-
-      });
-
-    }
-    catch (error) {
-
-      console.error(error);
-
-
-      status.className =
-        "status error";
-
-
-      status.innerHTML =
-        `
-        ❌ تعذر تحميل المذكرات.
-
-        <br><br>
-
-        ${escapeHtml(error.message)}
-        `;
+      }
 
     }
 
-  }
+
+    function escapeHtml(text) {
+
+      return String(text)
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+        .replace(
+          /</g,
+          "&lt;"
+        )
+        .replace(
+          />/g,
+          "&gt;"
+        )
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+        .replace(
+          /'/g,
+          "&#039;"
+        );
+
+    }
 
 
-  loadNotes();
+    loadNotes();
 
-</script>
+  </script>
+
 
 </body>
+
 </html>
