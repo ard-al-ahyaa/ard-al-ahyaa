@@ -120,14 +120,14 @@
 
     .lecture-list {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 20px;
     }
 
     .lecture-card {
       border: 1px solid #e5e5e5;
       border-radius: 14px;
-      padding: 20px;
+      overflow: hidden;
       background: #fff;
       transition: 0.2s;
     }
@@ -135,6 +135,23 @@
     .lecture-card:hover {
       transform: translateY(-3px);
       box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+    }
+
+    /* الفيديو */
+    .video-box {
+      width: 100%;
+      background: #000;
+    }
+
+    .video-box video {
+      display: block;
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+    }
+
+    .lecture-content {
+      padding: 18px;
     }
 
     .lecture-card h3 {
@@ -147,15 +164,15 @@
       color: #666;
       line-height: 1.7;
       font-size: 14px;
-      margin-bottom: 18px;
     }
 
     .watch-btn {
       display: inline-block;
+      margin-top: 15px;
       text-decoration: none;
       background: #075e4d;
       color: white;
-      padding: 11px 18px;
+      padding: 10px 17px;
       border-radius: 8px;
       font-size: 14px;
       transition: 0.2s;
@@ -172,6 +189,7 @@
       padding: 40px 15px;
       color: #777;
       font-size: 16px;
+      grid-column: 1 / -1;
     }
 
     .error {
@@ -218,6 +236,10 @@
       .lecture-list {
         grid-template-columns: 1fr;
       }
+
+      .video-box video {
+        height: 200px;
+      }
     }
   </style>
 </head>
@@ -228,10 +250,15 @@
   <aside class="sidebar">
 
     <div class="logo-box">
-      <img src="../logo.png" alt="شعار منصة أرض الأحياء">
+
+      <img
+        src="../logo.png"
+        alt="شعار منصة أرض الأحياء">
 
       <h2>منصة أرض الأحياء</h2>
+
       <p>منصة تعليمية</p>
+
     </div>
 
     <nav class="menu">
@@ -261,9 +288,15 @@
   <main class="main">
 
     <div class="topbar">
+
       <h1>🎥 المحاضرات</h1>
-      <p>محاضرات الصف الثالث الثانوي</p>
+
+      <p>
+        محاضرات الصف الثالث الثانوي
+      </p>
+
     </div>
+
 
     <section class="lectures-container">
 
@@ -271,7 +304,10 @@
         محاضرات الأحياء
       </h2>
 
-      <div id="lectureList" class="lecture-list">
+
+      <div
+        id="lectureList"
+        class="lecture-list">
 
         <div class="loading">
           جاري تحميل المحاضرات...
@@ -287,6 +323,7 @@
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
   <script>
 
     const SUPABASE_URL =
@@ -294,6 +331,7 @@
 
     const SUPABASE_KEY =
       "sb_publishable_54UK-Ys41c5wGQvYkeFmYQ_5efdHAQu";
+
 
     const supabaseClient =
       supabase.createClient(
@@ -307,31 +345,44 @@
       const lectureList =
         document.getElementById("lectureList");
 
+
       try {
 
-        const { data, error } =
-          await supabaseClient
-            .from("lectures")
-            .select("*")
-            .order("created_at", {
-              ascending: false
-            });
+        const {
+          data,
+          error
+        } = await supabaseClient
+
+          .from("lectures")
+
+          .select("*")
+
+          .order("created_at", {
+            ascending: false
+          });
 
 
         if (error) {
+
           throw error;
+
         }
 
 
         if (!data || data.length === 0) {
 
           lectureList.innerHTML = `
+
             <div class="empty">
+
               لا توجد محاضرات مضافة حاليًا.
+
             </div>
+
           `;
 
           return;
+
         }
 
 
@@ -347,11 +398,46 @@
             "lecture-card";
 
 
+          /* الفيديو */
+
+          const videoBox =
+            document.createElement("div");
+
+          videoBox.className =
+            "video-box";
+
+
+          const video =
+            document.createElement("video");
+
+          video.controls = true;
+
+          video.preload = "metadata";
+
+          video.playsInline = true;
+
+          video.src =
+            lecture.video_url;
+
+
+          videoBox.appendChild(video);
+
+
+          /* محتوى المحاضرة */
+
+          const content =
+            document.createElement("div");
+
+          content.className =
+            "lecture-content";
+
+
           const title =
             document.createElement("h3");
 
           title.textContent =
-            lecture.title || "محاضرة بدون عنوان";
+            lecture.title ||
+            "محاضرة بدون عنوان";
 
 
           const description =
@@ -361,6 +447,8 @@
             lecture.description ||
             "لا يوجد وصف لهذه المحاضرة.";
 
+
+          /* زر فتح الفيديو */
 
           const button =
             document.createElement("a");
@@ -378,12 +466,20 @@
             "noopener noreferrer";
 
           button.textContent =
-            "▶ مشاهدة المحاضرة";
+            "▶ فتح الفيديو";
 
 
-          card.appendChild(title);
-          card.appendChild(description);
-          card.appendChild(button);
+          content.appendChild(title);
+
+          content.appendChild(description);
+
+          content.appendChild(button);
+
+
+          card.appendChild(videoBox);
+
+          card.appendChild(content);
+
 
           lectureList.appendChild(card);
 
@@ -391,16 +487,28 @@
 
       }
 
+
       catch (error) {
 
-        console.error(error);
+        console.error(
+          "Supabase Error:",
+          error
+        );
+
 
         lectureList.innerHTML = `
+
           <div class="error">
+
             تعذر تحميل المحاضرات حاليًا.
-            <br>
-            تأكد من إعداد جدول المحاضرات في Supabase.
+
+            <br><br>
+
+            تأكد من اتصال Supabase
+            وجدول lectures.
+
           </div>
+
         `;
 
       }
@@ -408,7 +516,23 @@
     }
 
 
+    /*
+      تحميل المحاضرات عند فتح الصفحة
+    */
+
     loadLectures();
+
+
+    /*
+      تحديث القائمة تلقائيًا كل 30 ثانية
+      حتى تظهر المحاضرات الجديدة
+      بدون إعادة تحميل الصفحة.
+    */
+
+    setInterval(
+      loadLectures,
+      30000
+    );
 
   </script>
 
