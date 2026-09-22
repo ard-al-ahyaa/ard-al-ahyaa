@@ -2,850 +2,433 @@
 <html lang="ar" dir="rtl">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>المذكرات | منصة أرض الأحياء</title>
-
-<link rel="icon" type="image/png" href="../favicon.png">
-
-<style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    font-family:Tahoma,Arial,sans-serif;
-    background:#f5f7f6;
-    color:#18352e;
-    direction:rtl;
-}
-
-/* الشريط الجانبي */
-
-.sidebar{
-    position:fixed;
-    right:0;
-    top:0;
-
-    width:250px;
-    height:100vh;
-
-    background:#075e4d;
-    color:white;
-
-    padding:20px 15px;
-
-    overflow-y:auto;
-
-    z-index:1000;
-}
-
-.logo{
-    text-align:center;
-
-    padding-bottom:25px;
-
-    border-bottom:
-        1px solid rgba(255,255,255,.18);
-}
-
-.logo img{
-    width:65px;
-    height:65px;
-
-    object-fit:contain;
-
-    border-radius:15px;
-
-    margin-bottom:8px;
-}
-
-.logo h2{
-    font-size:20px;
-}
-
-.logo p{
-    font-size:12px;
-
-    opacity:.75;
-
-    margin-top:5px;
-}
-
-.menu{
-    margin-top:25px;
-}
-
-.menu a{
-    display:flex;
-
-    align-items:center;
-
-    gap:12px;
-
-    color:white;
-
-    text-decoration:none;
-
-    padding:13px 14px;
-
-    margin-bottom:7px;
-
-    border-radius:10px;
-
-    transition:.2s;
-}
-
-.menu a:hover{
-    background:rgba(255,255,255,.12);
-}
-
-.menu a.active{
-    background:rgba(255,255,255,.18);
-}
-
-.menu-icon{
-    width:25px;
-    text-align:center;
-    font-size:18px;
-}
-
-/* المحتوى */
-
-.main{
-    margin-right:250px;
-
-    min-height:100vh;
-
-    padding:25px;
-}
-
-.topbar{
-    background:white;
-
-    border-radius:15px;
-
-    padding:15px 20px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    box-shadow:
-        0 4px 16px rgba(0,0,0,.05);
-
-    margin-bottom:20px;
-}
-
-.page-title{
-    color:#075e4d;
-
-    font-size:23px;
-}
-
-.home-btn{
-    background:#075e4d;
-
-    color:white;
-
-    text-decoration:none;
-
-    padding:9px 15px;
-
-    border-radius:9px;
-}
-
-/* عنوان الصفحة */
-
-.page-box{
-    background:white;
-
-    border-radius:15px;
-
-    padding:22px;
-
-    box-shadow:
-        0 4px 16px rgba(0,0,0,.05);
-
-    margin-bottom:18px;
-}
-
-.page-box h1{
-    color:#075e4d;
-
-    font-size:25px;
-
-    margin-bottom:8px;
-}
-
-.page-box p{
-    color:#687772;
-
-    line-height:1.8;
-}
-
-/* المذكرات */
-
-.notes{
-    display:grid;
-
-    grid-template-columns:
-        repeat(3,1fr);
-
-    gap:15px;
-}
-
-.note{
-    background:white;
-
-    border:1px solid #e4eae7;
-
-    border-radius:14px;
-
-    padding:20px;
-
-    box-shadow:
-        0 3px 13px rgba(0,0,0,.04);
-
-    transition:.2s;
-}
-
-.note:hover{
-    transform:translateY(-3px);
-
-    box-shadow:
-        0 7px 20px rgba(0,0,0,.08);
-}
-
-.note-icon{
-    font-size:35px;
-
-    margin-bottom:10px;
-}
-
-.note h2{
-    color:#075e4d;
-
-    font-size:18px;
-
-    margin-bottom:8px;
-
-    word-break:break-word;
-}
-
-.note p{
-    color:#687772;
-
-    line-height:1.7;
-
-    min-height:55px;
-}
-
-.note-btn{
-    display:inline-block;
-
-    margin-top:13px;
-
-    background:#075e4d;
-
-    color:white;
-
-    text-decoration:none;
-
-    padding:9px 14px;
-
-    border-radius:8px;
-
-    font-size:14px;
-
-    border:none;
-
-    cursor:pointer;
-}
-
-.note-btn:hover{
-    background:#064c3e;
-}
-
-/* حالة التحميل */
-
-.loading{
-    grid-column:1/-1;
-
-    background:white;
-
-    border-radius:14px;
-
-    padding:35px;
-
-    text-align:center;
-
-    color:#687772;
-
-    box-shadow:
-        0 3px 13px rgba(0,0,0,.04);
-}
-
-.loading-icon{
-    font-size:40px;
-
-    margin-bottom:10px;
-}
-
-/* عدم وجود ملفات */
-
-.empty{
-    grid-column:1/-1;
-
-    background:white;
-
-    border-radius:14px;
-
-    padding:35px;
-
-    text-align:center;
-
-    color:#687772;
-
-    box-shadow:
-        0 3px 13px rgba(0,0,0,.04);
-}
-
-.empty-icon{
-    font-size:45px;
-
-    margin-bottom:10px;
-}
-
-/* خطأ */
-
-.error{
-    grid-column:1/-1;
-
-    background:#fff1f1;
-
-    border:1px solid #efb4b4;
-
-    border-radius:14px;
-
-    padding:20px;
-
-    text-align:center;
-
-    color:#9b2929;
-
-    line-height:1.8;
-}
-
-/* تنبيه */
-
-.notice{
-    margin-top:18px;
-
-    background:#fff8e6;
-
-    border:1px solid #f0d58a;
-
-    border-radius:12px;
-
-    padding:15px;
-
-    color:#6d5a20;
-
-    line-height:1.8;
-}
-
-/* الموبايل */
-
-@media(max-width:750px){
-
-    .sidebar{
-        width:75px;
-
-        padding:15px 8px;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>المذكرات | منصة أرض الأحياء</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Tahoma, Arial, sans-serif;
     }
 
-    .logo h2,
-    .logo p,
-    .menu-text{
-        display:none;
+    body {
+      background: #f4f7f5;
+      color: #222;
     }
 
-    .logo img{
-        width:48px;
-        height:48px;
+    header {
+      background: #0f5132;
+      color: white;
+      padding: 18px 25px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.15);
     }
 
-    .menu a{
-        justify-content:center;
-
-        padding:13px 5px;
+    .header-inner {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      gap: 15px;
     }
 
-    .main{
-        margin-right:75px;
-
-        padding:15px;
+    .logo {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
     }
 
-    .notes{
-        grid-template-columns:1fr;
+    header h1 {
+      font-size: 23px;
     }
 
-    .page-title{
-        font-size:18px;
+    header p {
+      font-size: 13px;
+      opacity: .8;
+      margin-top: 5px;
     }
 
-}
+    .container {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 0 18px;
+    }
 
-</style>
+    .top {
+      background: white;
+      border-radius: 17px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 3px 15px rgba(0,0,0,.06);
+    }
+
+    .top h2 {
+      color: #0f5132;
+      margin-bottom: 8px;
+    }
+
+    .top p {
+      color: #777;
+      font-size: 14px;
+    }
+
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .note {
+      background: white;
+      border-radius: 17px;
+      padding: 22px;
+      box-shadow: 0 3px 15px rgba(0,0,0,.06);
+      transition: .2s;
+    }
+
+    .note:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 7px 22px rgba(0,0,0,.1);
+    }
+
+    .pdf-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 14px;
+      background: #e8f5ee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      margin-bottom: 15px;
+    }
+
+    .note h3 {
+      color: #0f5132;
+      font-size: 17px;
+      line-height: 1.6;
+      word-break: break-word;
+      margin-bottom: 15px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      flex: 1;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 9px;
+      padding: 11px 8px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .open {
+      background: #198754;
+      color: white;
+    }
+
+    .download {
+      background: #e9ecef;
+      color: #333;
+    }
+
+    .status {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      text-align: center;
+      color: #777;
+      box-shadow: 0 3px 15px rgba(0,0,0,.05);
+    }
+
+    .error {
+      color: #842029;
+      background: #f8d7da;
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 25px;
+      color: #198754;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 19px;
+      }
+
+      .notes-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- الشريط الجانبي -->
+<header>
 
-<aside class="sidebar">
+  <div class="header-inner">
 
-    <div class="logo">
-
-        <img
-            src="../logo.png"
-            alt="منصة أرض الأحياء"
-        >
-
-        <h2>
-            منصة أرض الأحياء
-        </h2>
-
-        <p>
-            منصة تعليمية
-        </p>
-
-    </div>
-
-
-    <nav class="menu">
-
-        <a href="../index.html">
-
-            <span class="menu-icon">
-                🏠
-            </span>
-
-            <span class="menu-text">
-                الرئيسية
-            </span>
-
-        </a>
-
-
-        <a href="../videos/index.html">
-
-            <span class="menu-icon">
-                🎥
-            </span>
-
-            <span class="menu-text">
-                المحاضرات
-            </span>
-
-        </a>
-
-
-        <a
-            href="index.html"
-            class="active"
-        >
-
-            <span class="menu-icon">
-                📚
-            </span>
-
-            <span class="menu-text">
-                المذكرات
-            </span>
-
-        </a>
-
-
-        <a href="../forum/index.html">
-
-            <span class="menu-icon">
-                💬
-            </span>
-
-            <span class="menu-text">
-                المنتدى
-            </span>
-
-        </a>
-
-
-        <a href="../classes/index.html">
-
-            <span class="menu-icon">
-                🎓
-            </span>
-
-            <span class="menu-text">
-                الصفوف
-            </span>
-
-        </a>
-
-    </nav>
-
-</aside>
-
-
-<!-- المحتوى -->
-
-<main class="main">
-
-    <div class="topbar">
-
-        <div class="page-title">
-            📚 المذكرات
-        </div>
-
-        <a
-            href="../index.html"
-            class="home-btn"
-        >
-            الرئيسية
-        </a>
-
-    </div>
-
-
-    <section class="page-box">
-
-        <h1>
-            مذكرات الصف الثالث الثانوي
-        </h1>
-
-        <p>
-            هنا ستجد مذكرات وملخصات
-            ومراجعات مادة الأحياء
-            للصف الثالث الثانوي.
-        </p>
-
-    </section>
-
-
-    <!-- المذكرات التي يتم تحميلها من Supabase -->
-
-    <section
-        class="notes"
-        id="notesContainer"
+    <img
+      src="../logo.png"
+      class="logo"
+      alt="منصة أرض الأحياء"
+      onerror="this.style.display='none'"
     >
 
-        <div class="loading">
-
-            <div class="loading-icon">
-                ⏳
-            </div>
-
-            جاري تحميل المذكرات...
-
-        </div>
-
-    </section>
-
-
-    <div class="notice">
-
-        💡
-
-        <strong>ملاحظة:</strong>
-
-        أي ملف PDF يتم رفعه من لوحة الإدارة
-        داخل قسم المذكرات سيظهر هنا تلقائيًا.
-
+    <div>
+      <h1>منصة أرض الأحياء</h1>
+      <p>المذكرات التعليمية</p>
     </div>
+
+  </div>
+
+</header>
+
+
+<main class="container">
+
+  <section class="top">
+
+    <h2>📚 المذكرات</h2>
+
+    <p>
+      جميع المذكرات والملفات التعليمية المتاحة للطلاب.
+    </p>
+
+  </section>
+
+
+  <div
+    id="status"
+    class="status"
+  >
+    ⏳ جاري تحميل المذكرات...
+  </div>
+
+
+  <div
+    id="notesGrid"
+    class="notes-grid"
+  ></div>
+
+
+  <a
+    href="../index.html"
+    class="back"
+  >
+    ← العودة إلى الرئيسية
+  </a>
 
 </main>
 
 
-<!-- Supabase -->
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
 <script>
 
-/* ================================
-   إعداد Supabase
-================================ */
+  /* ==========================================
+     Supabase الجديد
+     ========================================== */
 
-const SUPABASE_URL =
-    "https://gvehygqxjqucxwussaye.supabase.co";
+  const SUPABASE_URL =
+    "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 
-const SUPABASE_ANON_KEY =
-    "sb_publishable_0Hxtm1KuZQ7paMyZQwRLQQ_NQ2wRaRX";
+  const SUPABASE_ANON_KEY =
+    "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
 
 
-const supabaseClient =
+  const supabaseClient =
     window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
     );
 
 
-/* ================================
-   تحميل المذكرات
-================================ */
-
-async function loadNotes(){
-
-    const container =
-        document.getElementById("notesContainer");
+  const BUCKET =
+    "lectures";
 
 
-    try{
+  const status =
+    document.getElementById("status");
 
-        /*
-         * ملفات المذكرات التي يرفعها الأدمن
-         * تكون داخل:
-         *
-         * lectures/pdf/
-         */
+  const notesGrid =
+    document.getElementById("notesGrid");
+
+
+  function escapeHtml(value) {
+
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  async function loadNotes() {
+
+    try {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .storage
+          .from(BUCKET)
+          .list(
+            "pdf",
+            {
+              limit: 1000,
+              sortBy: {
+                column: "created_at",
+                order: "desc"
+              }
+            }
+          );
+
+
+      if (error) {
+
+        throw error;
+
+      }
+
+
+      const files =
+        (data || [])
+          .filter(
+            file =>
+              file.name &&
+              file.name
+                .toLowerCase()
+                .endsWith(".pdf")
+          );
+
+
+      if (!files.length) {
+
+        status.className =
+          "status";
+
+        status.textContent =
+          "📚 لا توجد مذكرات حاليًا.";
+
+        return;
+
+      }
+
+
+      status.style.display =
+        "none";
+
+
+      notesGrid.innerHTML =
+        "";
+
+
+      files.forEach(file => {
 
         const {
-            data,
-            error
-        } = await supabaseClient
+          data: urlData
+        } =
+          supabaseClient
             .storage
-            .from("lectures")
-            .list("pdf", {
-
-                limit:100,
-
-                sortBy:{
-                    column:"created_at",
-                    order:"desc"
-                }
-
-            });
+            .from(BUCKET)
+            .getPublicUrl(
+              "pdf/" + file.name
+            );
 
 
-        if(error){
-
-            console.error(error);
-
-            container.innerHTML = `
-                <div class="error">
-
-                    ❌ تعذر تحميل المذكرات.
-
-                    <br>
-
-                    تأكد من إعدادات
-                    Supabase Storage.
-
-                </div>
-            `;
-
-            return;
-        }
+        const url =
+          urlData.publicUrl;
 
 
-        /* إزالة المجلدات والملفات غير المدعومة */
+        const card =
+          document.createElement("div");
 
-        const files =
-            (data || []).filter(file => {
-
-                if(!file.name){
-                    return false;
-                }
-
-                if(file.name.startsWith(".")){
-                    return false;
-                }
-
-                return (
-                    file.name
-                        .toLowerCase()
-                        .endsWith(".pdf")
-                );
-
-            });
+        card.className =
+          "note";
 
 
-        /* لا توجد مذكرات */
+        card.innerHTML = `
 
-        if(files.length === 0){
+          <div class="pdf-icon">
+            📕
+          </div>
 
-            container.innerHTML = `
+          <h3>
+            ${escapeHtml(file.name)}
+          </h3>
 
-                <div class="empty">
+          <div class="buttons">
 
-                    <div class="empty-icon">
-                        📚
-                    </div>
+            <a
+              class="btn open"
+              href="${escapeHtml(url)}"
+              target="_blank"
+              rel="noopener"
+            >
+              📖 فتح المذكرة
+            </a>
 
-                    <h2>
-                        لا توجد مذكرات حاليًا
-                    </h2>
+            <a
+              class="btn download"
+              href="${escapeHtml(url)}"
+              target="_blank"
+              rel="noopener"
+              download
+            >
+              ⬇️ تحميل
+            </a>
 
-                    <p style="margin-top:8px;">
-                        سيتم ظهور المذكرات هنا
-                        بعد رفعها من لوحة الإدارة.
-                    </p>
+          </div>
 
-                </div>
-
-            `;
-
-            return;
-        }
-
-
-        /* إنشاء البطاقات */
-
-        container.innerHTML = "";
-
-
-        files.forEach(file => {
-
-            const fileName =
-                file.name;
+        `;
 
 
-            /* إزالة الامتداد */
+        notesGrid.appendChild(card);
 
-            let title =
-                fileName.replace(
-                    /\.pdf$/i,
-                    ""
-                );
-
-
-            /* تحويل _ إلى مسافات */
-
-            title =
-                title.replace(
-                    /_/g,
-                    " "
-                );
-
-
-            /* الرابط العام للملف */
-
-            const {
-                data:publicData
-            } = supabaseClient
-                .storage
-                .from("lectures")
-                .getPublicUrl(
-                    "pdf/" + fileName
-                );
-
-
-            const url =
-                publicData.publicUrl;
-
-
-            const card =
-                document.createElement("article");
-
-
-            card.className =
-                "note";
-
-
-            card.innerHTML = `
-
-                <div class="note-icon">
-                    📘
-                </div>
-
-                <h2>
-                    ${escapeHtml(title)}
-                </h2>
-
-                <p>
-                    مذكرة أحياء بصيغة PDF
-                    للصف الثالث الثانوي.
-                </p>
-
-                <a
-                    href="${url}"
-                    target="_blank"
-                    rel="noopener"
-                    class="note-btn"
-                >
-                    📖 فتح المذكرة
-                </a>
-
-                <a
-                    href="${url}"
-                    download
-                    class="note-btn"
-                    style="margin-right:5px;background:#168b72;"
-                >
-                    ⬇️ تحميل
-                </a>
-
-            `;
-
-
-            container.appendChild(card);
-
-        });
+      });
 
     }
+    catch (error) {
 
-    catch(error){
+      console.error(error);
 
-        console.error(error);
 
-        container.innerHTML = `
+      status.className =
+        "status error";
 
-            <div class="error">
 
-                ❌ حدث خطأ أثناء تحميل المذكرات.
+      status.innerHTML =
+        `
+        ❌ تعذر تحميل المذكرات.
 
-                <br>
+        <br><br>
 
-                حاول تحديث الصفحة مرة أخرى.
-
-            </div>
-
+        ${escapeHtml(error.message)}
         `;
 
     }
 
-}
+  }
 
 
-/* ================================
-   حماية النص من HTML
-================================ */
-
-function escapeHtml(text){
-
-    const div =
-        document.createElement("div");
-
-    div.textContent =
-        text;
-
-    return div.innerHTML;
-
-}
-
-
-/* تشغيل تحميل المذكرات */
-
-loadNotes();
+  loadNotes();
 
 </script>
 
