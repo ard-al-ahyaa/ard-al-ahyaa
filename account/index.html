@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>حسابي | منصة أرض الأحياء</title>
+
+  <meta name="description"
+    content="حساب الطالب في منصة أرض الأحياء التعليمية">
+
+  <link rel="icon" href="../favicon.png">
+
+  <!-- Tajawal -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Tajawal", Arial, sans-serif;
+      background: #f4f8f5;
+      color: #222;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    header {
+      background: linear-gradient(135deg, #08753d, #159957);
+      color: white;
+      padding: 16px 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.12);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: white;
+      padding: 4px;
+    }
+
+    .brand-text h1 {
+      margin: 0;
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .brand-text p {
+      margin: 3px 0 0;
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .back-btn {
+      border: none;
+      background: rgba(255,255,255,0.16);
+      color: white;
+      padding: 10px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+
+    .back-btn:hover {
+      background: white;
+      color: #08753d;
+    }
+
+    /* =========================
+       MAIN
+    ========================= */
+
+    .container {
+      width: min(1000px, 94%);
+      margin: 35px auto;
+    }
+
+    .page-title {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .page-title h2 {
+      margin: 0;
+      color: #08753d;
+      font-size: 30px;
+    }
+
+    .page-title p {
+      color: #777;
+      margin-top: 8px;
+    }
+
+    /* =========================
+       PROFILE
+    ========================= */
+
+    .profile-card {
+      background: white;
+      border-radius: 18px;
+      padding: 25px;
+      box-shadow: 0 7px 25px rgba(0,0,0,0.08);
+      margin-bottom: 25px;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 22px;
+    }
+
+    .profile-icon {
+      width: 75px;
+      height: 75px;
+      border-radius: 50%;
+      background: #eaf7ef;
+      color: #08753d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 35px;
+      flex-shrink: 0;
+    }
+
+    .profile-header h3 {
+      margin: 0;
+      font-size: 23px;
+      color: #08753d;
+    }
+
+    .profile-header p {
+      margin: 5px 0 0;
+      color: #777;
+      font-size: 14px;
+    }
+
+    /* =========================
+       FORM
+    ========================= */
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      margin-bottom: 7px;
+      font-weight: 700;
+      color: #444;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #dce7df;
+      border-radius: 10px;
+      outline: none;
+      font-family: inherit;
+      font-size: 15px;
+      background: #fafcfb;
+      transition: 0.3s;
+    }
+
+    .form-group input:focus {
+      border-color: #159957;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(21,153,87,0.1);
+    }
+
+    .form-group input:disabled {
+      color: #777;
+      background: #f2f2f2;
+      cursor: not-allowed;
+    }
+
+    .save-btn {
+      margin-top: 20px;
+      background: #159957;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 13px 25px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .save-btn:hover {
+      background: #08753d;
+      transform: translateY(-2px);
+    }
+
+    .save-btn:disabled {
+      opacity: 0.6;
+      cursor: wait;
+      transform: none;
+    }
+
+    #saveMessage {
+      display: none;
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    #saveMessage.success {
+      display: block;
+      background: #e8f8ee;
+      color: #08753d;
+    }
+
+    #saveMessage.error {
+      display: block;
+      background: #fdeaea;
+      color: #b42318;
+    }
+
+    /* =========================
+       RESULTS
+    ========================= */
+
+    .results-card {
+      background: white;
+      border-radius: 18px;
+      padding: 25px;
+      box-shadow: 0 7px 25px rgba(0,0,0,0.08);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #08753d;
+      margin: 0 0 20px;
+      font-size: 23px;
+    }
+
+    .results-table-wrapper {
+      overflow-x: auto;
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+    }
+
+    .results-table th {
+      background: #eaf7ef;
+      color: #08753d;
+      padding: 14px;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .results-table td {
+      padding: 14px;
+      border-bottom: 1px solid #eee;
+      text-align: center;
+    }
+
+    .results-table tr:hover {
+      background: #fafdfb;
+    }
+
+    .score {
+      font-weight: 800;
+      color: #08753d;
+    }
+
+    .percentage {
+      display: inline-block;
+      padding: 5px 10px;
+      background: #eaf7ef;
+      color: #08753d;
+      border-radius: 20px;
+      font-weight: 700;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 35px 10px;
+      color: #777;
+    }
+
+    .no-results .icon {
+      font-size: 45px;
+      margin-bottom: 10px;
+    }
+
+    /* =========================
+       LOADING
+    ========================= */
+
+    #loading {
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .loader {
+      width: 45px;
+      height: 45px;
+      border: 4px solid #dcefe3;
+      border-top-color: #159957;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: auto;
+    }
+
+    #loading p {
+      color: #777;
+      margin-top: 15px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* =========================
+       ERROR
+    ========================= */
+
+    #errorBox {
+      display: none;
+      background: #fff1f1;
+      color: #b42318;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      margin: 30px auto;
+      max-width: 700px;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #777;
+      font-size: 13px;
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 700px) {
+
+      header {
+        padding: 12px 15px;
+      }
+
+      .brand-text h1 {
+        font-size: 17px;
+      }
+
+      .brand-text p {
+        display: none;
+      }
+
+      .brand img {
+        width: 42px;
+        height: 42px;
+      }
+
+      .back-btn {
+        padding: 8px 11px;
+        font-size: 12px;
+      }
+
+      .container {
+        width: 94%;
+        margin: 25px auto;
+      }
+
+      .page-title h2 {
+        font-size: 25px;
+      }
+
+      .profile-card,
+      .results-card {
+        padding: 18px;
+      }
+
+      .profile-header {
+        gap: 12px;
+      }
+
+      .profile-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 28px;
+      }
+
+      .profile-header h3 {
+        font-size: 19px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-group.full {
+        grid-column: auto;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       HEADER
+  ========================= -->
+
+  <header>
+
+    <div class="brand">
+
+      <img
+        src="../logo.png"
+        alt="منصة أرض الأحياء">
+
+      <div class="brand-text">
+
+        <h1>
+          منصة أرض الأحياء
+        </h1>
+
+        <p>
+          الحساب الشخصي للطالب
+        </p>
+
+      </div>
+
+    </div>
+
+    <button
+      class="back-btn"
+      onclick="goHome()">
+
+      🏠 الرئيسية
+
+    </button>
+
+  </header>
+
+
+  <!-- =========================
+       LOADING
+  ========================= -->
+
+  <div id="loading">
+
+    <div class="loader"></div>
+
+    <p>
+      جاري تحميل حسابك...
+    </p>
+
+  </div>
+
+
+  <!-- =========================
+       ERROR
+  ========================= -->
+
+  <div id="errorBox"></div>
+
+
+  <!-- =========================
+       CONTENT
+  ========================= -->
+
+  <main
+    class="container"
+    id="accountContent"
+    style="display:none;">
+
+    <div class="page-title">
+
+      <h2>
+        👤 حسابي
+      </h2>
+
+      <p>
+        إدارة بيانات حسابك ومتابعة نتائجك
+      </p>
+
+    </div>
+
+
+    <!-- =========================
+         PROFILE
+    ========================= -->
+
+    <section class="profile-card">
+
+      <div class="profile-header">
+
+        <div class="profile-icon">
+          👤
+        </div>
+
+        <div>
+
+          <h3 id="welcomeName">
+            الطالب
+          </h3>
+
+          <p>
+            بيانات الحساب الشخصي
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-grid">
+
+        <!-- الاسم -->
+
+        <div class="form-group">
+
+          <label for="fullName">
+            👤 اسم الطالب
+          </label>
+
+          <input
+            type="text"
+            id="fullName"
+            placeholder="اكتب اسمك">
+
+        </div>
+
+
+        <!-- البريد -->
+
+        <div class="form-group">
+
+          <label for="email">
+            📧 البريد الإلكتروني
+          </label>
+
+          <input
+            type="email"
+            id="email"
+            disabled>
+
+        </div>
+
+
+        <!-- الهاتف -->
+
+        <div class="form-group full">
+
+          <label for="phone">
+            📱 رقم الهاتف
+          </label>
+
+          <input
+            type="tel"
+            id="phone"
+            placeholder="اكتب رقم الهاتف">
+
+        </div>
+
+      </div>
+
+
+      <button
+        class="save-btn"
+        id="saveBtn"
+        onclick="saveProfile()">
+
+        💾 حفظ البيانات
+
+      </button>
+
+      <div id="saveMessage"></div>
+
+    </section>
+
+
+    <!-- =========================
+         RESULTS
+    ========================= -->
+
+    <section class="results-card">
+
+      <h2 class="section-title">
+        📊 نتائجي
+      </h2>
+
+      <div
+        class="results-table-wrapper"
+        id="resultsContainer">
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <footer>
+
+    © منصة أرض الأحياء
+
+  </footer>
+
+
+  <script>
+
+    /* =====================================================
+       SUPABASE
+    ===================================================== */
+
+    const SUPABASE_URL =
+      "https://gvehygqxjqucxwussaye.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+      "sb_publishable_0Hxtm1KuZQ7paMyZQwRLQQ_NQ2wRaRX";
+
+    const supabaseClient =
+      supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+
+
+    /* =====================================================
+       عناصر الصفحة
+    ===================================================== */
+
+    const loading =
+      document.getElementById("loading");
+
+    const accountContent =
+      document.getElementById("accountContent");
+
+    const errorBox =
+      document.getElementById("errorBox");
+
+    const fullNameInput =
+      document.getElementById("fullName");
+
+    const emailInput =
+      document.getElementById("email");
+
+    const phoneInput =
+      document.getElementById("phone");
+
+    const welcomeName =
+      document.getElementById("welcomeName");
+
+    const resultsContainer =
+      document.getElementById("resultsContainer");
+
+    const saveBtn =
+      document.getElementById("saveBtn");
+
+    const saveMessage =
+      document.getElementById("saveMessage");
+
+
+    /* =====================================================
+       الحصول على المستخدم الحالي
+    ===================================================== */
+
+    async function loadAccount() {
+
+      try {
+
+        const {
+          data,
+          error
+        } = await supabaseClient.auth.getUser();
+
+        if (error) {
+          throw error;
+        }
+
+        const user = data.user;
+
+        if (!user) {
+
+          window.location.href =
+            "../index.html";
+
+          return;
+        }
+
+        /* تحميل بيانات الحساب */
+
+        await loadProfile(user);
+
+        /* تحميل النتائج */
+
+        await loadResults(user);
+
+        /* إظهار الصفحة */
+
+        loading.style.display = "none";
+
+        accountContent.style.display = "block";
+
+      } catch (error) {
+
+        console.error(error);
+
+        loading.style.display = "none";
+
+        errorBox.style.display = "block";
+
+        errorBox.innerHTML =
+          "حدث خطأ أثناء تحميل الحساب.<br><br>" +
+          escapeHtml(error.message);
+
+      }
+
+    }
+
+
+    /* =====================================================
+       تحميل PROFILE
+    ===================================================== */
+
+    async function loadProfile(user) {
+
+      let {
+        data: profile,
+        error
+      } = await supabaseClient
+
+        .from("profiles")
+
+        .select(
+          "id, full_name, phone, email"
+        )
+
+        .eq("id", user.id)
+
+        .maybeSingle();
+
+
+      if (error) {
+        throw error;
+      }
+
+
+      /*
+       إذا لم يوجد profile
+       ننشئه تلقائيًا
+      */
+
+      if (!profile) {
+
+        const metadata =
+          user.user_metadata || {};
+
+        const name =
+          metadata.full_name ||
+          metadata.name ||
+          "";
+
+        const newProfile = {
+
+          id: user.id,
+
+          full_name: name,
+
+          phone: "",
+
+          email: user.email || ""
+
+        };
+
+
+        const {
+          data: createdProfile,
+          error: createError
+        } = await supabaseClient
+
+          .from("profiles")
+
+          .insert(newProfile)
+
+          .select()
+
+          .single();
+
+
+        if (createError) {
+          throw createError;
+        }
+
+        profile = createdProfile;
+
+      }
+
+
+      /* عرض البيانات */
+
+      fullNameInput.value =
+        profile.full_name || "";
+
+      phoneInput.value =
+        profile.phone || "";
+
+      emailInput.value =
+        profile.email ||
+        user.email ||
+        "";
+
+      welcomeName.textContent =
+        profile.full_name ||
+        "الطالب";
+
+    }
+
+
+    /* =====================================================
+       حفظ PROFILE
+    ===================================================== */
+
+    async function saveProfile() {
+
+      const {
+        data: sessionData
+      } = await supabaseClient.auth.getSession();
+
+      const user =
+        sessionData.session?.user;
+
+
+      if (!user) {
+
+        window.location.href =
+          "../index.html";
+
+        return;
+      }
+
+
+      const fullName =
+        fullNameInput.value.trim();
+
+      const phone =
+        phoneInput.value.trim();
+
+
+      if (!fullName) {
+
+        showSaveMessage(
+          "من فضلك اكتب اسم الطالب.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      saveBtn.disabled = true;
+
+      saveBtn.textContent =
+        "⏳ جاري الحفظ...";
+
+
+      try {
+
+        const {
+          error
+        } = await supabaseClient
+
+          .from("profiles")
+
+          .upsert({
+
+            id: user.id,
+
+            full_name: fullName,
+
+            phone: phone,
+
+            email: user.email || ""
+
+          }, {
+            onConflict: "id"
+          });
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        welcomeName.textContent =
+          fullName;
+
+
+        /*
+         تحديث الاسم الموجود في
+         بيانات Supabase Auth أيضًا
+        */
+
+        await supabaseClient.auth.updateUser({
+
+          data: {
+            full_name: fullName,
+            name: fullName
+          }
+
+        });
+
+
+        showSaveMessage(
+          "تم حفظ بيانات الحساب بنجاح ✅",
+          "success"
+        );
+
+      } catch (error) {
+
+        console.error(error);
+
+        showSaveMessage(
+          "تعذر حفظ البيانات: " +
+          error.message,
+          "error"
+        );
+
+      } finally {
+
+        saveBtn.disabled = false;
+
+        saveBtn.textContent =
+          "💾 حفظ البيانات";
+
+      }
+
+    }
+
+
+    /* =====================================================
+       تحميل النتائج
+    ===================================================== */
+
+    async function loadResults(user) {
+
+      const {
+        data: results,
+        error
+      } = await supabaseClient
+
+        .from("results")
+
+        .select(
+          "id, exam_name, score, total, percentage, created_at"
+        )
+
+        .eq("user_id", user.id)
+
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        );
+
+
+      if (error) {
+        throw error;
+      }
+
+
+      /* لا توجد نتائج */
+
+      if (!results || results.length === 0) {
+
+        resultsContainer.innerHTML = `
+
+          <div class="no-results">
+
+            <div class="icon">
+              📊
+            </div>
+
+            <h3>
+              لا توجد نتائج حتى الآن
+            </h3>
+
+            <p>
+              عندما تتم إضافة نتائجك ستظهر هنا.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+      }
+
+
+      /* جدول النتائج */
+
+      let html = `
+
+        <table class="results-table">
+
+          <thead>
+
+            <tr>
+
+              <th>
+                الاختبار
+              </th>
+
+              <th>
+                الدرجة
+              </th>
+
+              <th>
+                النسبة
+              </th>
+
+              <th>
+                التاريخ
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+      `;
+
+
+      results.forEach(result => {
+
+        const percentage =
+          result.percentage !== null &&
+          result.percentage !== undefined
+
+            ? Number(result.percentage).toFixed(2) + "%"
+
+            : calculatePercentage(
+                result.score,
+                result.total
+              );
+
+
+        const date =
+          result.created_at
+
+            ? new Date(
+                result.created_at
+              ).toLocaleDateString(
+                "ar-EG"
+              )
+
+            : "-";
+
+
+        html += `
+
+          <tr>
+
+            <td>
+              ${escapeHtml(
+                result.exam_name || "اختبار"
+              )}
+            </td>
+
+            <td class="score">
+
+              ${escapeHtml(
+                String(result.score)
+              )}
+
+              /
+
+              ${escapeHtml(
+                String(result.total)
+              )}
+
+            </td>
+
+            <td>
+
+              <span class="percentage">
+                ${percentage}
+              </span>
+
+            </td>
+
+            <td>
+              ${date}
+            </td>
+
+          </tr>
+
+        `;
+
+      });
+
+
+      html += `
+
+          </tbody>
+
+        </table>
+
+      `;
+
+
+      resultsContainer.innerHTML =
+        html;
+
+    }
+
+
+    /* =====================================================
+       حساب النسبة
+    ===================================================== */
+
+    function calculatePercentage(
+      score,
+      total
+    ) {
+
+      const s =
+        Number(score);
+
+      const t =
+        Number(total);
+
+      if (!t || t <= 0) {
+        return "0%";
+      }
+
+      return (
+        (s / t * 100)
+          .toFixed(2)
+        + "%"
+      );
+
+    }
+
+
+    /* =====================================================
+       رسالة الحفظ
+    ===================================================== */
+
+    function showSaveMessage(
+      message,
+      type
+    ) {
+
+      saveMessage.textContent =
+        message;
+
+      saveMessage.className =
+        type;
+
+      setTimeout(() => {
+
+        saveMessage.className = "";
+
+        saveMessage.textContent = "";
+
+      }, 4000);
+
+    }
+
+
+    /* =====================================================
+       حماية النصوص
+    ===================================================== */
+
+    function escapeHtml(value) {
+
+      return String(value)
+
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+
+        .replace(
+          /</g,
+          "&lt;"
+        )
+
+        .replace(
+          />/g,
+          "&gt;"
+        )
+
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+
+        .replace(
+          /'/g,
+          "&#039;"
+        );
+
+    }
+
+
+    /* =====================================================
+       الرئيسية
+    ===================================================== */
+
+    function goHome() {
+
+      window.location.href =
+        "../index.html";
+
+    }
+
+
+    /* =====================================================
+       تشغيل الصفحة
+    ===================================================== */
+
+    loadAccount();
+
+
+    /* =====================================================
+       مراقبة تسجيل الدخول
+    ===================================================== */
+
+    supabaseClient.auth.onAuthStateChange(
+      (event, session) => {
+
+        if (
+          event === "SIGNED_OUT" ||
+          !session
+        ) {
+
+          window.location.href =
+            "../index.html";
+
+        }
+
+      }
+    );
+
+  </script>
+
+</body>
+
+</html>
