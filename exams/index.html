@@ -6,11 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>الاختبارات | منصة أرض الأحياء</title>
-  <meta name="description" content="اختبارات الأحياء الإلكترونية - منصة أرض الأحياء">
+
+  <meta
+    name="description"
+    content="اختبارات الأحياء الإلكترونية - منصة أرض الأحياء"
+  >
 
   <link rel="icon" href="../favicon.png">
 
   <style>
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -91,7 +96,10 @@
 
     .exams-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(
+        auto-fit,
+        minmax(260px, 1fr)
+      );
       gap: 20px;
     }
 
@@ -175,11 +183,32 @@
       text-align: center;
       color: #697386;
       box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+      grid-column: 1 / -1;
     }
 
     .empty-icon {
       font-size: 50px;
       margin-bottom: 15px;
+    }
+
+    .loading {
+      background: white;
+      border-radius: 18px;
+      padding: 45px 20px;
+      text-align: center;
+      color: #697386;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+      grid-column: 1 / -1;
+    }
+
+    .error {
+      background: #fff0f0;
+      border: 1px solid #ffcaca;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      color: #b42318;
+      grid-column: 1 / -1;
     }
 
     footer {
@@ -190,6 +219,7 @@
     }
 
     @media (max-width: 600px) {
+
       header {
         padding: 14px;
       }
@@ -211,105 +241,371 @@
       .page-title h2 {
         font-size: 25px;
       }
+
     }
+
   </style>
+
 </head>
+
 
 <body>
 
-  <header>
 
-    <div class="brand">
-      <img src="../logo.png" alt="شعار منصة أرض الأحياء">
-      <h1>منصة أرض الأحياء</h1>
+<header>
+
+  <div class="brand">
+
+    <img
+      src="../logo.png"
+      alt="شعار منصة أرض الأحياء"
+    >
+
+    <h1>منصة أرض الأحياء</h1>
+
+  </div>
+
+
+  <a
+    class="back-btn"
+    href="../index.html"
+  >
+    🏠 الرئيسية
+  </a>
+
+</header>
+
+
+
+<main>
+
+  <div class="page-title">
+
+    <h2>📝 الاختبارات</h2>
+
+    <p>
+      اختبر معلوماتك في الأحياء واعرف مستواك
+    </p>
+
+  </div>
+
+
+  <div
+    id="examsGrid"
+    class="exams-grid"
+  >
+
+    <div class="loading">
+      ⏳ جاري تحميل الاختبارات...
     </div>
 
-    <a class="back-btn" href="../index.html">🏠 الرئيسية</a>
+  </div>
 
-  </header>
+</main>
 
-  <main>
 
-    <div class="page-title">
-      <h2>📝 الاختبارات</h2>
-      <p>اختبر معلوماتك في الأحياء واعرف مستواك</p>
-    </div>
 
-    <div class="exams-grid">
+<footer>
 
-      <!-- الاختبار الأول -->
-      <div class="exam-card">
+  © 2026 منصة أرض الأحياء - جميع الحقوق محفوظة
 
-        <div class="exam-icon">🧬</div>
+</footer>
 
-        <h3>اختبار أساسيات الأحياء</h3>
 
-        <p>
-          اختبار تدريبي في أساسيات علم الأحياء والمفاهيم الأساسية.
-        </p>
 
-        <div class="info">
-          <span>❓ 10 أسئلة</span>
-          <span>⏱️ 10 دقائق</span>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<script>
+
+  // ==============================
+  // إعداد Supabase
+  // ==============================
+
+  const SUPABASE_URL =
+    "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+
+
+  const SUPABASE_ANON_KEY =
+    "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+
+
+  const supabaseClient =
+    supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
+
+
+
+  // ==============================
+  // تحميل الاختبارات
+  // ==============================
+
+  async function loadExams() {
+
+    const grid =
+      document.getElementById(
+        "examsGrid"
+      );
+
+
+    try {
+
+      const {
+        data: exams,
+        error
+      } =
+        await supabaseClient
+          .from("exams")
+          .select("*")
+          .order(
+            "created_at",
+            {
+              ascending: false
+            }
+          );
+
+
+      if (error) {
+
+        console.error(error);
+
+        grid.innerHTML = `
+          <div class="error">
+            ❌ حدث خطأ أثناء تحميل الاختبارات.
+            <br><br>
+            ${escapeHtml(error.message)}
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      // لا توجد اختبارات
+
+      if (
+        !exams ||
+        exams.length === 0
+      ) {
+
+        grid.innerHTML = `
+          <div class="empty">
+
+            <div class="empty-icon">
+              📝
+            </div>
+
+            <h3>
+              لا توجد اختبارات حاليًا
+            </h3>
+
+            <p style="margin-top:10px;">
+              سيتم إضافة الاختبارات قريبًا.
+            </p>
+
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      // تنظيف الصفحة
+
+      grid.innerHTML = "";
+
+
+      // إنشاء بطاقات الاختبارات
+
+      for (
+        const exam of exams
+      ) {
+
+        const questionCount =
+          await getQuestionCount(
+            exam.id
+          );
+
+
+        const card =
+          document.createElement(
+            "div"
+          );
+
+
+        card.className =
+          "exam-card";
+
+
+        card.innerHTML = `
+
+          <div class="exam-icon">
+            🧬
+          </div>
+
+
+          <h3>
+            ${escapeHtml(
+              exam.title
+            )}
+          </h3>
+
+
+          <p>
+            ${escapeHtml(
+              exam.description ||
+              "اختبار تدريبي في الأحياء."
+            )}
+          </p>
+
+
+          <div class="info">
+
+            <span>
+              ❓ ${questionCount} سؤال
+            </span>
+
+            <span>
+              ⏱️ ${Number(
+                exam.duration || 10
+              )} دقيقة
+            </span>
+
+          </div>
+
+
+          <a
+            class="start-btn"
+            href="exam.html?id=${encodeURIComponent(
+              exam.id
+            )}"
+          >
+            🚀 بدء الاختبار
+          </a>
+
+        `;
+
+
+        grid.appendChild(card);
+
+      }
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+
+      grid.innerHTML = `
+
+        <div class="error">
+
+          ❌ تعذر تحميل الاختبارات.
+
+          <br><br>
+
+          حاول تحديث الصفحة.
+
         </div>
 
-        <a class="start-btn" href="exam.html">
-          🚀 بدء الاختبار
-        </a>
+      `;
 
-      </div>
+    }
 
-      <!-- اختبار تجريبي -->
-      <div class="exam-card">
+  }
 
-        <div class="exam-icon">🔬</div>
 
-        <h3>اختبار الخلية</h3>
 
-        <p>
-          اختبار تدريبي عن الخلية ومكوناتها ووظائف العضيات.
-        </p>
+  // ==============================
+  // عدد الأسئلة
+  // ==============================
 
-        <div class="info">
-          <span>❓ قريبًا</span>
-          <span>⏱️ قريبًا</span>
-        </div>
+  async function getQuestionCount(
+    examId
+  ) {
 
-        <button class="start-btn" disabled style="opacity:0.55; cursor:not-allowed;">
-          🔒 قريبًا
-        </button>
+    const {
+      count,
+      error
+    } =
+      await supabaseClient
+        .from("exam_questions")
+        .select(
+          "id",
+          {
+            count: "exact",
+            head: true
+          }
+        )
+        .eq(
+          "exam_id",
+          examId
+        );
 
-      </div>
 
-      <!-- اختبار تجريبي -->
-      <div class="exam-card">
+    if (error) {
 
-        <div class="exam-icon">🌱</div>
+      console.error(error);
 
-        <h3>اختبار الدعامة في النبات</h3>
+      return 0;
 
-        <p>
-          أسئلة تدريبية حول الدعامة في النبات وأنواعها.
-        </p>
+    }
 
-        <div class="info">
-          <span>❓ قريبًا</span>
-          <span>⏱️ قريبًا</span>
-        </div>
 
-        <button class="start-btn" disabled style="opacity:0.55; cursor:not-allowed;">
-          🔒 قريبًا
-        </button>
+    return count || 0;
 
-      </div>
+  }
 
-    </div>
 
-  </main>
 
-  <footer>
-    © 2026 منصة أرض الأحياء - جميع الحقوق محفوظة
-  </footer>
+  // ==============================
+  // حماية النصوص
+  // ==============================
+
+  function escapeHtml(text) {
+
+    return String(text)
+
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+
+      .replace(
+        /</g,
+        "&lt;"
+      )
+
+      .replace(
+        />/g,
+        "&gt;"
+      )
+
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+
+      .replace(
+        /'/g,
+        "&#039;"
+      );
+
+  }
+
+
+
+  // تشغيل الصفحة
+
+  loadExams();
+
+</script>
+
 
 </body>
 
