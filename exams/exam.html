@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>اختبار أساسيات الأحياء | منصة أرض الأحياء</title>
+  <link rel="icon" href="../favicon.png">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Tahoma, sans-serif;
+      background: #f5f7fb;
+      color: #172033;
+    }
+
+    header {
+      background: linear-gradient(135deg, #075e54, #0b806f);
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.12);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand img {
+      width: 45px;
+      height: 45px;
+      object-fit: contain;
+      background: white;
+      border-radius: 10px;
+      padding: 3px;
+    }
+
+    .brand h1 {
+      font-size: 20px;
+    }
+
+    .timer {
+      background: #ffffff;
+      color: #075e54;
+      padding: 10px 15px;
+      border-radius: 10px;
+      font-weight: bold;
+      min-width: 90px;
+      text-align: center;
+    }
+
+    main {
+      max-width: 850px;
+      margin: 30px auto;
+      padding: 0 15px;
+    }
+
+    .exam-header {
+      background: white;
+      padding: 22px;
+      border-radius: 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+    }
+
+    .exam-header h2 {
+      color: #075e54;
+      margin-bottom: 8px;
+    }
+
+    .exam-header p {
+      color: #687386;
+    }
+
+    .question {
+      background: white;
+      padding: 22px;
+      border-radius: 16px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    }
+
+    .question h3 {
+      font-size: 17px;
+      margin-bottom: 16px;
+      line-height: 1.7;
+    }
+
+    .option {
+      display: block;
+      background: #f7f8fa;
+      border: 1px solid #e2e5eb;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 9px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .option:hover {
+      background: #eaf6f3;
+      border-color: #0b806f;
+    }
+
+    .option input {
+      margin-left: 8px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      border: none;
+      background: #075e54;
+      color: white;
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 17px;
+      cursor: pointer;
+      margin: 10px 0 30px;
+    }
+
+    .submit-btn:hover {
+      background: #064d45;
+    }
+
+    .result {
+      display: none;
+      background: white;
+      border-radius: 20px;
+      padding: 35px 20px;
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
+    }
+
+    .result h2 {
+      color: #075e54;
+      margin-bottom: 15px;
+    }
+
+    .score {
+      font-size: 38px;
+      font-weight: bold;
+      color: #0b806f;
+      margin: 15px 0;
+    }
+
+    .back-btn {
+      display: inline-block;
+      text-decoration: none;
+      background: #075e54;
+      color: white;
+      padding: 11px 18px;
+      border-radius: 10px;
+    }
+
+    footer {
+      text-align: center;
+      color: #7b8494;
+      padding: 20px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      .brand h1 {
+        font-size: 16px;
+      }
+
+      .brand img {
+        width: 40px;
+        height: 40px;
+      }
+
+      .timer {
+        padding: 8px 10px;
+        min-width: 75px;
+        font-size: 13px;
+      }
+
+      .question {
+        padding: 17px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+
+  <div class="brand">
+    <img src="../logo.png" alt="شعار منصة أرض الأحياء">
+    <h1>منصة أرض الأحياء</h1>
+  </div>
+
+  <div class="timer" id="timer">
+    ⏱️ 10:00
+  </div>
+
+</header>
+
+<main>
+
+  <div class="exam-header">
+    <h2>🧬 اختبار أساسيات الأحياء</h2>
+    <p>أجب عن الأسئلة التالية ثم اضغط على زر تسليم الاختبار.</p>
+  </div>
+
+  <form id="examForm">
+
+    <div class="question">
+      <h3>1. ما الوحدة الأساسية التي يتكون منها جسم الكائن الحي؟</h3>
+
+      <label class="option">
+        <input type="radio" name="q1" value="a">
+        النسيج
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q1" value="b">
+        الخلية
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q1" value="c">
+        العضو
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q1" value="d">
+        الجهاز
+      </label>
+    </div>
+
+
+    <div class="question">
+      <h3>2. ما العضية المسؤولة عن إنتاج الطاقة في الخلية؟</h3>
+
+      <label class="option">
+        <input type="radio" name="q2" value="a">
+        النواة
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q2" value="b">
+        الريبوسوم
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q2" value="c">
+        الميتوكوندريا
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q2" value="d">
+        الفجوة
+      </label>
+    </div>
+
+
+    <div class="question">
+      <h3>3. ما المادة الوراثية الموجودة في معظم الكائنات الحية؟</h3>
+
+      <label class="option">
+        <input type="radio" name="q3" value="a">
+        DNA
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q3" value="b">
+        الماء
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q3" value="c">
+        الجلوكوز
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q3" value="d">
+        الدهون
+      </label>
+    </div>
+
+
+    <div class="question">
+      <h3>4. أين توجد المادة الوراثية في الخلية حقيقية النواة بشكل أساسي؟</h3>
+
+      <label class="option">
+        <input type="radio" name="q4" value="a">
+        النواة
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q4" value="b">
+        الغشاء
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q4" value="c">
+        السيتوبلازم
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q4" value="d">
+        الميتوكوندريا فقط
+      </label>
+    </div>
+
+
+    <div class="question">
+      <h3>5. ما العملية التي تصنع بها النباتات غذاءها؟</h3>
+
+      <label class="option">
+        <input type="radio" name="q5" value="a">
+        التنفس
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q5" value="b">
+        البناء الضوئي
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q5" value="c">
+        الهضم
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q5" value="d">
+        الإخراج
+      </label>
+    </div>
+
+
+    <div class="question">
+      <h3>6. ما الغاز الذي تستخدمه النباتات في عملية البناء الضوئي؟</h3>
+
+      <label class="option">
+        <input type="radio" name="q6" value="a">
+        الأكسجين
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q6" value="b">
+        النيتروجين
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q6" value="c">
+        ثاني أكسيد الكربون
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q6" value="d">
+        الهيدروجين
+      </label>
+    </div>
+
+
+    <div class="question">
+      <h3>7. ما البروتين المسؤول بشكل أساسي عن نقل الأكسجين في الدم؟</h3>
+
+      <label class="option">
+        <input type="radio" name="q7" value="a">
+        الأنسولين
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q7" value="b">
+        الهيموجلوبين
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q7" value="c">
+        الكيراتين
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q7" value="d">
+        الكولاجين
+      </label>
+    </div>
+
+
+    <div class="question">
+      <h3>8. أي مما يلي يمثل نسيجًا في جسم الإنسان؟</h3>
+
+      <label class="option">
+        <input type="radio" name="q8" value="a">
+        النسيج العضلي
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q8" value="b">
+        القلب
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q8" value="c">
+        الكبد
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q8" value="d">
+        المعدة
+      </label>
+    </div>
+
+
+    <div class="question">
+      <h3>9. ما الجزء الذي يتحكم في دخول وخروج المواد من الخلية؟</h3>
+
+      <label class="option">
+        <input type="radio" name="q9" value="a">
+        النواة
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q9" value="b">
+        الغشاء البلازمي
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q9" value="c">
+        الريبوسوم
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q9" value="d">
+        النوية
+      </label>
+    </div>
+
+
+    <div class="question">
+      <h3>10. أي مما يلي يعد من الكائنات الحية؟</h3>
+
+      <label class="option">
+        <input type="radio" name="q10" value="a">
+        النبات
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q10" value="b">
+        الصخر
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q10" value="c">
+        الماء
+      </label>
+
+      <label class="option">
+        <input type="radio" name="q10" value="d">
+        الهواء
+      </label>
+    </div>
+
+
+    <button type="submit" class="submit-btn">
+      📤 تسليم الاختبار
+    </button>
+
+  </form>
+
+
+  <div class="result" id="result">
+
+    <h2>🎉 انتهى الاختبار</h2>
+
+    <p>نتيجتك:</p>
+
+    <div class="score" id="score">
+      0 / 10
+    </div>
+
+    <p id="message"></p>
+
+    <br>
+
+    <a href="index.html" class="back-btn">
+      ↩️ العودة إلى الاختبارات
+    </a>
+
+  </div>
+
+</main>
+
+<footer>
+  © 2026 منصة أرض الأحياء
+</footer>
+
+
+<script>
+
+  const correctAnswers = {
+    q1: "b",
+    q2: "c",
+    q3: "a",
+    q4: "a",
+    q5: "b",
+    q6: "c",
+    q7: "b",
+    q8: "a",
+    q9: "b",
+    q10: "a"
+  };
+
+  const form = document.getElementById("examForm");
+  const result = document.getElementById("result");
+  const scoreElement = document.getElementById("score");
+  const message = document.getElementById("message");
+
+  let submitted = false;
+
+  form.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    if (submitted) return;
+
+    submitted = true;
+
+    let score = 0;
+
+    for (let i = 1; i <= 10; i++) {
+
+      const answer = document.querySelector(
+        `input[name="q${i}"]:checked`
+      );
+
+      if (answer && answer.value === correctAnswers[`q${i}`]) {
+        score++;
+      }
+
+    }
+
+    form.style.display = "none";
+
+    result.style.display = "block";
+
+    scoreElement.textContent = `${score} / 10`;
+
+    if (score === 10) {
+      message.textContent = "ممتاز جدًا! إجاباتك كلها صحيحة 👏";
+    } else if (score >= 7) {
+      message.textContent = "أداء رائع! استمر في المراجعة والتدريب 💪";
+    } else if (score >= 5) {
+      message.textContent = "نتيجة جيدة، حاول مراجعة الدرس مرة أخرى 📚";
+    } else {
+      message.textContent = "راجع الأساسيات وحاول الاختبار مرة أخرى 🌱";
+    }
+
+    clearInterval(timerInterval);
+
+  });
+
+
+  // المؤقت: 10 دقائق
+
+  let timeLeft = 10 * 60;
+
+  const timerElement = document.getElementById("timer");
+
+  const timerInterval = setInterval(function() {
+
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+
+    timerElement.textContent =
+      `⏱️ ${minutes}:${seconds.toString().padStart(2, "0")}`;
+
+    if (timeLeft <= 0) {
+
+      clearInterval(timerInterval);
+
+      alert("انتهى وقت الاختبار وسيتم تسليم الإجابات.");
+
+      form.requestSubmit();
+
+    }
+
+    timeLeft--;
+
+  }, 1000);
+
+</script>
+
+</body>
+</html>
