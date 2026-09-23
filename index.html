@@ -3,11 +3,12 @@
 
 <head>
   <meta charset="UTF-8">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
 
   <title>منصة أرض الأحياء | منصة تعليمية لطلاب الأحياء</title>
 
@@ -18,18 +19,15 @@
     content="أحياء, منصة أرض الأحياء, تعليم الأحياء, محاضرات أحياء, مذكرات أحياء, أسئلة أحياء">
 
   <meta name="author" content="منصة أرض الأحياء">
-
   <meta name="robots" content="index, follow">
   <meta name="googlebot" content="index, follow">
 
   <link rel="canonical" href="https://mohamed-tool-grafix.github.io/ard-al-ahyaa/">
 
-  <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="shortcut icon" href="favicon.png">
   <link rel="apple-touch-icon" href="logo.png">
 
-  <!-- Open Graph -->
   <meta property="og:title" content="منصة أرض الأحياء">
   <meta property="og:description"
     content="منصة أرض الأحياء التعليمية - محاضرات ومذكرات وأسئلة وفيديوهات ومنتدى لطلاب الأحياء.">
@@ -38,34 +36,12 @@
   <meta property="og:image"
     content="https://mohamed-tool-grafix.github.io/ard-al-ahyaa/logo.png">
 
-  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="منصة أرض الأحياء">
   <meta name="twitter:description"
     content="منصة أرض الأحياء التعليمية - محاضرات ومذكرات وأسئلة وفيديوهات ومنتدى لطلاب الأحياء.">
   <meta name="twitter:image"
     content="https://mohamed-tool-grafix.github.io/ard-al-ahyaa/logo.png">
-
-  <!-- Schema -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "EducationalOrganization",
-    "name": "منصة أرض الأحياء",
-    "url": "https://mohamed-tool-grafix.github.io/ard-al-ahyaa/",
-    "logo": "https://mohamed-tool-grafix.github.io/ard-al-ahyaa/logo.png",
-    "description": "منصة أرض الأحياء التعليمية - محاضرات ومذكرات وأسئلة وفيديوهات ومنتدى لطلاب الأحياء."
-  }
-  </script>
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "منصة أرض الأحياء",
-    "url": "https://mohamed-tool-grafix.github.io/ard-al-ahyaa/"
-  }
-  </script>
 
   <style>
 
@@ -76,7 +52,7 @@
     }
 
     body {
-      font-family: Arial, Tahoma, sans-serif;
+      font-family: 'Tajawal', Arial, Tahoma, sans-serif;
       background: #f4f8f5;
       color: #222;
       min-height: 100vh;
@@ -101,12 +77,7 @@
       justify-content: center;
       align-items: center;
       padding: 20px;
-      background:
-        linear-gradient(
-          135deg,
-          #e8f7ee,
-          #ffffff
-        );
+      background: linear-gradient(135deg, #e8f7ee, #ffffff);
     }
 
     .login-box {
@@ -165,6 +136,7 @@
       font-size: 16px;
       cursor: pointer;
       transition: 0.3s;
+      margin-bottom: 10px;
     }
 
     .login-btn:hover {
@@ -172,10 +144,47 @@
       transform: translateY(-2px);
     }
 
-    #loginMessage {
+    .signup-btn {
+      width: 100%;
+      border: 1px solid #159957;
+      background: #ffffff;
+      color: #159957;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .signup-btn:hover {
+      background: #eaf7ef;
+    }
+
+    .switch-btn {
+      background: none;
+      border: none;
+      color: #08753d;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 12px;
+      text-decoration: underline;
+    }
+
+    .form-title {
+      color: #08753d;
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    #loginMessage,
+    #signupMessage {
       margin-top: 15px;
       font-size: 14px;
-      line-height: 1.6;
+      line-height: 1.7;
+    }
+
+    #signupForm {
+      display: none;
     }
 
     /* =========================
@@ -315,11 +324,7 @@
     ========================== */
 
     .welcome {
-      background: linear-gradient(
-        135deg,
-        #08753d,
-        #159957
-      );
+      background: linear-gradient(135deg, #08753d, #159957);
       color: #ffffff;
       border-radius: 18px;
       padding: 30px;
@@ -376,10 +381,7 @@
 
     .cards {
       display: grid;
-      grid-template-columns: repeat(
-        auto-fit,
-        minmax(220px, 1fr)
-      );
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 18px;
     }
 
@@ -387,24 +389,16 @@
       background: #ffffff;
       border-radius: 12px;
       padding: 20px;
-
-      box-shadow:
-        0 4px 6px -1px rgba(0, 0, 0, 0.1);
-
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
       transition: all 0.3s ease-in-out;
-
       border: 1px solid #eef5f0;
     }
 
-    /* التأثير عند مرور الماوس */
-
     .card:hover {
       transform: translateY(-8px);
-
       box-shadow:
         0 20px 25px -5px rgba(0, 0, 0, 0.1),
         0 10px 10px -5px rgba(0, 0, 0, 0.04);
-
       border-bottom: 4px solid #10b981;
     }
 
@@ -536,33 +530,105 @@
         class="login-logo"
         alt="منصة أرض الأحياء">
 
-      <h1>منصة أرض الأحياء</h1>
 
-      <p>
-        منصة تعليمية لطلاب الأحياء
-      </p>
+      <!-- =========================
+           LOGIN FORM
+      ========================== -->
 
-      <input
-        type="email"
-        id="email"
-        placeholder="البريد الإلكتروني"
-        autocomplete="email">
+      <div id="loginForm">
 
-      <input
-        type="password"
-        id="password"
-        placeholder="كلمة المرور"
-        autocomplete="current-password">
+        <h1>منصة أرض الأحياء</h1>
 
-      <button
-        class="login-btn"
-        onclick="loginUser()">
+        <p>
+          منصة تعليمية لطلاب الأحياء
+        </p>
 
-        تسجيل الدخول
+        <input
+          type="email"
+          id="email"
+          placeholder="البريد الإلكتروني"
+          autocomplete="email">
 
-      </button>
+        <input
+          type="password"
+          id="password"
+          placeholder="كلمة المرور"
+          autocomplete="current-password">
 
-      <div id="loginMessage"></div>
+        <button
+          class="login-btn"
+          onclick="loginUser()">
+
+          تسجيل الدخول
+
+        </button>
+
+        <button
+          class="signup-btn"
+          onclick="showSignup()">
+
+          📝 إنشاء حساب جديد
+
+        </button>
+
+        <div id="loginMessage"></div>
+
+      </div>
+
+
+      <!-- =========================
+           SIGNUP FORM
+      ========================== -->
+
+      <div id="signupForm">
+
+        <div class="form-title">
+          إنشاء حساب جديد
+        </div>
+
+        <input
+          type="text"
+          id="signupName"
+          placeholder="اسم الطالب"
+          autocomplete="name">
+
+        <input
+          type="email"
+          id="signupEmail"
+          placeholder="البريد الإلكتروني"
+          autocomplete="email">
+
+        <input
+          type="password"
+          id="signupPassword"
+          placeholder="كلمة المرور"
+          autocomplete="new-password">
+
+        <input
+          type="password"
+          id="signupPasswordConfirm"
+          placeholder="تأكيد كلمة المرور"
+          autocomplete="new-password">
+
+        <button
+          class="login-btn"
+          onclick="signupUser()">
+
+          إنشاء الحساب
+
+        </button>
+
+        <button
+          class="switch-btn"
+          onclick="showLoginForm()">
+
+          ← العودة لتسجيل الدخول
+
+        </button>
+
+        <div id="signupMessage"></div>
+
+      </div>
 
     </div>
 
@@ -574,8 +640,6 @@
   ========================== -->
 
   <div id="app">
-
-    <!-- HEADER -->
 
     <header class="header">
 
@@ -610,11 +674,7 @@
     </header>
 
 
-    <!-- LAYOUT -->
-
     <div class="layout">
-
-      <!-- SIDEBAR -->
 
       <aside class="sidebar">
 
@@ -651,11 +711,7 @@
       </aside>
 
 
-      <!-- MAIN -->
-
       <main class="main">
-
-        <!-- WELCOME -->
 
         <section class="welcome">
 
@@ -671,8 +727,6 @@
         </section>
 
 
-        <!-- SEARCH -->
-
         <div class="search-box">
 
           <input
@@ -684,16 +738,13 @@
         </div>
 
 
-        <!-- SECTIONS -->
-
         <h2 class="section-title">
           أقسام المنصة
         </h2>
 
+
         <div class="cards" id="cardsContainer">
 
-
-          <!-- المحاضرات -->
 
           <div class="card searchable">
 
@@ -720,8 +771,6 @@
           </div>
 
 
-          <!-- المذكرات -->
-
           <div class="card searchable">
 
             <div class="card-icon">
@@ -746,8 +795,6 @@
 
           </div>
 
-
-          <!-- المنتدى -->
 
           <div class="card searchable">
 
@@ -774,8 +821,6 @@
           </div>
 
 
-          <!-- الدعامة -->
-
           <div class="card searchable">
 
             <div class="card-icon">
@@ -801,8 +846,6 @@
           </div>
 
 
-          <!-- الخلية -->
-
           <div class="card searchable">
 
             <div class="card-icon">
@@ -827,8 +870,6 @@
 
           </div>
 
-
-          <!-- الوراثة -->
 
           <div class="card searchable">
 
@@ -857,8 +898,6 @@
 
         </div>
 
-
-        <!-- FOOTER -->
 
         <footer>
 
@@ -912,8 +951,53 @@
     const loginMessage =
       document.getElementById("loginMessage");
 
+    const signupMessage =
+      document.getElementById("signupMessage");
+
     const studentName =
       document.getElementById("studentName");
+
+
+    /* =========================
+       SHOW SIGNUP
+    ========================== */
+
+    function showSignup() {
+
+      document.getElementById("loginForm").style.display =
+        "none";
+
+      document.getElementById("signupForm").style.display =
+        "block";
+
+      document.getElementById("loginMessage").innerHTML =
+        "";
+
+      document.getElementById("signupMessage").innerHTML =
+        "";
+
+    }
+
+
+    /* =========================
+       SHOW LOGIN FORM
+    ========================== */
+
+    function showLoginForm() {
+
+      document.getElementById("signupForm").style.display =
+        "none";
+
+      document.getElementById("loginForm").style.display =
+        "block";
+
+      document.getElementById("loginMessage").innerHTML =
+        "";
+
+      document.getElementById("signupMessage").innerHTML =
+        "";
+
+    }
 
 
     /* =========================
@@ -934,6 +1018,7 @@
         showLogin();
 
         return;
+
       }
 
       if (data.session) {
@@ -993,7 +1078,9 @@
         console.error(error);
 
         loginMessage.innerHTML =
-          '<span style="color:#d32f2f;">البريد الإلكتروني أو كلمة المرور غير صحيحة.</span>';
+          '<span style="color:#d32f2f;">فشل تسجيل الدخول: ' +
+          error.message +
+          '</span>';
 
         return;
 
@@ -1001,6 +1088,143 @@
 
 
       showApp(data.user);
+
+    }
+
+
+    /* =========================
+       SIGN UP
+    ========================== */
+
+    async function signupUser() {
+
+      const name =
+        document.getElementById("signupName").value.trim();
+
+      const email =
+        document.getElementById("signupEmail").value.trim();
+
+      const password =
+        document.getElementById("signupPassword").value;
+
+      const confirmPassword =
+        document.getElementById("signupPasswordConfirm").value;
+
+
+      /* التحقق من البيانات */
+
+      if (!name || !email || !password || !confirmPassword) {
+
+        signupMessage.innerHTML =
+          '<span style="color:#d32f2f;">من فضلك املأ جميع البيانات.</span>';
+
+        return;
+
+      }
+
+
+      if (name.length < 2) {
+
+        signupMessage.innerHTML =
+          '<span style="color:#d32f2f;">اكتب اسمًا صحيحًا.</span>';
+
+        return;
+
+      }
+
+
+      if (password.length < 6) {
+
+        signupMessage.innerHTML =
+          '<span style="color:#d32f2f;">كلمة المرور يجب أن تكون 6 أحرف أو أكثر.</span>';
+
+        return;
+
+      }
+
+
+      if (password !== confirmPassword) {
+
+        signupMessage.innerHTML =
+          '<span style="color:#d32f2f;">كلمتا المرور غير متطابقتين.</span>';
+
+        return;
+
+      }
+
+
+      signupMessage.innerHTML =
+        '<span style="color:#08753d;">جاري إنشاء الحساب...</span>';
+
+
+      /* إنشاء الحساب في Supabase */
+
+      const {
+        data,
+        error
+      } = await supabaseClient.auth.signUp({
+
+        email: email,
+
+        password: password,
+
+        options: {
+
+          data: {
+
+            full_name: name,
+
+            name: name
+
+          }
+
+        }
+
+      });
+
+
+      /* في حالة وجود خطأ */
+
+      if (error) {
+
+        console.error(error);
+
+        signupMessage.innerHTML =
+          '<span style="color:#d32f2f;">فشل إنشاء الحساب: ' +
+          error.message +
+          '</span>';
+
+        return;
+
+      }
+
+
+      /* لو تم إنشاء الحساب */
+
+      if (data.user) {
+
+        /*
+          لو Supabase يحتاج تأكيد البريد
+        */
+
+        if (!data.session) {
+
+          signupMessage.innerHTML =
+            '<span style="color:#08753d;">تم إنشاء الحساب بنجاح ✅<br>راجع بريدك الإلكتروني لتأكيد الحساب ثم سجل الدخول.</span>';
+
+          return;
+
+        }
+
+
+        /* لو تسجيل الدخول تم مباشرة */
+
+        signupMessage.innerHTML =
+          '<span style="color:#08753d;">تم إنشاء الحساب بنجاح ✅</span>';
+
+        showApp(data.user);
+
+      }
 
     }
 
@@ -1084,6 +1308,8 @@
 
 
       showLogin();
+
+      showLoginForm();
 
     }
 
