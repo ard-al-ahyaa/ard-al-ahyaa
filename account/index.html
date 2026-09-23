@@ -1,343 +1,4 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>حسابي | منصة أرض الأحياء</title>
-
-  <link rel="icon" href="../favicon.png">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: "Tajawal", sans-serif;
-      background: #f4f7fb;
-      color: #172033;
-    }
-
-    header {
-      background: linear-gradient(135deg, #087f5b, #0b9b70);
-      color: white;
-      padding: 18px 20px;
-      box-shadow: 0 3px 15px rgba(0,0,0,.12);
-    }
-
-    .header-content {
-      max-width: 1000px;
-      margin: auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand img {
-      width: 52px;
-      height: 52px;
-      object-fit: contain;
-      background: white;
-      border-radius: 12px;
-      padding: 4px;
-    }
-
-    .brand h1 {
-      margin: 0;
-      font-size: 21px;
-    }
-
-    .brand p {
-      margin: 3px 0 0;
-      opacity: .9;
-      font-size: 13px;
-    }
-
-    .back-btn {
-      border: 0;
-      background: white;
-      color: #087f5b;
-      padding: 10px 15px;
-      border-radius: 10px;
-      font-family: inherit;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    main {
-      max-width: 1000px;
-      margin: 30px auto;
-      padding: 0 15px;
-    }
-
-    .profile-card {
-      background: white;
-      border-radius: 20px;
-      padding: 25px;
-      box-shadow: 0 5px 25px rgba(0,0,0,.07);
-      margin-bottom: 20px;
-    }
-
-    .profile-top {
-      text-align: center;
-      margin-bottom: 25px;
-    }
-
-    .avatar {
-      width: 90px;
-      height: 90px;
-      margin: auto;
-      border-radius: 50%;
-      background: #e5f7f0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 45px;
-    }
-
-    .profile-top h2 {
-      margin: 12px 0 5px;
-      color: #087f5b;
-    }
-
-    .profile-top p {
-      margin: 0;
-      color: #777;
-    }
-
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-    }
-
-    .info-box {
-      background: #f7faf9;
-      border: 1px solid #e3eee9;
-      border-radius: 14px;
-      padding: 17px;
-    }
-
-    .info-title {
-      color: #777;
-      font-size: 13px;
-      margin-bottom: 7px;
-    }
-
-    .info-value {
-      font-weight: 700;
-      font-size: 16px;
-      word-break: break-word;
-    }
-
-    .results-card {
-      background: white;
-      border-radius: 20px;
-      padding: 25px;
-      box-shadow: 0 5px 25px rgba(0,0,0,.07);
-    }
-
-    .results-card h2 {
-      margin-top: 0;
-      color: #087f5b;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 25px;
-      color: #777;
-    }
-
-    .error {
-      background: #fff0f0;
-      color: #b42318;
-      padding: 15px;
-      border-radius: 12px;
-      line-height: 1.8;
-    }
-
-    .no-results {
-      text-align: center;
-      padding: 25px;
-      color: #777;
-      background: #f7f8fa;
-      border-radius: 12px;
-    }
-
-    .result-item {
-      border: 1px solid #e5e9ed;
-      border-radius: 14px;
-      padding: 17px;
-      margin-bottom: 12px;
-      background: #fbfcfd;
-    }
-
-    .result-name {
-      font-weight: 800;
-      font-size: 17px;
-      margin-bottom: 10px;
-    }
-
-    .result-details {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .result-badge {
-      background: #e7f7f1;
-      color: #087f5b;
-      padding: 7px 11px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    footer {
-      text-align: center;
-      color: #777;
-      padding: 25px 10px;
-      font-size: 13px;
-    }
-
-    @media (max-width: 600px) {
-      .info-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .header-content {
-        align-items: flex-start;
-      }
-
-      .brand h1 {
-        font-size: 17px;
-      }
-
-      .back-btn {
-        padding: 8px 10px;
-        font-size: 12px;
-      }
-
-      .profile-card,
-      .results-card {
-        padding: 18px;
-      }
-    }
-  </style>
-</head>
-
-<body>
-
-<header>
-  <div class="header-content">
-
-    <div class="brand">
-      <img src="../logo.png" alt="منصة أرض الأحياء">
-      <div>
-        <h1>منصة أرض الأحياء</h1>
-        <p>الحساب الشخصي</p>
-      </div>
-    </div>
-
-    <button class="back-btn" onclick="goHome()">
-      🏠 الرئيسية
-    </button>
-
-  </div>
-</header>
-
-<main>
-
-  <section class="profile-card">
-
-    <div class="profile-top">
-      <div class="avatar">👤</div>
-
-      <h2 id="studentName">
-        جاري التحميل...
-      </h2>
-
-      <p id="accountType">
-        جاري التحميل...
-      </p>
-    </div>
-
-    <div class="info-grid">
-
-      <div class="info-box">
-        <div class="info-title">👤 اسم الطالب</div>
-        <div class="info-value" id="nameValue">
-          جاري التحميل...
-        </div>
-      </div>
-
-      <div class="info-box">
-        <div class="info-title">📱 رقم الهاتف</div>
-        <div class="info-value" id="phoneValue">
-          جاري التحميل...
-        </div>
-      </div>
-
-      <div class="info-box">
-        <div class="info-title">📧 البريد الإلكتروني</div>
-        <div class="info-value" id="emailValue">
-          جاري التحميل...
-        </div>
-      </div>
-
-      <div class="info-box">
-        <div class="info-title">🔐 نوع الحساب</div>
-        <div class="info-value" id="roleValue">
-          جاري التحميل...
-        </div>
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <section class="results-card">
-
-    <h2>📊 النتائج والدرجات</h2>
-
-    <div id="resultsContainer">
-      <div class="loading">
-        جاري تحميل النتائج...
-      </div>
-    </div>
-
-  </section>
-
-</main>
-
-<footer>
-  © منصة أرض الأحياء التعليمية
-</footer>
-
-
 <script>
-
-  /* =========================
-     إعدادات Supabase
-  ========================= */
-
   const SUPABASE_URL =
     "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 
@@ -351,18 +12,20 @@
     );
 
 
-  /* =========================
-     الرجوع للرئيسية
-  ========================= */
-
   function goHome() {
     window.location.href = "../index.html";
   }
 
 
-  /* =========================
-     تحميل الحساب
-  ========================= */
+  function escapeHtml(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
 
   async function loadAccount() {
 
@@ -372,121 +35,107 @@
         data: {
           user
         },
-        error: authError
+        error
       } = await supabaseClient.auth.getUser();
 
 
-      if (authError) {
-        throw authError;
+      if (error) {
+        throw error;
       }
 
 
       if (!user) {
-
         window.location.href = "../index.html";
-
         return;
       }
 
 
-      /* =========================
-         البيانات الأساسية
-      ========================= */
+      /*
+       * =================================
+       * اسم الحساب من تسجيل الدخول فقط
+       * =================================
+       */
+
+      const metadata = user.user_metadata || {};
+
+      let loginName =
+        metadata.full_name ||
+        metadata.name ||
+        metadata.username ||
+        metadata.user_name ||
+        "";
+
+
+      /*
+       * لو مفيش اسم محفوظ في بيانات الدخول
+       * نستخدم جزء من البريد الإلكتروني
+       */
+
+      if (!loginName.trim()) {
+
+        if (user.email) {
+
+          loginName =
+            user.email.split("@")[0];
+
+        } else {
+
+          loginName = "مستخدم المنصة";
+
+        }
+      }
+
+
+      /*
+       * البريد الإلكتروني من حساب تسجيل الدخول
+       */
 
       const email =
         user.email || "غير متوفر";
 
 
-      const metadata =
-        user.user_metadata || {};
+      /*
+       * =================================
+       * بيانات إضافية من profiles
+       * =================================
+       *
+       * هنا نقرأ الهاتف والدور فقط.
+       * ممنوع profiles.full_name يغير اسم الحساب.
+       */
 
+      let phone = "غير مضاف";
+      let role = "student";
 
-      let fullName =
-        metadata.full_name ||
-        metadata.name ||
-        "";
-
-
-      /* =========================
-         جلب بيانات profiles
-      ========================= */
 
       const {
         data: profile,
         error: profileError
       } = await supabaseClient
         .from("profiles")
-        .select("id, full_name, email, role, phone, created_at")
+        .select("id, email, role, phone")
         .eq("id", user.id)
         .maybeSingle();
 
 
-      if (profileError) {
+      if (!profileError && profile) {
 
-        console.error(
-          "Profile error:",
-          profileError
-        );
+        if (profile.phone) {
+          phone = profile.phone;
+        }
 
-        document.getElementById("studentName").textContent =
-          fullName || email;
-
-        document.getElementById("nameValue").textContent =
-          fullName || email;
-
-        document.getElementById("emailValue").textContent =
-          email;
-
-        document.getElementById("phoneValue").textContent =
-          "غير مضاف";
-
-        document.getElementById("roleValue").textContent =
-          "طالب";
-
-        document.getElementById("accountType").textContent =
-          "حساب طالب";
-
-        document.getElementById("resultsContainer").innerHTML =
-          `
-          <div class="error">
-            تعذر تحميل بيانات الملف الشخصي.
-            <br>
-            تأكد من أن حساب الموقع متصل بنفس مشروع Supabase الذي يحتوي على جدول profiles.
-          </div>
-          `;
-
-        return;
+        if (profile.role) {
+          role = profile.role;
+        }
       }
 
 
-      /* =========================
-         استخدام بيانات profile
-      ========================= */
+      /*
+       * =================================
+       * نوع الحساب
+       * =================================
+       */
 
-      if (profile) {
-
-        fullName =
-          profile.full_name ||
-          fullName ||
-          email;
-
-      }
-
-
-      const phone =
-        profile && profile.phone
-          ? profile.phone
-          : "غير مضاف";
-
-
-      const role =
-        profile && profile.role
-          ? profile.role
-          : "student";
-
-
-      let roleText =
-        "طالب";
+      let roleText = "طالب";
 
 
       if (role === "admin") {
@@ -498,23 +147,40 @@
       }
 
 
-      /* =========================
-         عرض البيانات
-      ========================= */
+      /*
+       * =================================
+       * عرض الاسم
+       * =================================
+       *
+       * الاسم هنا من تسجيل الدخول فقط
+       */
 
       document.getElementById("studentName").textContent =
-        fullName;
+        loginName;
 
       document.getElementById("nameValue").textContent =
-        fullName;
+        loginName;
+
+
+      /*
+       * البريد
+       */
+
+      document.getElementById("emailValue").textContent =
+        email;
+
+
+      /*
+       * الهاتف
+       */
 
       document.getElementById("phoneValue").textContent =
         phone;
 
-      document.getElementById("emailValue").textContent =
-        profile && profile.email
-          ? profile.email
-          : email;
+
+      /*
+       * نوع الحساب
+       */
 
       document.getElementById("roleValue").textContent =
         roleText;
@@ -523,9 +189,11 @@
         roleText;
 
 
-      /* =========================
-         تحميل النتائج
-      ========================= */
+      /*
+       * =================================
+       * النتائج
+       * =================================
+       */
 
       await loadResults(user.id);
 
@@ -537,6 +205,7 @@
         "Account error:",
         error
       );
+
 
       document.getElementById("studentName").textContent =
         "تعذر تحميل الحساب";
@@ -554,31 +223,24 @@
         "غير معروف";
 
       document.getElementById("accountType").textContent =
-        "تعذر التحميل";
+        "غير معروف";
 
       document.getElementById("resultsContainer").innerHTML =
         `
         <div class="error">
           حدث خطأ أثناء تحميل الحساب.
           <br>
-          ${escapeHtml(error.message || "")}
+          ${escapeHtml(error.message)}
         </div>
         `;
     }
-
   }
 
-
-  /* =========================
-     تحميل النتائج
-  ========================= */
 
   async function loadResults(userId) {
 
     const container =
-      document.getElementById(
-        "resultsContainer"
-      );
+      document.getElementById("resultsContainer");
 
 
     const {
@@ -603,7 +265,7 @@
       container.innerHTML =
         `
         <div class="no-results">
-          لا توجد نتائج متاحة حاليًا.
+          📚 لا توجد نتائج متاحة حاليًا.
         </div>
         `;
 
@@ -632,16 +294,11 @@
           result.name ||
           "اختبار";
 
-
         const score =
-          result.score ??
-          "-";
-
+          result.score ?? "-";
 
         const total =
-          result.total ??
-          "-";
-
+          result.total ?? "-";
 
         const percentage =
           result.percentage != null
@@ -659,11 +316,15 @@
             <div class="result-details">
 
               <span class="result-badge">
-                الدرجة: ${escapeHtml(String(score))}/${escapeHtml(String(total))}
+                الدرجة:
+                ${escapeHtml(String(score))}
+                /
+                ${escapeHtml(String(total))}
               </span>
 
               <span class="result-badge">
-                النسبة: ${escapeHtml(String(percentage))}
+                النسبة:
+                ${escapeHtml(String(percentage))}
               </span>
 
             </div>
@@ -672,33 +333,9 @@
         `;
 
       }).join("");
-
   }
 
-
-  /* =========================
-     حماية النصوص
-  ========================= */
-
-  function escapeHtml(value) {
-
-    return String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-
-  }
-
-
-  /* =========================
-     تشغيل الصفحة
-  ========================= */
 
   loadAccount();
 
 </script>
-
-</body>
-</html>
