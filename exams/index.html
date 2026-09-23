@@ -3,93 +3,14 @@
 
 <head>
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>منصة أرض الأحياء | منصة تعليمية لطلاب الأحياء</title>
+  <title>الاختبارات | منصة أرض الأحياء</title>
+  <meta name="description" content="اختبارات الأحياء الإلكترونية - منصة أرض الأحياء">
 
-  <meta name="description"
-        content="منصة أرض الأحياء التعليمية - محاضرات ومذكرات وأسئلة وفيديوهات ومنتدى لطلاب الأحياء.">
-
-  <meta name="keywords"
-        content="منصة أرض الأحياء, أحياء, شرح الأحياء, محاضرات أحياء, مذكرات أحياء, أسئلة أحياء">
-
-  <meta name="author" content="منصة أرض الأحياء">
-
-  <meta name="robots" content="index, follow">
-
-  <!-- الرابط الأساسي -->
-  <link rel="canonical"
-        href="https://mohamed-tool-grafix.github.io/ard-al-ahyaa/">
-
-  <!-- الشعار والأيقونة -->
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="shortcut icon" type="image/png" href="favicon.png">
-  <link rel="apple-touch-icon" href="logo.png">
-
-  <!-- Open Graph -->
-  <meta property="og:type" content="website">
-
-  <meta property="og:locale" content="ar_AR">
-
-  <meta property="og:title"
-        content="منصة أرض الأحياء">
-
-  <meta property="og:description"
-        content="منصة أرض الأحياء التعليمية - محاضرات ومذكرات وأسئلة وفيديوهات ومنتدى لطلاب الأحياء.">
-
-  <meta property="og:url"
-        content="https://mohamed-tool-grafix.github.io/ard-al-ahyaa/">
-
-  <meta property="og:site_name"
-        content="منصة أرض الأحياء">
-
-  <meta property="og:image"
-        content="https://mohamed-tool-grafix.github.io/ard-al-ahyaa/logo.png">
-
-  <meta property="og:image:alt"
-        content="شعار منصة أرض الأحياء">
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image">
-
-  <meta name="twitter:title"
-        content="منصة أرض الأحياء">
-
-  <meta name="twitter:description"
-        content="منصة تعليمية متخصصة في مادة الأحياء">
-
-  <meta name="twitter:image"
-        content="https://mohamed-tool-grafix.github.io/ard-al-ahyaa/logo.png">
-
-  <!-- بيانات منظمة لمحركات البحث -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "EducationalOrganization",
-    "name": "منصة أرض الأحياء",
-    "alternateName": "أرض الأحياء",
-    "url": "https://mohamed-tool-grafix.github.io/ard-al-ahyaa/",
-    "logo": "https://mohamed-tool-grafix.github.io/ard-al-ahyaa/logo.png",
-    "description": "منصة أرض الأحياء التعليمية - محاضرات ومذكرات وأسئلة وفيديوهات ومنتدى لطلاب الأحياء.",
-    "inLanguage": "ar"
-  }
-  </script>
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "منصة أرض الأحياء",
-    "alternateName": "أرض الأحياء",
-    "url": "https://mohamed-tool-grafix.github.io/ard-al-ahyaa/",
-    "inLanguage": "ar"
-  }
-  </script>
-
+  <link rel="icon" href="../favicon.png">
 
   <style>
-
     * {
       box-sizing: border-box;
       margin: 0;
@@ -97,1164 +18,299 @@
     }
 
     body {
-      font-family: Tahoma, Arial, sans-serif;
-      background: linear-gradient(135deg, #f4fff8, #ffffff);
-      color: #173b2a;
+      font-family: Arial, Tahoma, sans-serif;
+      background: #f5f7fb;
+      color: #172033;
       min-height: 100vh;
     }
 
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    button,
-    input {
-      font-family: inherit;
-    }
-
-    /* =========================
-       تسجيل الدخول
-    ========================= */
-
-    #authScreen {
-      min-height: 100vh;
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      padding: 20px;
-
-      background: linear-gradient(
-        135deg,
-        #0b6b3a,
-        #159957
-      );
-    }
-
-    .auth-box {
-      width: 100%;
-      max-width: 430px;
-
-      background: #ffffff;
-
-      border-radius: 24px;
-
-      padding: 30px;
-
-      text-align: center;
-
-      box-shadow:
-        0 20px 60px rgba(0,0,0,.18);
-    }
-
-    .auth-logo {
-      width: 105px;
-      height: 105px;
-
-      object-fit: contain;
-
-      margin-bottom: 12px;
-    }
-
-    .auth-title {
-      color: #08753d;
-
-      font-size: 27px;
-
-      margin-bottom: 8px;
-    }
-
-    .auth-subtitle {
-      color: #666;
-
-      line-height: 1.8;
-
-      margin-bottom: 25px;
-    }
-
-    .auth-input {
-      width: 100%;
-
-      border: 1px solid #ddd;
-
-      padding: 14px;
-
-      border-radius: 12px;
-
-      margin-bottom: 12px;
-
-      font-size: 16px;
-
-      outline: none;
-    }
-
-    .auth-input:focus {
-      border-color: #159957;
-    }
-
-    .auth-button {
-      width: 100%;
-
-      border: none;
-
-      background: #159957;
-
+    header {
+      background: linear-gradient(135deg, #075e54, #0b806f);
       color: white;
-
-      padding: 14px;
-
-      border-radius: 12px;
-
-      cursor: pointer;
-
-      font-size: 17px;
-    }
-
-    .auth-button:hover {
-      background: #08753d;
-    }
-
-    .auth-message {
-      margin-top: 15px;
-
-      font-size: 14px;
-
-      color: #777;
-    }
-
-
-    /* =========================
-       التطبيق
-    ========================= */
-
-    #app {
-      display: none;
-
-      min-height: 100vh;
-    }
-
-
-    /* =========================
-       الهيدر
-    ========================= */
-
-    .top-header {
-      height: 72px;
-
-      background: #fff;
-
+      padding: 18px 25px;
       display: flex;
-
       align-items: center;
-
       justify-content: space-between;
-
-      padding: 0 25px;
-
-      box-shadow:
-        0 2px 12px rgba(0,0,0,.08);
-
-      position: sticky;
-
-      top: 0;
-
-      z-index: 1000;
+      gap: 15px;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.12);
     }
 
     .brand {
       display: flex;
-
       align-items: center;
-
       gap: 12px;
     }
 
     .brand img {
-      width: 50px;
-
-      height: 50px;
-
+      width: 48px;
+      height: 48px;
       object-fit: contain;
+      border-radius: 10px;
+      background: white;
+      padding: 3px;
     }
 
-    .brand-text {
+    .brand h1 {
       font-size: 21px;
-
-      font-weight: bold;
-
-      color: #08753d;
     }
 
-    .student-area {
-      display: flex;
-
-      align-items: center;
-
-      gap: 15px;
-    }
-
-    .student-name {
-      font-weight: bold;
-
-      color: #444;
-    }
-
-    .logout-btn {
-      border: none;
-
-      background: #eaf8ef;
-
-      color: #08753d;
-
-      padding: 9px 15px;
-
+    .back-btn {
+      color: white;
+      text-decoration: none;
+      background: rgba(255,255,255,0.15);
+      padding: 10px 16px;
       border-radius: 10px;
-
-      cursor: pointer;
+      transition: 0.2s;
     }
 
-
-    /* =========================
-       التخطيط
-    ========================= */
-
-    .layout {
-      display: flex;
-
-      min-height: calc(100vh - 72px);
+    .back-btn:hover {
+      background: rgba(255,255,255,0.25);
     }
 
-    .sidebar {
-      width: 245px;
-
-      background: #0c6b3d;
-
-      color: #fff;
-
-      padding: 20px 12px;
-
-      flex-shrink: 0;
+    main {
+      max-width: 1100px;
+      margin: 35px auto;
+      padding: 0 18px;
     }
 
-    .sidebar-title {
+    .page-title {
       text-align: center;
-
-      font-size: 19px;
-
-      font-weight: bold;
-
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
 
-    .menu-link {
-      display: flex;
-
-      align-items: center;
-
-      gap: 10px;
-
-      padding: 13px 15px;
-
-      margin-bottom: 7px;
-
-      border-radius: 12px;
-
-      transition: .2s;
-
-      color: white;
-    }
-
-    .menu-link:hover {
-      background: rgba(255,255,255,.15);
-    }
-
-
-    /* =========================
-       المحتوى
-    ========================= */
-
-    .main {
-      flex: 1;
-
-      padding: 30px;
-
-      max-width: 1400px;
-
-      margin: auto;
-    }
-
-
-    /* =========================
-       الترحيب
-    ========================= */
-
-    .welcome {
-      background: linear-gradient(
-        135deg,
-        #0c6b3d,
-        #16a05b
-      );
-
-      color: white;
-
-      border-radius: 22px;
-
-      padding: 30px;
-
-      margin-bottom: 25px;
-
-      box-shadow:
-        0 12px 30px rgba(12,107,61,.18);
-    }
-
-    .welcome h1 {
-      font-size: 29px;
-
-      margin-bottom: 10px;
-    }
-
-    .welcome p {
-      line-height: 1.9;
-    }
-
-
-    /* =========================
-       البحث
-    ========================= */
-
-    .search-box {
-      background: #fff;
-
-      padding: 15px;
-
-      border-radius: 15px;
-
-      margin-bottom: 25px;
-
-      box-shadow:
-        0 5px 18px rgba(0,0,0,.06);
-    }
-
-    .search-box input {
-      width: 100%;
-
-      border: 1px solid #ddd;
-
-      border-radius: 10px;
-
-      padding: 13px;
-
-      outline: none;
-
-      font-size: 15px;
-    }
-
-
-    /* =========================
-       الأقسام
-    ========================= */
-
-    .section-title {
-      margin: 25px 0 15px;
-
-      color: #08753d;
-
-      font-size: 23px;
-    }
-
-    .cards {
-      display: grid;
-
-      grid-template-columns:
-        repeat(
-          auto-fit,
-          minmax(220px, 1fr)
-        );
-
-      gap: 18px;
-    }
-
-    .card {
-      background: #fff;
-
-      border-radius: 18px;
-
-      padding: 22px;
-
-      box-shadow:
-        0 5px 18px rgba(0,0,0,.07);
-
-      transition: .2s;
-
-      border: 1px solid #eef5f0;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-
-      box-shadow:
-        0 12px 25px rgba(0,0,0,.10);
-    }
-
-    .card-icon {
-      font-size: 38px;
-
-      margin-bottom: 12px;
-    }
-
-    .card h3 {
-      color: #08753d;
-
+    .page-title h2 {
+      font-size: 30px;
+      color: #075e54;
       margin-bottom: 8px;
     }
 
-    .card p {
-      color: #666;
+    .page-title p {
+      color: #687386;
+      font-size: 15px;
+    }
 
-      line-height: 1.7;
+    .exams-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
 
+    .exam-card {
+      background: white;
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+      border: 1px solid #e8ebf1;
+      transition: 0.25s;
+    }
+
+    .exam-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.11);
+    }
+
+    .exam-icon {
+      width: 58px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e8f7f4;
+      border-radius: 15px;
+      font-size: 29px;
+      margin-bottom: 17px;
+    }
+
+    .exam-card h3 {
+      color: #075e54;
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+
+    .exam-card p {
+      color: #697386;
+      line-height: 1.8;
+      font-size: 14px;
       margin-bottom: 15px;
     }
 
-    .card-btn {
-      display: inline-block;
-
-      background: #159957;
-
-      color: white;
-
-      padding: 9px 16px;
-
-      border-radius: 9px;
-
-      font-size: 14px;
+    .info {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
     }
 
+    .info span {
+      background: #f2f4f8;
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #596273;
+    }
 
-    /* =========================
-       الفوتر
-    ========================= */
+    .start-btn {
+      display: block;
+      width: 100%;
+      border: none;
+      background: #075e54;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 15px;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      transition: 0.2s;
+    }
+
+    .start-btn:hover {
+      background: #064d45;
+    }
+
+    .empty {
+      background: white;
+      border-radius: 18px;
+      padding: 45px 20px;
+      text-align: center;
+      color: #697386;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+    }
+
+    .empty-icon {
+      font-size: 50px;
+      margin-bottom: 15px;
+    }
 
     footer {
-      margin-top: 40px;
-
-      background: #0c6b3d;
-
-      color: white;
-
       text-align: center;
-
-      padding: 20px;
-
-      border-radius: 18px 18px 0 0;
+      color: #7b8494;
+      padding: 30px 15px;
+      font-size: 13px;
     }
 
-
-    /* =========================
-       الهاتف
-    ========================= */
-
-    @media (max-width: 800px) {
-
-      .top-header {
-        padding: 0 12px;
+    @media (max-width: 600px) {
+      header {
+        padding: 14px;
       }
 
-      .brand-text {
-        font-size: 16px;
+      .brand h1 {
+        font-size: 17px;
       }
 
-      .student-name {
-        display: none;
+      .brand img {
+        width: 42px;
+        height: 42px;
       }
 
-      .layout {
-        display: block;
+      .back-btn {
+        padding: 8px 10px;
+        font-size: 13px;
       }
 
-      .sidebar {
-        width: 100%;
-
-        display: flex;
-
-        overflow-x: auto;
-
-        gap: 5px;
-
-        padding: 10px;
+      .page-title h2 {
+        font-size: 25px;
       }
-
-      .sidebar-title {
-        display: none;
-      }
-
-      .menu-link {
-        white-space: nowrap;
-
-        margin: 0;
-
-        padding: 10px 13px;
-      }
-
-      .main {
-        padding: 15px;
-      }
-
-      .welcome h1 {
-        font-size: 23px;
-      }
-
-      .auth-box {
-        padding: 22px;
-      }
-
     }
-
   </style>
-
 </head>
-
 
 <body>
 
+  <header>
 
-<!-- =====================================================
-     تسجيل الدخول
-===================================================== -->
-
-<section id="authScreen">
-
-  <div class="auth-box">
-
-    <img
-      src="logo.png"
-      alt="شعار منصة أرض الأحياء"
-      class="auth-logo"
-    >
-
-    <h1 class="auth-title">
-      منصة أرض الأحياء
-    </h1>
-
-    <p class="auth-subtitle">
-      منصة تعليمية لطلاب الأحياء
-      <br>
-      محاضرات • مذكرات • أسئلة • منتدى
-    </p>
-
-    <input
-      id="email"
-      class="auth-input"
-      type="email"
-      placeholder="البريد الإلكتروني"
-      autocomplete="email"
-    >
-
-    <input
-      id="password"
-      class="auth-input"
-      type="password"
-      placeholder="كلمة المرور"
-      autocomplete="current-password"
-    >
-
-    <button
-      class="auth-button"
-      onclick="loginUser()"
-    >
-      تسجيل الدخول
-    </button>
-
-    <p
-      class="auth-message"
-      id="authMessage"
-    >
-      سجل الدخول للوصول إلى المنصة
-    </p>
-
-  </div>
-
-</section>
-
-
-<!-- =====================================================
-     المنصة
-===================================================== -->
-
-<div id="app">
-
-
-  <!-- الهيدر -->
-
-  <header class="top-header">
-
-    <a
-      href="index.html"
-      class="brand"
-    >
-
-      <img
-        src="logo.png"
-        alt="منصة أرض الأحياء"
-      >
-
-      <span class="brand-text">
-        منصة أرض الأحياء
-      </span>
-
-    </a>
-
-
-    <div class="student-area">
-
-      <span
-        class="student-name"
-        id="studentName"
-      >
-        الطالب
-      </span>
-
-      <button
-        class="logout-btn"
-        onclick="logoutUser()"
-      >
-        تسجيل الخروج
-      </button>
-
+    <div class="brand">
+      <img src="../logo.png" alt="شعار منصة أرض الأحياء">
+      <h1>منصة أرض الأحياء</h1>
     </div>
+
+    <a class="back-btn" href="../index.html">🏠 الرئيسية</a>
 
   </header>
 
+  <main>
 
-  <div class="layout">
+    <div class="page-title">
+      <h2>📝 الاختبارات</h2>
+      <p>اختبر معلوماتك في الأحياء واعرف مستواك</p>
+    </div>
 
+    <div class="exams-grid">
 
-    <!-- القائمة الجانبية -->
+      <!-- الاختبار الأول -->
+      <div class="exam-card">
 
-    <aside class="sidebar">
+        <div class="exam-icon">🧬</div>
 
-      <div class="sidebar-title">
-        📚 أقسام المنصة
-      </div>
-
-
-      <a
-        href="index.html"
-        class="menu-link"
-      >
-        🏠 الرئيسية
-      </a>
-
-
-      <a
-        href="videos/index.html"
-        class="menu-link"
-      >
-        🎥 المحاضرات
-      </a>
-
-
-      <a
-        href="notes/index.html"
-        class="menu-link"
-      >
-        📚 المذكرات
-      </a>
-
-
-      <a
-        href="forum/index.html"
-        class="menu-link"
-      >
-        💬 المنتدى
-      </a>
-
-    </aside>
-
-
-    <!-- المحتوى -->
-
-    <main class="main">
-
-
-      <!-- الترحيب -->
-
-      <section class="welcome">
-
-        <h1>
-          أهلاً بك في منصة أرض الأحياء 🌿
-        </h1>
+        <h3>اختبار أساسيات الأحياء</h3>
 
         <p>
-          منصة تعليمية تساعدك على دراسة مادة الأحياء
-          من خلال المحاضرات والمذكرات والأسئلة
-          والمنتدى التعليمي.
+          اختبار تدريبي في أساسيات علم الأحياء والمفاهيم الأساسية.
         </p>
 
-      </section>
+        <div class="info">
+          <span>❓ 10 أسئلة</span>
+          <span>⏱️ 10 دقائق</span>
+        </div>
 
-
-      <!-- البحث -->
-
-      <div class="search-box">
-
-        <input
-          id="searchInput"
-          type="search"
-          placeholder="🔎 ابحث في أقسام المنصة..."
-          oninput="searchCards()"
-        >
+        <a class="start-btn" href="exam.html">
+          🚀 بدء الاختبار
+        </a>
 
       </div>
 
+      <!-- اختبار تجريبي -->
+      <div class="exam-card">
 
-      <!-- الأقسام -->
+        <div class="exam-icon">🔬</div>
 
-      <h2 class="section-title">
-        📚 أقسام المنصة
-      </h2>
-
-
-      <section
-        class="cards"
-        id="cards"
-      >
-
-
-        <!-- المحاضرات -->
-
-        <article class="card">
-
-          <div class="card-icon">
-            🎥
-          </div>
-
-          <h3>
-            المحاضرات
-          </h3>
-
-          <p>
-            شاهد المحاضرات التعليمية في مادة الأحياء
-            وتابع الدروس المتاحة على المنصة.
-          </p>
-
-          <a
-            href="videos/index.html"
-            class="card-btn"
-          >
-            دخول المحاضرات
-          </a>
-
-        </article>
-
-
-        <!-- المذكرات -->
-
-        <article class="card">
-
-          <div class="card-icon">
-            📚
-          </div>
-
-          <h3>
-            المذكرات
-          </h3>
-
-          <p>
-            الوصول إلى المذكرات والملفات التعليمية
-            الخاصة بمادة الأحياء.
-          </p>
-
-          <a
-            href="notes/index.html"
-            class="card-btn"
-          >
-            دخول المذكرات
-          </a>
-
-        </article>
-
-
-        <!-- المنتدى -->
-
-        <article class="card">
-
-          <div class="card-icon">
-            💬
-          </div>
-
-          <h3>
-            المنتدى
-          </h3>
-
-          <p>
-            شارك في المناقشات واطرح أسئلتك
-            وتواصل مع الطلاب.
-          </p>
-
-          <a
-            href="forum/index.html"
-            class="card-btn"
-          >
-            دخول المنتدى
-          </a>
-
-        </article>
-
-
-      </section>
-
-
-      <!-- المحتوى التعليمي -->
-
-      <h2 class="section-title">
-        🧬 محتوى تعليمي
-      </h2>
-
-
-      <section class="cards">
-
-
-        <article class="card">
-
-          <div class="card-icon">
-            🌱
-          </div>
-
-          <h3>
-            الدعامة في النبات
-          </h3>
-
-          <p>
-            تعرف على تركيب النبات والأنسجة
-            المسؤولة عن الدعامة.
-          </p>
-
-        </article>
-
-
-        <article class="card">
-
-          <div class="card-icon">
-            🔬
-          </div>
-
-          <h3>
-            تركيب الخلية
-          </h3>
-
-          <p>
-            مراجعة أهم مكونات الخلية ووظائف
-            العضيات المختلفة.
-          </p>
-
-        </article>
-
-
-        <article class="card">
-
-          <div class="card-icon">
-            🧬
-          </div>
-
-          <h3>
-            أساسيات الوراثة
-          </h3>
-
-          <p>
-            مجموعة من المفاهيم الأساسية
-            في علم الوراثة.
-          </p>
-
-        </article>
-
-
-      </section>
-
-
-      <!-- الفوتر -->
-
-      <footer>
+        <h3>اختبار الخلية</h3>
 
         <p>
-          © 2026 منصة أرض الأحياء
+          اختبار تدريبي عن الخلية ومكوناتها ووظائف العضيات.
         </p>
 
-        <p style="margin-top:8px;">
-          منصة تعليمية متخصصة في مادة الأحياء
+        <div class="info">
+          <span>❓ قريبًا</span>
+          <span>⏱️ قريبًا</span>
+        </div>
+
+        <button class="start-btn" disabled style="opacity:0.55; cursor:not-allowed;">
+          🔒 قريبًا
+        </button>
+
+      </div>
+
+      <!-- اختبار تجريبي -->
+      <div class="exam-card">
+
+        <div class="exam-icon">🌱</div>
+
+        <h3>اختبار الدعامة في النبات</h3>
+
+        <p>
+          أسئلة تدريبية حول الدعامة في النبات وأنواعها.
         </p>
 
-      </footer>
+        <div class="info">
+          <span>❓ قريبًا</span>
+          <span>⏱️ قريبًا</span>
+        </div>
 
+        <button class="start-btn" disabled style="opacity:0.55; cursor:not-allowed;">
+          🔒 قريبًا
+        </button>
 
-    </main>
+      </div>
 
-  </div>
+    </div>
 
-</div>
+  </main>
 
-
-<!-- =====================================================
-     Supabase
-===================================================== -->
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
-<script>
-
-  /* ===============================
-     إعداد Supabase
-  =============================== */
-
-  const SUPABASE_URL =
-    "https://gvehygqxjqucxwussaye.supabase.co";
-
-  const SUPABASE_ANON_KEY =
-    "sb_publishable_0Hxtm1KuZQ7paMyZQwRLQQ_NQ2wRaRX";
-
-
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY,
-      {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: true
-        }
-      }
-    );
-
-
-  /* ===============================
-     فحص تسجيل الدخول
-  =============================== */
-
-  async function checkSession() {
-
-    const {
-      data: {
-        session
-      }
-    } = await supabaseClient.auth.getSession();
-
-
-    if (session) {
-
-      showApp(session);
-
-    } else {
-
-      showLogin();
-
-    }
-
-  }
-
-
-  /* ===============================
-     تسجيل الدخول
-  =============================== */
-
-  async function loginUser() {
-
-    const email =
-      document
-        .getElementById("email")
-        .value
-        .trim();
-
-
-    const password =
-      document
-        .getElementById("password")
-        .value;
-
-
-    const message =
-      document.getElementById("authMessage");
-
-
-    if (!email || !password) {
-
-      message.textContent =
-        "من فضلك اكتب البريد الإلكتروني وكلمة المرور.";
-
-      return;
-
-    }
-
-
-    message.textContent =
-      "جاري تسجيل الدخول...";
-
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient.auth.signInWithPassword({
-
-        email: email,
-
-        password: password
-
-      });
-
-
-    if (error) {
-
-      message.textContent =
-        "تعذر تسجيل الدخول: " +
-        error.message;
-
-      return;
-
-    }
-
-
-    showApp(data.session);
-
-  }
-
-
-  /* ===============================
-     عرض المنصة
-  =============================== */
-
-  function showApp(session) {
-
-    document
-      .getElementById("authScreen")
-      .style.display = "none";
-
-
-    document
-      .getElementById("app")
-      .style.display = "block";
-
-
-    const name =
-
-      session?.user?.user_metadata?.full_name ||
-
-      session?.user?.user_metadata?.name ||
-
-      session?.user?.email ||
-
-      "الطالب";
-
-
-    document
-      .getElementById("studentName")
-      .textContent = name;
-
-  }
-
-
-  /* ===============================
-     عرض تسجيل الدخول
-  =============================== */
-
-  function showLogin() {
-
-    document
-      .getElementById("authScreen")
-      .style.display = "flex";
-
-
-    document
-      .getElementById("app")
-      .style.display = "none";
-
-  }
-
-
-  /* ===============================
-     تسجيل الخروج
-  =============================== */
-
-  async function logoutUser() {
-
-    await supabaseClient.auth.signOut();
-
-    showLogin();
-
-  }
-
-
-  /* ===============================
-     متابعة حالة الحساب
-  =============================== */
-
-  supabaseClient.auth.onAuthStateChange(
-    (event, session) => {
-
-      if (session) {
-
-        showApp(session);
-
-      } else {
-
-        showLogin();
-
-      }
-
-    }
-  );
-
-
-  /* ===============================
-     البحث
-  =============================== */
-
-  function searchCards() {
-
-    const search =
-      document
-        .getElementById("searchInput")
-        .value
-        .toLowerCase()
-        .trim();
-
-
-    const cards =
-      document.querySelectorAll(".card");
-
-
-    cards.forEach(card => {
-
-      const text =
-        card.textContent.toLowerCase();
-
-
-      if (text.includes(search)) {
-
-        card.style.display = "";
-
-      } else {
-
-        card.style.display = "none";
-
-      }
-
-    });
-
-  }
-
-
-  /* ===============================
-     تشغيل الموقع
-  =============================== */
-
-  checkSession();
-
-</script>
-
+  <footer>
+    © 2026 منصة أرض الأحياء - جميع الحقوق محفوظة
+  </footer>
 
 </body>
+
 </html>
