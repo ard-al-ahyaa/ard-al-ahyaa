@@ -158,6 +158,7 @@
 
       <div class="input-group">
         <label for="email">البريد الإلكتروني</label>
+
         <input
           type="email"
           id="email"
@@ -169,6 +170,7 @@
 
       <div class="input-group">
         <label for="password">كلمة المرور</label>
+
         <input
           type="password"
           id="password"
@@ -194,8 +196,9 @@
   </div>
 
 <script>
+
   // ==========================================
-  // Supabase الجديد
+  // Supabase
   // ==========================================
 
   const SUPABASE_URL =
@@ -215,14 +218,27 @@
   // عناصر الصفحة
   // ==========================================
 
-  const loginForm = document.getElementById("loginForm");
-  const loginBtn = document.getElementById("loginBtn");
-  const message = document.getElementById("message");
+  const loginForm =
+    document.getElementById("loginForm");
 
+  const loginBtn =
+    document.getElementById("loginBtn");
+
+  const message =
+    document.getElementById("message");
+
+
+  // ==========================================
+  // الرسائل
+  // ==========================================
 
   function showMessage(text, type) {
+
     message.textContent = text;
-    message.className = "message " + type;
+
+    message.className =
+      "message " + type;
+
   }
 
 
@@ -230,81 +246,179 @@
   // تسجيل الدخول
   // ==========================================
 
-  loginForm.addEventListener("submit", async function(e) {
+  loginForm.addEventListener(
+    "submit",
+    async function(e) {
 
-    e.preventDefault();
+      e.preventDefault();
 
-    const email =
-      document.getElementById("email").value.trim();
+      const email =
+        document.getElementById("email")
+          .value
+          .trim();
 
-    const password =
-      document.getElementById("password").value;
+      const password =
+        document.getElementById("password")
+          .value;
 
-    if (!email || !password) {
-      showMessage(
-        "اكتب البريد الإلكتروني وكلمة المرور.",
-        "error"
-      );
-      return;
+      if (!email || !password) {
+
+        showMessage(
+          "اكتب البريد الإلكتروني وكلمة المرور.",
+          "error"
+        );
+
+        return;
+      }
+
+      loginBtn.disabled = true;
+
+      loginBtn.textContent =
+        "جاري تسجيل الدخول...";
+
+      message.className = "message";
+
+
+      try {
+
+        // تسجيل الدخول
+        const { data, error } =
+          await supabaseClient.auth.signInWithPassword({
+
+            email: email,
+
+            password: password
+
+          });
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        if (!data.user) {
+
+          throw new Error(
+            "تعذر العثور على الحساب."
+          );
+
+        }
+
+
+        // ==========================================
+        // التأكد من وجود اسم في بيانات الحساب
+        // ==========================================
+
+        const user =
+          data.user;
+
+        const metadata =
+          user.user_metadata || {};
+
+
+        const savedName =
+          metadata.full_name ||
+          metadata.name ||
+          metadata.username ||
+          metadata.user_name ||
+          "";
+
+
+        // الاسم موجود بالفعل
+        if (savedName.trim()) {
+
+          console.log(
+            "اسم المستخدم:",
+            savedName
+          );
+
+        } else {
+
+          console.log(
+            "الحساب لا يحتوي على اسم مستخدم."
+          );
+
+        }
+
+
+        // ==========================================
+        // نجاح تسجيل الدخول
+        // ==========================================
+
+        showMessage(
+          "تم تسجيل الدخول بنجاح، جاري فتح المنصة...",
+          "success"
+        );
+
+
+        setTimeout(function() {
+
+          window.location.href =
+            "../index.html";
+
+        }, 700);
+
+
+      } catch (error) {
+
+        console.error(
+          "Login error:",
+          error
+        );
+
+
+        let text =
+          "حدث خطأ أثناء تسجيل الدخول.";
+
+
+        if (
+          error.message &&
+          error.message
+            .toLowerCase()
+            .includes(
+              "invalid login credentials"
+            )
+        ) {
+
+          text =
+            "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+
+        }
+
+
+        if (
+          error.message &&
+          error.message
+            .toLowerCase()
+            .includes(
+              "email not confirmed"
+            )
+        ) {
+
+          text =
+            "يجب تأكيد البريد الإلكتروني أولًا.";
+
+        }
+
+
+        showMessage(
+          text,
+          "error"
+        );
+
+
+        loginBtn.disabled =
+          false;
+
+        loginBtn.textContent =
+          "تسجيل الدخول";
+
+      }
+
     }
+  );
 
-    loginBtn.disabled = true;
-    loginBtn.textContent = "جاري تسجيل الدخول...";
-
-    message.className = "message";
-
-    try {
-
-      const { data, error } =
-        await supabaseClient.auth.signInWithPassword({
-          email: email,
-          password: password
-        });
-
-      if (error) {
-        throw error;
-      }
-
-      if (!data.user) {
-        throw new Error("تعذر العثور على الحساب.");
-      }
-
-      showMessage(
-        "تم تسجيل الدخول بنجاح، جاري فتح المنصة...",
-        "success"
-      );
-
-      setTimeout(() => {
-        window.location.href = "../index.html";
-      }, 700);
-
-    } catch (error) {
-
-      console.error(error);
-
-      let text = "حدث خطأ أثناء تسجيل الدخول.";
-
-      if (
-        error.message &&
-        error.message.toLowerCase().includes("invalid login credentials")
-      ) {
-        text = "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
-      }
-
-      if (
-        error.message &&
-        error.message.toLowerCase().includes("email not confirmed")
-      ) {
-        text = "يجب تأكيد البريد الإلكتروني أولًا.";
-      }
-
-      showMessage(text, "error");
-
-      loginBtn.disabled = false;
-      loginBtn.textContent = "تسجيل الدخول";
-    }
-
-  });
 </script>
 
 </body>
