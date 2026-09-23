@@ -1,64 +1,423 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>حسابي | منصة أرض الأحياء</title>
+
+  <link rel="icon" href="../favicon.png">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Tajawal", sans-serif;
+      background: #f4f7fb;
+      color: #172033;
+    }
+
+    header {
+      background: linear-gradient(135deg, #087f5b, #0b9b70);
+      color: white;
+      padding: 16px;
+    }
+
+    .header-content {
+      max-width: 950px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand img {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      background: white;
+      border-radius: 12px;
+      padding: 4px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .brand p {
+      margin: 3px 0 0;
+      font-size: 13px;
+      opacity: .9;
+    }
+
+    .back-btn {
+      border: 0;
+      background: white;
+      color: #087f5b;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    main {
+      max-width: 950px;
+      margin: 25px auto;
+      padding: 0 15px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 22px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 25px rgba(0,0,0,.07);
+    }
+
+    .profile {
+      text-align: center;
+    }
+
+    .avatar {
+      width: 85px;
+      height: 85px;
+      margin: auto;
+      border-radius: 50%;
+      background: #e5f7f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+    }
+
+    .profile h2 {
+      color: #087f5b;
+      margin: 12px 0 5px;
+    }
+
+    .profile p {
+      color: #777;
+      margin: 0;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 25px;
+    }
+
+    .info {
+      background: #f7faf9;
+      border: 1px solid #e1eee9;
+      border-radius: 14px;
+      padding: 15px;
+    }
+
+    .info-title {
+      color: #777;
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+
+    .info-value {
+      font-weight: bold;
+      font-size: 16px;
+      word-break: break-word;
+    }
+
+    .card h2 {
+      color: #087f5b;
+      margin-top: 0;
+    }
+
+    .message {
+      text-align: center;
+      background: #f7f8fa;
+      padding: 20px;
+      border-radius: 12px;
+      color: #777;
+    }
+
+    .result {
+      border: 1px solid #e2e7eb;
+      border-radius: 14px;
+      padding: 15px;
+      margin-bottom: 12px;
+      background: #fafcfd;
+    }
+
+    .result-name {
+      font-size: 17px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #e7f7f1;
+      color: #087f5b;
+      padding: 7px 10px;
+      border-radius: 8px;
+      margin: 3px;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #777;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .brand h1 {
+        font-size: 16px;
+      }
+
+      .brand p {
+        font-size: 11px;
+      }
+
+      .back-btn {
+        font-size: 12px;
+        padding: 8px 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+
+  <div class="header-content">
+
+    <div class="brand">
+      <img src="../logo.png" alt="منصة أرض الأحياء">
+
+      <div>
+        <h1>منصة أرض الأحياء</h1>
+        <p>الحساب الشخصي</p>
+      </div>
+    </div>
+
+    <button class="back-btn" onclick="goHome()">
+      🏠 الرئيسية
+    </button>
+
+  </div>
+
+</header>
+
+
+<main>
+
+  <section class="card profile">
+
+    <div class="avatar">
+      👤
+    </div>
+
+    <h2 id="studentName">
+      جاري تحميل الاسم...
+    </h2>
+
+    <p id="accountType">
+      جاري تحميل نوع الحساب...
+    </p>
+
+    <div class="info-grid">
+
+      <div class="info">
+        <div class="info-title">
+          👤 اسم الحساب
+        </div>
+
+        <div class="info-value" id="nameValue">
+          جاري التحميل...
+        </div>
+      </div>
+
+
+      <div class="info">
+        <div class="info-title">
+          📧 البريد الإلكتروني
+        </div>
+
+        <div class="info-value" id="emailValue">
+          جاري التحميل...
+        </div>
+      </div>
+
+
+      <div class="info">
+        <div class="info-title">
+          📱 رقم الهاتف
+        </div>
+
+        <div class="info-value" id="phoneValue">
+          غير مضاف
+        </div>
+      </div>
+
+
+      <div class="info">
+        <div class="info-title">
+          🔐 نوع الحساب
+        </div>
+
+        <div class="info-value" id="roleValue">
+          جاري التحميل...
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <section class="card">
+
+    <h2>
+      📊 النتائج والدرجات
+    </h2>
+
+    <div id="resultsContainer">
+
+      <div class="message">
+        جاري تحميل النتائج...
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<footer>
+  © منصة أرض الأحياء التعليمية
+</footer>
+
+
 <script>
+
+  /* ============================
+     SUPABASE
+  ============================ */
+
   const SUPABASE_URL =
     "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 
   const SUPABASE_ANON_KEY =
     "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
 
+
   const supabaseClient =
-    supabase.createClient(
+    window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_ANON_KEY
     );
 
 
+  /* ============================
+     الرئيسية
+  ============================ */
+
   function goHome() {
-    window.location.href = "../index.html";
+
+    window.location.href =
+      "../index.html";
+
   }
 
 
-  function escapeHtml(value) {
-    return String(value || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
+  /* ============================
+     تشغيل الحساب
+  ============================ */
 
   async function loadAccount() {
 
     try {
 
-      const {
-        data: {
-          user
-        },
-        error
-      } = await supabaseClient.auth.getUser();
+      const response =
+        await supabaseClient.auth.getUser();
 
 
-      if (error) {
-        throw error;
+      if (response.error) {
+
+        throw response.error;
+
       }
+
+
+      const user =
+        response.data.user;
 
 
       if (!user) {
-        window.location.href = "../index.html";
+
+        document.getElementById("studentName").textContent =
+          "لم يتم تسجيل الدخول";
+
+        document.getElementById("nameValue").textContent =
+          "لم يتم تسجيل الدخول";
+
+        document.getElementById("emailValue").textContent =
+          "-";
+
+        document.getElementById("accountType").textContent =
+          "غير مسجل";
+
+        document.getElementById("roleValue").textContent =
+          "-";
+
+        document.getElementById("resultsContainer").innerHTML =
+          `
+          <div class="message">
+            يجب تسجيل الدخول أولًا.
+          </div>
+          `;
+
         return;
+
       }
 
 
-      /*
-       * =================================
-       * اسم الحساب من تسجيل الدخول فقط
-       * =================================
-       */
+      /* ============================
+         الاسم من تسجيل الدخول
+      ============================ */
 
-      const metadata = user.user_metadata || {};
+      const metadata =
+        user.user_metadata || {};
 
-      let loginName =
+
+      let name =
         metadata.full_name ||
         metadata.name ||
         metadata.username ||
@@ -66,121 +425,127 @@
         "";
 
 
-      /*
-       * لو مفيش اسم محفوظ في بيانات الدخول
-       * نستخدم جزء من البريد الإلكتروني
-       */
-
-      if (!loginName.trim()) {
+      if (!name.trim()) {
 
         if (user.email) {
 
-          loginName =
+          name =
             user.email.split("@")[0];
 
         } else {
 
-          loginName = "مستخدم المنصة";
+          name =
+            "مستخدم المنصة";
 
         }
+
       }
 
 
-      /*
-       * البريد الإلكتروني من حساب تسجيل الدخول
-       */
+      /* ============================
+         البريد
+      ============================ */
 
       const email =
         user.email || "غير متوفر";
 
 
-      /*
-       * =================================
-       * بيانات إضافية من profiles
-       * =================================
-       *
-       * هنا نقرأ الهاتف والدور فقط.
-       * ممنوع profiles.full_name يغير اسم الحساب.
-       */
+      /* ============================
+         القيم الافتراضية
+      ============================ */
 
-      let phone = "غير مضاف";
-      let role = "student";
+      let phone =
+        "غير مضاف";
+
+      let role =
+        "student";
 
 
-      const {
-        data: profile,
-        error: profileError
-      } = await supabaseClient
-        .from("profiles")
-        .select("id, email, role, phone")
-        .eq("id", user.id)
-        .maybeSingle();
+      /* ============================
+         profiles
+         الاسم لا يأتي منه
+      ============================ */
+
+      try {
+
+        const profileResponse =
+          await supabaseClient
+            .from("profiles")
+            .select("phone, role")
+            .eq("id", user.id)
+            .maybeSingle();
 
 
-      if (!profileError && profile) {
+        if (
+          !profileResponse.error &&
+          profileResponse.data
+        ) {
 
-        if (profile.phone) {
-          phone = profile.phone;
+          if (profileResponse.data.phone) {
+
+            phone =
+              profileResponse.data.phone;
+
+          }
+
+
+          if (profileResponse.data.role) {
+
+            role =
+              profileResponse.data.role;
+
+          }
+
         }
 
-        if (profile.role) {
-          role = profile.role;
-        }
+      } catch (profileError) {
+
+        console.log(
+          "profiles error:",
+          profileError
+        );
+
       }
 
 
-      /*
-       * =================================
-       * نوع الحساب
-       * =================================
-       */
+      /* ============================
+         نوع الحساب
+      ============================ */
 
-      let roleText = "طالب";
+      let roleText =
+        "طالب";
 
 
       if (role === "admin") {
-        roleText = "مدير المنصة";
+
+        roleText =
+          "مدير المنصة";
+
       }
 
       else if (role === "teacher") {
-        roleText = "معلم";
+
+        roleText =
+          "معلم";
+
       }
 
 
-      /*
-       * =================================
-       * عرض الاسم
-       * =================================
-       *
-       * الاسم هنا من تسجيل الدخول فقط
-       */
+      /* ============================
+         عرض البيانات
+      ============================ */
 
       document.getElementById("studentName").textContent =
-        loginName;
+        name;
 
       document.getElementById("nameValue").textContent =
-        loginName;
-
-
-      /*
-       * البريد
-       */
+        name;
 
       document.getElementById("emailValue").textContent =
         email;
 
-
-      /*
-       * الهاتف
-       */
-
       document.getElementById("phoneValue").textContent =
         phone;
-
-
-      /*
-       * نوع الحساب
-       */
 
       document.getElementById("roleValue").textContent =
         roleText;
@@ -189,17 +554,14 @@
         roleText;
 
 
-      /*
-       * =================================
-       * النتائج
-       * =================================
-       */
+      /* ============================
+         النتائج
+      ============================ */
 
       await loadResults(user.id);
 
-    }
 
-    catch (error) {
+    } catch (error) {
 
       console.error(
         "Account error:",
@@ -208,134 +570,176 @@
 
 
       document.getElementById("studentName").textContent =
-        "تعذر تحميل الحساب";
+        "حسابي";
 
       document.getElementById("nameValue").textContent =
-        "تعذر التحميل";
-
-      document.getElementById("phoneValue").textContent =
-        "غير متوفر";
+        "تعذر تحميل الاسم";
 
       document.getElementById("emailValue").textContent =
-        "غير متوفر";
+        "تعذر تحميل البريد";
 
       document.getElementById("roleValue").textContent =
-        "غير معروف";
+        "حساب طالب";
 
       document.getElementById("accountType").textContent =
-        "غير معروف";
+        "حساب طالب";
+
 
       document.getElementById("resultsContainer").innerHTML =
         `
-        <div class="error">
-          حدث خطأ أثناء تحميل الحساب.
+        <div class="message">
+          تعذر تحميل بعض بيانات الحساب.
           <br>
-          ${escapeHtml(error.message)}
+          يمكنك العودة للرئيسية والمحاولة مرة أخرى.
         </div>
         `;
+
     }
+
   }
 
+
+  /* ============================
+     النتائج
+  ============================ */
 
   async function loadResults(userId) {
 
     const container =
-      document.getElementById("resultsContainer");
-
-
-    const {
-      data,
-      error
-    } = await supabaseClient
-      .from("results")
-      .select("*")
-      .eq("user_id", userId)
-      .order("created_at", {
-        ascending: false
-      });
-
-
-    if (error) {
-
-      console.error(
-        "Results error:",
-        error
+      document.getElementById(
+        "resultsContainer"
       );
+
+
+    try {
+
+      const response =
+        await supabaseClient
+          .from("results")
+          .select("*")
+          .eq("user_id", userId)
+          .order("created_at", {
+            ascending: false
+          });
+
+
+      if (response.error) {
+
+        container.innerHTML =
+          `
+          <div class="message">
+            📚 لا توجد نتائج متاحة حاليًا.
+          </div>
+          `;
+
+        return;
+
+      }
+
+
+      const results =
+        response.data;
+
+
+      if (
+        !results ||
+        results.length === 0
+      ) {
+
+        container.innerHTML =
+          `
+          <div class="message">
+            📚 لا توجد نتائج أو درجات مسجلة حتى الآن.
+          </div>
+          `;
+
+        return;
+
+      }
+
+
+      container.innerHTML =
+        results.map(function(result) {
+
+          const examName =
+            result.exam_name ||
+            result.name ||
+            "اختبار";
+
+
+          const score =
+            result.score ?? "-";
+
+
+          const total =
+            result.total ?? "-";
+
+
+          const percentage =
+            result.percentage != null
+              ? result.percentage + "%"
+              : "-";
+
+
+          return `
+            <div class="result">
+
+              <div class="result-name">
+                📝 ${escapeHtml(examName)}
+              </div>
+
+              <span class="badge">
+                الدرجة: ${escapeHtml(score)}/${escapeHtml(total)}
+              </span>
+
+              <span class="badge">
+                النسبة: ${escapeHtml(percentage)}
+              </span>
+
+            </div>
+          `;
+
+        }).join("");
+
+
+    } catch (error) {
 
       container.innerHTML =
         `
-        <div class="no-results">
+        <div class="message">
           📚 لا توجد نتائج متاحة حاليًا.
         </div>
         `;
 
-      return;
     }
 
-
-    if (!data || data.length === 0) {
-
-      container.innerHTML =
-        `
-        <div class="no-results">
-          📚 لا توجد نتائج أو درجات مسجلة حتى الآن.
-        </div>
-        `;
-
-      return;
-    }
-
-
-    container.innerHTML =
-      data.map(result => {
-
-        const examName =
-          result.exam_name ||
-          result.name ||
-          "اختبار";
-
-        const score =
-          result.score ?? "-";
-
-        const total =
-          result.total ?? "-";
-
-        const percentage =
-          result.percentage != null
-            ? `${result.percentage}%`
-            : "-";
-
-
-        return `
-          <div class="result-item">
-
-            <div class="result-name">
-              📝 ${escapeHtml(examName)}
-            </div>
-
-            <div class="result-details">
-
-              <span class="result-badge">
-                الدرجة:
-                ${escapeHtml(String(score))}
-                /
-                ${escapeHtml(String(total))}
-              </span>
-
-              <span class="result-badge">
-                النسبة:
-                ${escapeHtml(String(percentage))}
-              </span>
-
-            </div>
-
-          </div>
-        `;
-
-      }).join("");
   }
 
+
+  /* ============================
+     حماية النص
+  ============================ */
+
+  function escapeHtml(value) {
+
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  /* ============================
+     بدء التحميل
+  ============================ */
 
   loadAccount();
 
 </script>
+
+</body>
+
+</html>
