@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
@@ -7,7 +8,15 @@
 
   <title>إنشاء حساب | منصة أرض الأحياء</title>
 
-  <link rel="icon" href="../favicon.png">
+  <!-- صفحة التسجيل لا نحتاج ظهورها في Google -->
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="canonical"
+    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/register/">
+
+  <link rel="icon"
+    type="image/png"
+    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/favicon.png">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -30,7 +39,7 @@
     .register-box {
       width: 100%;
       max-width: 430px;
-      background: white;
+      background: #ffffff;
       border-radius: 18px;
       padding: 30px;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
@@ -55,6 +64,7 @@
       text-align: center;
       color: #777;
       margin-bottom: 25px;
+      line-height: 1.6;
     }
 
     label {
@@ -72,6 +82,7 @@
       border-radius: 10px;
       font-size: 16px;
       outline: none;
+      background: #fff;
     }
 
     input:focus {
@@ -88,6 +99,7 @@
       border-radius: 10px;
       font-size: 17px;
       cursor: pointer;
+      transition: 0.2s;
     }
 
     button:hover {
@@ -105,7 +117,7 @@
       padding: 12px;
       border-radius: 9px;
       text-align: center;
-      line-height: 1.6;
+      line-height: 1.7;
     }
 
     .success {
@@ -124,12 +136,17 @@
       text-align: center;
       margin-top: 20px;
       color: #666;
+      line-height: 1.7;
     }
 
     .login-link a {
       color: #075e4d;
       text-decoration: none;
       font-weight: bold;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -139,16 +156,16 @@
   <div class="register-box">
 
     <img
-      src="../logo.png"
+      src="https://ard-al-ahyaa.github.io/ard-al-ahyaa/logo.png"
       class="logo"
-      alt="منصة أرض الأحياء"
+      alt="شعار منصة أرض الأحياء"
       onerror="this.style.display='none'"
     >
 
     <h1>إنشاء حساب</h1>
 
     <div class="subtitle">
-      منصة أرض الأحياء التعليمية
+      منصة أرض الأحياء التعليمية لطلاب الصف الثالث الثانوي
     </div>
 
     <form id="registerForm">
@@ -160,6 +177,7 @@
         id="name"
         placeholder="اكتب اسمك"
         autocomplete="name"
+        maxlength="100"
         required
       >
 
@@ -170,6 +188,7 @@
         id="email"
         placeholder="example@email.com"
         autocomplete="email"
+        maxlength="150"
         required
       >
 
@@ -213,16 +232,15 @@
 
   <script>
 
-    // ==========================================
-    // نفس مشروع Supabase المستخدم في Login
-    // ==========================================
+    // =====================================================
+    // إعداد Supabase
+    // =====================================================
 
     const SUPABASE_URL =
       "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 
     const SUPABASE_ANON_KEY =
       "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
-
 
     const supabaseClient =
       window.supabase.createClient(
@@ -231,9 +249,9 @@
       );
 
 
-    // ==========================================
+    // =====================================================
     // عناصر الصفحة
-    // ==========================================
+    // =====================================================
 
     const registerForm =
       document.getElementById("registerForm");
@@ -245,9 +263,9 @@
       document.getElementById("message");
 
 
-    // ==========================================
+    // =====================================================
     // عرض الرسائل
-    // ==========================================
+    // =====================================================
 
     function showMessage(text, type) {
 
@@ -259,42 +277,54 @@
     }
 
 
-    // ==========================================
+    // =====================================================
     // إنشاء الحساب
-    // ==========================================
+    // =====================================================
 
     registerForm.addEventListener(
       "submit",
-      async function(event) {
+      async function (event) {
 
         event.preventDefault();
 
 
+        // منع إرسال النموذج أكثر من مرة
+        if (registerButton.disabled) {
+          return;
+        }
+
+
+        // =====================================================
+        // قراءة البيانات
+        // =====================================================
+
         const name =
-          document.getElementById("name")
+          document
+            .getElementById("name")
             .value
             .trim();
-
 
         const email =
-          document.getElementById("email")
+          document
+            .getElementById("email")
             .value
-            .trim();
-
+            .trim()
+            .toLowerCase();
 
         const password =
-          document.getElementById("password")
+          document
+            .getElementById("password")
             .value;
-
 
         const confirmPassword =
-          document.getElementById("confirmPassword")
+          document
+            .getElementById("confirmPassword")
             .value;
 
 
-        // ==========================================
+        // =====================================================
         // التحقق من الاسم
-        // ==========================================
+        // =====================================================
 
         if (!name) {
 
@@ -304,7 +334,6 @@
           );
 
           return;
-
         }
 
 
@@ -316,13 +345,27 @@
           );
 
           return;
-
         }
 
 
-        // ==========================================
+        // =====================================================
+        // التحقق من البريد
+        // =====================================================
+
+        if (!email) {
+
+          showMessage(
+            "اكتب البريد الإلكتروني.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        // =====================================================
         // التحقق من كلمة المرور
-        // ==========================================
+        // =====================================================
 
         if (password.length < 6) {
 
@@ -332,13 +375,12 @@
           );
 
           return;
-
         }
 
 
-        // ==========================================
+        // =====================================================
         // تأكيد كلمة المرور
-        // ==========================================
+        // =====================================================
 
         if (password !== confirmPassword) {
 
@@ -348,13 +390,12 @@
           );
 
           return;
-
         }
 
 
-        // ==========================================
+        // =====================================================
         // بدء التسجيل
-        // ==========================================
+        // =====================================================
 
         registerButton.disabled = true;
 
@@ -367,12 +408,14 @@
 
         try {
 
-          // ==========================================
+          // =====================================================
           // إنشاء حساب Supabase
-          // الاسم يتم حفظه داخل user_metadata
-          // ==========================================
+          // =====================================================
 
-          const { data, error } =
+          const {
+            data,
+            error
+          } =
             await supabaseClient.auth.signUp({
 
               email: email,
@@ -382,9 +425,7 @@
               options: {
 
                 data: {
-
                   full_name: name
-
                 }
 
               }
@@ -392,10 +433,12 @@
             });
 
 
+          // =====================================================
+          // فحص خطأ التسجيل
+          // =====================================================
+
           if (error) {
-
             throw error;
-
           }
 
 
@@ -408,15 +451,21 @@
           }
 
 
-          // ==========================================
-          // حفظ بيانات الطالب في profiles
-          // ==========================================
+          // =====================================================
+          // بيانات المستخدم
+          // =====================================================
 
           const userId =
             data.user.id;
 
 
-          const { error: profileError } =
+          // =====================================================
+          // حفظ بيانات الطالب في profiles
+          // =====================================================
+
+          const {
+            error: profileError
+          } =
             await supabaseClient
               .from("profiles")
               .upsert({
@@ -432,8 +481,10 @@
               });
 
 
-          // لو حصل خطأ في profiles
-          // لا نحذف حساب Auth
+          // =====================================================
+          // لو حدث خطأ في profiles
+          // =====================================================
+
           if (profileError) {
 
             console.error(
@@ -444,9 +495,9 @@
           }
 
 
-          // ==========================================
+          // =====================================================
           // نجاح التسجيل
-          // ==========================================
+          // =====================================================
 
           if (!data.session) {
 
@@ -456,6 +507,11 @@
               ". راجع بريدك الإلكتروني لتأكيد الحساب، ثم سجل الدخول.",
               "success"
             );
+
+
+            // تنظيف النموذج
+            registerForm.reset();
+
 
           } else {
 
@@ -467,7 +523,7 @@
             );
 
 
-            setTimeout(function() {
+            setTimeout(function () {
 
               window.location.href =
                 "../login/index.html";
@@ -494,19 +550,14 @@
             errorMessage.toLowerCase();
 
 
+          // =====================================================
+          // رسائل أخطاء مفهومة للمستخدم
+          // =====================================================
+
           if (
             lowerError.includes(
               "already registered"
-            )
-          ) {
-
-            errorMessage =
-              "هذا البريد الإلكتروني مسجل بالفعل.";
-
-          }
-
-
-          else if (
+            ) ||
             lowerError.includes(
               "user already registered"
             )
@@ -542,6 +593,30 @@
           }
 
 
+          else if (
+            lowerError.includes(
+              "email rate limit exceeded"
+            )
+          ) {
+
+            errorMessage =
+              "تم إجراء محاولات تسجيل كثيرة. حاول مرة أخرى لاحقًا.";
+
+          }
+
+
+          else if (
+            lowerError.includes(
+              "signup is disabled"
+            )
+          ) {
+
+            errorMessage =
+              "إنشاء الحسابات متوقف حاليًا من إعدادات المنصة.";
+
+          }
+
+
           showMessage(
             errorMessage,
             "error"
@@ -550,8 +625,11 @@
         }
 
 
-        registerButton.disabled =
-          false;
+        // =====================================================
+        // إعادة تفعيل الزر
+        // =====================================================
+
+        registerButton.disabled = false;
 
         registerButton.textContent =
           "إنشاء الحساب";
@@ -564,3 +642,4 @@
 </body>
 
 </html>
+```
