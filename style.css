@@ -28,19 +28,125 @@ body {
   overflow-y: auto;
 }
 
+/* =========================
+   الشعار
+========================= */
+
 .logo {
   text-align: center;
   font-size: 25px;
   font-weight: bold;
   padding: 10px;
   margin-bottom: 30px;
+
+  /* حركة الشعار كل دقيقة */
+  animation: logoMinute 60s ease-in-out infinite;
+  transform-origin: center;
 }
 
+/* لو الشعار صورة */
+.logo img {
+  max-width: 110px;
+  max-height: 110px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 10px;
+
+  animation: logoImageMinute 60s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* لو الشعار القديم عبارة عن أيقونة */
 .logo span {
   display: block;
   font-size: 45px;
   margin-bottom: 8px;
 }
+
+/* حركة احترافية:
+   يظهر → يثبت → يختفي → يظهر */
+@keyframes logoMinute {
+
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  42% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  48% {
+    opacity: 0;
+    transform: scale(.92);
+  }
+
+  52% {
+    opacity: 0;
+    transform: scale(.92);
+  }
+
+  58% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+}
+
+/* حركة الصورة بشكل مستقل وناعم */
+@keyframes logoImageMinute {
+
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(255,255,255,0));
+  }
+
+  42% {
+    opacity: 1;
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(255,255,255,0));
+  }
+
+  48% {
+    opacity: 0;
+    transform: scale(.88);
+    filter: drop-shadow(0 0 10px rgba(255,255,255,.25));
+  }
+
+  52% {
+    opacity: 0;
+    transform: scale(.88);
+  }
+
+  58% {
+    opacity: 1;
+    transform: scale(1.03);
+    filter: drop-shadow(0 0 12px rgba(255,255,255,.18));
+  }
+
+  65% {
+    opacity: 1;
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(255,255,255,0));
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+}
+
+/* =========================
+   القائمة
+========================= */
 
 .menu-title {
   color: #a9d9cd;
@@ -378,5 +484,10 @@ footer p {
 
   .lessons {
     grid-template-columns: 1fr;
+  }
+
+  .logo img {
+    max-width: 90px;
+    max-height: 90px;
   }
 }
