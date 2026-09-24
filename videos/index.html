@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
@@ -6,6 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>المحاضرات | منصة أرض الأحياء</title>
+
+  <meta name="description"
+    content="محاضرات وفيديوهات أحياء الصف الثالث الثانوي على منصة أرض الأحياء.">
+
+  <meta name="robots" content="index, follow">
+
+  <link rel="canonical"
+    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/videos/">
 
   <link rel="icon" href="../favicon.png">
 
@@ -23,6 +32,7 @@
     }
 
     /* الشريط الجانبي */
+
     .sidebar {
       position: fixed;
       right: 0;
@@ -79,6 +89,7 @@
     }
 
     /* المحتوى */
+
     .main {
       margin-right: 250px;
       padding: 30px;
@@ -105,6 +116,7 @@
     }
 
     /* المحاضرات */
+
     .lectures-container {
       background: white;
       border-radius: 15px;
@@ -138,9 +150,14 @@
     }
 
     /* الفيديو */
+
     .video-box {
       width: 100%;
       background: #000;
+      height: 190px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .video-box video {
@@ -148,6 +165,36 @@
       width: 100%;
       height: 190px;
       object-fit: cover;
+    }
+
+    /* صندوق تليجرام */
+
+    .telegram-video {
+      height: 190px;
+      background: linear-gradient(135deg, #168dcc, #229ed9);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .telegram-video .telegram-icon {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 10px;
+    }
+
+    .telegram-video h4 {
+      font-size: 17px;
+      margin-bottom: 5px;
+    }
+
+    .telegram-video p {
+      color: rgba(255,255,255,.9);
+      font-size: 13px;
     }
 
     .lecture-content {
@@ -182,6 +229,14 @@
       background: #064c3f;
     }
 
+    .telegram-btn {
+      background: #229ed9;
+    }
+
+    .telegram-btn:hover {
+      background: #168dcc;
+    }
+
     .loading,
     .empty,
     .error {
@@ -197,6 +252,7 @@
     }
 
     /* الموبايل */
+
     @media (max-width: 700px) {
 
       .sidebar {
@@ -237,7 +293,9 @@
         grid-template-columns: 1fr;
       }
 
-      .video-box video {
+      .video-box,
+      .video-box video,
+      .telegram-video {
         height: 200px;
       }
     }
@@ -247,6 +305,7 @@
 <body>
 
   <!-- الشريط الجانبي -->
+
   <aside class="sidebar">
 
     <div class="logo-box">
@@ -285,6 +344,7 @@
 
 
   <!-- المحتوى -->
+
   <main class="main">
 
     <div class="topbar">
@@ -321,6 +381,7 @@
 
 
   <!-- Supabase -->
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
@@ -339,6 +400,150 @@
         SUPABASE_KEY
       );
 
+
+    /*
+      =====================================================
+      المحاضرة الموجودة على تليجرام
+      =====================================================
+    */
+
+    const telegramLecture = {
+
+      title: "محاضرة أحياء - فيديو تليجرام",
+
+      description:
+        "شاهد فيديو المحاضرة على قناة منصة أرض الأحياء في تليجرام.",
+
+      video_url:
+        "https://t.me/c/3916276502/60"
+
+    };
+
+
+    /*
+      =====================================================
+      إضافة محاضرة تليجرام
+      =====================================================
+    */
+
+    function addTelegramLecture(lectureList) {
+
+      const card =
+        document.createElement("div");
+
+      card.className =
+        "lecture-card";
+
+
+      /* صندوق الفيديو */
+
+      const videoBox =
+        document.createElement("div");
+
+      videoBox.className =
+        "video-box";
+
+
+      const telegramBox =
+        document.createElement("div");
+
+      telegramBox.className =
+        "telegram-video";
+
+
+      telegramBox.innerHTML = `
+
+        <svg
+          class="telegram-icon"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill="white"
+            d="M21.9 3.3L18.6 20c-.25 1.18-.9 1.47-1.82.92l-5.01-3.69-2.42 2.33c-.27.27-.5.5-1.02.5l.36-5.1 9.28-8.38c.4-.36-.09-.56-.62-.2L5.87 13.63.94 12.09c-1.07-.34-1.09-1.07.22-1.58L20.42 2.9c.91-.34 1.7.2 1.48.4z"
+          />
+        </svg>
+
+        <h4>
+          فيديو المحاضرة
+        </h4>
+
+        <p>
+          اضغط على زر مشاهدة الفيديو
+        </p>
+
+      `;
+
+
+      videoBox.appendChild(
+        telegramBox
+      );
+
+
+      /* محتوى المحاضرة */
+
+      const content =
+        document.createElement("div");
+
+      content.className =
+        "lecture-content";
+
+
+      const title =
+        document.createElement("h3");
+
+      title.textContent =
+        telegramLecture.title;
+
+
+      const description =
+        document.createElement("p");
+
+      description.textContent =
+        telegramLecture.description;
+
+
+      const button =
+        document.createElement("a");
+
+      button.className =
+        "watch-btn telegram-btn";
+
+      button.href =
+        telegramLecture.video_url;
+
+      button.target =
+        "_blank";
+
+      button.rel =
+        "noopener noreferrer";
+
+      button.textContent =
+        "▶ مشاهدة الفيديو";
+
+
+      content.appendChild(title);
+
+      content.appendChild(description);
+
+      content.appendChild(button);
+
+
+      card.appendChild(videoBox);
+
+      card.appendChild(content);
+
+
+      lectureList.appendChild(card);
+
+    }
+
+
+    /*
+      =====================================================
+      تحميل محاضرات Supabase
+      =====================================================
+    */
 
     async function loadLectures() {
 
@@ -369,121 +574,142 @@
         }
 
 
-        if (!data || data.length === 0) {
-
-          lectureList.innerHTML = `
-
-            <div class="empty">
-
-              لا توجد محاضرات مضافة حاليًا.
-
-            </div>
-
-          `;
-
-          return;
-
-        }
-
+        /*
+          مسح القائمة
+        */
 
         lectureList.innerHTML = "";
 
 
-        data.forEach(lecture => {
+        /*
+          إضافة محاضرة تليجرام أولًا
+        */
 
-          const card =
-            document.createElement("div");
-
-          card.className =
-            "lecture-card";
-
-
-          /* الفيديو */
-
-          const videoBox =
-            document.createElement("div");
-
-          videoBox.className =
-            "video-box";
+        addTelegramLecture(
+          lectureList
+        );
 
 
-          const video =
-            document.createElement("video");
+        /*
+          إضافة المحاضرات الموجودة
+          في Supabase
+        */
 
-          video.controls = true;
+        if (data && data.length > 0) {
 
-          video.preload = "metadata";
+          data.forEach(lecture => {
 
-          video.playsInline = true;
+            const card =
+              document.createElement("div");
 
-          video.src =
-            lecture.video_url;
-
-
-          videoBox.appendChild(video);
-
-
-          /* محتوى المحاضرة */
-
-          const content =
-            document.createElement("div");
-
-          content.className =
-            "lecture-content";
+            card.className =
+              "lecture-card";
 
 
-          const title =
-            document.createElement("h3");
+            /* الفيديو */
 
-          title.textContent =
-            lecture.title ||
-            "محاضرة بدون عنوان";
+            const videoBox =
+              document.createElement("div");
 
-
-          const description =
-            document.createElement("p");
-
-          description.textContent =
-            lecture.description ||
-            "لا يوجد وصف لهذه المحاضرة.";
+            videoBox.className =
+              "video-box";
 
 
-          /* زر فتح الفيديو */
+            const video =
+              document.createElement("video");
 
-          const button =
-            document.createElement("a");
+            video.controls = true;
 
-          button.className =
-            "watch-btn";
+            video.preload =
+              "metadata";
 
-          button.href =
-            lecture.video_url;
+            video.playsInline =
+              true;
 
-          button.target =
-            "_blank";
-
-          button.rel =
-            "noopener noreferrer";
-
-          button.textContent =
-            "▶ فتح الفيديو";
+            video.src =
+              lecture.video_url;
 
 
-          content.appendChild(title);
-
-          content.appendChild(description);
-
-          content.appendChild(button);
+            videoBox.appendChild(
+              video
+            );
 
 
-          card.appendChild(videoBox);
+            /* محتوى المحاضرة */
 
-          card.appendChild(content);
+            const content =
+              document.createElement("div");
+
+            content.className =
+              "lecture-content";
 
 
-          lectureList.appendChild(card);
+            const title =
+              document.createElement("h3");
 
-        });
+            title.textContent =
+              lecture.title ||
+              "محاضرة بدون عنوان";
+
+
+            const description =
+              document.createElement("p");
+
+            description.textContent =
+              lecture.description ||
+              "لا يوجد وصف لهذه المحاضرة.";
+
+
+            /* زر فتح الفيديو */
+
+            const button =
+              document.createElement("a");
+
+            button.className =
+              "watch-btn";
+
+            button.href =
+              lecture.video_url;
+
+            button.target =
+              "_blank";
+
+            button.rel =
+              "noopener noreferrer";
+
+            button.textContent =
+              "▶ فتح الفيديو";
+
+
+            content.appendChild(
+              title
+            );
+
+            content.appendChild(
+              description
+            );
+
+            content.appendChild(
+              button
+            );
+
+
+            card.appendChild(
+              videoBox
+            );
+
+            card.appendChild(
+              content
+            );
+
+
+            lectureList.appendChild(
+              card
+            );
+
+          });
+
+        }
 
       }
 
@@ -496,20 +722,32 @@
         );
 
 
-        lectureList.innerHTML = `
+        /*
+          حتى لو Supabase فيه مشكلة،
+          تظل محاضرة تليجرام ظاهرة.
+        */
 
-          <div class="error">
+        lectureList.innerHTML = "";
 
-            تعذر تحميل المحاضرات حاليًا.
+        addTelegramLecture(
+          lectureList
+        );
 
-            <br><br>
+        const errorMessage =
+          document.createElement("div");
 
-            تأكد من اتصال Supabase
-            وجدول lectures.
+        errorMessage.className =
+          "error";
 
-          </div>
+        errorMessage.style.marginTop =
+          "10px";
 
-        `;
+        errorMessage.textContent =
+          "تعذر تحميل بعض المحاضرات من قاعدة البيانات، لكن يمكنك مشاهدة محاضرة تليجرام.";
+
+        lectureList.appendChild(
+          errorMessage
+        );
 
       }
 
@@ -517,16 +755,14 @@
 
 
     /*
-      تحميل المحاضرات عند فتح الصفحة
+      تحميل المحاضرات
     */
 
     loadLectures();
 
 
     /*
-      تحديث القائمة تلقائيًا كل 30 ثانية
-      حتى تظهر المحاضرات الجديدة
-      بدون إعادة تحميل الصفحة.
+      تحديث القائمة كل 30 ثانية
     */
 
     setInterval(
@@ -539,3 +775,4 @@
 </body>
 
 </html>
+```
