@@ -1,10 +1,32 @@
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>تسجيل الدخول | منصة أرض الأحياء</title>
+
+  <!-- صفحة تسجيل الدخول لا نحتاج ظهورها في نتائج Google -->
+  <meta name="robots" content="noindex, nofollow">
+
+  <link
+    rel="canonical"
+    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/login/"
+  >
+
+  <!-- Favicon -->
+  <link
+    rel="icon"
+    type="image/png"
+    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/favicon.png"
+  >
+
+  <link
+    rel="shortcut icon"
+    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/favicon.png"
+  >
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -31,7 +53,7 @@
       background: #fff;
       border-radius: 22px;
       padding: 35px 28px;
-      box-shadow: 0 15px 45px rgba(0,0,0,.25);
+      box-shadow: 0 15px 45px rgba(0, 0, 0, .25);
       text-align: center;
     }
 
@@ -52,6 +74,7 @@
       color: #777;
       margin-bottom: 28px;
       font-size: 14px;
+      line-height: 1.7;
     }
 
     .input-group {
@@ -74,11 +97,12 @@
       font-size: 15px;
       outline: none;
       transition: .2s;
+      background: #fff;
     }
 
     input:focus {
       border-color: #198754;
-      box-shadow: 0 0 0 3px rgba(25,135,84,.12);
+      box-shadow: 0 0 0 3px rgba(25, 135, 84, .12);
     }
 
     button {
@@ -109,6 +133,7 @@
       padding: 12px;
       border-radius: 10px;
       font-size: 14px;
+      line-height: 1.7;
     }
 
     .error {
@@ -127,12 +152,17 @@
       margin-top: 20px;
       color: #666;
       font-size: 14px;
+      line-height: 1.7;
     }
 
     .register a {
       color: #198754;
       font-weight: bold;
       text-decoration: none;
+    }
+
+    .register a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -142,9 +172,9 @@
   <div class="login-box">
 
     <img
-      src="../logo.png"
+      src="https://ard-al-ahyaa.github.io/ard-al-ahyaa/logo.png"
       class="logo"
-      alt="منصة أرض الأحياء"
+      alt="شعار منصة أرض الأحياء"
       onerror="this.style.display='none'"
     >
 
@@ -157,7 +187,10 @@
     <form id="loginForm">
 
       <div class="input-group">
-        <label for="email">البريد الإلكتروني</label>
+
+        <label for="email">
+          البريد الإلكتروني
+        </label>
 
         <input
           type="email"
@@ -165,11 +198,17 @@
           placeholder="اكتب البريد الإلكتروني"
           required
           autocomplete="email"
+          maxlength="150"
         >
+
       </div>
 
+
       <div class="input-group">
-        <label for="password">كلمة المرور</label>
+
+        <label for="password">
+          كلمة المرور
+        </label>
 
         <input
           type="password"
@@ -178,248 +217,344 @@
           required
           autocomplete="current-password"
         >
+
       </div>
 
-      <button id="loginBtn" type="submit">
+
+      <button
+        id="loginBtn"
+        type="submit"
+      >
         تسجيل الدخول
       </button>
 
-      <div id="message" class="message"></div>
+
+      <div
+        id="message"
+        class="message"
+        role="alert"
+        aria-live="polite"
+      ></div>
 
     </form>
 
+
     <div class="register">
+
       ليس لديك حساب؟
-      <a href="../register/index.html">إنشاء حساب</a>
+
+      <a href="../register/index.html">
+        إنشاء حساب
+      </a>
+
     </div>
 
   </div>
 
-<script>
 
-  // ==========================================
-  // Supabase
-  // ==========================================
+  <script>
 
-  const SUPABASE_URL =
-    "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+    // =====================================================
+    // Supabase
+    // =====================================================
 
-  const SUPABASE_ANON_KEY =
-    "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+    const SUPABASE_URL =
+      "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+    const SUPABASE_ANON_KEY =
+      "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
 
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
 
-  // ==========================================
-  // عناصر الصفحة
-  // ==========================================
 
-  const loginForm =
-    document.getElementById("loginForm");
+    // =====================================================
+    // عناصر الصفحة
+    // =====================================================
 
-  const loginBtn =
-    document.getElementById("loginBtn");
+    const loginForm =
+      document.getElementById("loginForm");
 
-  const message =
-    document.getElementById("message");
+    const loginBtn =
+      document.getElementById("loginBtn");
 
+    const message =
+      document.getElementById("message");
 
-  // ==========================================
-  // الرسائل
-  // ==========================================
 
-  function showMessage(text, type) {
+    // =====================================================
+    // عرض الرسائل
+    // =====================================================
 
-    message.textContent = text;
+    function showMessage(text, type) {
 
-    message.className =
-      "message " + type;
+      message.textContent = text;
 
-  }
-
-
-  // ==========================================
-  // تسجيل الدخول
-  // ==========================================
-
-  loginForm.addEventListener(
-    "submit",
-    async function(e) {
-
-      e.preventDefault();
-
-      const email =
-        document.getElementById("email")
-          .value
-          .trim();
-
-      const password =
-        document.getElementById("password")
-          .value;
-
-      if (!email || !password) {
-
-        showMessage(
-          "اكتب البريد الإلكتروني وكلمة المرور.",
-          "error"
-        );
-
-        return;
-      }
-
-      loginBtn.disabled = true;
-
-      loginBtn.textContent =
-        "جاري تسجيل الدخول...";
-
-      message.className = "message";
-
-
-      try {
-
-        // تسجيل الدخول
-        const { data, error } =
-          await supabaseClient.auth.signInWithPassword({
-
-            email: email,
-
-            password: password
-
-          });
-
-
-        if (error) {
-          throw error;
-        }
-
-
-        if (!data.user) {
-
-          throw new Error(
-            "تعذر العثور على الحساب."
-          );
-
-        }
-
-
-        // ==========================================
-        // التأكد من وجود اسم في بيانات الحساب
-        // ==========================================
-
-        const user =
-          data.user;
-
-        const metadata =
-          user.user_metadata || {};
-
-
-        const savedName =
-          metadata.full_name ||
-          metadata.name ||
-          metadata.username ||
-          metadata.user_name ||
-          "";
-
-
-        // الاسم موجود بالفعل
-        if (savedName.trim()) {
-
-          console.log(
-            "اسم المستخدم:",
-            savedName
-          );
-
-        } else {
-
-          console.log(
-            "الحساب لا يحتوي على اسم مستخدم."
-          );
-
-        }
-
-
-        // ==========================================
-        // نجاح تسجيل الدخول
-        // ==========================================
-
-        showMessage(
-          "تم تسجيل الدخول بنجاح، جاري فتح المنصة...",
-          "success"
-        );
-
-
-        setTimeout(function() {
-
-          window.location.href =
-            "../index.html";
-
-        }, 700);
-
-
-      } catch (error) {
-
-        console.error(
-          "Login error:",
-          error
-        );
-
-
-        let text =
-          "حدث خطأ أثناء تسجيل الدخول.";
-
-
-        if (
-          error.message &&
-          error.message
-            .toLowerCase()
-            .includes(
-              "invalid login credentials"
-            )
-        ) {
-
-          text =
-            "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
-
-        }
-
-
-        if (
-          error.message &&
-          error.message
-            .toLowerCase()
-            .includes(
-              "email not confirmed"
-            )
-        ) {
-
-          text =
-            "يجب تأكيد البريد الإلكتروني أولًا.";
-
-        }
-
-
-        showMessage(
-          text,
-          "error"
-        );
-
-
-        loginBtn.disabled =
-          false;
-
-        loginBtn.textContent =
-          "تسجيل الدخول";
-
-      }
+      message.className =
+        "message " + type;
 
     }
-  );
 
-</script>
+
+    // =====================================================
+    // تسجيل الدخول
+    // =====================================================
+
+    loginForm.addEventListener(
+      "submit",
+      async function (e) {
+
+        e.preventDefault();
+
+
+        // منع الضغط المتكرر
+        if (loginBtn.disabled) {
+          return;
+        }
+
+
+        // =====================================================
+        // قراءة البيانات
+        // =====================================================
+
+        const email =
+          document
+            .getElementById("email")
+            .value
+            .trim()
+            .toLowerCase();
+
+        const password =
+          document
+            .getElementById("password")
+            .value;
+
+
+        // =====================================================
+        // التحقق من البيانات
+        // =====================================================
+
+        if (!email || !password) {
+
+          showMessage(
+            "اكتب البريد الإلكتروني وكلمة المرور.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        // =====================================================
+        // تعطيل الزر أثناء تسجيل الدخول
+        // =====================================================
+
+        loginBtn.disabled = true;
+
+        loginBtn.textContent =
+          "جاري تسجيل الدخول...";
+
+        message.className =
+          "message";
+
+
+        try {
+
+          // =====================================================
+          // تسجيل الدخول في Supabase
+          // =====================================================
+
+          const {
+            data,
+            error
+          } =
+            await supabaseClient.auth.signInWithPassword({
+
+              email: email,
+
+              password: password
+
+            });
+
+
+          // =====================================================
+          // فحص الخطأ
+          // =====================================================
+
+          if (error) {
+            throw error;
+          }
+
+
+          if (!data || !data.user) {
+
+            throw new Error(
+              "تعذر العثور على الحساب."
+            );
+
+          }
+
+
+          // =====================================================
+          // الحصول على بيانات المستخدم
+          // =====================================================
+
+          const user =
+            data.user;
+
+          const metadata =
+            user.user_metadata || {};
+
+
+          const savedName =
+            metadata.full_name ||
+            metadata.name ||
+            metadata.username ||
+            metadata.user_name ||
+            "";
+
+
+          if (savedName.trim()) {
+
+            console.log(
+              "اسم المستخدم:",
+              savedName
+            );
+
+          }
+
+
+          // =====================================================
+          // نجاح تسجيل الدخول
+          // =====================================================
+
+          showMessage(
+            "تم تسجيل الدخول بنجاح، جاري فتح المنصة...",
+            "success"
+          );
+
+
+          // =====================================================
+          // الانتقال للصفحة الرئيسية
+          // =====================================================
+
+          setTimeout(function () {
+
+            window.location.href =
+              "../index.html";
+
+          }, 700);
+
+
+        } catch (error) {
+
+          console.error(
+            "Login error:",
+            error
+          );
+
+
+          let text =
+            "حدث خطأ أثناء تسجيل الدخول.";
+
+
+          const errorText =
+            error.message
+              ? error.message.toLowerCase()
+              : "";
+
+
+          // =====================================================
+          // بيانات الدخول غير صحيحة
+          // =====================================================
+
+          if (
+            errorText.includes(
+              "invalid login credentials"
+            )
+          ) {
+
+            text =
+              "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+
+          }
+
+
+          // =====================================================
+          // البريد الإلكتروني غير مؤكد
+          // =====================================================
+
+          else if (
+            errorText.includes(
+              "email not confirmed"
+            )
+          ) {
+
+            text =
+              "يجب تأكيد البريد الإلكتروني أولًا.";
+
+          }
+
+
+          // =====================================================
+          // تسجيل الدخول متوقف
+          // =====================================================
+
+          else if (
+            errorText.includes(
+              "signup is disabled"
+            )
+          ) {
+
+            text =
+              "تسجيل الحسابات متوقف حاليًا.";
+
+          }
+
+
+          // =====================================================
+          // عدد محاولات كبير
+          // =====================================================
+
+          else if (
+            errorText.includes(
+              "rate limit"
+            )
+          ) {
+
+            text =
+              "تم إجراء محاولات كثيرة. حاول مرة أخرى لاحقًا.";
+
+          }
+
+
+          // =====================================================
+          // عرض الخطأ
+          // =====================================================
+
+          showMessage(
+            text,
+            "error"
+          );
+
+
+          // إعادة تفعيل الزر
+          loginBtn.disabled = false;
+
+          loginBtn.textContent =
+            "تسجيل الدخول";
+
+        }
+
+      }
+    );
+
+  </script>
 
 </body>
+
 </html>
+```
