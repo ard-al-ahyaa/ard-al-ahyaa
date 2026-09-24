@@ -159,6 +159,78 @@
       color: #b54708;
     }
 
+    /* تعديل الهاتف */
+
+    .phone-edit {
+      display: none;
+      margin-top: 12px;
+      padding: 15px;
+      background: #eef5ff;
+      border-radius: 10px;
+    }
+
+    .phone-edit input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccd6e5;
+      border-radius: 8px;
+      outline: none;
+      font-size: 15px;
+      margin-bottom: 10px;
+      direction: ltr;
+      text-align: left;
+    }
+
+    .phone-edit input:focus {
+      border-color: #0d6efd;
+    }
+
+    .edit-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .save-phone-btn,
+    .cancel-phone-btn,
+    .edit-phone-btn {
+      border: none;
+      border-radius: 8px;
+      padding: 9px 13px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .edit-phone-btn {
+      background: #0d6efd;
+      color: white;
+    }
+
+    .save-phone-btn {
+      background: #198754;
+      color: white;
+    }
+
+    .cancel-phone-btn {
+      background: #6c757d;
+      color: white;
+    }
+
+    .phone-message {
+      margin-top: 10px;
+      font-size: 13px;
+      display: none;
+    }
+
+    .phone-success {
+      color: #027a48;
+    }
+
+    .phone-error {
+      color: #b42318;
+    }
+
+    /* النتائج */
+
     .results-title {
       color: #084298;
       margin-bottom: 18px;
@@ -260,6 +332,10 @@
       .page-title {
         font-size: 23px;
       }
+
+      .edit-buttons {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
@@ -325,6 +401,9 @@
       );
 
 
+    let currentUser = null;
+
+
     /* ================= START ================= */
 
     document.addEventListener(
@@ -341,8 +420,6 @@
         document.getElementById("accountContent");
 
       try {
-
-        /* الحصول على المستخدم الحالي */
 
         const {
           data: userData,
@@ -365,6 +442,8 @@
 
         const user = userData.user;
 
+        currentUser = user;
+
 
         if (!user) {
 
@@ -375,8 +454,6 @@
 
         }
 
-
-        /* ================= USER DATA ================= */
 
         const metadata =
           user.user_metadata || {};
@@ -392,18 +469,23 @@
           "";
 
 
-        /* الإيميل */
+        /* البريد */
 
         const email =
           user.email || "غير متوفر";
 
 
-        /* ================= PROFILE ================= */
+        /* الهاتف */
 
         let phone = "";
 
+
+        /* الدور */
+
         let role = "student";
 
+
+        /* ================= GET PROFILE ================= */
 
         try {
 
@@ -419,12 +501,7 @@
             .maybeSingle();
 
 
-          if (
-            !profileError &&
-            profile
-          ) {
-
-            /* الاسم من profiles */
+          if (!profileError && profile) {
 
             if (
               profile.full_name &&
@@ -437,8 +514,6 @@
             }
 
 
-            /* رقم الهاتف */
-
             if (
               profile.phone &&
               String(profile.phone).trim()
@@ -450,8 +525,6 @@
             }
 
 
-            /* الدور */
-
             if (profile.role) {
 
               role =
@@ -461,11 +534,11 @@
 
           }
 
-        } catch (profileError) {
+        } catch (error) {
 
           console.log(
-            "Profile loading error:",
-            profileError
+            "Profile error:",
+            error
           );
 
         }
@@ -473,35 +546,16 @@
 
         /* ================= PHONE FALLBACK ================= */
 
-        /*
-          لو الرقم غير موجود في profiles،
-          نحاول الحصول عليه من بيانات Auth.
-        */
-
         if (!phone) {
 
           phone =
             metadata.phone ||
             metadata.phone_number ||
+            metadata.user_phone ||
             "";
 
         }
 
-
-        /*
-          بعض الحسابات القديمة قد تحتوي
-          على phone في user_metadata
-        */
-
-        if (!phone && metadata.user_phone) {
-
-          phone =
-            metadata.user_phone;
-
-        }
-
-
-        /* لو الرقم غير موجود */
 
         if (!phone) {
 
@@ -514,17 +568,9 @@
 
         if (!name.trim()) {
 
-          if (email) {
-
-            name =
-              email.split("@")[0];
-
-          } else {
-
-            name =
-              "مستخدم المنصة";
-
-          }
+          name =
+            email.split("@")[0] ||
+            "مستخدم المنصة";
 
         }
 
@@ -532,7 +578,6 @@
         /* ================= ROLE ================= */
 
         let roleText = "طالب";
-
         let roleClass = "role-student";
 
 
@@ -541,26 +586,17 @@
           role === "administrator"
         ) {
 
-          roleText =
-            "مدير المنصة";
+          roleText = "مدير المنصة";
+          roleClass = "role-admin";
 
-          roleClass =
-            "role-admin";
+        } else if (role === "teacher") {
 
-        } else if (
-          role === "teacher"
-        ) {
-
-          roleText =
-            "معلم";
-
-          roleClass =
-            "role-student";
+          roleText = "معلم";
 
         }
 
 
-        /* ================= DISPLAY ACCOUNT ================= */
+        /* ================= HTML ================= */
 
         container.innerHTML = `
 
@@ -621,9 +657,59 @@
                   📱 رقم الهاتف
                 </span>
 
-                <span class="info-value">
-                  ${escapeHTML(phone)}
+                <span>
+
+                  <span
+                    id="phoneValue"
+                    class="info-value">
+                    ${escapeHTML(phone)}
+                  </span>
+
+                  <button
+                    class="edit-phone-btn"
+                    onclick="showPhoneEditor()">
+                    ✏️ تعديل
+                  </button>
+
                 </span>
+
+              </div>
+
+
+              <div
+                id="phoneEditor"
+                class="phone-edit">
+
+                <input
+                  type="tel"
+                  id="phoneInput"
+                  placeholder="اكتب رقم الهاتف"
+                  value="${
+                    phone !== "غير مضاف"
+                      ? escapeHTML(phone)
+                      : ""
+                  }">
+
+                <div class="edit-buttons">
+
+                  <button
+                    class="save-phone-btn"
+                    onclick="savePhone()">
+                    💾 حفظ
+                  </button>
+
+                  <button
+                    class="cancel-phone-btn"
+                    onclick="cancelPhoneEdit()">
+                    إلغاء
+                  </button>
+
+                </div>
+
+                <div
+                  id="phoneMessage"
+                  class="phone-message">
+                </div>
 
               </div>
 
@@ -664,8 +750,6 @@
         `;
 
 
-        /* تحميل النتائج */
-
         await loadResults(user.id);
 
 
@@ -676,6 +760,226 @@
         showError(
           "حدث خطأ غير متوقع أثناء تحميل الحساب."
         );
+
+      }
+
+    }
+
+
+    /* ================= SHOW PHONE EDITOR ================= */
+
+    function showPhoneEditor() {
+
+      const editor =
+        document.getElementById(
+          "phoneEditor"
+        );
+
+      if (!editor) return;
+
+      editor.style.display = "block";
+
+      const input =
+        document.getElementById(
+          "phoneInput"
+        );
+
+      if (input) {
+
+        input.focus();
+
+      }
+
+    }
+
+
+    /* ================= CANCEL ================= */
+
+    function cancelPhoneEdit() {
+
+      const editor =
+        document.getElementById(
+          "phoneEditor"
+        );
+
+      if (editor) {
+
+        editor.style.display = "none";
+
+      }
+
+      const message =
+        document.getElementById(
+          "phoneMessage"
+        );
+
+      if (message) {
+
+        message.style.display = "none";
+
+      }
+
+    }
+
+
+    /* ================= SAVE PHONE ================= */
+
+    async function savePhone() {
+
+      if (!currentUser) {
+
+        alert(
+          "لم يتم العثور على المستخدم."
+        );
+
+        return;
+
+      }
+
+
+      const input =
+        document.getElementById(
+          "phoneInput"
+        );
+
+
+      const message =
+        document.getElementById(
+          "phoneMessage"
+        );
+
+
+      const phone =
+        input.value.trim();
+
+
+      if (!phone) {
+
+        message.className =
+          "phone-message phone-error";
+
+        message.style.display =
+          "block";
+
+        message.textContent =
+          "اكتب رقم الهاتف أولًا.";
+
+        return;
+
+      }
+
+
+      message.className =
+        "phone-message";
+
+      message.style.display =
+        "block";
+
+      message.textContent =
+        "جاري حفظ رقم الهاتف...";
+
+
+      try {
+
+        /*
+          تحديث رقم الهاتف في profiles
+        */
+
+        const {
+          error
+        } = await supabaseClient
+          .from("profiles")
+          .upsert({
+
+            id: currentUser.id,
+
+            phone: phone,
+
+            email:
+              currentUser.email || null
+
+          });
+
+
+        if (error) {
+
+          console.error(error);
+
+          message.className =
+            "phone-message phone-error";
+
+          message.textContent =
+            "تعذر حفظ الرقم: " +
+            error.message;
+
+          return;
+
+        }
+
+
+        /* تحديث الرقم الظاهر */
+
+        const phoneValue =
+          document.getElementById(
+            "phoneValue"
+          );
+
+
+        if (phoneValue) {
+
+          phoneValue.textContent =
+            phone;
+
+        }
+
+
+        /* تحديث Auth metadata أيضًا */
+
+        try {
+
+          await supabaseClient.auth.updateUser({
+
+            data: {
+
+              phone: phone
+
+            }
+
+          });
+
+        } catch (metadataError) {
+
+          console.log(
+            "Metadata update:",
+            metadataError
+          );
+
+        }
+
+
+        message.className =
+          "phone-message phone-success";
+
+        message.textContent =
+          "✅ تم حفظ رقم الهاتف بنجاح.";
+
+
+        setTimeout(() => {
+
+          cancelPhoneEdit();
+
+        }, 1500);
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        message.className =
+          "phone-message phone-error";
+
+        message.textContent =
+          "حدث خطأ أثناء حفظ الرقم.";
 
       }
 
@@ -716,27 +1020,8 @@
           );
 
 
-        if (error) {
-
-          console.log(
-            "Results error:",
-            error
-          );
-
-          resultsContainer.innerHTML = `
-
-            <div class="empty">
-              لا توجد نتائج اختبارات مسجلة حاليًا.
-            </div>
-
-          `;
-
-          return;
-
-        }
-
-
         if (
+          error ||
           !results ||
           results.length === 0
         ) {
