@@ -17,21 +17,15 @@
   <meta name="author" content="منصة أرض الأحياء">
   <meta name="robots" content="index, follow">
 
-  <link
-    rel="canonical"
-    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/"
-  >
+  <link rel="canonical"
+    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/">
 
-  <link
-    rel="icon"
+  <link rel="icon"
     type="image/png"
-    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/favicon.png"
-  >
+    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/favicon.png">
 
-  <link
-    rel="shortcut icon"
-    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/favicon.png"
-  >
+  <link rel="shortcut icon"
+    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/favicon.png">
 
   <!-- Open Graph -->
   <meta property="og:title"
@@ -68,7 +62,6 @@
   <meta name="twitter:image"
     content="https://ard-al-ahyaa.github.io/ard-al-ahyaa/logo.png">
 
-
   <!-- البيانات المنظمة -->
   <script type="application/ld+json">
   {
@@ -81,9 +74,7 @@
   }
   </script>
 
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 
   <style>
     * {
@@ -97,9 +88,7 @@
       color: #222;
     }
 
-    /* =========================
-       شاشة تسجيل الدخول
-       ========================= */
+    /* شاشة تسجيل الدخول */
 
     #authScreen {
       min-height: 100vh;
@@ -149,20 +138,14 @@
       font-weight: bold;
     }
 
-
-    /* =========================
-       التطبيق
-       ========================= */
+    /* التطبيق */
 
     #app {
       display: none;
       min-height: 100vh;
     }
 
-
-    /* =========================
-       الهيدر
-       ========================= */
+    /* الهيدر */
 
     .top-header {
       height: 75px;
@@ -219,20 +202,14 @@
       background: rgba(255,255,255,.25);
     }
 
-
-    /* =========================
-       التخطيط
-       ========================= */
+    /* التخطيط */
 
     .layout {
       display: flex;
       min-height: calc(100vh - 75px);
     }
 
-
-    /* =========================
-       الشريط الجانبي
-       ========================= */
+    /* الشريط الجانبي */
 
     .sidebar {
       width: 250px;
@@ -267,10 +244,7 @@
       color: #075e4d;
     }
 
-
-    /* =========================
-       المحتوى
-       ========================= */
+    /* المحتوى */
 
     .main-content {
       flex: 1;
@@ -300,10 +274,7 @@
       opacity: .95;
     }
 
-
-    /* =========================
-       البحث
-       ========================= */
+    /* البحث */
 
     .search-box {
       margin-bottom: 25px;
@@ -323,10 +294,7 @@
       box-shadow: 0 0 0 3px rgba(25,135,84,.1);
     }
 
-
-    /* =========================
-       البطاقات
-       ========================= */
+    /* البطاقات */
 
     .cards {
       display: grid;
@@ -369,10 +337,7 @@
       font-size: 14px;
     }
 
-
-    /* =========================
-       الفوتر
-       ========================= */
+    /* الفوتر */
 
     footer {
       text-align: center;
@@ -382,10 +347,7 @@
       font-size: 14px;
     }
 
-
-    /* =========================
-       زر تليجرام
-       ========================= */
+    /* زر تليجرام */
 
     .telegram-float {
       position: fixed;
@@ -415,10 +377,7 @@
       fill: white;
     }
 
-
-    /* =========================
-       الموبايل
-       ========================= */
+    /* الموبايل */
 
     @media (max-width: 800px) {
 
@@ -442,7 +401,6 @@
         padding: 20px 15px;
       }
     }
-
 
     @media (max-width: 650px) {
 
@@ -495,13 +453,9 @@
   </style>
 </head>
 
-
 <body>
 
-
-  <!-- =========================
-       شاشة الدخول
-       ========================= -->
+  <!-- شاشة تسجيل الدخول -->
 
   <div id="authScreen">
 
@@ -509,7 +463,7 @@
 
       <img
         class="auth-logo"
-        src="https://ard-al-ahyaa.github.io/ard-al-ahyaa/logo.png"
+        src="logo.png"
         alt="شعار منصة أرض الأحياء"
         onerror="this.style.display='none'"
       >
@@ -542,12 +496,9 @@
   </div>
 
 
-  <!-- =========================
-       التطبيق
-       ========================= -->
+  <!-- التطبيق -->
 
   <div id="app">
-
 
     <!-- الهيدر -->
 
@@ -567,7 +518,6 @@
 
       </div>
 
-
       <button
         class="logout-btn"
         id="logoutBtn"
@@ -580,10 +530,7 @@
 
     <div class="layout">
 
-
-      <!-- =========================
-           الشريط الجانبي
-           ========================= -->
+      <!-- الشريط الجانبي -->
 
       <aside class="sidebar">
 
@@ -613,12 +560,9 @@
       </aside>
 
 
-      <!-- =========================
-           المحتوى الرئيسي
-           ========================= -->
+      <!-- المحتوى الرئيسي -->
 
       <main class="main-content">
-
 
         <section class="welcome">
 
@@ -651,7 +595,6 @@
         <!-- البطاقات -->
 
         <section class="cards" id="cards">
-
 
           <a
             href="videos/index.html"
@@ -736,7 +679,6 @@
 
           </a>
 
-
         </section>
 
 
@@ -751,12 +693,10 @@
   </div>
 
 
-  <!-- =========================
-       زر تليجرام العائم
-       ========================= -->
+  <!-- زر تليجرام العائم -->
 
   <a
-    href="https://t.me/+s3acvSigmkw2Nzg0"
+    href="https://t.me/+-KyakDJhhi5hZjVk"
     target="_blank"
     rel="noopener noreferrer"
     class="telegram-float"
@@ -777,9 +717,7 @@
 
   <script>
 
-    // =====================================================
-    // Supabase
-    // =====================================================
+    // بيانات Supabase
 
     const SUPABASE_URL =
       "https://fpfbmjtpzamzlyzitmsd.supabase.co";
@@ -794,9 +732,7 @@
       );
 
 
-    // =====================================================
     // العناصر
-    // =====================================================
 
     const authScreen =
       document.getElementById("authScreen");
@@ -814,9 +750,7 @@
       document.querySelectorAll(".course-card");
 
 
-    // =====================================================
     // التحقق من تسجيل الدخول
-    // =====================================================
 
     async function checkUser() {
 
@@ -825,14 +759,11 @@
         const {
           data,
           error
-        } =
-          await supabaseClient.auth.getSession();
-
+        } = await supabaseClient.auth.getSession();
 
         if (error) {
           throw error;
         }
-
 
         if (data && data.session) {
 
@@ -861,9 +792,7 @@
     }
 
 
-    // =====================================================
     // تسجيل الخروج
-    // =====================================================
 
     logoutBtn.addEventListener(
       "click",
@@ -873,7 +802,6 @@
 
         logoutBtn.textContent =
           "جاري تسجيل الخروج...";
-
 
         try {
 
@@ -900,9 +828,7 @@
     );
 
 
-    // =====================================================
     // متابعة حالة تسجيل الدخول
-    // =====================================================
 
     supabaseClient.auth.onAuthStateChange(
       function (event, session) {
@@ -923,9 +849,7 @@
     );
 
 
-    // =====================================================
-    // البحث في الأقسام
-    // =====================================================
+    // البحث
 
     searchInput.addEventListener(
       "input",
@@ -936,7 +860,6 @@
             .trim()
             .toLowerCase();
 
-
         cards.forEach(function (card) {
 
           const text =
@@ -944,9 +867,7 @@
               card.textContent +
               " " +
               card.dataset.search
-            )
-              .toLowerCase();
-
+            ).toLowerCase();
 
           if (!value || text.includes(value)) {
 
@@ -964,9 +885,7 @@
     );
 
 
-    // =====================================================
     // تشغيل الصفحة
-    // =====================================================
 
     checkUser();
 
