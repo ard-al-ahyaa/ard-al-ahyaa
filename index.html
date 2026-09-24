@@ -1,32 +1,99 @@
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
 <head>
   <meta charset="UTF-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>منصة أرض الأحياء | منصة تعليمية لطلاب الأحياء</title>
+  <!-- ================= SEO ================= -->
+
+  <title>منصة أرض الأحياء | أحياء الصف الثالث الثانوي</title>
 
   <meta name="description"
-    content="منصة أرض الأحياء التعليمية - محاضرات ومذكرات وأسئلة وفيديوهات ومنتدى لطلاب الأحياء.">
+    content="منصة أرض الأحياء التعليمية لطلاب الصف الثالث الثانوي. محاضرات وفيديوهات ومذكرات تعليمية في مادة الأحياء بطريقة سهلة ومنظمة.">
 
   <meta name="keywords"
-    content="أرض الأحياء, منصة أرض الأحياء, أحياء, تعليم الأحياء, محاضرات أحياء, مذكرات أحياء, أسئلة أحياء">
+    content="منصة أرض الأحياء, أرض الأحياء, أحياء الصف الثالث الثانوي, أحياء ثانوية عامة, شرح أحياء, محاضرات أحياء, مذكرات أحياء, فيديوهات أحياء">
 
   <meta name="author" content="منصة أرض الأحياء">
 
-  <link rel="icon" href="favicon.png">
-  <link rel="shortcut icon" href="favicon.png">
+  <meta name="robots" content="index, follow">
 
-  <meta property="og:title" content="منصة أرض الأحياء">
+  <!-- الرابط الأساسي -->
+  <link rel="canonical"
+    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/">
+
+  <!-- ================= ICON ================= -->
+
+  <link rel="icon"
+    type="image/png"
+    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/favicon.png">
+
+  <link rel="shortcut icon"
+    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/favicon.png">
+
+  <!-- ================= OPEN GRAPH ================= -->
+
+  <meta property="og:title"
+    content="منصة أرض الأحياء | أحياء الصف الثالث الثانوي">
+
   <meta property="og:description"
-    content="منصة أرض الأحياء التعليمية - محاضرات ومذكرات وأسئلة وفيديوهات ومنتدى لطلاب الأحياء.">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="logo.png">
+    content="منصة أرض الأحياء التعليمية لطلاب الصف الثالث الثانوي، وتشمل المحاضرات والفيديوهات والمذكرات التعليمية.">
+
+  <meta property="og:type"
+    content="website">
+
+  <meta property="og:url"
+    content="https://ard-al-ahyaa.github.io/ard-al-ahyaa/">
+
+  <meta property="og:image"
+    content="https://ard-al-ahyaa.github.io/ard-al-ahyaa/logo.png">
+
+  <meta property="og:image:alt"
+    content="شعار منصة أرض الأحياء">
+
+  <meta property="og:site_name"
+    content="منصة أرض الأحياء">
+
+  <meta property="og:locale"
+    content="ar_EG">
+
+  <!-- ================= TWITTER ================= -->
+
+  <meta name="twitter:card"
+    content="summary">
+
+  <meta name="twitter:title"
+    content="منصة أرض الأحياء | أحياء الصف الثالث الثانوي">
+
+  <meta name="twitter:description"
+    content="منصة تعليمية لطلاب الصف الثالث الثانوي في مادة الأحياء.">
+
+  <meta name="twitter:image"
+    content="https://ard-al-ahyaa.github.io/ard-al-ahyaa/logo.png">
+
+  <!-- ================= STRUCTURED DATA ================= -->
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "منصة أرض الأحياء",
+    "url": "https://ard-al-ahyaa.github.io/ard-al-ahyaa/",
+    "logo": "https://ard-al-ahyaa.github.io/ard-al-ahyaa/logo.png",
+    "description": "منصة تعليمية لطلاب الصف الثالث الثانوي في مادة الأحياء.",
+    "inLanguage": "ar"
+  }
+  </script>
+
+  <!-- ================= SUPABASE ================= -->
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -434,6 +501,7 @@
     /* ================= MOBILE ================= */
 
     @media (max-width: 800px) {
+
       header {
         flex-direction: column;
         align-items: stretch;
@@ -476,8 +544,11 @@
       .signup-form button {
         grid-column: auto;
       }
+
     }
+
   </style>
+
 </head>
 
 <body>
@@ -485,9 +556,15 @@
   <!-- ================= LOADING ================= -->
 
   <div id="loading">
+
     <div class="loader"></div>
-    <strong>جاري تحميل المنصة...</strong>
+
+    <strong>
+      جاري تحميل المنصة...
+    </strong>
+
   </div>
+
 
   <!-- ================= LOGIN ================= -->
 
@@ -495,9 +572,14 @@
 
     <div class="login-box">
 
-      <img src="logo.png" class="login-logo" alt="منصة أرض الأحياء">
+      <img
+        src="logo.png"
+        class="login-logo"
+        alt="شعار منصة أرض الأحياء">
 
-      <h2>منصة أرض الأحياء</h2>
+      <h2>
+        منصة أرض الأحياء
+      </h2>
 
       <p>
         سجّل الدخول للوصول إلى محتوى المنصة وحسابك الشخصي.
@@ -506,34 +588,58 @@
       <form onsubmit="loginUser(event)">
 
         <div class="form-group">
-          <label>البريد الإلكتروني</label>
+
+          <label>
+            البريد الإلكتروني
+          </label>
+
           <input
             type="email"
             id="loginEmail"
             placeholder="example@email.com"
+            autocomplete="email"
             required>
+
         </div>
 
         <div class="form-group">
-          <label>كلمة المرور</label>
+
+          <label>
+            كلمة المرور
+          </label>
+
           <input
             type="password"
             id="loginPassword"
             placeholder="كلمة المرور"
+            autocomplete="current-password"
             required>
+
         </div>
 
-        <button class="primary-btn" type="submit">
+        <button
+          class="primary-btn"
+          type="submit">
+
           🔐 تسجيل الدخول
+
         </button>
 
       </form>
 
-      <div id="loginMessage" class="message"></div>
+      <div
+        id="loginMessage"
+        class="message">
+      </div>
 
       <div class="register-link">
+
         ليس لديك حساب؟
-        <a href="register/index.html">إنشاء حساب جديد</a>
+
+        <a href="register/index.html">
+          إنشاء حساب جديد
+        </a>
+
       </div>
 
     </div>
@@ -549,19 +655,33 @@
 
       <div class="brand">
 
-        <img src="logo.png" alt="شعار منصة أرض الأحياء">
+        <img
+          src="logo.png"
+          alt="شعار منصة أرض الأحياء">
 
         <div class="brand-text">
-          <h1>منصة أرض الأحياء</h1>
-          <p>منصة تعليمية لطلاب الأحياء</p>
+
+          <h1>
+            منصة أرض الأحياء
+          </h1>
+
+          <p>
+            منصة تعليمية لطلاب الصف الثالث الثانوي
+          </p>
+
         </div>
 
       </div>
 
+
       <div class="student-area">
 
-        <span id="welcomeName" class="welcome-name">
+        <span
+          id="welcomeName"
+          class="welcome-name">
+
           مرحبًا
+
         </span>
 
         <button
@@ -569,14 +689,18 @@
           onclick="openAccount()"
           title="حسابي"
           aria-label="حسابي">
+
           👤 حسابي
+
         </button>
 
         <button
           class="logout-btn"
           onclick="logoutUser()"
           title="تسجيل الخروج">
+
           🚪 خروج
+
         </button>
 
       </div>
@@ -591,23 +715,45 @@
       <aside class="sidebar">
 
         <div class="sidebar-title">
+
           📚 أقسام المنصة
+
         </div>
 
-        <a class="side-link" href="index.html">
+
+        <a
+          class="side-link"
+          href="index.html">
+
           🏠 الرئيسية
+
         </a>
 
-        <a class="side-link" href="videos/index.html">
+
+        <a
+          class="side-link"
+          href="videos/index.html">
+
           🎥 المحاضرات
+
         </a>
 
-        <a class="side-link" href="notes/index.html">
+
+        <a
+          class="side-link"
+          href="notes/index.html">
+
           📚 المذكرات
+
         </a>
 
-        <a class="side-link" href="forum/index.html">
+
+        <a
+          class="side-link"
+          href="forum/index.html">
+
           💬 المنتدى
+
         </a>
 
       </aside>
@@ -620,27 +766,39 @@
         <section class="hero">
 
           <h2>
+
             أهلاً بك في منصة أرض الأحياء 🌱
+
           </h2>
 
           <p>
-            منصتك التعليمية للوصول إلى المحاضرات والمذكرات
-            والفيديوهات والأسئلة والمنتدى في مكان واحد.
+
+            منصة أرض الأحياء التعليمية لطلاب الصف الثالث الثانوي،
+            للوصول إلى المحاضرات والمذكرات والفيديوهات والمنتدى
+            في مكان واحد.
+
           </p>
 
         </section>
 
 
         <h2 class="cards-title">
+
           أقسام المنصة
+
         </h2>
 
 
         <div class="cards">
 
-          <a href="videos/index.html" class="card">
 
-            <div class="card-icon">🎥</div>
+          <a
+            href="videos/index.html"
+            class="card">
+
+            <div class="card-icon">
+              🎥
+            </div>
 
             <h3>
               المحاضرات
@@ -653,9 +811,13 @@
           </a>
 
 
-          <a href="notes/index.html" class="card">
+          <a
+            href="notes/index.html"
+            class="card">
 
-            <div class="card-icon">📚</div>
+            <div class="card-icon">
+              📚
+            </div>
 
             <h3>
               المذكرات
@@ -668,9 +830,13 @@
           </a>
 
 
-          <a href="forum/index.html" class="card">
+          <a
+            href="forum/index.html"
+            class="card">
 
-            <div class="card-icon">💬</div>
+            <div class="card-icon">
+              💬
+            </div>
 
             <h3>
               المنتدى
@@ -683,16 +849,20 @@
           </a>
 
 
-          <a href="account/index.html" class="card">
+          <a
+            href="account/index.html"
+            class="card">
 
-            <div class="card-icon">👤</div>
+            <div class="card-icon">
+              👤
+            </div>
 
             <h3>
               حسابي
             </h3>
 
             <p>
-              شاهد بيانات حسابك ونتائجك ومعلوماتك الشخصية.
+              شاهد بيانات حسابك ومعلوماتك الشخصية.
             </p>
 
           </a>
@@ -709,54 +879,95 @@
           </h2>
 
           <p>
-            أنشئ حسابك على منصة أرض الأحياء باستخدام الاسم والبريد الإلكتروني وكلمة المرور.
+            أنشئ حسابك على منصة أرض الأحياء باستخدام الاسم
+            والبريد الإلكتروني وكلمة المرور.
           </p>
 
-          <form class="signup-form" onsubmit="signupUser(event)">
+
+          <form
+            class="signup-form"
+            onsubmit="signupUser(event)">
+
 
             <div class="form-group">
-              <label>الاسم</label>
+
+              <label>
+                الاسم
+              </label>
+
               <input
                 type="text"
                 id="signupName"
                 placeholder="اكتب اسمك"
+                autocomplete="name"
                 required>
+
             </div>
 
+
             <div class="form-group">
-              <label>رقم الهاتف</label>
+
+              <label>
+                رقم الهاتف
+              </label>
+
               <input
                 type="tel"
                 id="signupPhone"
-                placeholder="رقم الهاتف">
+                placeholder="رقم الهاتف"
+                autocomplete="tel">
+
             </div>
 
+
             <div class="form-group full">
-              <label>البريد الإلكتروني</label>
+
+              <label>
+                البريد الإلكتروني
+              </label>
+
               <input
                 type="email"
                 id="signupEmail"
                 placeholder="example@email.com"
+                autocomplete="email"
                 required>
+
             </div>
 
+
             <div class="form-group full">
-              <label>كلمة المرور</label>
+
+              <label>
+                كلمة المرور
+              </label>
+
               <input
                 type="password"
                 id="signupPassword"
                 placeholder="كلمة المرور"
+                autocomplete="new-password"
                 minlength="6"
                 required>
+
             </div>
 
-            <button class="primary-btn" type="submit">
+
+            <button
+              class="primary-btn"
+              type="submit">
+
               ✨ إنشاء الحساب
+
             </button>
 
           </form>
 
-          <div id="signupMessage" class="message"></div>
+
+          <div
+            id="signupMessage"
+            class="message">
+          </div>
 
         </section>
 
@@ -766,7 +977,9 @@
 
 
     <footer>
+
       © 2026 منصة أرض الأحياء - جميع الحقوق محفوظة
+
     </footer>
 
   </div>
@@ -777,13 +990,7 @@
   <script>
 
     /*
-      مهم جدًا:
-      نفس مشروع Supabase المستخدم في:
-      login
-      register
-      account
-
-      لا تغيّر هذه البيانات.
+      مشروع Supabase المستخدم في المنصة
     */
 
     const SUPABASE_URL =
@@ -791,6 +998,7 @@
 
     const SUPABASE_ANON_KEY =
       "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+
 
     const supabaseClient =
       window.supabase.createClient(
@@ -801,43 +1009,62 @@
 
     /* ================= START ================= */
 
-    document.addEventListener("DOMContentLoaded", async () => {
+    document.addEventListener(
+      "DOMContentLoaded",
+      async () => {
 
-      try {
+        try {
 
-        const {
-          data,
-          error
-        } = await supabaseClient.auth.getSession();
+          const {
+            data,
+            error
+          } =
+            await supabaseClient.auth.getSession();
 
-        if (error) {
+
+          if (error) {
+
+            console.error(error);
+
+            showLogin();
+
+            return;
+
+          }
+
+
+          if (
+            data.session &&
+            data.session.user
+          ) {
+
+            await showApp(
+              data.session.user
+            );
+
+          } else {
+
+            showLogin();
+
+          }
+
+
+        } catch (error) {
+
           console.error(error);
-          showLogin();
-          return;
-        }
-
-        if (data.session && data.session.user) {
-
-          await showApp(data.session.user);
-
-        } else {
 
           showLogin();
 
+        } finally {
+
+          document.getElementById(
+            "loading"
+          ).style.display = "none";
+
         }
-
-      } catch (error) {
-
-        console.error(error);
-        showLogin();
-
-      } finally {
-
-        document.getElementById("loading").style.display = "none";
 
       }
-
-    });
+    );
 
 
     /* ================= AUTH STATE ================= */
@@ -845,13 +1072,21 @@
     supabaseClient.auth.onAuthStateChange(
       async (event, session) => {
 
-        if (event === "SIGNED_IN" && session) {
+        if (
+          event === "SIGNED_IN" &&
+          session
+        ) {
 
-          await showApp(session.user);
+          await showApp(
+            session.user
+          );
 
         }
 
-        if (event === "SIGNED_OUT") {
+
+        if (
+          event === "SIGNED_OUT"
+        ) {
 
           showLogin();
 
@@ -865,8 +1100,14 @@
 
     function showLogin() {
 
-      document.getElementById("loginScreen").style.display = "flex";
-      document.getElementById("app").style.display = "none";
+      document.getElementById(
+        "loginScreen"
+      ).style.display = "flex";
+
+
+      document.getElementById(
+        "app"
+      ).style.display = "none";
 
     }
 
@@ -878,36 +1119,53 @@
       if (!user) {
 
         showLogin();
+
         return;
 
       }
 
-      document.getElementById("loginScreen").style.display = "none";
-      document.getElementById("app").style.display = "block";
+
+      document.getElementById(
+        "loginScreen"
+      ).style.display = "none";
+
+
+      document.getElementById(
+        "app"
+      ).style.display = "block";
 
 
       let name = "";
 
 
-      /* محاولة جلب الاسم من profiles */
+      /* جلب اسم المستخدم من profiles */
 
       try {
 
         const {
           data: profile,
           error
-        } = await supabaseClient
-          .from("profiles")
-          .select("id, full_name, phone, email, role")
-          .eq("id", user.id)
-          .maybeSingle();
+        } =
+          await supabaseClient
+            .from("profiles")
+            .select(
+              "id, full_name, phone, email, role"
+            )
+            .eq("id", user.id)
+            .maybeSingle();
 
 
-        if (!error && profile) {
+        if (
+          !error &&
+          profile
+        ) {
 
-          if (profile.full_name) {
+          if (
+            profile.full_name
+          ) {
 
-            name = profile.full_name;
+            name =
+              profile.full_name;
 
           }
 
@@ -915,12 +1173,15 @@
 
       } catch (error) {
 
-        console.log("Profile error:", error);
+        console.log(
+          "Profile error:",
+          error
+        );
 
       }
 
 
-      /* الاسم الموجود داخل Auth */
+      /* الاسم الموجود في Auth */
 
       if (!name.trim()) {
 
@@ -933,26 +1194,29 @@
       }
 
 
-      /* لو الاسم غير موجود */
+      /* في حالة عدم وجود الاسم */
 
       if (!name.trim()) {
 
         if (user.email) {
 
-          name = user.email.split("@")[0];
+          name =
+            user.email.split("@")[0];
 
         } else {
 
-          name = "مستخدم المنصة";
+          name =
+            "مستخدم المنصة";
 
         }
 
       }
 
 
-      document.getElementById("welcomeName").textContent =
+      document.getElementById(
+        "welcomeName"
+      ).textContent =
         "مرحبًا " + name;
-
 
     }
 
@@ -963,20 +1227,35 @@
 
       event.preventDefault();
 
+
       const email =
-        document.getElementById("loginEmail").value.trim();
+        document.getElementById(
+          "loginEmail"
+        ).value.trim();
+
 
       const password =
-        document.getElementById("loginPassword").value;
+        document.getElementById(
+          "loginPassword"
+        ).value;
 
 
       const message =
-        document.getElementById("loginMessage");
+        document.getElementById(
+          "loginMessage"
+        );
 
 
-      message.style.display = "block";
-      message.className = "message";
-      message.textContent = "جاري تسجيل الدخول...";
+      message.style.display =
+        "block";
+
+
+      message.className =
+        "message";
+
+
+      message.textContent =
+        "جاري تسجيل الدخول...";
 
 
       try {
@@ -984,20 +1263,27 @@
         const {
           data,
           error
-        } = await supabaseClient.auth.signInWithPassword({
+        } =
+          await supabaseClient.auth
+            .signInWithPassword({
 
-          email: email,
-          password: password
+              email: email,
 
-        });
+              password: password
+
+            });
 
 
         if (error) {
 
-          message.className = "message error";
+          message.className =
+            "message error";
+
 
           message.textContent =
-            "تعذر تسجيل الدخول: " + error.message;
+            "تعذر تسجيل الدخول: " +
+            error.message;
+
 
           return;
 
@@ -1006,11 +1292,17 @@
 
         if (data.user) {
 
-          message.className = "message success";
+          message.className =
+            "message success";
+
+
           message.textContent =
             "تم تسجيل الدخول بنجاح.";
 
-          await showApp(data.user);
+
+          await showApp(
+            data.user
+          );
 
         }
 
@@ -1019,7 +1311,10 @@
 
         console.error(error);
 
-        message.className = "message error";
+
+        message.className =
+          "message error";
+
 
         message.textContent =
           "حدث خطأ أثناء تسجيل الدخول.";
@@ -1037,25 +1332,45 @@
 
 
       const name =
-        document.getElementById("signupName").value.trim();
+        document.getElementById(
+          "signupName"
+        ).value.trim();
+
 
       const phone =
-        document.getElementById("signupPhone").value.trim();
+        document.getElementById(
+          "signupPhone"
+        ).value.trim();
+
 
       const email =
-        document.getElementById("signupEmail").value.trim();
+        document.getElementById(
+          "signupEmail"
+        ).value.trim();
+
 
       const password =
-        document.getElementById("signupPassword").value;
+        document.getElementById(
+          "signupPassword"
+        ).value;
 
 
       const message =
-        document.getElementById("signupMessage");
+        document.getElementById(
+          "signupMessage"
+        );
 
 
-      message.style.display = "block";
-      message.className = "message";
-      message.textContent = "جاري إنشاء الحساب...";
+      message.style.display =
+        "block";
+
+
+      message.className =
+        "message";
+
+
+      message.textContent =
+        "جاري إنشاء الحساب...";
 
 
       try {
@@ -1063,35 +1378,41 @@
         const {
           data,
           error
-        } = await supabaseClient.auth.signUp({
+        } =
+          await supabaseClient.auth
+            .signUp({
 
-          email: email,
+              email: email,
 
-          password: password,
+              password: password,
 
-          options: {
+              options: {
 
-            data: {
+                data: {
 
-              full_name: name,
+                  full_name: name,
 
-              name: name,
+                  name: name,
 
-              phone: phone
+                  phone: phone
 
-            }
+                }
 
-          }
+              }
 
-        });
+            });
 
 
         if (error) {
 
-          message.className = "message error";
+          message.className =
+            "message error";
+
 
           message.textContent =
-            "تعذر إنشاء الحساب: " + error.message;
+            "تعذر إنشاء الحساب: " +
+            error.message;
+
 
           return;
 
@@ -1100,35 +1421,39 @@
 
         if (!data.user) {
 
-          message.className = "message error";
+          message.className =
+            "message error";
+
 
           message.textContent =
             "لم يتم إنشاء الحساب.";
+
 
           return;
 
         }
 
 
-        /* حفظ بيانات المستخدم في profiles */
+        /* حفظ بيانات المستخدم */
 
         const {
           error: profileError
-        } = await supabaseClient
-          .from("profiles")
-          .upsert({
+        } =
+          await supabaseClient
+            .from("profiles")
+            .upsert({
 
-            id: data.user.id,
+              id: data.user.id,
 
-            full_name: name,
+              full_name: name,
 
-            phone: phone,
+              phone: phone,
 
-            email: email,
+              email: email,
 
-            role: "student"
+              role: "student"
 
-          });
+            });
 
 
         if (profileError) {
@@ -1141,23 +1466,42 @@
         }
 
 
-        message.className = "message success";
+        message.className =
+          "message success";
+
 
         message.textContent =
           "تم إنشاء الحساب بنجاح. يمكنك تسجيل الدخول الآن.";
 
 
-        document.getElementById("signupName").value = "";
-        document.getElementById("signupPhone").value = "";
-        document.getElementById("signupEmail").value = "";
-        document.getElementById("signupPassword").value = "";
+        document.getElementById(
+          "signupName"
+        ).value = "";
+
+
+        document.getElementById(
+          "signupPhone"
+        ).value = "";
+
+
+        document.getElementById(
+          "signupEmail"
+        ).value = "";
+
+
+        document.getElementById(
+          "signupPassword"
+        ).value = "";
 
 
       } catch (error) {
 
         console.error(error);
 
-        message.className = "message error";
+
+        message.className =
+          "message error";
+
 
         message.textContent =
           "حدث خطأ أثناء إنشاء الحساب.";
@@ -1183,7 +1527,8 @@
 
       const {
         error
-      } = await supabaseClient.auth.signOut();
+      } =
+        await supabaseClient.auth.signOut();
 
 
       if (error) {
@@ -1191,6 +1536,7 @@
         alert(
           "حدث خطأ أثناء تسجيل الخروج."
         );
+
 
         console.error(error);
 
@@ -1208,3 +1554,4 @@
 </body>
 
 </html>
+```
