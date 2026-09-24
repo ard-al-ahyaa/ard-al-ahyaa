@@ -9,7 +9,7 @@
   <title>منصة أرض الأحياء | أحياء الصف الثالث الثانوي</title>
 
   <meta name="description"
-    content="منصة أرض الأحياء التعليمية لطلاب الصف الثالث الثانوي، محاضرات ومذكرات أحياء ومنتدى تعليمي.">
+    content="منصة أرض الأحياء التعليمية لطلاب الصف الثالث الثانوي، محاضرات ومذكرات ومنتدى تعليمي.">
 
   <meta name="keywords"
     content="منصة أرض الأحياء, أحياء, الصف الثالث الثانوي, ثانوية عامة, محاضرات أحياء, مذكرات أحياء">
@@ -48,7 +48,10 @@
       color: #222;
     }
 
-    /* الشريط الجانبي */
+    /* =========================
+       الشريط الجانبي
+    ========================= */
+
     .sidebar {
       position: fixed;
       right: 0;
@@ -59,6 +62,7 @@
       color: white;
       padding: 25px 15px;
       z-index: 1000;
+      overflow-y: auto;
     }
 
     .logo-box {
@@ -90,7 +94,8 @@
       gap: 10px;
     }
 
-    .menu a {
+    .menu a,
+    .logout-btn {
       text-decoration: none;
       color: white;
       padding: 14px 15px;
@@ -98,14 +103,27 @@
       transition: 0.2s;
       font-size: 15px;
       display: block;
+      width: 100%;
+      border: none;
+      background: transparent;
+      text-align: right;
+      cursor: pointer;
     }
 
     .menu a:hover,
-    .menu a.active {
+    .menu a.active,
+    .logout-btn:hover {
       background: rgba(255, 255, 255, 0.15);
     }
 
-    /* المحتوى */
+    .logout-btn {
+      margin-top: 5px;
+    }
+
+    /* =========================
+       المحتوى
+    ========================= */
+
     .main {
       margin-right: 250px;
       padding: 30px;
@@ -131,7 +149,10 @@
       font-size: 15px;
     }
 
-    /* البحث */
+    /* =========================
+       البحث
+    ========================= */
+
     .search-box {
       background: white;
       padding: 18px;
@@ -153,7 +174,10 @@
       border-color: #075e4d;
     }
 
-    /* الكروت */
+    /* =========================
+       الكروت
+    ========================= */
+
     .courses {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -170,6 +194,8 @@
       box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
       transition: 0.25s;
       border-bottom: 3px solid transparent;
+      display: block;
+      cursor: pointer;
     }
 
     .course-card:hover {
@@ -195,7 +221,10 @@
       line-height: 1.7;
     }
 
-    /* التليجرام */
+    /* =========================
+       تليجرام
+    ========================= */
+
     .telegram-box {
       margin-top: 25px;
       background: white;
@@ -230,7 +259,10 @@
       transform: translateY(-2px);
     }
 
-    /* الفوتر */
+    /* =========================
+       الفوتر
+    ========================= */
+
     footer {
       margin-top: 30px;
       text-align: center;
@@ -239,7 +271,10 @@
       padding: 20px;
     }
 
-    /* شاشة الدخول */
+    /* =========================
+       شاشة الدخول
+    ========================= */
+
     #authScreen {
       position: fixed;
       inset: 0;
@@ -294,16 +329,19 @@
       background: #064c3f;
     }
 
-    .user-info {
-      margin-top: 15px;
-      padding: 12px;
-      background: #f1f6f4;
-      border-radius: 10px;
-      color: #075e4d;
-      font-size: 14px;
+    /* =========================
+       معلومات الحساب
+    ========================= */
+
+    .account-name {
+      color: #075e4d !important;
+      font-weight: bold;
     }
 
-    /* زر التليجرام العائم */
+    /* =========================
+       زر التليجرام العائم
+    ========================= */
+
     .telegram-floating {
       position: fixed;
       left: 20px;
@@ -327,7 +365,10 @@
       transform: scale(1.08);
     }
 
-    /* الموبايل */
+    /* =========================
+       الموبايل
+    ========================= */
+
     @media (max-width: 700px) {
 
       .sidebar {
@@ -345,13 +386,15 @@
         height: 55px;
       }
 
-      .menu a {
+      .menu a,
+      .logout-btn {
         text-align: center;
         font-size: 0;
         padding: 14px 5px;
       }
 
-      .menu a::first-letter {
+      .menu a::first-letter,
+      .logout-btn::first-letter {
         font-size: 20px;
       }
 
@@ -373,7 +416,10 @@
 
 <body>
 
-  <!-- شاشة الدخول -->
+  <!-- =========================
+       شاشة الدخول
+  ========================= -->
+
   <div id="authScreen">
 
     <div class="auth-box">
@@ -382,7 +428,9 @@
         src="logo.png"
         alt="شعار منصة أرض الأحياء">
 
-      <h2>منصة أرض الأحياء 🌿</h2>
+      <h2>
+        منصة أرض الأحياء 🌿
+      </h2>
 
       <p>
         يجب تسجيل الدخول للوصول إلى المنصة
@@ -391,7 +439,9 @@
       <button
         class="auth-btn"
         onclick="goToLogin()">
+
         تسجيل الدخول
+
       </button>
 
     </div>
@@ -399,10 +449,14 @@
   </div>
 
 
-  <!-- التطبيق -->
+  <!-- =========================
+       التطبيق
+  ========================= -->
+
   <div id="app" style="display:none;">
 
     <!-- الشريط الجانبي -->
+
     <aside class="sidebar">
 
       <div class="logo-box">
@@ -411,36 +465,77 @@
           src="logo.png"
           alt="شعار منصة أرض الأحياء">
 
-        <h2>منصة أرض الأحياء</h2>
+        <h2>
+          منصة أرض الأحياء
+        </h2>
 
-        <p>أحياء الصف الثالث الثانوي</p>
+        <p>
+          أحياء الصف الثالث الثانوي
+        </p>
 
       </div>
 
+
       <nav class="menu">
 
-        <a href="index.html" class="active">
+        <a
+          href="index.html"
+          class="active">
+
           🏠 الرئيسية
+
         </a>
+
 
         <a href="videos/index.html">
+
           🎥 المحاضرات
+
         </a>
+
 
         <a href="notes/index.html">
+
           📚 المذكرات
+
         </a>
 
+
         <a href="forum/index.html">
+
           💬 المنتدى
+
         </a>
+
+
+        <!-- حساب الطالب -->
+
+        <a href="account/index.html">
+
+          👤 حساب الطالب
+
+        </a>
+
+
+        <!-- تسجيل الخروج -->
+
+        <button
+          class="logout-btn"
+          onclick="logout()">
+
+          🚪 تسجيل الخروج
+
+        </button>
 
       </nav>
 
     </aside>
 
 
-    <!-- المحتوى -->
+    <!-- =========================
+         المحتوى
+    ========================= -->
+
     <main class="main">
 
       <div class="topbar">
@@ -449,14 +544,17 @@
           أهلاً بك في منصة أرض الأحياء 🌿
         </h1>
 
-        <p>
+        <p id="welcomeText">
+
           منصتك التعليمية لطلاب الصف الثالث الثانوي في مادة الأحياء
+
         </p>
 
       </div>
 
 
       <!-- البحث -->
+
       <div class="search-box">
 
         <input
@@ -469,7 +567,13 @@
 
 
       <!-- الأقسام -->
-      <div class="courses" id="courses">
+
+      <div
+        class="courses"
+        id="courses">
+
+
+        <!-- المحاضرات -->
 
         <a
           class="course-card"
@@ -490,6 +594,8 @@
         </a>
 
 
+        <!-- المذكرات -->
+
         <a
           class="course-card"
           href="notes/index.html">
@@ -508,6 +614,8 @@
 
         </a>
 
+
+        <!-- المنتدى -->
 
         <a
           class="course-card"
@@ -528,7 +636,11 @@
         </a>
 
 
-        <div class="course-card">
+        <!-- حساب الطالب -->
+
+        <a
+          class="course-card"
+          href="account/index.html">
 
           <div class="course-icon">
             👨‍🎓
@@ -538,16 +650,23 @@
             حساب الطالب
           </h3>
 
-          <p id="studentInfo">
+          <p
+            id="studentInfo"
+            class="account-name">
+
             جاري تحميل بيانات الحساب...
+
           </p>
 
-        </div>
+        </a>
 
       </div>
 
 
-      <!-- تليجرام -->
+      <!-- =========================
+           تليجرام
+      ========================= -->
+
       <div class="telegram-box">
 
         <h2>
@@ -572,13 +691,16 @@
 
 
       <footer>
+
         © 2026 منصة أرض الأحياء — جميع الحقوق محفوظة
+
       </footer>
 
     </main>
 
 
-    <!-- زر تليجرام عائم -->
+    <!-- زر التليجرام العائم -->
+
     <a
       class="telegram-floating"
       href="https://t.me/+KB1Z0dws0f01YjNk"
@@ -594,9 +716,15 @@
 
 
   <!-- Supabase -->
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
   <script>
+
+    /* =========================
+       إعداد Supabase
+    ========================= */
 
     const SUPABASE_URL =
       "https://fpfbmjtpzamzlyzitmsd.supabase.co";
@@ -612,6 +740,10 @@
       );
 
 
+    /* =========================
+       فحص تسجيل الدخول
+    ========================= */
+
     async function checkUser() {
 
       const authScreen =
@@ -620,63 +752,111 @@
       const app =
         document.getElementById("app");
 
+
       const studentInfo =
         document.getElementById("studentInfo");
 
+      const welcomeText =
+        document.getElementById("welcomeText");
 
-      const {
-        data: {
-          session
+
+      try {
+
+        const {
+          data: {
+            session
+          }
+        } =
+          await supabaseClient.auth.getSession();
+
+
+        if (!session) {
+
+          authScreen.style.display =
+            "flex";
+
+          app.style.display =
+            "none";
+
+          return;
+
         }
-      } = await supabaseClient.auth.getSession();
 
 
-      if (!session) {
+        authScreen.style.display =
+          "none";
 
-        authScreen.style.display = "flex";
-        app.style.display = "none";
+        app.style.display =
+          "block";
 
-        return;
+
+        const user =
+          session.user;
+
+
+        const {
+          data: profile,
+          error
+        } =
+          await supabaseClient
+
+            .from("profiles")
+
+            .select(
+              "id, full_name, phone, email, role"
+            )
+
+            .eq(
+              "id",
+              user.id
+            )
+
+            .maybeSingle();
+
+
+        if (error) {
+
+          console.error(
+            "Profile error:",
+            error
+          );
+
+        }
+
+
+        const name =
+          profile?.full_name ||
+          user.user_metadata?.full_name ||
+          user.email ||
+          "الطالب";
+
+
+        studentInfo.textContent =
+          "مرحبًا " + name;
+
+
+        welcomeText.textContent =
+          "أهلاً بك يا " +
+          name +
+          " في منصة أرض الأحياء — الصف الثالث الثانوي";
 
       }
 
+      catch (error) {
 
-      authScreen.style.display = "none";
-      app.style.display = "block";
-
-
-      const user =
-        session.user;
-
-
-      const {
-        data: profile
-      } = await supabaseClient
-
-        .from("profiles")
-
-        .select("id, full_name, phone, email, role")
-
-        .eq("id", user.id)
-
-        .maybeSingle();
-
-
-      if (profile) {
-
-        studentInfo.textContent =
-          "مرحبًا " +
-          (profile.full_name || user.email || "طالب");
-
-      } else {
-
-        studentInfo.textContent =
-          user.email || "طالب";
+        console.error(
+          "Auth error:",
+          error
+        );
 
       }
 
     }
 
+
+    /* =========================
+       الذهاب لتسجيل الدخول
+    ========================= */
 
     function goToLogin() {
 
@@ -685,6 +865,52 @@
 
     }
 
+
+    /* =========================
+       تسجيل الخروج
+    ========================= */
+
+    async function logout() {
+
+      try {
+
+        const {
+          error
+        } =
+          await supabaseClient.auth.signOut();
+
+
+        if (error) {
+
+          throw error;
+
+        }
+
+
+        window.location.href =
+          "login/index.html";
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "Logout error:",
+          error
+        );
+
+        alert(
+          "❌ حدث خطأ أثناء تسجيل الخروج"
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       البحث
+    ========================= */
 
     function searchCards() {
 
@@ -709,13 +935,17 @@
             .toLowerCase();
 
 
-        if (text.includes(value)) {
+        if (
+          text.includes(value)
+        ) {
 
-          card.style.display = "";
+          card.style.display =
+            "";
 
         } else {
 
-          card.style.display = "none";
+          card.style.display =
+            "none";
 
         }
 
@@ -723,6 +953,10 @@
 
     }
 
+
+    /* =========================
+       تشغيل الصفحة
+    ========================= */
 
     checkUser();
 
