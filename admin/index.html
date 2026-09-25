@@ -225,9 +225,7 @@
       color: #075e4d;
     }
 
-    /* =========================
-       الاختبارات
-    ========================= */
+    /* الاختبارات */
 
     .exam-box {
       background: #f8faf9;
@@ -704,7 +702,8 @@
     const SUPABASE_ANON_KEY =
       "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
 
-    const BUCKET = "lectures";
+    const BUCKET =
+      "lectures";
 
     const ADMIN_UID =
       "6b6a2997-74a6-4441-b817-cbf00cd81229";
@@ -740,8 +739,15 @@
           "../login/index.html";
 
         return false;
+
       }
 
+
+      /*
+        هذا فحص إضافي في الواجهة فقط.
+        الحماية الحقيقية تعتمد على RLS
+        و Storage Policies.
+      */
 
       if (session.user.id !== ADMIN_UID) {
 
@@ -755,6 +761,7 @@
           "../login/index.html";
 
         return false;
+
       }
 
 
@@ -793,6 +800,7 @@
           "❌ اكتب اسم المذكرة أولًا";
 
         return;
+
       }
 
 
@@ -802,6 +810,7 @@
           "❌ اختر ملف PDF";
 
         return;
+
       }
 
 
@@ -811,6 +820,7 @@
           "❌ يجب اختيار ملف PDF فقط";
 
         return;
+
       }
 
 
@@ -819,6 +829,12 @@
 
 
       try {
+
+        /*
+          إنشاء مسار خاص للملف
+
+          لا نستخدم getPublicUrl()
+        */
 
         const path =
           "pdf/"
@@ -846,9 +862,16 @@
 
 
         if (uploadError) {
+
           throw uploadError;
+
         }
 
+
+        /*
+          نحفظ مسار الملف فقط
+          في قاعدة البيانات.
+        */
 
         const {
           error: dbError
@@ -856,19 +879,23 @@
           await supabaseClient
             .from("notes")
             .insert({
+
               title: title,
+
               file_path: path
+
             });
 
 
         if (dbError) {
+
           throw dbError;
+
         }
 
 
         status.innerHTML =
-          "✅ تم رفع المذكرة باسم: "
-          + title;
+          "✅ تم رفع المذكرة بنجاح";
 
 
         document
@@ -899,7 +926,7 @@
 
 
     // =========================
-    // إضافة فيديو بالرابط
+    // إضافة فيديو برابط خارجي
     // =========================
 
     async function addVideoUrl() {
@@ -940,6 +967,24 @@
       }
 
 
+      /*
+        السماح بروابط خارجية فقط
+        في هذا القسم.
+      */
+
+      if (
+        !url.startsWith("https://") &&
+        !url.startsWith("http://")
+      ) {
+
+        status.innerHTML =
+          "❌ يجب إدخال رابط صحيح يبدأ بـ https:// أو http://";
+
+        return;
+
+      }
+
+
       status.innerHTML =
         "⏳ جاري إضافة المحاضرة...";
 
@@ -958,13 +1003,21 @@
               description:
                 description,
 
-              video_url: url
+              /*
+                الرابط الخارجي يبقى رابطًا
+                لأنه ليس ملفًا داخل Supabase.
+              */
+
+              video_url:
+                url
 
             });
 
 
         if (error) {
+
           throw error;
+
         }
 
 
@@ -1005,7 +1058,7 @@
 
 
     // =========================
-    // رفع فيديو
+    // رفع فيديو من الجهاز
     // =========================
 
     async function uploadVideo() {
@@ -1055,11 +1108,32 @@
       }
 
 
+      /*
+        التأكد من أنه فيديو
+      */
+
+      if (
+        !file.type ||
+        !file.type.startsWith("video/")
+      ) {
+
+        status.innerHTML =
+          "❌ يجب اختيار ملف فيديو فقط";
+
+        return;
+
+      }
+
+
       status.innerHTML =
         "⏳ جاري رفع الفيديو...";
 
 
       try {
+
+        /*
+          الحصول على امتداد الملف
+        */
 
         const extension =
           file.name
@@ -1067,6 +1141,15 @@
             .pop()
             .toLowerCase();
 
+
+        /*
+          إنشاء اسم عشوائي للملف.
+
+          مثال:
+
+          videos/
+          1750000000000_UUID.mp4
+        */
 
         const path =
           "videos/"
@@ -1076,6 +1159,12 @@
           + "."
           + extension;
 
+
+        /*
+          رفع الملف إلى Storage
+
+          لا يتم إنشاء Public URL.
+        */
 
         const {
           error: uploadError
@@ -1096,18 +1185,25 @@
 
 
         if (uploadError) {
+
           throw uploadError;
+
         }
 
 
-        const {
-          data: publicData
-        } =
-          supabaseClient
-            .storage
-            .from(BUCKET)
-            .getPublicUrl(path);
+        /*
+          ==========================================
+          أهم تعديل أمني
+          ==========================================
 
+          لا نستخدم:
+
+          getPublicUrl(path)
+
+          ولا نخزن رابطًا عامًا.
+
+          نخزن مسار الملف فقط.
+        */
 
         const {
           error: dbError
@@ -1116,24 +1212,41 @@
             .from("lectures")
             .insert({
 
-              title: title,
+              title:
+                title,
 
               description:
                 description,
 
               video_url:
-                publicData.publicUrl
+                path
 
             });
 
 
         if (dbError) {
+
+          /*
+            إذا نجح رفع الملف وفشل
+            إدخال قاعدة البيانات،
+            نحاول حذف الملف حتى لا
+            يظل ملفًا غير مرتبط.
+          */
+
+          await supabaseClient
+            .storage
+            .from(BUCKET)
+            .remove([
+              path
+            ]);
+
           throw dbError;
+
         }
 
 
         status.innerHTML =
-          "✅ تم رفع الفيديو وإضافته للمحاضرات";
+          "✅ تم رفع الفيديو وإضافته للمحاضرات بنجاح";
 
 
         document
@@ -1157,7 +1270,10 @@
 
       catch (error) {
 
-        console.error(error);
+        console.error(
+          "Video Upload Error:",
+          error
+        );
 
         status.innerHTML =
           "❌ فشل رفع الفيديو: "
@@ -1229,7 +1345,8 @@
 
         document
           .getElementById("usersCount")
-          .textContent = "—";
+          .textContent =
+            "—";
 
       }
 
@@ -1281,6 +1398,7 @@
           "❌ اكتب اسم الاختبار";
 
         return;
+
       }
 
 
@@ -1290,6 +1408,7 @@
           "❌ اكتب مدة صحيحة للاختبار";
 
         return;
+
       }
 
 
@@ -1320,7 +1439,9 @@
 
 
         if (error) {
+
           throw error;
+
         }
 
 
@@ -1345,10 +1466,12 @@
 
         await loadExams();
 
+
         openQuestionEditor(
           data.id,
           data.title
         );
+
 
         loadStats();
 
@@ -1441,6 +1564,7 @@
         const item =
           document.createElement("div");
 
+
         item.className =
           "exam-item";
 
@@ -1486,6 +1610,7 @@
             </button>
 
           </div>
+
         `;
 
 
@@ -1523,7 +1648,9 @@
 
       clearQuestionFields();
 
+
       await loadQuestions();
+
 
       document
         .getElementById("questionEditor")
@@ -1540,7 +1667,9 @@
 
     function closeQuestionEditor() {
 
-      selectedExamId = null;
+      selectedExamId =
+        null;
+
 
       document
         .getElementById("questionEditor")
@@ -1667,7 +1796,9 @@
 
 
         if (error) {
+
           throw error;
+
         }
 
 
@@ -1676,6 +1807,7 @@
 
 
         clearQuestionFields();
+
 
         await loadQuestions();
 
@@ -1697,7 +1829,7 @@
 
 
     // =========================
-    // تحميل أسئلة الاختبار
+    // تحميل الأسئلة
     // =========================
 
     async function loadQuestions() {
@@ -1765,11 +1897,12 @@
           const box =
             document.createElement("div");
 
+
           box.className =
             "question-box";
 
 
-          let correctText =
+          const correctText =
             question.correct_answer
               .toUpperCase();
 
@@ -1843,7 +1976,9 @@
           "هل تريد حذف هذا السؤال؟"
         )
       ) {
+
         return;
+
       }
 
 
@@ -1891,7 +2026,9 @@
           "⚠️ حذف الاختبار سيحذف جميع أسئلته أيضًا. هل تريد المتابعة؟"
         )
       ) {
+
         return;
+
       }
 
 
@@ -1945,21 +2082,26 @@
         .getElementById("questionText")
         .value = "";
 
+
       document
         .getElementById("optionA")
         .value = "";
+
 
       document
         .getElementById("optionB")
         .value = "";
 
+
       document
         .getElementById("optionC")
         .value = "";
 
+
       document
         .getElementById("optionD")
         .value = "";
+
 
       document
         .getElementById("correctAnswer")
@@ -2024,6 +2166,7 @@
 
       list.innerHTML = "";
 
+
       select.innerHTML = `
         <option value="">
           اختر المستخدم
@@ -2035,6 +2178,7 @@
 
         const item =
           document.createElement("div");
+
 
         item.className =
           "user-item";
@@ -2151,7 +2295,9 @@
 
 
         if (error) {
+
           throw error;
+
         }
 
 
@@ -2184,7 +2330,10 @@
 
     async function logout() {
 
-      await supabaseClient.auth.signOut();
+      await supabaseClient
+        .auth
+        .signOut();
+
 
       location.href =
         "../login/index.html";
@@ -2217,7 +2366,13 @@
       const allowed =
         await checkAdmin();
 
-      if (!allowed) return;
+
+      if (!allowed) {
+
+        return;
+
+      }
+
 
       await loadStats();
 
