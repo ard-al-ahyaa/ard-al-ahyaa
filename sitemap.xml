@@ -1,31 +1,36 @@
-```xml
 <?xml version="1.0" encoding="UTF-8"?>
-
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
+  <!-- الصفحة الرئيسية -->
   <url>
     <loc>https://ard-al-ahyaa.github.io/ard-al-ahyaa/</loc>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
+  <!-- قسم المحاضرات والفيديوهات -->
   <url>
-    <loc>https://ard-al-ahyaa.github.io/ard-al-ahyaa/videos/index.html</loc>
+    <loc>https://ard-al-ahyaa.github.io/ard-al-ahyaa/videos/</loc>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
+  <!-- قسم المذكرات -->
   <url>
-    <loc>https://ard-al-ahyaa.github.io/ard-al-ahyaa/notes/index.html</loc>
+    <loc>https://ard-al-ahyaa.github.io/ard-al-ahyaa/notes/</loc>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
+  <!-- قسم المنتدى التعليمي -->
   <url>
-    <loc>https://ard-al-ahyaa.github.io/ard-al-ahyaa/forum/index.html</loc>
+    <loc>https://ard-al-ahyaa.github.io/ard-al-ahyaa/forum/</loc>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
 </urlset>
-```
