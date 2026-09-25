@@ -192,7 +192,7 @@
     }
 
     .telegram-video p {
-      color: rgba(255,255,255,.9);
+      color: rgba(255, 255, 255, .9);
       font-size: 13px;
     }
 
@@ -260,6 +260,7 @@
       background: #fff8e1;
       color: #795548;
       border: 1px solid #ffe082;
+      grid-column: 1 / -1;
     }
 
     .login-btn {
@@ -407,21 +408,26 @@
   <script>
 
     /* =====================================================
-       إعداد Supabase
+       إعداد Supabase - المشروع الحالي
        ===================================================== */
 
     const SUPABASE_URL =
-      "https://cmnmebchevejxhibvgwl.supabase.co";
+      "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 
     const SUPABASE_KEY =
-      "sb_publishable_54UK-Ys41c5wGQvYkeFmYQ_5efdHAQu";
+      "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
 
     const BUCKET =
       "lectures";
 
+
     /*
       مدة الرابط المؤقت:
+
       30 دقيقة
+
+      بعد انتهاء المدة يتم إنشاء
+      رابط جديد تلقائيًا.
     */
 
     const SIGNED_URL_TIME =
@@ -464,11 +470,13 @@
 
       lectureList.innerHTML = "";
 
+
       const box =
         document.createElement("div");
 
       box.className =
         "security-message";
+
 
       box.innerHTML = `
         <strong>🔐 المحتوى محمي</strong>
@@ -483,7 +491,9 @@
         </a>
       `;
 
+
       lectureList.appendChild(box);
+
     }
 
 
@@ -556,14 +566,14 @@
         document.createElement("h3");
 
       title.textContent =
-        telegramLecture.title;
+        lecture.title;
 
 
       const description =
         document.createElement("p");
 
       description.textContent =
-        telegramLecture.description;
+        lecture.description;
 
 
       const button =
@@ -573,7 +583,7 @@
         "watch-btn telegram-btn";
 
       button.href =
-        telegramLecture.video_url;
+        lecture.video_url;
 
       button.target =
         "_blank";
@@ -612,6 +622,7 @@
         return false;
       }
 
+
       return (
         value.startsWith("http://") ||
         value.startsWith("https://")
@@ -636,8 +647,13 @@
 
 
       /*
-        إذا كان رابطًا خارجيًا
-        نستخدمه كما هو.
+        لو القيمة رابط خارجي مثل:
+
+        https://youtube.com/...
+        https://t.me/...
+        https://example.com/video.mp4
+
+        يتم استخدام الرابط كما هو.
       */
 
       if (isExternalUrl(videoValue)) {
@@ -648,19 +664,20 @@
 
 
       /*
-        إذا كان مسار ملف داخل Supabase
-        ننشئ Signed URL مؤقت.
+        لو القيمة مسار داخل Supabase
+        مثل:
+
+        videos/1750000000_xxx.mp4
+
+        يتم إنشاء Signed URL.
       */
 
       const {
         data,
         error
       } = await supabaseClient
-
         .storage
-
         .from(BUCKET)
-
         .createSignedUrl(
           videoValue,
           SIGNED_URL_TIME
@@ -703,6 +720,9 @@
 
         /*
           الحصول على رابط آمن
+
+          - رابط خارجي → يستخدم مباشرة
+          - ملف Private → Signed URL
         */
 
         const secureVideoUrl =
@@ -732,19 +752,29 @@
         const video =
           document.createElement("video");
 
+
         video.controls =
           true;
+
 
         video.preload =
           "metadata";
 
+
         video.playsInline =
           true;
+
+
+        /*
+          تقليل خيارات تحميل الفيديو
+          من واجهة المتصفح.
+        */
 
         video.setAttribute(
           "controlsList",
           "nodownload"
         );
+
 
         video.src =
           secureVideoUrl;
@@ -752,7 +782,7 @@
 
         /*
           منع قائمة الضغط بالزر الأيمن
-          على الفيديو
+          على الفيديو.
         */
 
         video.addEventListener(
@@ -797,24 +827,29 @@
           "لا يوجد وصف لهذه المحاضرة.";
 
 
-        /*
-          زر فتح الفيديو
-        */
+        /* ===============================
+           زر فتح الفيديو
+           =============================== */
 
         const button =
           document.createElement("a");
 
+
         button.className =
           "watch-btn";
+
 
         button.href =
           secureVideoUrl;
 
+
         button.target =
           "_blank";
 
+
         button.rel =
           "noopener noreferrer";
+
 
         button.textContent =
           "▶ فتح الفيديو";
@@ -824,9 +859,11 @@
           title
         );
 
+
         content.appendChild(
           description
         );
+
 
         content.appendChild(
           button
@@ -837,6 +874,7 @@
           videoBox
         );
 
+
         card.appendChild(
           content
         );
@@ -845,6 +883,7 @@
         return card;
 
       }
+
 
       catch (error) {
 
@@ -861,12 +900,14 @@
         const card =
           document.createElement("div");
 
+
         card.className =
           "lecture-card";
 
 
         const content =
           document.createElement("div");
+
 
         content.className =
           "lecture-content";
@@ -875,6 +916,7 @@
         const title =
           document.createElement("h3");
 
+
         title.textContent =
           lecture.title ||
           "محاضرة";
@@ -882,6 +924,7 @@
 
         const message =
           document.createElement("p");
+
 
         message.textContent =
           "تعذر فتح الفيديو حاليًا. حاول تحديث الصفحة.";
@@ -894,6 +937,7 @@
         content.appendChild(
           title
         );
+
 
         content.appendChild(
           message
@@ -951,7 +995,7 @@
 
         /*
           المحتوى محمي للمستخدمين
-          المسجلين فقط
+          المسجلين فقط.
         */
 
         if (!session) {
@@ -964,7 +1008,7 @@
 
 
         /*
-          تحميل البيانات
+          تحميل بيانات المحاضرات
         */
 
         const {
@@ -994,14 +1038,14 @@
 
 
         /*
-          مسح القائمة
+          مسح القائمة القديمة
         */
 
         lectureList.innerHTML = "";
 
 
         /*
-          إضافة تليجرام أولًا
+          إضافة محاضرة تليجرام أولًا
         */
 
         addTelegramLecture(
@@ -1018,15 +1062,19 @@
           const empty =
             document.createElement("div");
 
+
           empty.className =
             "empty";
+
 
           empty.textContent =
             "لا توجد محاضرات مضافة حاليًا.";
 
+
           lectureList.appendChild(
             empty
           );
+
 
           return;
 
@@ -1034,7 +1082,7 @@
 
 
         /*
-          إنشاء بطاقات الفيديو
+          إنشاء بطاقات المحاضرات
         */
 
         for (
@@ -1046,6 +1094,7 @@
               lecture
             );
 
+
           lectureList.appendChild(
             card
           );
@@ -1053,6 +1102,7 @@
         }
 
       }
+
 
       catch (error) {
 
@@ -1081,14 +1131,18 @@
         const errorMessage =
           document.createElement("div");
 
+
         errorMessage.className =
           "error";
+
 
         errorMessage.style.marginTop =
           "10px";
 
+
         errorMessage.textContent =
           "تعذر تحميل المحاضرات حاليًا. حاول تحديث الصفحة.";
+
 
         lectureList.appendChild(
           errorMessage
@@ -1112,7 +1166,8 @@
 
             showLoginMessage();
 
-          } else {
+          }
+          else {
 
             loadLectures();
 
@@ -1130,8 +1185,11 @@
 
 
     /*
-      تحديث الروابط الآمنة كل 25 دقيقة.
-      قبل انتهاء الـ30 دقيقة بقليل.
+      تحديث Signed URLs كل 25 دقيقة.
+
+      الرابط صالح 30 دقيقة،
+      لذلك يتم إنشاء روابط جديدة
+      قبل انتهاء الرابط القديم.
     */
 
     setInterval(
