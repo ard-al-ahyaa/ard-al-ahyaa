@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://sitemaps.org">
 
-  <!-- الصفحة الرئيسية -->
+  <!-- 1. الصفحة الرئيسية للمنصة -->
   <url>
-    <loc>https://ard-al-ahyaa.github.io/ard-al-ahyaa/</loc>
+    <loc>https://github.io</loc>
     <lastmod>2026-09-25</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
-  <!-- قسم المحاضرات والفيديوهات -->
+  <!-- 2. قسم المحاضرات (Videos) -->
   <url>
-    <loc>https://ard-al-ahyaa.github.io/ard-al-ahyaa/videos/</loc>
+    <loc>https://github.iovideos/</loc>
     <lastmod>2026-09-25</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.90</priority>
   </url>
 
-  <!-- قسم المذكرات -->
+  <!-- 3. قسم المذكرات والملخصات (Notes) -->
   <url>
-    <loc>https://ard-al-ahyaa.github.io/ard-al-ahyaa/notes/</loc>
+    <loc>https://github.ionotes/</loc>
     <lastmod>2026-09-25</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.80</priority>
   </url>
 
-  <!-- قسم المنتدى التعليمي -->
+  <!-- 4. المنتدى التعليمي للطلاب (Forum) -->
   <url>
-    <loc>https://ard-al-ahyaa.github.io/ard-al-ahyaa/forum/</loc>
+    <loc>https://github.ioforum/</loc>
     <lastmod>2026-09-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <changefreq>daily</changefreq>
+    <priority>0.80</priority>
   </url>
 
 </urlset>
