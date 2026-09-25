@@ -2,23 +2,22 @@
 <html lang="ar" dir="rtl">
 
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>المذكرات | منصة أرض الأحياء</title>
 
-  <link
-    rel="icon"
-    href="../favicon.png"
-  >
+  <meta name="description"
+    content="مذكرات وملخصات أحياء الصف الثالث الثانوي على منصة أرض الأحياء.">
+
+  <meta name="robots" content="index, follow">
+
+  <link rel="canonical"
+    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/notes/">
+
+  <link rel="icon" href="../favicon.png">
 
   <style>
-
     * {
       box-sizing: border-box;
       margin: 0;
@@ -30,6 +29,10 @@
       background: #f5f7f7;
       color: #222;
     }
+
+    /* ===============================
+       الشريط الجانبي
+       =============================== */
 
     .sidebar {
       position: fixed;
@@ -63,7 +66,7 @@
 
     .logo-box p {
       font-size: 13px;
-      opacity: .8;
+      opacity: 0.8;
     }
 
     .menu {
@@ -77,14 +80,18 @@
       color: white;
       padding: 14px 15px;
       border-radius: 10px;
-      transition: .2s;
+      transition: 0.2s;
       font-size: 15px;
     }
 
     .menu a:hover,
     .menu a.active {
-      background: rgba(255,255,255,.15);
+      background: rgba(255, 255, 255, 0.15);
     }
+
+    /* ===============================
+       المحتوى
+       =============================== */
 
     .main {
       margin-right: 250px;
@@ -97,7 +104,7 @@
       border-radius: 15px;
       padding: 20px 25px;
       margin-bottom: 25px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.06);
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
     }
 
     .topbar h1 {
@@ -111,11 +118,15 @@
       font-size: 15px;
     }
 
+    /* ===============================
+       المذكرات
+       =============================== */
+
     .notes-container {
       background: white;
       border-radius: 15px;
       padding: 25px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.06);
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
     }
 
     .section-title {
@@ -126,50 +137,61 @@
 
     .notes-list {
       display: grid;
-      grid-template-columns:
-        repeat(
-          auto-fill,
-          minmax(280px, 1fr)
-        );
-
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 20px;
     }
 
     .note-card {
       border: 1px solid #e5e5e5;
       border-radius: 14px;
-      padding: 20px;
       background: white;
-      transition: .2s;
+      overflow: hidden;
+      transition: 0.2s;
     }
 
     .note-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 5px 18px rgba(0,0,0,.08);
+      box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
     }
 
-    .note-icon {
-      font-size: 42px;
-      margin-bottom: 12px;
+    .note-header {
+      height: 150px;
+      background: linear-gradient(
+        135deg,
+        #075e4d,
+        #0b806a
+      );
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: white;
+      font-size: 55px;
     }
 
-    .note-card h3 {
+    .note-content {
+      padding: 18px;
+    }
+
+    .note-content h3 {
       color: #075e4d;
       font-size: 19px;
       margin-bottom: 10px;
-      line-height: 1.6;
+      line-height: 1.5;
     }
 
-    .note-date {
-      color: #777;
+    .note-content p {
+      color: #666;
       font-size: 13px;
-      margin-bottom: 18px;
+      line-height: 1.7;
     }
 
-    .buttons {
+    .note-buttons {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
+      margin-top: 15px;
     }
 
     .note-btn {
@@ -177,21 +199,23 @@
       text-decoration: none;
       background: #075e4d;
       color: white;
-      padding: 11px 16px;
+      padding: 10px 15px;
       border-radius: 8px;
       font-size: 14px;
-      transition: .2s;
+      transition: 0.2s;
+      border: none;
+      cursor: pointer;
     }
 
     .note-btn:hover {
       background: #064c3f;
     }
 
-    .download {
-      background: #444;
+    .note-btn.download {
+      background: #555;
     }
 
-    .download:hover {
+    .note-btn.download:hover {
       background: #333;
     }
 
@@ -209,7 +233,31 @@
       color: #b00020;
     }
 
-    @media(max-width:700px) {
+    .security-message {
+      text-align: center;
+      padding: 25px;
+      border-radius: 12px;
+      background: #fff8e1;
+      color: #795548;
+      border: 1px solid #ffe082;
+      grid-column: 1 / -1;
+    }
+
+    .login-btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 18px;
+      background: #075e4d;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+
+    /* ===============================
+       الموبايل
+       =============================== */
+
+    @media (max-width: 700px) {
 
       .sidebar {
         width: 75px;
@@ -249,15 +297,18 @@
         grid-template-columns: 1fr;
       }
 
+      .note-header {
+        height: 170px;
+      }
     }
-
   </style>
-
 </head>
-
 
 <body>
 
+  <!-- ===============================
+       الشريط الجانبي
+       =============================== -->
 
   <aside class="sidebar">
 
@@ -265,19 +316,13 @@
 
       <img
         src="../logo.png"
-        alt="شعار منصة أرض الأحياء"
-      >
+        alt="شعار منصة أرض الأحياء">
 
-      <h2>
-        منصة أرض الأحياء
-      </h2>
+      <h2>منصة أرض الأحياء</h2>
 
-      <p>
-        منصة تعليمية
-      </p>
+      <p>منصة تعليمية</p>
 
     </div>
-
 
     <nav class="menu">
 
@@ -293,10 +338,7 @@
         💬 المنتدى
       </a>
 
-      <a
-        href="index.html"
-        class="active"
-      >
+      <a href="index.html" class="active">
         📚 المذكرات
       </a>
 
@@ -305,17 +347,18 @@
   </aside>
 
 
-  <main class="main">
+  <!-- ===============================
+       المحتوى
+       =============================== -->
 
+  <main class="main">
 
     <div class="topbar">
 
-      <h1>
-        📚 المذكرات
-      </h1>
+      <h1>📚 المذكرات</h1>
 
       <p>
-        مذكرات وملفات مادة الأحياء
+        مذكرات أحياء الصف الثالث الثانوي
       </p>
 
     </div>
@@ -330,8 +373,7 @@
 
       <div
         id="notesList"
-        class="notes-list"
-      >
+        class="notes-list">
 
         <div class="loading">
           جاري تحميل المذكرات...
@@ -341,25 +383,40 @@
 
     </section>
 
-
   </main>
 
+
+  <!-- ===============================
+       Supabase
+       =============================== -->
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
   <script>
 
-    const SUPABASE_URL =
-      "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+    /* =====================================================
+       إعداد Supabase
+       ===================================================== */
 
+    const SUPABASE_URL =
+      "https://cmnmebchevejxhibvgwl.supabase.co";
 
     const SUPABASE_KEY =
-      "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
-
+      "sb_publishable_54UK-Ys41c5wGQvYkeFmYQ_5efdHAQu";
 
     const BUCKET =
       "lectures";
+
+
+    /*
+      مدة الرابط المؤقت:
+
+      30 دقيقة
+    */
+
+    const SIGNED_URL_TIME =
+      30 * 60;
 
 
     const supabaseClient =
@@ -368,6 +425,404 @@
         SUPABASE_KEY
       );
 
+
+    /* =====================================================
+       رسالة تسجيل الدخول
+       ===================================================== */
+
+    function showLoginMessage() {
+
+      const notesList =
+        document.getElementById(
+          "notesList"
+        );
+
+
+      notesList.innerHTML = "";
+
+
+      const box =
+        document.createElement("div");
+
+
+      box.className =
+        "security-message";
+
+
+      box.innerHTML = `
+
+        <strong>
+          🔐 المحتوى محمي
+        </strong>
+
+        <br>
+
+        يجب تسجيل الدخول إلى منصة
+        أرض الأحياء لمشاهدة المذكرات.
+
+        <br>
+
+        <a
+          class="login-btn"
+          href="../login/index.html">
+
+          🔑 تسجيل الدخول
+
+        </a>
+
+      `;
+
+
+      notesList.appendChild(
+        box
+      );
+
+    }
+
+
+    /* =====================================================
+       التحقق من نوع الرابط
+       ===================================================== */
+
+    function isExternalUrl(value) {
+
+      if (!value) {
+
+        return false;
+
+      }
+
+
+      return (
+        value.startsWith("http://") ||
+        value.startsWith("https://")
+      );
+
+    }
+
+
+    /* =====================================================
+       إنشاء Signed URL للمذكرة
+       ===================================================== */
+
+    async function getSecureNoteUrl(
+      filePath
+    ) {
+
+      if (!filePath) {
+
+        throw new Error(
+          "مسار المذكرة غير موجود"
+        );
+
+      }
+
+
+      /*
+        إذا كان رابطًا خارجيًا،
+        نستخدمه كما هو.
+      */
+
+      if (
+        isExternalUrl(filePath)
+      ) {
+
+        return filePath;
+
+      }
+
+
+      /*
+        إنشاء رابط مؤقت من
+        Private Storage
+      */
+
+      const {
+        data,
+        error
+      } = await supabaseClient
+
+        .storage
+
+        .from(BUCKET)
+
+        .createSignedUrl(
+          filePath,
+          SIGNED_URL_TIME
+        );
+
+
+      if (error) {
+
+        console.error(
+          "Signed URL Error:",
+          error
+        );
+
+        throw error;
+
+      }
+
+
+      if (
+        !data ||
+        !data.signedUrl
+      ) {
+
+        throw new Error(
+          "تعذر إنشاء الرابط الآمن للمذكرة"
+        );
+
+      }
+
+
+      return data.signedUrl;
+
+    }
+
+
+    /* =====================================================
+       إضافة مذكرة
+       ===================================================== */
+
+    async function createNoteCard(
+      note
+    ) {
+
+      const card =
+        document.createElement("div");
+
+
+      card.className =
+        "note-card";
+
+
+      /* ===============================
+         رأس المذكرة
+         =============================== */
+
+      const header =
+        document.createElement("div");
+
+
+      header.className =
+        "note-header";
+
+
+      header.textContent =
+        "📖";
+
+
+      /* ===============================
+         محتوى المذكرة
+         =============================== */
+
+      const content =
+        document.createElement("div");
+
+
+      content.className =
+        "note-content";
+
+
+      const title =
+        document.createElement("h3");
+
+
+      title.textContent =
+        note.title ||
+        "مذكرة بدون عنوان";
+
+
+      const description =
+        document.createElement("p");
+
+
+      description.textContent =
+        "مذكرة أحياء للصف الثالث الثانوي";
+
+
+      /* ===============================
+         الأزرار
+         =============================== */
+
+      const buttons =
+        document.createElement("div");
+
+
+      buttons.className =
+        "note-buttons";
+
+
+      /*
+        زر فتح المذكرة
+      */
+
+      const openButton =
+        document.createElement("a");
+
+
+      openButton.className =
+        "note-btn";
+
+
+      openButton.textContent =
+        "📖 فتح المذكرة";
+
+
+      /*
+        زر التحميل
+      */
+
+      const downloadButton =
+        document.createElement("a");
+
+
+      downloadButton.className =
+        "note-btn download";
+
+
+      downloadButton.textContent =
+        "⬇️ تحميل";
+
+
+      /*
+        نحاول إنشاء Signed URL
+      */
+
+      try {
+
+        const secureUrl =
+          await getSecureNoteUrl(
+            note.file_path
+          );
+
+
+        openButton.href =
+          secureUrl;
+
+
+        openButton.target =
+          "_blank";
+
+
+        openButton.rel =
+          "noopener noreferrer";
+
+
+        downloadButton.href =
+          secureUrl;
+
+
+        downloadButton.target =
+          "_blank";
+
+
+        downloadButton.rel =
+          "noopener noreferrer";
+
+
+        /*
+          download attribute
+          للمتصفحات التي تدعمه
+        */
+
+        downloadButton.setAttribute(
+          "download",
+          ""
+        );
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "Note URL Error:",
+          error
+        );
+
+
+        openButton.href =
+          "#";
+
+
+        downloadButton.href =
+          "#";
+
+
+        openButton.addEventListener(
+          "click",
+          function(event) {
+
+            event.preventDefault();
+
+            alert(
+              "تعذر فتح المذكرة حاليًا. حاول تحديث الصفحة."
+            );
+
+          }
+        );
+
+
+        downloadButton.addEventListener(
+          "click",
+          function(event) {
+
+            event.preventDefault();
+
+            alert(
+              "تعذر تحميل المذكرة حاليًا. حاول تحديث الصفحة."
+            );
+
+          }
+        );
+
+      }
+
+
+      buttons.appendChild(
+        openButton
+      );
+
+
+      buttons.appendChild(
+        downloadButton
+      );
+
+
+      content.appendChild(
+        title
+      );
+
+
+      content.appendChild(
+        description
+      );
+
+
+      content.appendChild(
+        buttons
+      );
+
+
+      card.appendChild(
+        header
+      );
+
+
+      card.appendChild(
+        content
+      );
+
+
+      return card;
+
+    }
+
+
+    /* =====================================================
+       تحميل المذكرات
+       ===================================================== */
 
     async function loadNotes() {
 
@@ -379,21 +834,64 @@
 
       try {
 
+        /*
+          التحقق من تسجيل الدخول
+        */
+
+        const {
+          data: sessionData,
+          error: sessionError
+        } = await supabaseClient
+          .auth
+          .getSession();
+
+
+        if (sessionError) {
+
+          throw sessionError;
+
+        }
+
+
+        const session =
+          sessionData.session;
+
+
+        /*
+          منع الوصول للمحتوى
+          بدون تسجيل دخول
+        */
+
+        if (!session) {
+
+          showLoginMessage();
+
+          return;
+
+        }
+
+
+        /*
+          تحميل المذكرات
+        */
+
         const {
           data,
           error
-        } =
-          await supabaseClient
-            .from("notes")
-            .select(
-              "id, title, file_path, created_at"
-            )
-            .order(
-              "created_at",
-              {
-                ascending: false
-              }
-            );
+        } = await supabaseClient
+
+          .from("notes")
+
+          .select(
+            "id,title,file_path,created_at"
+          )
+
+          .order(
+            "created_at",
+            {
+              ascending: false
+            }
+          );
 
 
         if (error) {
@@ -403,160 +901,140 @@
         }
 
 
-        if (!data || data.length === 0) {
+        /*
+          مسح القائمة
+        */
 
-          notesList.innerHTML = `
-            <div class="empty">
-              📚 لا توجد مذكرات حاليًا.
-            </div>
-          `;
+        notesList.innerHTML = "";
+
+
+        /*
+          لا توجد مذكرات
+        */
+
+        if (
+          !data ||
+          data.length === 0
+        ) {
+
+          const empty =
+            document.createElement("div");
+
+
+          empty.className =
+            "empty";
+
+
+          empty.textContent =
+            "لا توجد مذكرات مضافة حاليًا.";
+
+
+          notesList.appendChild(
+            empty
+          );
+
 
           return;
 
         }
 
 
-        notesList.innerHTML = "";
+        /*
+          إضافة المذكرات
+        */
 
-
-        data.forEach(note => {
-
-          const {
-            data: publicData
-          } =
-            supabaseClient
-              .storage
-              .from(BUCKET)
-              .getPublicUrl(
-                note.file_path
-              );
-
+        for (
+          const note of data
+        ) {
 
           const card =
-            document.createElement(
-              "div"
+            await createNoteCard(
+              note
             );
-
-
-          card.className =
-            "note-card";
-
-
-          const date =
-            note.created_at
-              ? new Date(
-                  note.created_at
-                ).toLocaleDateString(
-                  "ar-EG"
-                )
-              : "";
-
-
-          card.innerHTML = `
-
-            <div class="note-icon">
-              📕
-            </div>
-
-            <h3>
-              ${escapeHtml(
-                note.title
-              )}
-            </h3>
-
-            <div class="note-date">
-              📅 ${date}
-            </div>
-
-            <div class="buttons">
-
-              <a
-                class="note-btn"
-                href="${publicData.publicUrl}"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                📖 فتح المذكرة
-              </a>
-
-              <a
-                class="note-btn download"
-                href="${publicData.publicUrl}"
-                download
-              >
-                ⬇️ تحميل
-              </a>
-
-            </div>
-
-          `;
 
 
           notesList.appendChild(
             card
           );
 
-        });
+        }
 
       }
 
       catch (error) {
 
-        console.error(error);
+        console.error(
+          "Supabase Error:",
+          error
+        );
 
 
-        notesList.innerHTML = `
+        notesList.innerHTML = "";
 
-          <div class="error">
 
-            ❌ تعذر تحميل المذكرات.
+        const errorMessage =
+          document.createElement("div");
 
-            <br><br>
 
-            ${escapeHtml(
-              error.message
-            )}
+        errorMessage.className =
+          "error";
 
-          </div>
 
-        `;
+        errorMessage.textContent =
+          "تعذر تحميل المذكرات حاليًا. حاول تحديث الصفحة.";
+
+
+        notesList.appendChild(
+          errorMessage
+        );
 
       }
 
     }
 
 
-    function escapeHtml(text) {
+    /* =====================================================
+       مراقبة تسجيل الدخول والخروج
+       ===================================================== */
 
-      return String(text)
-        .replace(
-          /&/g,
-          "&amp;"
-        )
-        .replace(
-          /</g,
-          "&lt;"
-        )
-        .replace(
-          />/g,
-          "&gt;"
-        )
-        .replace(
-          /"/g,
-          "&quot;"
-        )
-        .replace(
-          /'/g,
-          "&#039;"
-        );
+    supabaseClient
+      .auth
+      .onAuthStateChange(
+        function(event, session) {
 
-    }
+          if (!session) {
 
+            showLoginMessage();
+
+          }
+          else {
+
+            loadNotes();
+
+          }
+
+        }
+      );
+
+
+    /* =====================================================
+       تشغيل الصفحة
+       ===================================================== */
 
     loadNotes();
 
-  </script>
 
+    /*
+      تحديث Signed URLs كل 25 دقيقة
+      قبل انتهاء صلاحيتها.
+    */
+
+    setInterval(
+      loadNotes,
+      25 * 60 * 1000
+    );
+
+  </script>
 
 </body>
 
