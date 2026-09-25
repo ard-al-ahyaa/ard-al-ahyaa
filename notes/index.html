@@ -370,7 +370,6 @@
         مذكرات الأحياء
       </h2>
 
-
       <div
         id="notesList"
         class="notes-list">
@@ -392,25 +391,24 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
   <script>
 
     /* =====================================================
-       إعداد Supabase
+       إعداد Supabase - المشروع الحالي
        ===================================================== */
 
     const SUPABASE_URL =
-      "https://cmnmebchevejxhibvgwl.supabase.co";
+      "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 
     const SUPABASE_KEY =
-      "sb_publishable_54UK-Ys41c5wGQvYkeFmYQ_5efdHAQu";
+      "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
 
     const BUCKET =
       "lectures";
 
 
     /*
-      مدة الرابط المؤقت:
+      مدة Signed URL:
 
       30 دقيقة
     */
@@ -436,7 +434,6 @@
         document.getElementById(
           "notesList"
         );
-
 
       notesList.innerHTML = "";
 
@@ -487,9 +484,7 @@
     function isExternalUrl(value) {
 
       if (!value) {
-
         return false;
-
       }
 
 
@@ -519,7 +514,7 @@
 
 
       /*
-        إذا كان رابطًا خارجيًا،
+        لو كان رابطًا خارجيًا
         نستخدمه كما هو.
       */
 
@@ -533,19 +528,22 @@
 
 
       /*
-        إنشاء رابط مؤقت من
-        Private Storage
+        لو كان مسارًا داخل
+        Private Bucket
+
+        مثال:
+
+        pdf/1750000000000_xxxxx.pdf
+
+        ننشئ Signed URL مؤقت.
       */
 
       const {
         data,
         error
       } = await supabaseClient
-
         .storage
-
         .from(BUCKET)
-
         .createSignedUrl(
           filePath,
           SIGNED_URL_TIME
@@ -654,10 +652,6 @@
         "note-buttons";
 
 
-      /*
-        زر فتح المذكرة
-      */
-
       const openButton =
         document.createElement("a");
 
@@ -669,10 +663,6 @@
       openButton.textContent =
         "📖 فتح المذكرة";
 
-
-      /*
-        زر التحميل
-      */
 
       const downloadButton =
         document.createElement("a");
@@ -686,9 +676,9 @@
         "⬇️ تحميل";
 
 
-      /*
-        نحاول إنشاء Signed URL
-      */
+      /* ===============================
+         إنشاء الرابط الآمن
+         =============================== */
 
       try {
 
@@ -697,6 +687,10 @@
             note.file_path
           );
 
+
+        /*
+          زر فتح المذكرة
+        */
 
         openButton.href =
           secureUrl;
@@ -710,6 +704,10 @@
           "noopener noreferrer";
 
 
+        /*
+          زر التحميل
+        */
+
         downloadButton.href =
           secureUrl;
 
@@ -721,11 +719,6 @@
         downloadButton.rel =
           "noopener noreferrer";
 
-
-        /*
-          download attribute
-          للمتصفحات التي تدعمه
-        */
 
         downloadButton.setAttribute(
           "download",
@@ -858,8 +851,8 @@
 
 
         /*
-          منع الوصول للمحتوى
-          بدون تسجيل دخول
+          المحتوى محمي
+          للمستخدمين المسجلين فقط
         */
 
         if (!session) {
@@ -900,10 +893,6 @@
 
         }
 
-
-        /*
-          مسح القائمة
-        */
 
         notesList.innerHTML = "";
 
@@ -1025,7 +1014,7 @@
 
 
     /*
-      تحديث Signed URLs كل 25 دقيقة
+      تجديد Signed URLs كل 25 دقيقة
       قبل انتهاء صلاحيتها.
     */
 
