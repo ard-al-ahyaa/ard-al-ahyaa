@@ -1,0 +1,307 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>استرجاع كلمة المرور | منصة أرض الأحياء</title>
+
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon"
+    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/favicon.png">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Tahoma, sans-serif;
+      background: #f5f7f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .box {
+      width: 100%;
+      max-width: 430px;
+      background: #fff;
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.10);
+    }
+
+    .logo {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 15px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #075e4d;
+      margin: 0 0 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #777;
+      line-height: 1.7;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 17px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #075e4d;
+      box-shadow: 0 0 0 3px rgba(7,94,77,.08);
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      background: #075e4d;
+      color: white;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 17px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #064d40;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .message {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 9px;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .success {
+      display: block;
+      background: #e8f7ef;
+      color: #176b3a;
+    }
+
+    .error {
+      display: block;
+      background: #fdeaea;
+      color: #a11;
+    }
+
+    .back {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .back a {
+      color: #075e4d;
+      font-weight: bold;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="box">
+
+    <img
+      src="https://ard-al-ahyaa.github.io/ard-al-ahyaa/logo.png"
+      class="logo"
+      alt="شعار منصة أرض الأحياء"
+    >
+
+    <h1>🔑 استرجاع كلمة المرور</h1>
+
+    <div class="subtitle">
+      اكتب البريد الإلكتروني المرتبط بحسابك،
+      وسنرسل لك رابطًا لتغيير كلمة المرور.
+    </div>
+
+    <form id="resetForm">
+
+      <label for="email">
+        البريد الإلكتروني
+      </label>
+
+      <input
+        type="email"
+        id="email"
+        placeholder="example@email.com"
+        autocomplete="email"
+        required
+      >
+
+      <button
+        type="submit"
+        id="resetButton"
+      >
+        إرسال رابط الاسترجاع
+      </button>
+
+    </form>
+
+    <div id="message" class="message"></div>
+
+    <div class="back">
+      <a href="../login/index.html">
+        ← العودة لتسجيل الدخول
+      </a>
+    </div>
+
+  </div>
+
+
+  <script>
+
+    const SUPABASE_URL =
+      "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+      "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+
+
+    const form =
+      document.getElementById("resetForm");
+
+    const button =
+      document.getElementById("resetButton");
+
+    const message =
+      document.getElementById("message");
+
+
+    function showMessage(text, type) {
+
+      message.textContent = text;
+
+      message.className =
+        "message " + type;
+    }
+
+
+    form.addEventListener(
+      "submit",
+      async function(event) {
+
+        event.preventDefault();
+
+        if (button.disabled) {
+          return;
+        }
+
+        const email =
+          document
+            .getElementById("email")
+            .value
+            .trim()
+            .toLowerCase();
+
+
+        button.disabled = true;
+
+        button.textContent =
+          "جاري الإرسال...";
+
+        message.className =
+          "message";
+
+
+        try {
+
+          const { error } =
+            await supabaseClient.auth
+              .resetPasswordForEmail(
+                email,
+                {
+                  redirectTo:
+                    "https://ard-al-ahyaa.github.io/ard-al-ahyaa/update-password/"
+                }
+              );
+
+
+          if (error) {
+            throw error;
+          }
+
+
+          showMessage(
+            "تم إرسال رابط استرجاع كلمة المرور إلى بريدك الإلكتروني. افتح البريد واضغط على الرابط.",
+            "success"
+          );
+
+
+          form.reset();
+
+
+        } catch (error) {
+
+          console.error(
+            "Reset password error:",
+            error
+          );
+
+          showMessage(
+            error.message ||
+            "حدث خطأ أثناء إرسال رابط الاسترجاع.",
+            "error"
+          );
+
+        }
+
+
+        button.disabled = false;
+
+        button.textContent =
+          "إرسال رابط الاسترجاع";
+
+      }
+    );
+
+  </script>
+
+</body>
+
+</html>
+```
