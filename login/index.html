@@ -10,21 +10,14 @@
 
   <meta name="robots" content="noindex, nofollow">
 
-  <link
-    rel="canonical"
-    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/login/"
-  >
+  <link rel="canonical"
+    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/login/">
 
-  <link
-    rel="icon"
-    type="image/png"
-    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/favicon.png"
-  >
+  <link rel="icon" type="image/png"
+    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/favicon.png">
 
-  <link
-    rel="shortcut icon"
-    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/favicon.png"
-  >
+  <link rel="shortcut icon"
+    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/favicon.png">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -125,6 +118,19 @@
       cursor: not-allowed;
     }
 
+    .forgot {
+      display: block;
+      margin-top: 15px;
+      color: #198754;
+      font-size: 14px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .forgot:hover {
+      text-decoration: underline;
+    }
+
     .message {
       display: none;
       margin-top: 18px;
@@ -163,8 +169,6 @@
       text-decoration: underline;
     }
 
-    /* زر تليجرام العائم */
-
     .telegram-float {
       position: fixed;
       left: 20px;
@@ -194,7 +198,6 @@
     }
 
     @media (max-width: 600px) {
-
       .telegram-float {
         left: 15px;
         bottom: 15px;
@@ -262,19 +265,22 @@
 
       </div>
 
-      <button
-        id="loginBtn"
-        type="submit"
-      >
+      <button id="loginBtn" type="submit">
         تسجيل الدخول
       </button>
+
+      <a
+        class="forgot"
+        href="../reset-password/index.html">
+        🔑 نسيت كلمة المرور؟
+      </a>
 
       <div
         id="message"
         class="message"
         role="alert"
-        aria-live="polite"
-      ></div>
+        aria-live="polite">
+      </div>
 
     </form>
 
@@ -298,15 +304,15 @@
     rel="noopener noreferrer"
     class="telegram-float"
     aria-label="مجموعة منصة أرض الأحياء على تليجرام"
-    title="انضم إلى مجموعة تليجرام"
-  >
+    title="انضم إلى مجموعة تليجرام">
 
     <svg
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
+      aria-hidden="true">
+
       <path d="M21.9 3.3L18.6 20c-.25 1.18-.9 1.47-1.82.92l-5.01-3.69-2.42 2.33c-.27.27-.5.5-1.02.5l.36-5.1 9.28-8.38c.4-.36-.09-.56-.62-.2L5.87 13.63.94 12.09c-1.07-.34-1.09-1.07.22-1.58L20.42 2.9c.91-.34 1.7.2 1.48.4z"/>
+
     </svg>
 
   </a>
@@ -390,11 +396,8 @@
             error
           } =
             await supabaseClient.auth.signInWithPassword({
-
               email: email,
-
               password: password
-
             });
 
           if (error) {
@@ -405,28 +408,6 @@
 
             throw new Error(
               "تعذر العثور على الحساب."
-            );
-
-          }
-
-          const user =
-            data.user;
-
-          const metadata =
-            user.user_metadata || {};
-
-          const savedName =
-            metadata.full_name ||
-            metadata.name ||
-            metadata.username ||
-            metadata.user_name ||
-            "";
-
-          if (savedName.trim()) {
-
-            console.log(
-              "اسم المستخدم:",
-              savedName
             );
 
           }
@@ -482,17 +463,6 @@
 
           else if (
             errorText.includes(
-              "signup is disabled"
-            )
-          ) {
-
-            text =
-              "تسجيل الحسابات متوقف حاليًا.";
-
-          }
-
-          else if (
-            errorText.includes(
               "rate limit"
             )
           ) {
@@ -523,5 +493,3 @@
 
 </html>
 ```
-
-**التغيير الوحيد:** رابط زر التليجرام أصبح `https://t.me/+KB1Z0dws0f01YjNk` بدل الرابط القديم.
