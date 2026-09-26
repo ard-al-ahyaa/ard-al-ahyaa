@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>تغيير كلمة المرور | منصة أرض الأحياء</title>
+
+  <link rel="icon" href="../favicon.png">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Tahoma, sans-serif;
+      background: linear-gradient(135deg, #0f5132, #198754);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .box {
+      width: 100%;
+      max-width: 420px;
+      background: #fff;
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .logo {
+      width: 85px;
+      height: 85px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 15px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #0f5132;
+      margin-bottom: 10px;
+      font-size: 25px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 25px;
+      font-size: 14px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #198754;
+      box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.1);
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      background: #198754;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #146c43;
+    }
+
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .message {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 10px;
+      display: none;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .success {
+      background: #d1e7dd;
+      color: #0f5132;
+      display: block;
+    }
+
+    .error {
+      background: #f8d7da;
+      color: #842029;
+      display: block;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #198754;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="box">
+
+    <img src="../logo.png" class="logo" alt="منصة أرض الأحياء">
+
+    <h1>تغيير كلمة المرور 🔐</h1>
+
+    <p class="subtitle">
+      اكتب كلمة المرور الجديدة لحسابك
+    </p>
+
+    <form id="passwordForm">
+
+      <label for="password">كلمة المرور الجديدة</label>
+
+      <input
+        type="password"
+        id="password"
+        placeholder="اكتب كلمة المرور الجديدة"
+        minlength="6"
+        required
+      >
+
+      <label for="confirmPassword">تأكيد كلمة المرور</label>
+
+      <input
+        type="password"
+        id="confirmPassword"
+        placeholder="أعد كتابة كلمة المرور"
+        minlength="6"
+        required
+      >
+
+      <button type="submit" id="submitBtn">
+        تغيير كلمة المرور
+      </button>
+
+    </form>
+
+    <div id="message" class="message"></div>
+
+    <a href="../login/index.html" class="back">
+      العودة إلى تسجيل الدخول
+    </a>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+    const form = document.getElementById("passwordForm");
+    const password = document.getElementById("password");
+    const confirmPassword = document.getElementById("confirmPassword");
+    const message = document.getElementById("message");
+    const submitBtn = document.getElementById("submitBtn");
+
+    function showMessage(text, type) {
+      message.textContent = text;
+      message.className = "message " + type;
+    }
+
+    form.addEventListener("submit", async function (e) {
+
+      e.preventDefault();
+
+      const newPassword = password.value.trim();
+      const confirm = confirmPassword.value.trim();
+
+      if (newPassword.length < 6) {
+        showMessage(
+          "كلمة المرور يجب أن تكون 6 أحرف أو أرقام على الأقل.",
+          "error"
+        );
+        return;
+      }
+
+      if (newPassword !== confirm) {
+        showMessage(
+          "كلمتا المرور غير متطابقتين.",
+          "error"
+        );
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "جاري تغيير كلمة المرور...";
+
+      try {
+
+        const { data, error } =
+          await supabaseClient.auth.updateUser({
+            password: newPassword
+          });
+
+        if (error) {
+          console.error(error);
+
+          showMessage(
+            "تعذر تغيير كلمة المرور. قد تكون صلاحية رابط الاستعادة انتهت، اطلب رسالة جديدة.",
+            "error"
+          );
+
+          submitBtn.disabled = false;
+          submitBtn.textContent = "تغيير كلمة المرور";
+
+          return;
+        }
+
+        showMessage(
+          "تم تغيير كلمة المرور بنجاح ✅ سيتم تحويلك لتسجيل الدخول...",
+          "success"
+        );
+
+        form.reset();
+
+        setTimeout(() => {
+          window.location.href = "../login/index.html";
+        }, 2500);
+
+      } catch (err) {
+
+        console.error(err);
+
+        showMessage(
+          "حدث خطأ غير متوقع. حاول مرة أخرى.",
+          "error"
+        );
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = "تغيير كلمة المرور";
+      }
+
+    });
+  </script>
+
+</body>
+
+</html>
