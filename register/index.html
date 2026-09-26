@@ -152,5 +152,515 @@
 
 <body>
 
-  <div class="register
+  <div class="register-box">
+
+    <img
+      src="https://ard-al-ahyaa.github.io/ard-al-ahyaa/logo.png"
+      class="logo"
+      alt="شعار منصة أرض الأحياء"
+      onerror="this.style.display='none'"
+    >
+
+    <h1>إنشاء حساب</h1>
+
+    <div class="subtitle">
+      منصة أرض الأحياء التعليمية لطلاب الصف الثالث الثانوي
+    </div>
+
+    <form id="registerForm">
+
+      <!-- اسم الطالب -->
+      <label for="name">اسم الطالب ثلاثي</label>
+
+      <input
+        type="text"
+        id="name"
+        placeholder="مثال: محمد أحمد علي"
+        autocomplete="name"
+        maxlength="100"
+        required
+      >
+
+      <!-- رقم هاتف الطالب -->
+      <label for="phone">رقم هاتف الطالب</label>
+
+      <input
+        type="tel"
+        id="phone"
+        placeholder="مثال: 01012345678"
+        autocomplete="tel"
+        maxlength="11"
+        inputmode="numeric"
+        required
+      >
+
+      <!-- رقم ولي الأمر -->
+      <label for="parentPhone">رقم هاتف ولي الأمر</label>
+
+      <input
+        type="tel"
+        id="parentPhone"
+        placeholder="مثال: 01112345678"
+        autocomplete="tel"
+        maxlength="11"
+        inputmode="numeric"
+        required
+      >
+
+      <!-- البريد الإلكتروني -->
+      <label for="email">البريد الإلكتروني</label>
+
+      <input
+        type="email"
+        id="email"
+        placeholder="example@email.com"
+        autocomplete="email"
+        maxlength="150"
+        required
+      >
+
+      <!-- كلمة المرور -->
+      <label for="password">كلمة المرور</label>
+
+      <input
+        type="password"
+        id="password"
+        placeholder="كلمة المرور"
+        minlength="6"
+        autocomplete="new-password"
+        required
+      >
+
+      <!-- تأكيد كلمة المرور -->
+      <label for="confirmPassword">تأكيد كلمة المرور</label>
+
+      <input
+        type="password"
+        id="confirmPassword"
+        placeholder="أعد كتابة كلمة المرور"
+        minlength="6"
+        autocomplete="new-password"
+        required
+      >
+
+      <button type="submit" id="registerButton">
+        إنشاء الحساب
+      </button>
+
+    </form>
+
+    <div id="message" class="message"></div>
+
+    <div class="login-link">
+      لديك حساب بالفعل؟
+      <a href="../login/index.html">تسجيل الدخول</a>
+    </div>
+
+  </div>
+
+
+  <script>
+
+    // =====================================================
+    // إعداد Supabase
+    // =====================================================
+
+    const SUPABASE_URL =
+      "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+      "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+
+
+    // =====================================================
+    // عناصر الصفحة
+    // =====================================================
+
+    const registerForm =
+      document.getElementById("registerForm");
+
+    const registerButton =
+      document.getElementById("registerButton");
+
+    const message =
+      document.getElementById("message");
+
+
+    // =====================================================
+    // عرض الرسائل
+    // =====================================================
+
+    function showMessage(text, type) {
+
+      message.textContent = text;
+
+      message.className =
+        "message " + type;
+    }
+
+
+    // =====================================================
+    // التحقق من رقم الهاتف المصري
+    // =====================================================
+
+    function isValidEgyptianPhone(phone) {
+
+      return /^01[0125][0-9]{8}$/.test(phone);
+    }
+
+
+    // =====================================================
+    // إنشاء الحساب
+    // =====================================================
+
+    registerForm.addEventListener(
+      "submit",
+      async function (event) {
+
+        event.preventDefault();
+
+        if (registerButton.disabled) {
+          return;
+        }
+
+
+        // ===================================================
+        // قراءة البيانات
+        // ===================================================
+
+        const name =
+          document
+            .getElementById("name")
+            .value
+            .trim();
+
+        const phone =
+          document
+            .getElementById("phone")
+            .value
+            .trim()
+            .replace(/\s+/g, "");
+
+        const parentPhone =
+          document
+            .getElementById("parentPhone")
+            .value
+            .trim()
+            .replace(/\s+/g, "");
+
+        const email =
+          document
+            .getElementById("email")
+            .value
+            .trim()
+            .toLowerCase();
+
+        const password =
+          document
+            .getElementById("password")
+            .value;
+
+        const confirmPassword =
+          document
+            .getElementById("confirmPassword")
+            .value;
+
+
+        // ===================================================
+        // التحقق من الاسم الثلاثي
+        // ===================================================
+
+        const nameParts =
+          name.split(/\s+/).filter(Boolean);
+
+        if (nameParts.length < 3) {
+
+          showMessage(
+            "من فضلك اكتب اسم الطالب ثلاثيًا.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        // ===================================================
+        // التحقق من رقم الطالب
+        // ===================================================
+
+        if (!isValidEgyptianPhone(phone)) {
+
+          showMessage(
+            "رقم هاتف الطالب غير صحيح. اكتب رقمًا مصريًا مكونًا من 11 رقمًا.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        // ===================================================
+        // التحقق من رقم ولي الأمر
+        // ===================================================
+
+        if (!isValidEgyptianPhone(parentPhone)) {
+
+          showMessage(
+            "رقم هاتف ولي الأمر غير صحيح. اكتب رقمًا مصريًا مكونًا من 11 رقمًا.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        // ===================================================
+        // منع استخدام نفس الرقم
+        // ===================================================
+
+        if (phone === parentPhone) {
+
+          showMessage(
+            "يجب أن يكون رقم الطالب مختلفًا عن رقم ولي الأمر.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        // ===================================================
+        // التحقق من البريد
+        // ===================================================
+
+        if (!email) {
+
+          showMessage(
+            "اكتب البريد الإلكتروني.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        // ===================================================
+        // التحقق من كلمة المرور
+        // ===================================================
+
+        if (password.length < 6) {
+
+          showMessage(
+            "كلمة المرور يجب أن تكون 6 أحرف أو أرقام على الأقل.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        if (password !== confirmPassword) {
+
+          showMessage(
+            "كلمتا المرور غير متطابقتين.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        // ===================================================
+        // بدء التسجيل
+        // ===================================================
+
+        registerButton.disabled = true;
+
+        registerButton.textContent =
+          "جاري إنشاء الحساب...";
+
+        message.className =
+          "message";
+
+
+        try {
+
+          // =================================================
+          // إنشاء حساب Supabase Auth
+          //
+          // لا نرسل role من المتصفح.
+          // الـ Trigger في قاعدة البيانات يضع:
+          // role = student
+          // =================================================
+
+          const {
+            data,
+            error
+          } =
+            await supabaseClient.auth.signUp({
+
+              email: email,
+
+              password: password,
+
+              options: {
+
+                data: {
+                  full_name: name,
+                  phone: phone,
+                  parent_phone: parentPhone
+                }
+
+              }
+
+            });
+
+
+          if (error) {
+            throw error;
+          }
+
+
+          if (!data || !data.user) {
+
+            throw new Error(
+              "تعذر إنشاء الحساب."
+            );
+
+          }
+
+
+          // =================================================
+          // نجاح التسجيل
+          // =================================================
+
+          if (!data.session) {
+
+            showMessage(
+              "تم إنشاء الحساب بنجاح باسم " +
+              name +
+              ". راجع بريدك الإلكتروني لتأكيد الحساب، ثم سجل الدخول.",
+              "success"
+            );
+
+            registerForm.reset();
+
+          } else {
+
+            showMessage(
+              "تم إنشاء حسابك باسم " +
+              name +
+              " بنجاح. جاري نقلك لتسجيل الدخول...",
+              "success"
+            );
+
+            setTimeout(function () {
+
+              window.location.href =
+                "../login/index.html";
+
+            }, 1800);
+
+          }
+
+
+        } catch (error) {
+
+          console.error(
+            "Registration error:",
+            error
+          );
+
+
+          let errorMessage =
+            error.message ||
+            "حدث خطأ أثناء إنشاء الحساب.";
+
+
+          const lowerError =
+            errorMessage.toLowerCase();
+
+
+          // =================================================
+          // رسائل الأخطاء
+          // =================================================
+
+          if (
+            lowerError.includes("already registered") ||
+            lowerError.includes("user already registered")
+          ) {
+
+            errorMessage =
+              "هذا البريد الإلكتروني مسجل بالفعل.";
+
+          }
+
+          else if (
+            lowerError.includes("invalid email")
+          ) {
+
+            errorMessage =
+              "البريد الإلكتروني غير صحيح.";
+
+          }
+
+          else if (
+            lowerError.includes("password should be at least")
+          ) {
+
+            errorMessage =
+              "كلمة المرور قصيرة جدًا.";
+
+          }
+
+          else if (
+            lowerError.includes("email rate limit exceeded")
+          ) {
+
+            errorMessage =
+              "تم إجراء محاولات تسجيل كثيرة. حاول مرة أخرى لاحقًا.";
+
+          }
+
+          else if (
+            lowerError.includes("signup is disabled")
+          ) {
+
+            errorMessage =
+              "إنشاء الحسابات متوقف حاليًا من إعدادات المنصة.";
+
+          }
+
+
+          showMessage(
+            errorMessage,
+            "error"
+          );
+
+        }
+
+
+        // ===================================================
+        // إعادة تفعيل الزر
+        // ===================================================
+
+        registerButton.disabled = false;
+
+        registerButton.textContent =
+          "إنشاء الحساب";
+
+      }
+    );
+
+  </script>
+
+</body>
+
+</html>
 ```
