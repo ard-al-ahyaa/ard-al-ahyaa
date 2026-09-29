@@ -225,8 +225,6 @@
       color: #075e4d;
     }
 
-    /* الاختبارات */
-
     .exam-box {
       background: #f8faf9;
       border: 1px solid #e4e9e7;
@@ -306,6 +304,31 @@
       margin-top: 5px;
     }
 
+    .champion-card {
+      border: 1px solid #e5e5e5;
+      background: #fafafa;
+      padding: 18px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+    }
+
+    .champion-card h3 {
+      color: #075e4d;
+      margin-bottom: 10px;
+    }
+
+    .champion-info {
+      line-height: 1.9;
+      color: #555;
+      margin-bottom: 12px;
+    }
+
+    .champion-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
     @media(max-width:700px) {
 
       .sidebar {
@@ -363,15 +386,29 @@
 
     <nav class="menu">
 
-      <a href="../index.html">🏠 الرئيسية</a>
+      <a href="../index.html">
+        🏠 الرئيسية
+      </a>
 
-      <a href="../videos/index.html">🎥 المحاضرات</a>
+      <a href="../videos/index.html">
+        🎥 المحاضرات
+      </a>
 
-      <a href="../notes/index.html">📚 المذكرات</a>
+      <a href="../notes/index.html">
+        📚 المذكرات
+      </a>
 
-      <a href="../forum/index.html">💬 المنتدى</a>
+      <a href="../forum/index.html">
+        💬 المنتدى
+      </a>
 
-      <a href="../exams/index.html">📝 الاختبارات</a>
+      <a href="../exams/index.html">
+        📝 الاختبارات
+      </a>
+
+      <a href="../champion/index.html">
+        🏆 بطل الفصل
+      </a>
 
       <button class="logout-btn" onclick="logout()">
         🚪 تسجيل الخروج
@@ -395,6 +432,10 @@
     </div>
 
 
+    <!-- =========================
+         الإحصائيات
+    ========================= -->
+
     <div class="grid">
 
       <div class="stat">
@@ -415,6 +456,63 @@
       <div class="stat">
         <h3>📝 الاختبارات</h3>
         <strong id="examsCount">0</strong>
+      </div>
+
+    </div>
+
+
+    <!-- =========================
+         بطل الفصل
+    ========================= -->
+
+    <div class="card">
+
+      <h2>🏆 إدارة بطل الفصل</h2>
+
+      <div class="exam-box">
+
+        <h3>➕ إضافة طالب إلى بطل الفصل</h3>
+
+        <input
+          type="text"
+          id="championName"
+          placeholder="اسم الطالب الثلاثي"
+        >
+
+        <input
+          type="number"
+          id="championPoints"
+          min="0"
+          placeholder="عدد النقاط"
+        >
+
+        <input
+          type="number"
+          id="championPosition"
+          min="1"
+          placeholder="المركز، مثل 1"
+        >
+
+        <button onclick="addChampion()">
+          🏆 إضافة البطل
+        </button>
+
+        <div
+          id="championStatus"
+          class="status">
+        </div>
+
+      </div>
+
+      <h3 style="color:#075e4d;margin-top:25px;">
+        📋 قائمة بطل الفصل
+      </h3>
+
+      <div
+        id="championsList"
+        class="users-list"
+        style="margin-top:15px;">
+        جاري تحميل أبطال الفصل...
       </div>
 
     </div>
@@ -460,7 +558,8 @@
       </div>
 
 
-      <div id="questionEditor" class="exam-box hidden">
+      <div id="questionEditor"
+           class="exam-box hidden">
 
         <h3>
           ✏️ إضافة أسئلة إلى الاختبار
@@ -531,8 +630,7 @@
         <button
           class="secondary"
           onclick="closeQuestionEditor()"
-          style="margin-right:5px;"
-        >
+          style="margin-right:5px;">
           إغلاق
         </button>
 
@@ -547,14 +645,18 @@
         📋 الاختبارات الموجودة
       </h3>
 
-      <div id="examsList" class="exam-list">
+      <div
+        id="examsList"
+        class="exam-list">
         جاري تحميل الاختبارات...
       </div>
 
     </div>
 
 
-    <!-- رفع مذكرة -->
+    <!-- =========================
+         رفع مذكرة
+    ========================= -->
 
     <div class="card">
 
@@ -581,7 +683,9 @@
     </div>
 
 
-    <!-- إضافة فيديو برابط -->
+    <!-- =========================
+         إضافة فيديو برابط
+    ========================= -->
 
     <div class="card">
 
@@ -614,7 +718,9 @@
     </div>
 
 
-    <!-- رفع فيديو -->
+    <!-- =========================
+         رفع فيديو
+    ========================= -->
 
     <div class="card">
 
@@ -647,20 +753,26 @@
     </div>
 
 
-    <!-- المستخدمون -->
+    <!-- =========================
+         المستخدمون
+    ========================= -->
 
     <div class="card">
 
       <h2>👨‍🎓 المستخدمون</h2>
 
-      <div id="usersList" class="users-list">
+      <div
+        id="usersList"
+        class="users-list">
         جاري تحميل المستخدمين...
       </div>
 
     </div>
 
 
-    <!-- تغيير كلمة السر -->
+    <!-- =========================
+         تغيير كلمة السر
+    ========================= -->
 
     <div class="card">
 
@@ -691,8 +803,9 @@
   </main>
 
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Supabase -->
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
 
@@ -743,12 +856,6 @@
       }
 
 
-      /*
-        هذا فحص إضافي في الواجهة فقط.
-        الحماية الحقيقية تعتمد على RLS
-        و Storage Policies.
-      */
-
       if (session.user.id !== ADMIN_UID) {
 
         alert(
@@ -766,6 +873,463 @@
 
 
       return true;
+
+    }
+
+
+    // =========================
+    // بطل الفصل
+    // =========================
+
+    async function loadChampions() {
+
+      const list =
+        document.getElementById(
+          "championsList"
+        );
+
+      if (!list) return;
+
+
+      list.innerHTML =
+        "⏳ جاري تحميل أبطال الفصل...";
+
+
+      try {
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .from("champions")
+            .select("*")
+            .order(
+              "position",
+              {
+                ascending: true
+              }
+            );
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        if (!data || data.length === 0) {
+
+          list.innerHTML =
+            "لا توجد نتائج لبطل الفصل حتى الآن.";
+
+          return;
+
+        }
+
+
+        list.innerHTML = "";
+
+
+        data.forEach(champion => {
+
+          const item =
+            document.createElement("div");
+
+          item.className =
+            "champion-card";
+
+
+          item.innerHTML = `
+
+            <h3>
+              🏆 ${escapeHtml(
+                champion.student_name ||
+                "بدون اسم"
+              )}
+            </h3>
+
+            <div class="champion-info">
+
+              🥇 المركز:
+              <strong>
+                ${escapeHtml(
+                  champion.position ?? "-"
+                )}
+              </strong>
+
+              <br>
+
+              ⭐ النقاط:
+              <strong>
+                ${escapeHtml(
+                  champion.points ?? "0"
+                )}
+              </strong>
+
+            </div>
+
+            <div class="champion-actions">
+
+              <button
+                onclick="editChampion('${champion.id}')">
+                ✏️ تعديل
+              </button>
+
+              <button
+                class="danger"
+                onclick="deleteChampion('${champion.id}')">
+                🗑️ حذف
+              </button>
+
+            </div>
+
+          `;
+
+
+          list.appendChild(item);
+
+        });
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        list.innerHTML =
+          "❌ تعذر تحميل أبطال الفصل: "
+          + escapeHtml(
+            error.message
+          );
+
+      }
+
+    }
+
+
+    async function addChampion() {
+
+      const name =
+        document
+          .getElementById("championName")
+          .value
+          .trim();
+
+
+      const points =
+        parseInt(
+          document
+            .getElementById("championPoints")
+            .value
+        );
+
+
+      const position =
+        parseInt(
+          document
+            .getElementById("championPosition")
+            .value
+        );
+
+
+      const status =
+        document
+          .getElementById(
+            "championStatus"
+          );
+
+
+      if (!name) {
+
+        status.innerHTML =
+          "❌ اكتب اسم الطالب الثلاثي";
+
+        return;
+
+      }
+
+
+      if (
+        Number.isNaN(points) ||
+        points < 0
+      ) {
+
+        status.innerHTML =
+          "❌ اكتب عدد نقاط صحيح";
+
+        return;
+
+      }
+
+
+      if (
+        Number.isNaN(position) ||
+        position < 1
+      ) {
+
+        status.innerHTML =
+          "❌ اكتب مركزًا صحيحًا";
+
+        return;
+
+      }
+
+
+      status.innerHTML =
+        "⏳ جاري إضافة البطل...";
+
+
+      try {
+
+        const {
+          error
+        } =
+          await supabaseClient
+            .from("champions")
+            .insert({
+
+              student_name:
+                name,
+
+              points:
+                points,
+
+              position:
+                position
+
+            });
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        status.innerHTML =
+          "✅ تم إضافة بطل الفصل بنجاح";
+
+
+        document
+          .getElementById(
+            "championName"
+          )
+          .value = "";
+
+
+        document
+          .getElementById(
+            "championPoints"
+          )
+          .value = "";
+
+
+        document
+          .getElementById(
+            "championPosition"
+          )
+          .value = "";
+
+
+        await loadChampions();
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        status.innerHTML =
+          "❌ فشل إضافة البطل: "
+          + error.message;
+
+      }
+
+    }
+
+
+    async function editChampion(id) {
+
+      try {
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .from("champions")
+            .select("*")
+            .eq("id", id)
+            .single();
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        const newName =
+          prompt(
+            "اسم الطالب:",
+            data.student_name || ""
+          );
+
+
+        if (newName === null) {
+          return;
+        }
+
+
+        const newPoints =
+          prompt(
+            "عدد النقاط:",
+            data.points ?? 0
+          );
+
+
+        if (newPoints === null) {
+          return;
+        }
+
+
+        const newPosition =
+          prompt(
+            "المركز:",
+            data.position ?? 1
+          );
+
+
+        if (newPosition === null) {
+          return;
+        }
+
+
+        const points =
+          parseInt(newPoints);
+
+
+        const position =
+          parseInt(newPosition);
+
+
+        if (
+          !newName.trim() ||
+          Number.isNaN(points) ||
+          Number.isNaN(position) ||
+          points < 0 ||
+          position < 1
+        ) {
+
+          alert(
+            "❌ البيانات غير صحيحة"
+          );
+
+          return;
+
+        }
+
+
+        const {
+          error: updateError
+        } =
+          await supabaseClient
+            .from("champions")
+            .update({
+
+              student_name:
+                newName.trim(),
+
+              points:
+                points,
+
+              position:
+                position
+
+            })
+            .eq(
+              "id",
+              id
+            );
+
+
+        if (updateError) {
+          throw updateError;
+        }
+
+
+        alert(
+          "✅ تم تعديل بيانات البطل"
+        );
+
+
+        await loadChampions();
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        alert(
+          "❌ فشل تعديل البطل: "
+          + error.message
+        );
+
+      }
+
+    }
+
+
+    async function deleteChampion(id) {
+
+      if (
+        !confirm(
+          "⚠️ هل تريد حذف هذا الطالب من قائمة بطل الفصل؟"
+        )
+      ) {
+
+        return;
+
+      }
+
+
+      try {
+
+        const {
+          error
+        } =
+          await supabaseClient
+            .from("champions")
+            .delete()
+            .eq(
+              "id",
+              id
+            );
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        alert(
+          "✅ تم حذف النتيجة"
+        );
+
+
+        await loadChampions();
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        alert(
+          "❌ فشل الحذف: "
+          + error.message
+        );
+
+      }
 
     }
 
@@ -830,12 +1394,6 @@
 
       try {
 
-        /*
-          إنشاء مسار خاص للملف
-
-          لا نستخدم getPublicUrl()
-        */
-
         const path =
           "pdf/"
           + Date.now()
@@ -856,22 +1414,16 @@
               {
                 cacheControl: "3600",
                 upsert: false,
-                contentType: "application/pdf"
+                contentType:
+                  "application/pdf"
               }
             );
 
 
         if (uploadError) {
-
           throw uploadError;
-
         }
 
-
-        /*
-          نحفظ مسار الملف فقط
-          في قاعدة البيانات.
-        */
 
         const {
           error: dbError
@@ -880,17 +1432,17 @@
             .from("notes")
             .insert({
 
-              title: title,
+              title:
+                title,
 
-              file_path: path
+              file_path:
+                path
 
             });
 
 
         if (dbError) {
-
           throw dbError;
-
         }
 
 
@@ -926,7 +1478,7 @@
 
 
     // =========================
-    // إضافة فيديو برابط خارجي
+    // إضافة فيديو برابط
     // =========================
 
     async function addVideoUrl() {
@@ -967,11 +1519,6 @@
       }
 
 
-      /*
-        السماح بروابط خارجية فقط
-        في هذا القسم.
-      */
-
       if (
         !url.startsWith("https://") &&
         !url.startsWith("http://")
@@ -998,15 +1545,11 @@
             .from("lectures")
             .insert({
 
-              title: title,
+              title:
+                title,
 
               description:
                 description,
-
-              /*
-                الرابط الخارجي يبقى رابطًا
-                لأنه ليس ملفًا داخل Supabase.
-              */
 
               video_url:
                 url
@@ -1015,9 +1558,7 @@
 
 
         if (error) {
-
           throw error;
-
         }
 
 
@@ -1058,7 +1599,7 @@
 
 
     // =========================
-    // رفع فيديو من الجهاز
+    // رفع فيديو
     // =========================
 
     async function uploadVideo() {
@@ -1108,10 +1649,6 @@
       }
 
 
-      /*
-        التأكد من أنه فيديو
-      */
-
       if (
         !file.type ||
         !file.type.startsWith("video/")
@@ -1131,25 +1668,12 @@
 
       try {
 
-        /*
-          الحصول على امتداد الملف
-        */
-
         const extension =
           file.name
             .split(".")
             .pop()
             .toLowerCase();
 
-
-        /*
-          إنشاء اسم عشوائي للملف.
-
-          مثال:
-
-          videos/
-          1750000000000_UUID.mp4
-        */
 
         const path =
           "videos/"
@@ -1159,12 +1683,6 @@
           + "."
           + extension;
 
-
-        /*
-          رفع الملف إلى Storage
-
-          لا يتم إنشاء Public URL.
-        */
 
         const {
           error: uploadError
@@ -1185,25 +1703,9 @@
 
 
         if (uploadError) {
-
           throw uploadError;
-
         }
 
-
-        /*
-          ==========================================
-          أهم تعديل أمني
-          ==========================================
-
-          لا نستخدم:
-
-          getPublicUrl(path)
-
-          ولا نخزن رابطًا عامًا.
-
-          نخزن مسار الملف فقط.
-        */
 
         const {
           error: dbError
@@ -1226,13 +1728,6 @@
 
         if (dbError) {
 
-          /*
-            إذا نجح رفع الملف وفشل
-            إدخال قاعدة البيانات،
-            نحاول حذف الملف حتى لا
-            يظل ملفًا غير مرتبط.
-          */
-
           await supabaseClient
             .storage
             .from(BUCKET)
@@ -1250,17 +1745,23 @@
 
 
         document
-          .getElementById("uploadVideoTitle")
+          .getElementById(
+            "uploadVideoTitle"
+          )
           .value = "";
 
 
         document
-          .getElementById("uploadVideoDescription")
+          .getElementById(
+            "uploadVideoDescription"
+          )
           .value = "";
 
 
         document
-          .getElementById("videoFile")
+          .getElementById(
+            "videoFile"
+          )
           .value = "";
 
 
@@ -1304,7 +1805,9 @@
 
 
         document
-          .getElementById("videosCount")
+          .getElementById(
+            "videosCount"
+          )
           .textContent =
             lecturesCount || 0;
 
@@ -1321,7 +1824,9 @@
 
 
         document
-          .getElementById("notesCount")
+          .getElementById(
+            "notesCount"
+          )
           .textContent =
             notesCount || 0;
 
@@ -1338,13 +1843,17 @@
 
 
         document
-          .getElementById("examsCount")
+          .getElementById(
+            "examsCount"
+          )
           .textContent =
             examsCount || 0;
 
 
         document
-          .getElementById("usersCount")
+          .getElementById(
+            "usersCount"
+          )
           .textContent =
             "—";
 
@@ -1382,14 +1891,18 @@
       const duration =
         parseInt(
           document
-            .getElementById("examDuration")
+            .getElementById(
+              "examDuration"
+            )
             .value
         );
 
 
       const status =
         document
-          .getElementById("examCreateStatus");
+          .getElementById(
+            "examCreateStatus"
+          );
 
 
       if (!title) {
@@ -1426,12 +1939,14 @@
             .from("exams")
             .insert({
 
-              title: title,
+              title:
+                title,
 
               description:
                 description,
 
-              duration: duration
+              duration:
+                duration
 
             })
             .select()
@@ -1439,9 +1954,7 @@
 
 
         if (error) {
-
           throw error;
-
         }
 
 
@@ -1450,17 +1963,23 @@
 
 
         document
-          .getElementById("examTitle")
+          .getElementById(
+            "examTitle"
+          )
           .value = "";
 
 
         document
-          .getElementById("examDescription")
+          .getElementById(
+            "examDescription"
+          )
           .value = "";
 
 
         document
-          .getElementById("examDuration")
+          .getElementById(
+            "examDuration"
+          )
           .value = "10";
 
 
@@ -1498,7 +2017,9 @@
 
       const list =
         document
-          .getElementById("examsList");
+          .getElementById(
+            "examsList"
+          );
 
 
       list.innerHTML =
@@ -1572,7 +2093,9 @@
         item.innerHTML = `
 
           <h3>
-            📝 ${escapeHtml(exam.title)}
+            📝 ${escapeHtml(
+              exam.title
+            )}
           </h3>
 
           <p>
@@ -1596,16 +2119,18 @@
             <button
               onclick="openQuestionEditor(
                 '${exam.id}',
-                ${JSON.stringify(exam.title)}
-              )"
-            >
+                ${JSON.stringify(
+                  exam.title
+                )}
+              )">
               ✏️ إدارة الأسئلة
             </button>
 
             <button
               class="danger"
-              onclick="deleteExam('${exam.id}')"
-            >
+              onclick="deleteExam(
+                '${exam.id}'
+              )">
               🗑️ حذف الاختبار
             </button>
 
@@ -1635,12 +2160,17 @@
 
 
       document
-        .getElementById("questionEditor")
-        .classList.remove("hidden");
+        .getElementById(
+          "questionEditor"
+        )
+        .classList
+        .remove("hidden");
 
 
       document
-        .getElementById("selectedExamName")
+        .getElementById(
+          "selectedExamName"
+        )
         .textContent =
           "الاختبار الحالي: "
           + examTitle;
@@ -1653,17 +2183,15 @@
 
 
       document
-        .getElementById("questionEditor")
+        .getElementById(
+          "questionEditor"
+        )
         .scrollIntoView({
           behavior: "smooth"
         });
 
     }
 
-
-    // =========================
-    // إغلاق محرر الأسئلة
-    // =========================
 
     function closeQuestionEditor() {
 
@@ -1672,8 +2200,11 @@
 
 
       document
-        .getElementById("questionEditor")
-        .classList.add("hidden");
+        .getElementById(
+          "questionEditor"
+        )
+        .classList
+        .add("hidden");
 
     }
 
@@ -1697,48 +2228,62 @@
 
       const question =
         document
-          .getElementById("questionText")
+          .getElementById(
+            "questionText"
+          )
           .value
           .trim();
 
 
       const optionA =
         document
-          .getElementById("optionA")
+          .getElementById(
+            "optionA"
+          )
           .value
           .trim();
 
 
       const optionB =
         document
-          .getElementById("optionB")
+          .getElementById(
+            "optionB"
+          )
           .value
           .trim();
 
 
       const optionC =
         document
-          .getElementById("optionC")
+          .getElementById(
+            "optionC"
+          )
           .value
           .trim();
 
 
       const optionD =
         document
-          .getElementById("optionD")
+          .getElementById(
+            "optionD"
+          )
           .value
           .trim();
 
 
       const correct =
         document
-          .getElementById("correctAnswer")
+          .getElementById(
+            "correctAnswer"
+          )
           .value;
 
 
       const status =
         document
-          .getElementById("questionStatus");
+          .getElementById(
+            "questionStatus"
+          );
 
 
       if (
@@ -1796,9 +2341,7 @@
 
 
         if (error) {
-
           throw error;
-
         }
 
 
@@ -1836,12 +2379,15 @@
 
       const container =
         document
-          .getElementById("currentQuestions");
+          .getElementById(
+            "currentQuestions"
+          );
 
 
       if (!selectedExamId) {
 
-        container.innerHTML = "";
+        container.innerHTML =
+          "";
 
         return;
 
@@ -1888,14 +2434,17 @@
       }
 
 
-      container.innerHTML = "";
+      container.innerHTML =
+        "";
 
 
       data.forEach(
         (question, index) => {
 
           const box =
-            document.createElement("div");
+            document.createElement(
+              "div"
+            );
 
 
           box.className =
@@ -1947,25 +2496,24 @@
 
             <button
               class="danger"
-              onclick="deleteQuestion('${question.id}')"
-            >
+              onclick="deleteQuestion(
+                '${question.id}'
+              )">
               🗑️ حذف السؤال
             </button>
 
           `;
 
 
-          container.appendChild(box);
+          container.appendChild(
+            box
+          );
 
         }
       );
 
     }
 
-
-    // =========================
-    // حذف سؤال
-    // =========================
 
     async function deleteQuestion(
       questionId
@@ -2012,10 +2560,6 @@
 
     }
 
-
-    // =========================
-    // حذف اختبار
-    // =========================
 
     async function deleteExam(
       examId
@@ -2072,39 +2616,47 @@
     }
 
 
-    // =========================
-    // تفريغ حقول السؤال
-    // =========================
-
     function clearQuestionFields() {
 
       document
-        .getElementById("questionText")
+        .getElementById(
+          "questionText"
+        )
         .value = "";
 
 
       document
-        .getElementById("optionA")
+        .getElementById(
+          "optionA"
+        )
         .value = "";
 
 
       document
-        .getElementById("optionB")
+        .getElementById(
+          "optionB"
+        )
         .value = "";
 
 
       document
-        .getElementById("optionC")
+        .getElementById(
+          "optionC"
+        )
         .value = "";
 
 
       document
-        .getElementById("optionD")
+        .getElementById(
+          "optionD"
+        )
         .value = "";
 
 
       document
-        .getElementById("correctAnswer")
+        .getElementById(
+          "correctAnswer"
+        )
         .value = "";
 
     }
@@ -2118,12 +2670,16 @@
 
       const list =
         document
-          .getElementById("usersList");
+          .getElementById(
+            "usersList"
+          );
 
 
       const select =
         document
-          .getElementById("userSelect");
+          .getElementById(
+            "userSelect"
+          );
 
 
       const {
@@ -2164,7 +2720,8 @@
       }
 
 
-      list.innerHTML = "";
+      list.innerHTML =
+        "";
 
 
       select.innerHTML = `
@@ -2177,7 +2734,9 @@
       data.forEach(user => {
 
         const item =
-          document.createElement("div");
+          document.createElement(
+            "div"
+          );
 
 
         item.className =
@@ -2185,28 +2744,38 @@
 
 
         item.innerHTML = `
+
           <strong>
             ${escapeHtml(
               user.full_name ||
               "بدون اسم"
             )}
           </strong>
+
           <br>
+
           📧 ${escapeHtml(
             user.email || ""
           )}
+
           <br>
+
           👤 ${escapeHtml(
             user.role || "student"
           )}
+
         `;
 
 
-        list.appendChild(item);
+        list.appendChild(
+          item
+        );
 
 
         const option =
-          document.createElement("option");
+          document.createElement(
+            "option"
+          );
 
 
         option.value =
@@ -2221,7 +2790,9 @@
           );
 
 
-        select.appendChild(option);
+        select.appendChild(
+          option
+        );
 
       });
 
@@ -2236,20 +2807,26 @@
 
       const userId =
         document
-          .getElementById("userSelect")
+          .getElementById(
+            "userSelect"
+          )
           .value;
 
 
       const password =
         document
-          .getElementById("newPassword")
+          .getElementById(
+            "newPassword"
+          )
           .value
           .trim();
 
 
       const status =
         document
-          .getElementById("passwordStatus");
+          .getElementById(
+            "passwordStatus"
+          );
 
 
       if (!userId) {
@@ -2287,17 +2864,18 @@
               "admin-change-password",
               {
                 body: {
-                  user_id: userId,
-                  new_password: password
+                  user_id:
+                    userId,
+
+                  new_password:
+                    password
                 }
               }
             );
 
 
         if (error) {
-
           throw error;
-
         }
 
 
@@ -2306,7 +2884,9 @@
 
 
         document
-          .getElementById("newPassword")
+          .getElementById(
+            "newPassword"
+          )
           .value = "";
 
       }
@@ -2348,11 +2928,26 @@
     function escapeHtml(text) {
 
       return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+        .replace(
+          /</g,
+          "&lt;"
+        )
+        .replace(
+          />/g,
+          "&gt;"
+        )
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+        .replace(
+          /'/g,
+          "&#039;"
+        );
 
     }
 
@@ -2368,9 +2963,7 @@
 
 
       if (!allowed) {
-
         return;
-
       }
 
 
@@ -2380,10 +2973,12 @@
 
       await loadExams();
 
+      await loadChampions();
+
     })();
 
   </script>
 
 </body>
 
-</html>
+    </html>
