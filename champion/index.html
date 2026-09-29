@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>بطل الفصل | منصة أرض الأحياء</title>
+
+  <meta name="description"
+    content="قسم بطل الفصل في منصة أرض الأحياء لطلاب الصف الثالث الثانوي.">
+
+  <link rel="icon" href="../favicon.png">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Tahoma, sans-serif;
+    }
+
+    body {
+      background: #f5f7f7;
+      color: #222;
+    }
+
+    /* =========================
+       الشريط الجانبي
+    ========================= */
+
+    .sidebar {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 250px;
+      height: 100vh;
+      background: #075e4d;
+      color: white;
+      padding: 25px 15px;
+      z-index: 1000;
+      overflow-y: auto;
+    }
+
+    .logo-box {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .logo-box img {
+      width: 75px;
+      height: 75px;
+      object-fit: contain;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+
+    .logo-box h2 {
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+
+    .logo-box p {
+      font-size: 13px;
+      opacity: 0.8;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .menu a,
+    .logout-btn {
+      text-decoration: none;
+      color: white;
+      padding: 14px 15px;
+      border-radius: 10px;
+      transition: 0.2s;
+      font-size: 15px;
+      display: block;
+      width: 100%;
+      border: none;
+      background: transparent;
+      text-align: right;
+      cursor: pointer;
+    }
+
+    .menu a:hover,
+    .menu a.active,
+    .logout-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* =========================
+       المحتوى
+    ========================= */
+
+    .main {
+      margin-right: 250px;
+      padding: 30px;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      background: white;
+      border-radius: 15px;
+      padding: 20px 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .topbar h1 {
+      color: #075e4d;
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .topbar p {
+      color: #666;
+      font-size: 15px;
+    }
+
+    /* =========================
+       بطاقة البطل
+    ========================= */
+
+    .champion-card {
+      background: white;
+      border-radius: 18px;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+      margin-bottom: 20px;
+    }
+
+    .trophy {
+      font-size: 65px;
+      margin-bottom: 10px;
+    }
+
+    .champion-card h2 {
+      color: #075e4d;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .champion-card p {
+      color: #666;
+      line-height: 1.8;
+    }
+
+    /* =========================
+       قائمة الطلاب
+    ========================= */
+
+    .ranking {
+      display: grid;
+      gap: 12px;
+    }
+
+    .student-card {
+      background: white;
+      border-radius: 15px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .rank {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: #075e4d;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .student-info {
+      flex: 1;
+    }
+
+    .student-info h3 {
+      color: #075e4d;
+      font-size: 17px;
+      margin-bottom: 5px;
+    }
+
+    .student-info p {
+      color: #777;
+      font-size: 13px;
+    }
+
+    .points {
+      color: #075e4d;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .empty {
+      background: white;
+      border-radius: 15px;
+      padding: 30px 20px;
+      text-align: center;
+      color: #777;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    /* =========================
+       الفوتر
+    ========================= */
+
+    footer {
+      margin-top: 30px;
+      text-align: center;
+      color: #777;
+      font-size: 13px;
+      padding: 20px;
+    }
+
+    /* =========================
+       زر التليجرام
+    ========================= */
+
+    .telegram-floating {
+      position: fixed;
+      left: 20px;
+      bottom: 20px;
+      width: 55px;
+      height: 55px;
+      background: #229ed9;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 27px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      z-index: 2000;
+    }
+
+    /* =========================
+       الشريط السفلي
+    ========================= */
+
+    .bottom-nav {
+      display: none;
+    }
+
+    /* =========================
+       الموبايل
+    ========================= */
+
+    @media (max-width: 700px) {
+
+      .sidebar {
+        width: 75px;
+        padding: 20px 8px;
+      }
+
+      .logo-box h2,
+      .logo-box p {
+        display: none;
+      }
+
+      .logo-box img {
+        width: 55px;
+        height: 55px;
+      }
+
+      .menu a,
+      .logout-btn {
+        text-align: center;
+        font-size: 0;
+        padding: 14px 5px;
+      }
+
+      .menu a::first-letter,
+      .logout-btn::first-letter {
+        font-size: 20px;
+      }
+
+      .main {
+        margin-right: 75px;
+        padding: 15px;
+      }
+
+      .topbar h1 {
+        font-size: 22px;
+      }
+
+      .student-card {
+        padding: 14px;
+      }
+
+      .points {
+        font-size: 13px;
+      }
+
+      .bottom-nav {
+        position: fixed;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        bottom: 0;
+        right: 0;
+        left: 0;
+        height: 70px;
+        background: #075e4d;
+        z-index: 3000;
+        box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.15);
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+
+      .bottom-nav-item {
+        color: white;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        font-size: 21px;
+      }
+
+      .bottom-nav-item small {
+        font-size: 10px;
+      }
+
+      .bottom-nav-item.active {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      body {
+        padding-bottom: 80px;
+      }
+
+      .telegram-floating {
+        bottom: 85px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       الشريط الجانبي
+  ========================= -->
+
+  <aside class="sidebar">
+
+    <div class="logo-box">
+
+      <img
+        src="../logo.png"
+        alt="شعار منصة أرض الأحياء">
+
+      <h2>
+        منصة أرض الأحياء
+      </h2>
+
+      <p>
+        أحياء الصف الثالث الثانوي
+      </p>
+
+    </div>
+
+    <nav class="menu">
+
+      <a href="../index.html">
+        🏠 الرئيسية
+      </a>
+
+      <a href="../videos/index.html">
+        🎥 المحاضرات
+      </a>
+
+      <a href="../notes/index.html">
+        📚 المذكرات
+      </a>
+
+      <a href="../forum/index.html">
+        💬 المنتدى
+      </a>
+
+      <a
+        href="index.html"
+        class="active">
+
+        🏆 بطل الفصل
+
+      </a>
+
+      <a href="../account/index.html">
+        👤 حساب الطالب
+      </a>
+
+      <button
+        class="logout-btn"
+        onclick="logout()">
+
+        🚪 تسجيل الخروج
+
+      </button>
+
+    </nav>
+
+  </aside>
+
+
+  <!-- =========================
+       المحتوى
+  ========================= -->
+
+  <main class="main">
+
+    <div class="topbar">
+
+      <h1>
+        🏆 بطل الفصل
+      </h1>
+
+      <p id="welcomeText">
+        لوحة التميز لطلاب منصة أرض الأحياء
+      </p>
+
+    </div>
+
+
+    <!-- تعريف القسم -->
+
+    <div class="champion-card">
+
+      <div class="trophy">
+        🏆
+      </div>
+
+      <h2>
+        بطل الفصل
+      </h2>
+
+      <p>
+        هنا يتم عرض الطلاب المتميزين في المنصة
+        وفقًا للنظام الذي يحدده المدير.
+      </p>
+
+    </div>
+
+
+    <!-- الترتيب -->
+
+    <div id="ranking" class="ranking">
+
+      <div class="empty">
+        🏆 لم يتم إضافة نتائج بطل الفصل حتى الآن.
+      </div>
+
+    </div>
+
+
+    <footer>
+
+      © 2026 منصة أرض الأحياء — جميع الحقوق محفوظة
+
+    </footer>
+
+  </main>
+
+
+  <!-- زر التليجرام -->
+
+  <a
+    class="telegram-floating"
+    href="https://t.me/+KB1Z0dws0f01YjNk"
+    target="_blank"
+    rel="noopener noreferrer"
+    title="مجموعة التليجرام">
+
+    ✈️
+
+  </a>
+
+
+  <!-- الشريط السفلي -->
+
+  <nav
+    class="bottom-nav"
+    aria-label="التنقل الرئيسي">
+
+    <a
+      href="../index.html"
+      class="bottom-nav-item">
+
+      <span>🌱</span>
+
+      <small>
+        أرض الأحياء
+      </small>
+
+    </a>
+
+
+    <a
+      href="../videos/index.html"
+      class="bottom-nav-item">
+
+      <span>📚</span>
+
+      <small>
+        المحاضرات
+      </small>
+
+    </a>
+
+
+    <a
+      href="index.html"
+      class="bottom-nav-item active">
+
+      <span>🏆</span>
+
+      <small>
+        بطل الفصل
+      </small>
+
+    </a>
+
+
+    <a
+      href="../account/index.html"
+      class="bottom-nav-item">
+
+      <span>👤</span>
+
+      <small>
+        حسابي
+      </small>
+
+    </a>
+
+  </nav>
+
+
+  <!-- Supabase -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+
+    /* =========================
+       إعداد Supabase
+    ========================= */
+
+    const SUPABASE_URL =
+      "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+
+    const supabaseClient =
+      supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    /* =========================
+       فحص تسجيل الدخول
+    ========================= */
+
+    async function checkUser() {
+
+      try {
+
+        const {
+          data: {
+            session
+          }
+        } =
+          await supabaseClient.auth.getSession();
+
+
+        if (!session) {
+
+          window.location.href =
+            "../login/index.html";
+
+          return;
+
+        }
+
+
+        const user =
+          session.user;
+
+
+        const {
+          data: profile,
+          error
+        } =
+          await supabaseClient
+            .from("profiles")
+            .select(
+              "id, full_name, role"
+            )
+            .eq(
+              "id",
+              user.id
+            )
+            .maybeSingle();
+
+
+        if (error) {
+
+          console.error(
+            "Profile error:",
+            error
+          );
+
+        }
+
+
+        const name =
+          profile?.full_name ||
+          user.user_metadata?.full_name ||
+          user.email ||
+          "الطالب";
+
+
+        document.getElementById(
+          "welcomeText"
+        ).textContent =
+          "أهلاً بك يا " +
+          name +
+          " في قسم بطل الفصل 🏆";
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "Auth error:",
+          error
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       تسجيل الخروج
+    ========================= */
+
+    async function logout() {
+
+      try {
+
+        const {
+          error
+        } =
+          await supabaseClient.auth.signOut();
+
+
+        if (error) {
+
+          throw error;
+
+        }
+
+
+        window.location.href =
+          "../login/index.html";
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "Logout error:",
+          error
+        );
+
+        alert(
+          "❌ حدث خطأ أثناء تسجيل الخروج"
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       تشغيل الصفحة
+    ========================= */
+
+    checkUser();
+
+  </script>
+
+</body>
+
+  </html>
