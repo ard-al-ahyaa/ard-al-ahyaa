@@ -123,7 +123,7 @@
     }
 
     /* =========================
-       بطاقة البطل
+       بطاقة بطل الفصل
     ========================= */
 
     .champion-card {
@@ -132,7 +132,7 @@
       padding: 30px 20px;
       text-align: center;
       box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
-      margin-bottom: 20px;
+      margin-bottom: 25px;
     }
 
     .trophy {
@@ -152,7 +152,7 @@
     }
 
     /* =========================
-       قائمة الطلاب
+       الترتيب
     ========================= */
 
     .ranking {
@@ -204,13 +204,19 @@
       white-space: nowrap;
     }
 
-    .empty {
+    .empty,
+    .error-box,
+    .loading {
       background: white;
       border-radius: 15px;
       padding: 30px 20px;
       text-align: center;
       color: #777;
       box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .error-box {
+      color: #b00020;
     }
 
     /* =========================
@@ -226,7 +232,7 @@
     }
 
     /* =========================
-       زر التليجرام
+       تليجرام
     ========================= */
 
     .telegram-floating {
@@ -245,6 +251,11 @@
       font-size: 27px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
       z-index: 2000;
+      transition: 0.2s;
+    }
+
+    .telegram-floating:hover {
+      transform: scale(1.08);
     }
 
     /* =========================
@@ -394,9 +405,7 @@
       <a
         href="index.html"
         class="active">
-
         🏆 بطل الفصل
-
       </a>
 
       <a href="../account/index.html">
@@ -406,9 +415,7 @@
       <button
         class="logout-btn"
         onclick="logout()">
-
         🚪 تسجيل الخروج
-
       </button>
 
     </nav>
@@ -435,8 +442,6 @@
     </div>
 
 
-    <!-- تعريف القسم -->
-
     <div class="champion-card">
 
       <div class="trophy">
@@ -448,34 +453,35 @@
       </h2>
 
       <p>
-        هنا يتم عرض الطلاب المتميزين في المنصة
-        وفقًا للنظام الذي يحدده المدير.
+        هنا يتم عرض الطلاب المتميزين في منصة أرض الأحياء.
       </p>
 
     </div>
 
 
-    <!-- الترتيب -->
+    <!-- النتائج القادمة من Supabase -->
 
-    <div id="ranking" class="ranking">
+    <div
+      id="ranking"
+      class="ranking">
 
-      <div class="empty">
-        🏆 لم يتم إضافة نتائج بطل الفصل حتى الآن.
+      <div class="loading">
+        ⏳ جاري تحميل نتائج بطل الفصل...
       </div>
 
     </div>
 
 
     <footer>
-
       © 2026 منصة أرض الأحياء — جميع الحقوق محفوظة
-
     </footer>
 
   </main>
 
 
-  <!-- زر التليجرام -->
+  <!-- =========================
+       تليجرام
+  ========================= -->
 
   <a
     class="telegram-floating"
@@ -489,7 +495,9 @@
   </a>
 
 
-  <!-- الشريط السفلي -->
+  <!-- =========================
+       الشريط السفلي
+  ========================= -->
 
   <nav
     class="bottom-nav"
@@ -549,21 +557,20 @@
   </nav>
 
 
-  <!-- Supabase -->
+  <!-- =========================
+       Supabase
+  ========================= -->
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
-
-    /* =========================
-       إعداد Supabase
-    ========================= */
 
     const SUPABASE_URL =
       "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 
     const SUPABASE_KEY =
       "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+
 
     const supabaseClient =
       supabase.createClient(
@@ -642,9 +649,8 @@
           name +
           " في قسم بطل الفصل 🏆";
 
-      }
 
-      catch (error) {
+      } catch (error) {
 
         console.error(
           "Auth error:",
@@ -652,6 +658,181 @@
         );
 
       }
+
+    }
+
+
+    /* =========================
+       تحميل بطل الفصل
+    ========================= */
+
+    async function loadChampions() {
+
+      const ranking =
+        document.getElementById("ranking");
+
+
+      ranking.innerHTML =
+        `
+        <div class="loading">
+          ⏳ جاري تحميل نتائج بطل الفصل...
+        </div>
+        `;
+
+
+      try {
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+
+            .from("champions")
+
+            .select(
+              "id, student_name, points, student_rank, created_at"
+            )
+
+            .order(
+              "points",
+              {
+                ascending: false
+              }
+            );
+
+
+        if (error) {
+
+          console.error(
+            "Champions error:",
+            error
+          );
+
+          ranking.innerHTML =
+            `
+            <div class="error-box">
+              ❌ تعذر تحميل نتائج بطل الفصل.
+              <br>
+              تأكد من صلاحيات قراءة جدول champions في Supabase.
+            </div>
+            `;
+
+          return;
+
+        }
+
+
+        if (!data || data.length === 0) {
+
+          ranking.innerHTML =
+            `
+            <div class="empty">
+              🏆 لم يتم إضافة نتائج بطل الفصل حتى الآن.
+            </div>
+            `;
+
+          return;
+
+        }
+
+
+        ranking.innerHTML = "";
+
+
+        data.forEach(
+          (student, index) => {
+
+            const position =
+              student.student_rank ||
+              index + 1;
+
+
+            let medal =
+              "";
+
+            if (position === 1) {
+              medal = "🥇";
+            } else if (position === 2) {
+              medal = "🥈";
+            } else if (position === 3) {
+              medal = "🥉";
+            }
+
+
+            const card =
+              document.createElement("div");
+
+            card.className =
+              "student-card";
+
+
+            card.innerHTML =
+              `
+              <div class="rank">
+                ${medal || position}
+              </div>
+
+              <div class="student-info">
+
+                <h3>
+                  ${escapeHTML(
+                    student.student_name
+                  )}
+                </h3>
+
+                <p>
+                  المركز ${position}
+                </p>
+
+              </div>
+
+              <div class="points">
+                ⭐ ${Number(
+                  student.points || 0
+                )} نقطة
+              </div>
+              `;
+
+
+            ranking.appendChild(card);
+
+          }
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Load champions error:",
+          error
+        );
+
+
+        ranking.innerHTML =
+          `
+          <div class="error-box">
+            ❌ حدث خطأ أثناء تحميل النتائج.
+          </div>
+          `;
+
+      }
+
+    }
+
+
+    /* =========================
+       حماية عرض أسماء الطلاب
+    ========================= */
+
+    function escapeHTML(value) {
+
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 
     }
 
@@ -680,9 +861,8 @@
         window.location.href =
           "../login/index.html";
 
-      }
 
-      catch (error) {
+      } catch (error) {
 
         console.error(
           "Logout error:",
@@ -704,8 +884,10 @@
 
     checkUser();
 
+    loadChampions();
+
   </script>
 
 </body>
 
-  </html>
+    </html>
