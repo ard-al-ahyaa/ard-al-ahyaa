@@ -121,6 +121,34 @@
       <div id="usersListContainer" style="margin-top: 15px;"></div>
     </div>
 
+    <!-- قسم إضافة المذكرات والملفات -->
+    <div class="card">
+      <h3>📚 إضافة مذكرات وملفات تعليمية</h3>
+      <div class="form-group">
+        <label>عنوان المذكرة / الملف:</label>
+        <input type="text" id="noteTitle" placeholder="مثال: مذكرة شرح الباب الأول كيمياء">
+      </div>
+      <div class="form-group">
+        <label>طريقة الإضافة:</label>
+        <select id="noteType" onchange="toggleNoteInputs()">
+          <option value="file">رفع ملف (PDF أو مستند)</option>
+          <option value="link">رابط خارجي (Google Drive / رابط مباشر)</option>
+        </select>
+      </div>
+      <div class="form-group" id="noteFileInputGroup">
+        <label>اختر الملف:</label>
+        <input type="file" id="noteFile" accept=".pdf,.doc,.docx,.ppt,.pptx,.zip">
+      </div>
+      <div class="form-group hidden" id="noteLinkInputGroup">
+        <label>رابط الملف:</label>
+        <input type="text" id="noteUrl" placeholder="https://...">
+      </div>
+      <button onclick="addNote()">➕ نشر المذكرة على المنصة</button>
+      <div id="noteStatus" style="margin-top: 10px; font-weight: bold;"></div>
+      
+      <div id="notesList" style="margin-top: 20px;"></div>
+    </div>
+
     <!-- قسم إضافة الفيديوهات (برابط أو ملف) -->
     <div class="card">
       <h3>🎥 إضافة محتوى فيديو للمنصة</h3>
@@ -153,7 +181,7 @@
     <div class="card">
       <h3>🏆 إدارة أبطال الفصل (ترتيب تنازلي بالنقاط ثم أبجدي)</h3>
       <div class="form-group" style="margin-top: 15px;">
-        <input type="hidden" id="championId"> <!-- لتعديل البطل إن وجد -->
+        <input type="hidden" id="championId">
         <input type="text" id="championName" placeholder="اسم الطالب">
         <input type="number" id="championPoints" placeholder="عدد النقاط (مثلاً: 9)" style="margin-top: 10px;">
         <button onclick="saveChampion()" id="saveChampBtn" style="margin-top: 10px;">➕ إضافة البطل</button>
@@ -210,7 +238,6 @@
   </div>
 
   <script>
-    // استخدم مفتاح الأدمن (Service Role Key) أو الـ Anon Key مع صلاحيات الـ Auth Admin المناسبة
     const SUPABASE_URL = "YOUR_SUPABASE_URL";
     const SUPABASE_KEY = "YOUR_SUPABASE_SERVICE_ROLE_OR_ANON_KEY"; 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -227,7 +254,6 @@
       return true;
     }
 
-    // الإحصائيات الشاملة
     async function loadStats() {
       const container = document.getElementById("statsContainer");
       try {
@@ -235,8 +261,8 @@
         const { count: questionsCount } = await supabaseClient.from("questions").select("*", { count: 'exact', head: true });
         const { count: championsCount } = await supabaseClient.from("champions").select("*", { count: 'exact', head: true });
         const { count: videosCount } = await supabaseClient.from("videos").select("*", { count: 'exact', head: true });
+        const { count: notesCount } = await supabaseClient.from("notes").select("*", { count: 'exact', head: true });
         
-        // جلب عدد المستخدمين عبر جدول auth أو جدول profiles إن وجد
         let usersCount = "غير متوفر";
         const { data: usersData, error: userErr } = await supabaseClient.auth.admin.listUsers();
         if (!userErr && usersData) {
@@ -245,6 +271,7 @@
 
         container.innerHTML = `
           <p>👥 إجمالي عدد المستخدمين: <strong>${usersCount}</strong></p>
+          <p>📚 إجمالي المذكرات والملفات: <strong>${notesCount || 0}</strong></p>
           <p>🎥 إجمالي الفيديوهات: <strong>${videosCount || 0}</strong></p>
           <p>📝 إجمالي الاختبارات: <strong>${examsCount || 0}</strong></p>
           <p>❓ إجمالي الأسئلة: <strong>${questionsCount || 0}</strong></p>
@@ -269,7 +296,6 @@
       }
 
       try {
-        // البحث عن المستخدم بواسطة الإيميل لجلب الـ ID الخاص به
         const { data: listData, error: listError } = await supabaseClient.auth.admin.listUsers();
         if (listError) throw listError;
 
@@ -279,7 +305,6 @@
           return;
         }
 
-        // تحديث كلمة السر
         const { error: updateError } = await supabaseClient.auth.admin.updateUserById(
           targetUser.id,
           { password: newPassword }
@@ -297,7 +322,125 @@
     }
 
     // =========================
-    // إدارة الفيديوهات (رابط أو رفع ملف)
+    // إدارة المذكرات والملفات
+    // =========================
+    function toggleNoteInputs() {
+      const type = document.getElementById("noteType").value;
+      if (type === "file") {
+        document.getElementById("noteFileInputGroup").classList.remove("hidden");
+        document.getElementById("noteLinkInputGroup").classList.add("hidden");
+      } else {
+        document.getElementById("noteFileInputGroup").classList.add("hidden");
+        document.getElementById("noteLinkInputGroup").classList.remove("hidden");
+      }
+    }
+
+    async function addNote() {
+      const title = document.getElementById("noteTitle").value.trim();
+      const type = document.getElementById("noteType").value;
+      const status = document.getElementById("noteStatus");
+
+      if (!title) {
+        status.innerHTML = "❌ يرجى كتابة عنوان المذكرة";
+        return;
+      }
+
+      status.innerHTML = "⏳ جاري رفع النشر...";
+
+      try {
+        let finalUrl = "";
+
+        if (type === "link") {
+          finalUrl = document.getElementById("noteUrl").value.trim();
+          if (!finalUrl) {
+            status.innerHTML = "❌ يرجى إدخال رابط المذكرة";
+            return;
+          }
+        } else {
+          const fileInput = document.getElementById("noteFile");
+          if (fileInput.files.length === 0) {
+            status.innerHTML = "❌ يرجى اختيار ملف لرفعه";
+            return;
+          }
+          const file = fileInput.files[0];
+          const fileName = `notes_${Date.now()}_${file.name}`;
+          
+          // تأكد من وجود Bucket باسم 'notes' في Supabase Storage أو استخدم 'videos'
+          const { data: uploadData, error: uploadError } = await supabaseClient.storage
+            .from("notes")
+            .upload(fileName, file);
+
+          if (uploadError) throw uploadError;
+
+          const { data: publicUrlData } = supabaseClient.storage
+            .from("notes")
+            .getPublicUrl(fileName);
+
+          finalUrl = publicUrlData.publicUrl;
+        }
+
+        const { error: dbError } = await supabaseClient
+          .from("notes")
+          .insert({ title, file_url: finalUrl });
+
+        if (dbError) throw dbError;
+
+        status.innerHTML = "✅ تم إضافة المذكرة بنجاح!";
+        document.getElementById("noteTitle").value = "";
+        document.getElementById("noteUrl").value = "";
+        document.getElementById("noteFile").value = "";
+        loadNotes();
+        loadStats();
+      } catch (error) {
+        console.error(error);
+        status.innerHTML = "❌ فشل رفع المذكرة (تأكد من إنشاء Storage Bucket باسم notes): " + error.message;
+      }
+    }
+
+    async function loadNotes() {
+      const container = document.getElementById("notesList");
+      if (!container) return;
+
+      try {
+        const { data, error } = await supabaseClient.from("notes").select("*").order("created_at", { ascending: false });
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          container.innerHTML = "<p style='color:#666;'>لا توجد مذكرات مرفوعة حتى الآن.</p>";
+          return;
+        }
+
+        container.innerHTML = `<h4 style="color:#075e4d; margin-top:15px;">المذكرات الحالية (${data.length}):</h4>`;
+        data.forEach(n => {
+          const box = document.createElement("div");
+          box.className = "item-box";
+          box.innerHTML = `
+            <strong>📚 ${escapeHtml(n.title)}</strong>
+            <p style="font-size:12px; color:#555; word-break: break-all;">الرابط: ${escapeHtml(n.file_url)}</p>
+            <button class="danger" onclick="deleteNote('${n.id}')" style="padding: 5px 10px; font-size: 12px;">🗑️ حذف المذكرة</button>
+          `;
+          container.appendChild(box);
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    async function deleteNote(id) {
+      if (!confirm("هل تريد حذف هذه المذكرة؟")) return;
+      try {
+        const { error } = await supabaseClient.from("notes").delete().eq("id", id);
+        if (error) throw error;
+        alert("✅ تم حذف المذكرة");
+        loadNotes();
+        loadStats();
+      } catch (error) {
+        alert("❌ فشل الحذف: " + error.message);
+      }
+    }
+
+    // =========================
+    // إدارة الفيديوهات
     // =========================
     function toggleVideoInputs() {
       const type = document.getElementById("videoType").value;
@@ -338,16 +481,14 @@
             return;
           }
           const file = fileInput.files[0];
-          const fileName = `${Date.now()}_${file.name}`;
+          const fileName = `video_${Date.now()}_${file.name}`;
           
-          // رفع الملف إلى Bucket باسم 'videos' في Supabase Storage
           const { data: uploadData, error: uploadError } = await supabaseClient.storage
             .from("videos")
             .upload(fileName, file);
 
           if (uploadError) throw uploadError;
 
-          // جلب الرابط العام للملف المرفوع
           const { data: publicUrlData } = supabaseClient.storage
             .from("videos")
             .getPublicUrl(fileName);
@@ -355,7 +496,6 @@
           finalUrl = publicUrlData.publicUrl;
         }
 
-        // حفظ تفاصيل الفيديو في جدول 'videos'
         const { error: dbError } = await supabaseClient
           .from("videos")
           .insert({ title, video_url: finalUrl });
@@ -417,7 +557,7 @@
     }
 
     // =========================
-    // أبطال الفصل (ترتيب تنازلي بالنقاط ثم أبجدي) والتعديل والإضافة
+    // أبطال الفصل (تصحيح الخطأ والترتيب التنازلي ثم الأبجدي)
     // =========================
     async function saveChampion() {
       const id = document.getElementById("championId").value;
@@ -430,8 +570,7 @@
       }
 
       try {
-        if (id) {
-          // تعديل بطل موجود
+        if (id && id !== "") {
           const { error } = await supabaseClient
             .from("champions")
             .update({ student_name: name, points: points })
@@ -439,7 +578,6 @@
           if (error) throw error;
           alert("✅ تم تحديث بيانات البطل بنجاح");
         } else {
-          // إضافة بطل جديد
           const { error } = await supabaseClient
             .from("champions")
             .insert({ student_name: name, points: points });
@@ -471,12 +609,11 @@
           return;
         }
 
-        // الترتيب المطلوب: تنازلياً حسب النقاط (الأكبر أولاً)، وإذا تساوت النقاط يُرتيب أبجديًا حسب الاسم
         data.sort((a, b) => {
           if (b.points !== a.points) {
-            return b.points - a.points; // التنازلي للنقاط
+            return b.points - a.points; 
           }
-          return a.student_name.localeCompare(b.student_name, 'ar'); // الترتيب الابجدي في حال التساوي
+          return a.student_name.localeCompare(b.student_name, 'ar'); 
         });
 
         container.innerHTML = `<h4 style="color:#075e4d; margin-top:15px;">لوحة الشرف والأبطال (${data.length}):</h4>`;
@@ -537,7 +674,7 @@
     }
 
     // =========================
-    // إنشاء الاختبارات والأسئلة
+    // الاختبارات والأسئلة
     // =========================
     async function createExam() {
       const title = document.getElementById("examTitle").value.trim();
@@ -689,6 +826,7 @@
       const isAdmin = await checkAdmin();
       if (isAdmin) {
         loadStats();
+        loadNotes();
         loadVideos();
         loadChampions();
         loadExams();
