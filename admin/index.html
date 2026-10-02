@@ -1,2984 +1,566 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>لوحة تحكم الإدارة | منصة أرض الأحياء</title>
-
-  <link rel="icon" href="../favicon.png">
-
+  <title>لوحة التحكم - إدارة المنصة</title>
+  <!-- مكتبة Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, Tahoma, sans-serif;
-    }
-
     body {
-      background: #f5f7f7;
-      color: #222;
-    }
-
-    .sidebar {
-      position: fixed;
-      right: 0;
-      top: 0;
-      width: 250px;
-      height: 100vh;
-      background: #075e4d;
-      color: white;
-      padding: 25px 15px;
-      z-index: 1000;
-      overflow-y: auto;
-    }
-
-    .logo-box {
-      text-align: center;
-      margin-bottom: 35px;
-    }
-
-    .logo-box img {
-      width: 75px;
-      height: 75px;
-      object-fit: contain;
-      border-radius: 50%;
-      margin-bottom: 10px;
-    }
-
-    .logo-box h2 {
-      font-size: 20px;
-      margin-bottom: 5px;
-    }
-
-    .logo-box p {
-      font-size: 13px;
-      opacity: .8;
-    }
-
-    .menu {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .menu a,
-    .logout-btn {
-      border: none;
-      text-decoration: none;
-      color: white;
-      background: transparent;
-      width: 100%;
+      font-family: 'Cairo', Tahoma, sans-serif;
+      background-color: #f4f7f6;
+      margin: 0;
+      padding: 20px;
+      direction: rtl;
       text-align: right;
-      padding: 14px 15px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 15px;
     }
-
-    .menu a:hover,
-    .menu a.active,
-    .logout-btn:hover {
-      background: rgba(255,255,255,.15);
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
     }
-
-    .main {
-      margin-right: 250px;
-      padding: 30px;
-      min-height: 100vh;
-    }
-
-    .topbar {
-      background: white;
-      border-radius: 15px;
-      padding: 20px 25px;
-      margin-bottom: 25px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.06);
-    }
-
-    .topbar h1 {
-      color: #075e4d;
-      margin-bottom: 8px;
-    }
-
-    .topbar p {
-      color: #666;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-      gap: 20px;
-      margin-bottom: 25px;
-    }
-
-    .stat {
-      background: white;
-      padding: 25px;
-      border-radius: 15px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.06);
-    }
-
-    .stat h3 {
-      color: #075e4d;
-      margin-bottom: 10px;
-    }
-
-    .stat strong {
-      font-size: 30px;
-    }
-
     .card {
       background: white;
-      border-radius: 15px;
-      padding: 25px;
-      margin-bottom: 25px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.06);
-    }
-
-    .card h2 {
-      color: #075e4d;
-      margin-bottom: 20px;
-      font-size: 22px;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      padding: 13px;
-      border: 1px solid #ddd;
-      border-radius: 9px;
-      margin-bottom: 12px;
-      font-size: 15px;
-      outline: none;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 90px;
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-      border-color: #075e4d;
-    }
-
-    button {
-      background: #075e4d;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 9px;
-      cursor: pointer;
-      font-size: 15px;
-    }
-
-    button:hover {
-      background: #064c3f;
-    }
-
-    button:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
-
-    .danger {
-      background: #b00020;
-    }
-
-    .danger:hover {
-      background: #8d0019;
-    }
-
-    .secondary {
-      background: #555;
-    }
-
-    .secondary:hover {
-      background: #444;
-    }
-
-    .status {
-      margin-top: 12px;
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 14px;
-    }
-
-    .users-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .user-item {
-      border: 1px solid #eee;
-      padding: 15px;
-      border-radius: 10px;
-      background: #fafafa;
-    }
-
-    .user-item strong {
-      color: #075e4d;
-    }
-
-    .exam-box {
-      background: #f8faf9;
-      border: 1px solid #e4e9e7;
       padding: 20px;
-      border-radius: 14px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       margin-bottom: 20px;
     }
-
-    .exam-box h3 {
+    h2, h3 {
       color: #075e4d;
+    }
+    .form-group {
       margin-bottom: 15px;
     }
-
-    .question-box {
-      background: white;
-      border: 1px solid #e2e6e4;
-      padding: 18px;
-      border-radius: 12px;
-      margin-top: 15px;
-    }
-
-    .question-box h4 {
-      color: #075e4d;
-      margin-bottom: 12px;
-    }
-
-    .correct-answer {
-      background: #eaf7f1;
-      border: 1px solid #a9d9c5;
+    input, textarea, select {
+      width: 100%;
       padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 12px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
     }
-
-    .exam-list {
-      display: grid;
-      gap: 15px;
-      margin-top: 20px;
+    button {
+      background-color: #075e4d;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
     }
-
-    .exam-item {
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      padding: 18px;
-      background: #fff;
+    button:hover {
+      background-color: #054c3f;
     }
-
-    .exam-item h3 {
-      color: #075e4d;
-      margin-bottom: 8px;
+    button.danger {
+      background-color: #e74c3c;
     }
-
-    .exam-item p {
-      color: #666;
-      line-height: 1.7;
-      margin-bottom: 8px;
+    button.danger:hover {
+      background-color: #c0392b;
     }
-
-    .exam-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-    }
-
     .hidden {
-      display: none !important;
+      display: none;
     }
-
-    .questions-count {
-      display: inline-block;
-      background: #e8f4f1;
-      color: #075e4d;
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 13px;
+    .exam-item, .question-box {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 10px;
+      border-right: 4px solid #075e4d;
+    }
+    .exam-actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+    .correct-answer {
+      color: #27ae60;
+      font-weight: bold;
       margin-top: 5px;
     }
-
-    .champion-card {
-      border: 1px solid #e5e5e5;
-      background: #fafafa;
-      padding: 18px;
-      border-radius: 12px;
-      margin-bottom: 10px;
-    }
-
-    .champion-card h3 {
-      color: #075e4d;
-      margin-bottom: 10px;
-    }
-
-    .champion-info {
-      line-height: 1.9;
-      color: #555;
-      margin-bottom: 12px;
-    }
-
-    .champion-actions {
+    .header-bar {
       display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      background: #075e4d;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
     }
-
-    @media(max-width:700px) {
-
-      .sidebar {
-        width: 75px;
-        padding: 20px 8px;
-      }
-
-      .logo-box h2,
-      .logo-box p {
-        display: none;
-      }
-
-      .logo-box img {
-        width: 55px;
-        height: 55px;
-      }
-
-      .menu a,
-      .logout-btn {
-        text-align: center;
-        font-size: 0;
-        padding: 14px 5px;
-      }
-
-      .menu a::first-letter,
-      .logout-btn::first-letter {
-        font-size: 20px;
-      }
-
-      .main {
-        margin-right: 75px;
-        padding: 15px;
-      }
-
-      .card {
-        padding: 18px;
-      }
+    .header-bar button {
+      background: #e74c3c;
     }
   </style>
 </head>
-
 <body>
 
-  <aside class="sidebar">
-
-    <div class="logo-box">
-
-      <img src="../logo.png" alt="منصة أرض الأحياء">
-
-      <h2>منصة أرض الأحياء</h2>
-
-      <p>لوحة تحكم الإدارة</p>
-
+  <div class="container">
+    <div class="header-bar">
+      <h2>لوحة التحكم الإدارية</h2>
+      <button onclick="logout()">تسجيل الخروج</button>
     </div>
 
-    <nav class="menu">
-
-      <a href="../index.html">
-        🏠 الرئيسية
-      </a>
-
-      <a href="../videos/index.html">
-        🎥 المحاضرات
-      </a>
-
-      <a href="../notes/index.html">
-        📚 المذكرات
-      </a>
-
-      <a href="../forum/index.html">
-        💬 المنتدى
-      </a>
-
-      <a href="../exams/index.html">
-        📝 الاختبارات
-      </a>
-
-      <a href="../champion/index.html">
-        🏆 بطل الفصل
-      </a>
-
-      <button class="logout-btn" onclick="logout()">
-        🚪 تسجيل الخروج
-      </button>
-
-    </nav>
-
-  </aside>
-
-
-  <main class="main">
-
-    <div class="topbar">
-
-      <h1>⚙️ لوحة تحكم الإدارة</h1>
-
-      <p>
-        مرحبًا بك في لوحة إدارة منصة أرض الأحياء
-      </p>
-
-    </div>
-
-
-    <!-- =========================
-         الإحصائيات
-    ========================= -->
-
-    <div class="grid">
-
-      <div class="stat">
-        <h3>👨‍🎓 المستخدمون</h3>
-        <strong id="usersCount">0</strong>
-      </div>
-
-      <div class="stat">
-        <h3>🎥 الفيديوهات</h3>
-        <strong id="videosCount">0</strong>
-      </div>
-
-      <div class="stat">
-        <h3>📚 المذكرات</h3>
-        <strong id="notesCount">0</strong>
-      </div>
-
-      <div class="stat">
-        <h3>📝 الاختبارات</h3>
-        <strong id="examsCount">0</strong>
-      </div>
-
-    </div>
-
-
-    <!-- =========================
-         بطل الفصل
-    ========================= -->
-
+    <!-- الإحصائيات السريعة -->
     <div class="card">
-
-      <h2>🏆 إدارة بطل الفصل</h2>
-
-      <div class="exam-box">
-
-        <h3>➕ إضافة طالب إلى بطل الفصل</h3>
-
-        <input
-          type="text"
-          id="championName"
-          placeholder="اسم الطالب الثلاثي"
-        >
-
-        <input
-          type="number"
-          id="championPoints"
-          min="0"
-          placeholder="عدد النقاط"
-        >
-
-        <input
-          type="number"
-          id="championPosition"
-          min="1"
-          placeholder="المركز، مثل 1"
-        >
-
-        <button onclick="addChampion()">
-          🏆 إضافة البطل
-        </button>
-
-        <div
-          id="championStatus"
-          class="status">
-        </div>
-
-      </div>
-
-      <h3 style="color:#075e4d;margin-top:25px;">
-        📋 قائمة بطل الفصل
-      </h3>
-
-      <div
-        id="championsList"
-        class="users-list"
-        style="margin-top:15px;">
-        جاري تحميل أبطال الفصل...
-      </div>
-
+      <h3>📊 إحصائيات عامة</h3>
+      <div id="statsContainer">جاري تحميل الإحصائيات...</div>
     </div>
 
-
-    <!-- =========================
-         الاختبارات
-    ========================= -->
-
+    <!-- قسم إضافة وتحديث بطل الفصل بالنقاط -->
     <div class="card">
-
-      <h2>📝 إدارة الاختبارات</h2>
-
-      <div class="exam-box">
-
-        <h3>➕ إنشاء اختبار جديد</h3>
-
-        <input
-          type="text"
-          id="examTitle"
-          placeholder="اسم الاختبار، مثل: اختبار الباب الأول"
-        >
-
-        <textarea
-          id="examDescription"
-          placeholder="وصف الاختبار"
-        ></textarea>
-
-        <input
-          type="number"
-          id="examDuration"
-          min="1"
-          value="10"
-          placeholder="مدة الاختبار بالدقائق"
-        >
-
-        <button onclick="createExam()">
-          ➕ إنشاء الاختبار
-        </button>
-
-        <div id="examCreateStatus"></div>
-
+      <h3>🏆 إدارة أبطال الفصل (لوحة الشرف)</h3>
+      <div class="form-group" style="margin-top: 15px;">
+        <input type="text" id="championName" placeholder="اسم الطالب المميز">
+        <input type="number" id="championPoints" placeholder="عدد النقاط" style="margin-top: 10px;">
+        <button onclick="addChampion()" style="margin-top: 10px;">➕ إضافة للبطل / لوحة الشرف</button>
       </div>
+      <div id="championsList" style="margin-top: 20px;">
+        <!-- سيتم عرض قائمة الأبطال هنا -->
+      </div>
+    </div>
 
+    <!-- قسم إنشاء اختبار جديد -->
+    <div class="card">
+      <h3>📝 إنشاء اختبار جديد</h3>
+      <div class="form-group">
+        <label>عنوان الاختبار:</label>
+        <input type="text" id="examTitle" placeholder="مثال: اختبار الوحدة الأولى في الكيمياء">
+      </div>
+      <div class="form-group">
+        <label>وصف الاختبار:</label>
+        <textarea id="examDescription" placeholder="وصف قصير أو تعليمات للاختبار"></textarea>
+      </div>
+      <div class="form-group">
+        <label>مدة الاختبار (بالدقائق):</label>
+        <input type="number" id="examDuration" value="15">
+      </div>
+      <button onclick="createExam()">إنشاء والانتقال لإضافة الأسئلة</button>
+      <div id="examStatus" style="margin-top: 10px; font-weight: bold;"></div>
+    </div>
 
-      <div id="questionEditor"
-           class="exam-box hidden">
+    <!-- قسم قائمة الاختبارات الحالية -->
+    <div class="card">
+      <h3>📚 الاختبارات المتاحة</h3>
+      <div id="examsList">جاري تحميل الاختبارات...</div>
+    </div>
 
-        <h3>
-          ✏️ إضافة أسئلة إلى الاختبار
-        </h3>
-
-        <p id="selectedExamName"
-           style="color:#666;margin-bottom:15px;">
-        </p>
-
-        <input
-          type="text"
-          id="questionText"
-          placeholder="اكتب السؤال"
-        >
-
-        <input
-          type="text"
-          id="optionA"
-          placeholder="الاختيار الأول"
-        >
-
-        <input
-          type="text"
-          id="optionB"
-          placeholder="الاختيار الثاني"
-        >
-
-        <input
-          type="text"
-          id="optionC"
-          placeholder="الاختيار الثالث"
-        >
-
-        <input
-          type="text"
-          id="optionD"
-          placeholder="الاختيار الرابع"
-        >
-
+    <!-- قسم إضافة الأسئلة (يظهر عند اختيار اختبار) -->
+    <div id="questionEditor" class="card hidden">
+      <h3 id="selectedExamName" style="color: #075e4d;">إضافة أسئلة للاختبار</h3>
+      
+      <div class="form-group">
+        <label>نص السؤال:</label>
+        <textarea id="questionText" placeholder="اكتب السؤال هنا..."></textarea>
+      </div>
+      
+      <div class="form-group"><label>الاختيار أ:</label><input type="text" id="optionA"></div>
+      <div class="form-group"><label>الاختيار ب:</label><input type="text" id="optionB"></div>
+      <div class="form-group"><label>الاختيار ج:</label><input type="text" id="optionC"></div>
+      <div class="form-group"><label>الاختيار د:</label><input type="text" id="optionD"></div>
+      
+      <div class="form-group">
+        <label>الإجابة الصحيحة:</label>
         <select id="correctAnswer">
-
-          <option value="">
-            اختر الإجابة الصحيحة
-          </option>
-
-          <option value="a">
-            الاختيار الأول
-          </option>
-
-          <option value="b">
-            الاختيار الثاني
-          </option>
-
-          <option value="c">
-            الاختيار الثالث
-          </option>
-
-          <option value="d">
-            الاختيار الرابع
-          </option>
-
+          <option value="">-- اختر الإجابة الصحيحة --</option>
+          <option value="a">الاختيار أ</option>
+          <option value="b">الاختيار ب</option>
+          <option value="c">الاختيار ج</option>
+          <option value="d">الاختيار د</option>
         </select>
-
-        <button onclick="addQuestion()">
-          ➕ إضافة السؤال
-        </button>
-
-        <button
-          class="secondary"
-          onclick="closeQuestionEditor()"
-          style="margin-right:5px;">
-          إغلاق
-        </button>
-
-        <div id="questionStatus"></div>
-
-        <div id="currentQuestions"></div>
-
       </div>
 
+      <button onclick="addQuestion()">➕ حفظ وإضافة السؤال</button>
+      <button class="danger" onclick="closeQuestionEditor()" style="margin-right: 10px;">إغلاق محرر الأسئلة</button>
+      <div id="questionStatus" style="margin-top: 10px; font-weight: bold;"></div>
 
-      <h3 style="color:#075e4d;margin-top:25px;">
-        📋 الاختبارات الموجودة
-      </h3>
-
-      <div
-        id="examsList"
-        class="exam-list">
-        جاري تحميل الاختبارات...
-      </div>
-
+      <div id="currentQuestions"></div>
     </div>
-
-
-    <!-- =========================
-         رفع مذكرة
-    ========================= -->
-
-    <div class="card">
-
-      <h2>📚 رفع مذكرة جديدة</h2>
-
-      <input
-        type="text"
-        id="noteTitle"
-        placeholder="اكتب اسم المذكرة، مثل: مذكرة الباب الأول"
-      >
-
-      <input
-        type="file"
-        id="pdfFile"
-        accept=".pdf,application/pdf"
-      >
-
-      <button onclick="uploadPDF()">
-        📤 رفع المذكرة
-      </button>
-
-      <div id="pdfStatus"></div>
-
-    </div>
-
-
-    <!-- =========================
-         إضافة فيديو برابط
-    ========================= -->
-
-    <div class="card">
-
-      <h2>🔗 إضافة فيديو برابط</h2>
-
-      <input
-        type="text"
-        id="videoTitle"
-        placeholder="اسم المحاضرة"
-      >
-
-      <input
-        type="text"
-        id="videoDescription"
-        placeholder="وصف المحاضرة"
-      >
-
-      <input
-        type="url"
-        id="videoUrl"
-        placeholder="رابط الفيديو"
-      >
-
-      <button onclick="addVideoUrl()">
-        ➕ إضافة المحاضرة
-      </button>
-
-      <div id="videoUrlStatus"></div>
-
-    </div>
-
-
-    <!-- =========================
-         رفع فيديو
-    ========================= -->
-
-    <div class="card">
-
-      <h2>🎥 رفع فيديو من الجهاز</h2>
-
-      <input
-        type="text"
-        id="uploadVideoTitle"
-        placeholder="اسم المحاضرة"
-      >
-
-      <input
-        type="text"
-        id="uploadVideoDescription"
-        placeholder="وصف المحاضرة"
-      >
-
-      <input
-        type="file"
-        id="videoFile"
-        accept="video/*"
-      >
-
-      <button onclick="uploadVideo()">
-        📤 رفع الفيديو
-      </button>
-
-      <div id="videoUploadStatus"></div>
-
-    </div>
-
-
-    <!-- =========================
-         المستخدمون
-    ========================= -->
-
-    <div class="card">
-
-      <h2>👨‍🎓 المستخدمون</h2>
-
-      <div
-        id="usersList"
-        class="users-list">
-        جاري تحميل المستخدمين...
-      </div>
-
-    </div>
-
-
-    <!-- =========================
-         تغيير كلمة السر
-    ========================= -->
-
-    <div class="card">
-
-      <h2>🔐 تغيير كلمة سر مستخدم</h2>
-
-      <select id="userSelect">
-
-        <option value="">
-          اختر المستخدم
-        </option>
-
-      </select>
-
-      <input
-        type="password"
-        id="newPassword"
-        placeholder="كلمة السر الجديدة"
-      >
-
-      <button onclick="changePassword()">
-        🔑 تغيير كلمة السر
-      </button>
-
-      <div id="passwordStatus"></div>
-
-    </div>
-
-  </main>
-
-
-  <!-- Supabase -->
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </div>
 
   <script>
-
-    const SUPABASE_URL =
-      "https://fpfbmjtpzamzlyzitmsd.supabase.co";
-
-    const SUPABASE_ANON_KEY =
-      "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
-
-    const BUCKET =
-      "lectures";
-
-    const ADMIN_UID =
-      "6b6a2997-74a6-4441-b817-cbf00cd81229";
-
-
-    const supabaseClient =
-      supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-      );
-
+    // إعدادات اتصال Supabase (استبدل القيم بالبيانات الخاصة بك)
+    const SUPABASE_URL = "YOUR_SUPABASE_URL";
+    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let selectedExamId = null;
 
-
-    // =========================
-    // التحقق من المدير
-    // =========================
-
+    // التحقق من صلاحيات الأدمين
     async function checkAdmin() {
-
-      const {
-        data: {
-          session
-        }
-      } =
-        await supabaseClient.auth.getSession();
-
-
+      const { data: { session } } = await supabaseClient.auth.getSession();
       if (!session) {
-
-        location.href =
-          "../login/index.html";
-
+        alert("⚠️️ يجب تسجيل الدخول أولاً كأدمين");
+        location.href = "../login/index.html";
         return false;
-
       }
-
-
-      if (session.user.id !== ADMIN_UID) {
-
-        alert(
-          "❌ ليس لديك صلاحية الدخول إلى لوحة التحكم"
-        );
-
-        await supabaseClient.auth.signOut();
-
-        location.href =
-          "../login/index.html";
-
-        return false;
-
-      }
-
-
       return true;
-
     }
 
+    // جلب الإحصائيات السريعة
+    async function loadStats() {
+      const container = document.getElementById("statsContainer");
+      try {
+        const { count: examsCount } = await supabaseClient.from("exams").select("*", { count: 'exact', head: true });
+        const { count: questionsCount } = await supabaseClient.from("questions").select("*", { count: 'exact', head: true });
+        const { count: championsCount } = await supabaseClient.from("champions").select("*", { count: 'exact', head: true });
+
+        container.innerHTML = `
+          <p>📝 عدد الاختبارات الكلي: <strong>${examsCount || 0}</strong></p>
+          <p>❓ عدد الأسئلة الكلي: <strong>${questionsCount || 0}</strong></p>
+          <p>🏆 عدد الطلاب في لوحة الشرف: <strong>${championsCount || 0}</strong></p>
+        `;
+      } catch (error) {
+        console.error(error);
+        container.innerHTML = "تعذر تحميل الإحصائيات.";
+      }
+    }
 
     // =========================
-    // بطل الفصل
+    // إدارة أبطال الفصل (لوحة الشرف)
     // =========================
+    async function addChampion() {
+      const name = document.getElementById("championName").value.trim();
+      const points = parseInt(document.getElementById("championPoints").value);
 
-    async function loadChampions() {
-
-      const list =
-        document.getElementById(
-          "championsList"
-        );
-
-      if (!list) return;
-
-
-      list.innerHTML =
-        "⏳ جاري تحميل أبطال الفصل...";
-
+      if (!name || isNaN(points)) {
+        alert("❌ يرجى إدخال اسم الطالب وعدد النقاط بشكل صحيح");
+        return;
+      }
 
       try {
+        const { error } = await supabaseClient
+          .from("champions")
+          .insert({ 
+            student_name: name, 
+            points: points 
+          });
 
-        const {
-          data,
-          error
-        } =
-          await supabaseClient
-            .from("champions")
-            .select("*")
-            .order(
-              "position",
-              {
-                ascending: true
-              }
-            );
+        if (error) throw error;
 
+        alert("🏆 تم إضافة البطل بنجاح!");
+        document.getElementById("championName").value = "";
+        document.getElementById("championPoints").value = "";
+        loadChampions();
+        loadStats();
+      } catch (error) {
+        console.error(error);
+        alert("❌ فشل إضافة البطل: " + error.message);
+      }
+    }
 
-        if (error) {
-          throw error;
-        }
+    async function loadChampions() {
+      const container = document.getElementById("championsList");
+      if (!container) return;
 
+      container.innerHTML = "⏳ جاري تحميل قائمة الأبطال...";
+
+      try {
+        const { data, error } = await supabaseClient
+          .from("champions")
+          .select("*")
+          .order("points", { ascending: false });
+
+        if (error) throw error;
 
         if (!data || data.length === 0) {
-
-          list.innerHTML =
-            "لا توجد نتائج لبطل الفصل حتى الآن.";
-
+          container.innerHTML = "<p style='color:#666; margin-top:10px;'>لا يوجد أبطال مسجلين حتى الآن.</p>";
           return;
-
         }
 
+        container.innerHTML = `<h4 style="color:#075e4d; margin-top:15px;">لوحة الشرف والأبطال (${data.length}):</h4>`;
+
+        data.forEach((champ, index) => {
+          const champBox = document.createElement("div");
+          champBox.style.cssText = "background: #f9f9f9; padding: 10px; margin-top: 8px; border-radius: 5px; border-right: 4px solid #075e4d; display: flex; justify-content: space-between; align-items: center;";
+          
+          champBox.innerHTML = `
+            <div>
+              <strong>#${index + 1} - ${escapeHtml(champ.student_name)}</strong> 
+              <span style="color: #e67e22; margin-right: 15px;">⭐ ${champ.points} نقطة</span>
+            </div>
+            <button class="danger" onclick="deleteChampion('${champ.id}')" style="padding: 5px 10px; font-size: 12px;">🗑️ حذف</button>
+          `;
+          container.appendChild(champBox);
+        });
+      } catch (error) {
+        console.error(error);
+        container.innerHTML = "❌ تعذر تحميل قائمة الأبطال";
+      }
+    }
+
+    async function deleteChampion(champId) {
+      if (!confirm("هل تريد حذف هذا الطالب من لوحة الشرف؟")) return;
+      
+      try {
+        const { error } = await supabaseClient
+          .from("champions")
+          .delete()
+          .eq("id", champId);
+
+        if (error) throw error;
+        
+        alert("✅ تم الحذف بنجاح");
+        loadChampions();
+        loadStats();
+      } catch (error) {
+        console.error(error);
+        alert("❌ فشل الحذف: " + error.message);
+      }
+    }
+
+    // =========================
+    // إنشاء الاختبارات
+    // =========================
+    async function createExam() {
+      const title = document.getElementById("examTitle").value.trim();
+      const description = document.getElementById("examDescription").value.trim();
+      const duration = parseInt(document.getElementById("examDuration").value) || 15;
+      const status = document.getElementById("examStatus");
+
+      if (!title) {
+        status.innerHTML = "❌ يرجى كتابة عنوان الاختبار";
+        return;
+      }
+
+      status.innerHTML = "⏳ جاري إنشاء الاختبار...";
+
+      try {
+        const { data, error } = await supabaseClient
+          .from("exams")
+          .insert({ title, description, duration })
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        status.innerHTML = "✅ تم إنشاء الاختبار بنجاح، يمكنك إضافة الأسئلة الآن.";
+        document.getElementById("examTitle").value = "";
+        document.getElementById("examDescription").value = "";
+
+        await loadExams();
+        loadStats();
+        openQuestionEditor(data.id, data.title);
+
+      } catch (error) {
+        console.error(error);
+        status.innerHTML = "❌ فشل إنشاء الاختبار: " + error.message;
+      }
+    }
+
+    // =========================
+    // إدارة الأسئلة
+    // =========================
+    async function openQuestionEditor(examId, examTitle) {
+      selectedExamId = examId;
+      document.getElementById("selectedExamName").textContent = "إضافة أسئلة للاختبار: " + examTitle;
+      document.getElementById("questionEditor").classList.remove("hidden");
+      document.getElementById("questionEditor").scrollIntoView({ behavior: "smooth" });
+      await loadCurrentQuestions();
+    }
+
+    function closeQuestionEditor() {
+      selectedExamId = null;
+      document.getElementById("questionEditor").classList.add("hidden");
+      document.getElementById("questionText").value = "";
+      document.getElementById("optionA").value = "";
+      document.getElementById("optionB").value = "";
+      document.getElementById("optionC").value = "";
+      document.getElementById("optionD").value = "";
+      document.getElementById("correctAnswer").value = "";
+      document.getElementById("currentQuestions").innerHTML = "";
+    }
+
+    async function addQuestion() {
+      if (!selectedExamId) {
+        alert("❌ يرجى اختيار الاختبار أولاً");
+        return;
+      }
+
+      const text = document.getElementById("questionText").value.trim();
+      const option_a = document.getElementById("optionA").value.trim();
+      const option_b = document.getElementById("optionB").value.trim();
+      const option_c = document.getElementById("optionC").value.trim();
+      const option_d = document.getElementById("optionD").value.trim();
+      const correct_answer = document.getElementById("correctAnswer").value;
+      const status = document.getElementById("questionStatus");
+
+      if (!text || !option_a || !option_b || !option_c || !option_d || !correct_answer) {
+        status.innerHTML = "❌ يرجى ملء جميع حقول السؤال والاختيارات وتحديد الإجابة الصحيحة";
+        return;
+      }
+
+      status.innerHTML = "⏳ جاري إضافة السؤال...";
+
+      try {
+        const { error } = await supabaseClient
+          .from("questions")
+          .insert({
+            exam_id: selectedExamId,
+            question_text: text,
+            option_a,
+            option_b,
+            option_c,
+            option_d,
+            correct_answer
+          });
+
+        if (error) throw error;
+
+        status.innerHTML = "✅ تمت إضافة السؤال بنجاح";
+        document.getElementById("questionText").value = "";
+        document.getElementById("optionA").value = "";
+        document.getElementById("optionB").value = "";
+        document.getElementById("optionC").value = "";
+        document.getElementById("optionD").value = "";
+        document.getElementById("correctAnswer").value = "";
+
+        await loadCurrentQuestions();
+        loadStats();
+      } catch (error) {
+        console.error(error);
+        status.innerHTML = "❌ فشل إضافة السؤال: " + error.message;
+      }
+    }
+
+    async function loadCurrentQuestions() {
+      const container = document.getElementById("currentQuestions");
+      if (!selectedExamId) return;
+
+      container.innerHTML = "⏳ جاري تحميل الأسئلة...";
+
+      try {
+        const { data, error } = await supabaseClient
+          .from("questions")
+          .select("*")
+          .eq("exam_id", selectedExamId);
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          container.innerHTML = "<p style='color:#666; margin-top:10px;'>لا توجد أسئلة مضافة لهذا الاختبار حتى الآن.</p>";
+          return;
+        }
+
+        container.innerHTML = `<h4 style="color:#075e4d; margin-top:15px;">الأسئلة الحالية (${data.length}):</h4>`;
+
+        data.forEach((q, index) => {
+          const qBox = document.createElement("div");
+          qBox.className = "question-box";
+          qBox.innerHTML = `
+            <h4>سؤال ${index + 1}: ${escapeHtml(q.question_text)}</h4>
+            <p>أ) ${escapeHtml(q.option_a)}</p>
+            <p>ب) ${escapeHtml(q.option_b)}</p>
+            <p>ج) ${escapeHtml(q.option_c)}</p>
+            <p>د) ${escapeHtml(q.option_d)}</p>
+            <div class="correct-answer">الإجابة الصحيحة: <strong>${q.correct_answer.toUpperCase()}</strong></div>
+            <button class="danger" onclick="deleteQuestion('${q.id}')" style="margin-top: 10px;">🗑️ حذف السؤال</button>
+          `;
+          container.appendChild(qBox);
+        });
+      } catch (error) {
+        console.error(error);
+        container.innerHTML = "❌ تعذر تحميل الأسئلة";
+      }
+    }
+
+    async function deleteQuestion(qId) {
+      if (!confirm("هل تريد حذف هذا السؤال؟")) return;
+      try {
+        const { error } = await supabaseClient.from("questions").delete().eq("id", qId);
+        if (error) throw error;
+        alert("✅ تم حذف السؤال");
+        await loadCurrentQuestions();
+        loadStats();
+      } catch (error) {
+        console.error(error);
+        alert("❌ فشل حذف السؤال: " + error.message);
+      }
+    }
+
+    async function loadExams() {
+      const list = document.getElementById("examsList");
+      if (!list) return;
+
+      list.innerHTML = "⏳ جاري تحميل الاختبارات...";
+
+      try {
+        const { data, error } = await supabaseClient
+          .from("exams")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          list.innerHTML = "لا توجد اختبارات مضافة حتى الآن.";
+          return;
+        }
 
         list.innerHTML = "";
 
-
-        data.forEach(champion => {
-
-          const item =
-            document.createElement("div");
-
-          item.className =
-            "champion-card";
-
-
+        data.forEach(exam => {
+          const item = document.createElement("div");
+          item.className = "exam-item";
           item.innerHTML = `
-
-            <h3>
-              🏆 ${escapeHtml(
-                champion.student_name ||
-                "بدون اسم"
-              )}
-            </h3>
-
-            <div class="champion-info">
-
-              🥇 المركز:
-              <strong>
-                ${escapeHtml(
-                  champion.position ?? "-"
-                )}
-              </strong>
-
-              <br>
-
-              ⭐ النقاط:
-              <strong>
-                ${escapeHtml(
-                  champion.points ?? "0"
-                )}
-              </strong>
-
+            <h3>📝 ${escapeHtml(exam.title)}</h3>
+            <p>${escapeHtml(exam.description || "بدون وصف")}</p>
+            <p>⏱️ المدة: <strong>${exam.duration}</strong> دقائق</p>
+            <div class="exam-actions">
+              <button onclick="openQuestionEditor('${exam.id}', '${escapeHtml(exam.title)}')">✏️ إدارة الأسئلة</button>
+              <button class="danger" onclick="deleteExam('${exam.id}')">🗑️ حذف الاختبار</button>
             </div>
-
-            <div class="champion-actions">
-
-              <button
-                onclick="editChampion('${champion.id}')">
-                ✏️ تعديل
-              </button>
-
-              <button
-                class="danger"
-                onclick="deleteChampion('${champion.id}')">
-                🗑️ حذف
-              </button>
-
-            </div>
-
           `;
-
-
           list.appendChild(item);
-
         });
-
-      }
-
-      catch (error) {
-
+      } catch (error) {
         console.error(error);
-
-        list.innerHTML =
-          "❌ تعذر تحميل أبطال الفصل: "
-          + escapeHtml(
-            error.message
-          );
-
+        list.innerHTML = "❌ تعذر تحميل الاختبارات";
       }
-
     }
 
-
-    async function addChampion() {
-
-      const name =
-        document
-          .getElementById("championName")
-          .value
-          .trim();
-
-
-      const points =
-        parseInt(
-          document
-            .getElementById("championPoints")
-            .value
-        );
-
-
-      const position =
-        parseInt(
-          document
-            .getElementById("championPosition")
-            .value
-        );
-
-
-      const status =
-        document
-          .getElementById(
-            "championStatus"
-          );
-
-
-      if (!name) {
-
-        status.innerHTML =
-          "❌ اكتب اسم الطالب الثلاثي";
-
-        return;
-
-      }
-
-
-      if (
-        Number.isNaN(points) ||
-        points < 0
-      ) {
-
-        status.innerHTML =
-          "❌ اكتب عدد نقاط صحيح";
-
-        return;
-
-      }
-
-
-      if (
-        Number.isNaN(position) ||
-        position < 1
-      ) {
-
-        status.innerHTML =
-          "❌ اكتب مركزًا صحيحًا";
-
-        return;
-
-      }
-
-
-      status.innerHTML =
-        "⏳ جاري إضافة البطل...";
-
+    async function deleteExam(examId) {
+      if (!confirm("⚠️ هل أنت متأكد من حذف هذا الاختبار وجميع الأسئلة المرتبطة به؟")) return;
 
       try {
-
-        const {
-          error
-        } =
-          await supabaseClient
-            .from("champions")
-            .insert({
-
-              student_name:
-                name,
-
-              points:
-                points,
-
-              position:
-                position
-
-            });
-
-
-        if (error) {
-          throw error;
-        }
-
-
-        status.innerHTML =
-          "✅ تم إضافة بطل الفصل بنجاح";
-
-
-        document
-          .getElementById(
-            "championName"
-          )
-          .value = "";
-
-
-        document
-          .getElementById(
-            "championPoints"
-          )
-          .value = "";
-
-
-        document
-          .getElementById(
-            "championPosition"
-          )
-          .value = "";
-
-
-        await loadChampions();
-
-      }
-
-      catch (error) {
-
-        console.error(error);
-
-        status.innerHTML =
-          "❌ فشل إضافة البطل: "
-          + error.message;
-
-      }
-
-    }
-
-
-    async function editChampion(id) {
-
-      try {
-
-        const {
-          data,
-          error
-        } =
-          await supabaseClient
-            .from("champions")
-            .select("*")
-            .eq("id", id)
-            .single();
-
-
-        if (error) {
-          throw error;
-        }
-
-
-        const newName =
-          prompt(
-            "اسم الطالب:",
-            data.student_name || ""
-          );
-
-
-        if (newName === null) {
-          return;
-        }
-
-
-        const newPoints =
-          prompt(
-            "عدد النقاط:",
-            data.points ?? 0
-          );
-
-
-        if (newPoints === null) {
-          return;
-        }
-
-
-        const newPosition =
-          prompt(
-            "المركز:",
-            data.position ?? 1
-          );
-
-
-        if (newPosition === null) {
-          return;
-        }
-
-
-        const points =
-          parseInt(newPoints);
-
-
-        const position =
-          parseInt(newPosition);
-
-
-        if (
-          !newName.trim() ||
-          Number.isNaN(points) ||
-          Number.isNaN(position) ||
-          points < 0 ||
-          position < 1
-        ) {
-
-          alert(
-            "❌ البيانات غير صحيحة"
-          );
-
-          return;
-
-        }
-
-
-        const {
-          error: updateError
-        } =
-          await supabaseClient
-            .from("champions")
-            .update({
-
-              student_name:
-                newName.trim(),
-
-              points:
-                points,
-
-              position:
-                position
-
-            })
-            .eq(
-              "id",
-              id
-            );
-
-
-        if (updateError) {
-          throw updateError;
-        }
-
-
-        alert(
-          "✅ تم تعديل بيانات البطل"
-        );
-
-
-        await loadChampions();
-
-      }
-
-      catch (error) {
-
-        console.error(error);
-
-        alert(
-          "❌ فشل تعديل البطل: "
-          + error.message
-        );
-
-      }
-
-    }
-
-
-    async function deleteChampion(id) {
-
-      if (
-        !confirm(
-          "⚠️ هل تريد حذف هذا الطالب من قائمة بطل الفصل؟"
-        )
-      ) {
-
-        return;
-
-      }
-
-
-      try {
-
-        const {
-          error
-        } =
-          await supabaseClient
-            .from("champions")
-            .delete()
-            .eq(
-              "id",
-              id
-            );
-
-
-        if (error) {
-          throw error;
-        }
-
-
-        alert(
-          "✅ تم حذف النتيجة"
-        );
-
-
-        await loadChampions();
-
-      }
-
-      catch (error) {
-
-        console.error(error);
-
-        alert(
-          "❌ فشل الحذف: "
-          + error.message
-        );
-
-      }
-
-    }
-
-
-    // =========================
-    // رفع PDF
-    // =========================
-
-    async function uploadPDF() {
-
-      const title =
-        document
-          .getElementById("noteTitle")
-          .value
-          .trim();
-
-
-      const file =
-        document
-          .getElementById("pdfFile")
-          .files[0];
-
-
-      const status =
-        document
-          .getElementById("pdfStatus");
-
-
-      if (!title) {
-
-        status.innerHTML =
-          "❌ اكتب اسم المذكرة أولًا";
-
-        return;
-
-      }
-
-
-      if (!file) {
-
-        status.innerHTML =
-          "❌ اختر ملف PDF";
-
-        return;
-
-      }
-
-
-      if (file.type !== "application/pdf") {
-
-        status.innerHTML =
-          "❌ يجب اختيار ملف PDF فقط";
-
-        return;
-
-      }
-
-
-      status.innerHTML =
-        "⏳ جاري رفع المذكرة...";
-
-
-      try {
-
-        const path =
-          "pdf/"
-          + Date.now()
-          + "_"
-          + crypto.randomUUID()
-          + ".pdf";
-
-
-        const {
-          error: uploadError
-        } =
-          await supabaseClient
-            .storage
-            .from(BUCKET)
-            .upload(
-              path,
-              file,
-              {
-                cacheControl: "3600",
-                upsert: false,
-                contentType:
-                  "application/pdf"
-              }
-            );
-
-
-        if (uploadError) {
-          throw uploadError;
-        }
-
-
-        const {
-          error: dbError
-        } =
-          await supabaseClient
-            .from("notes")
-            .insert({
-
-              title:
-                title,
-
-              file_path:
-                path
-
-            });
-
-
-        if (dbError) {
-          throw dbError;
-        }
-
-
-        status.innerHTML =
-          "✅ تم رفع المذكرة بنجاح";
-
-
-        document
-          .getElementById("noteTitle")
-          .value = "";
-
-
-        document
-          .getElementById("pdfFile")
-          .value = "";
-
-
-        loadStats();
-
-      }
-
-      catch (error) {
-
-        console.error(error);
-
-        status.innerHTML =
-          "❌ فشل رفع المذكرة: "
-          + error.message;
-
-      }
-
-    }
-
-
-    // =========================
-    // إضافة فيديو برابط
-    // =========================
-
-    async function addVideoUrl() {
-
-      const title =
-        document
-          .getElementById("videoTitle")
-          .value
-          .trim();
-
-
-      const description =
-        document
-          .getElementById("videoDescription")
-          .value
-          .trim();
-
-
-      const url =
-        document
-          .getElementById("videoUrl")
-          .value
-          .trim();
-
-
-      const status =
-        document
-          .getElementById("videoUrlStatus");
-
-
-      if (!title || !url) {
-
-        status.innerHTML =
-          "❌ اكتب اسم المحاضرة والرابط";
-
-        return;
-
-      }
-
-
-      if (
-        !url.startsWith("https://") &&
-        !url.startsWith("http://")
-      ) {
-
-        status.innerHTML =
-          "❌ يجب إدخال رابط صحيح يبدأ بـ https:// أو http://";
-
-        return;
-
-      }
-
-
-      status.innerHTML =
-        "⏳ جاري إضافة المحاضرة...";
-
-
-      try {
-
-        const {
-          error
-        } =
-          await supabaseClient
-            .from("lectures")
-            .insert({
-
-              title:
-                title,
-
-              description:
-                description,
-
-              video_url:
-                url
-
-            });
-
-
-        if (error) {
-          throw error;
-        }
-
-
-        status.innerHTML =
-          "✅ تمت إضافة المحاضرة بنجاح";
-
-
-        document
-          .getElementById("videoTitle")
-          .value = "";
-
-
-        document
-          .getElementById("videoDescription")
-          .value = "";
-
-
-        document
-          .getElementById("videoUrl")
-          .value = "";
-
-
-        loadStats();
-
-      }
-
-      catch (error) {
-
-        console.error(error);
-
-        status.innerHTML =
-          "❌ فشل إضافة المحاضرة: "
-          + error.message;
-
-      }
-
-    }
-
-
-    // =========================
-    // رفع فيديو
-    // =========================
-
-    async function uploadVideo() {
-
-      const title =
-        document
-          .getElementById("uploadVideoTitle")
-          .value
-          .trim();
-
-
-      const description =
-        document
-          .getElementById("uploadVideoDescription")
-          .value
-          .trim();
-
-
-      const file =
-        document
-          .getElementById("videoFile")
-          .files[0];
-
-
-      const status =
-        document
-          .getElementById("videoUploadStatus");
-
-
-      if (!title) {
-
-        status.innerHTML =
-          "❌ اكتب اسم المحاضرة";
-
-        return;
-
-      }
-
-
-      if (!file) {
-
-        status.innerHTML =
-          "❌ اختر الفيديو";
-
-        return;
-
-      }
-
-
-      if (
-        !file.type ||
-        !file.type.startsWith("video/")
-      ) {
-
-        status.innerHTML =
-          "❌ يجب اختيار ملف فيديو فقط";
-
-        return;
-
-      }
-
-
-      status.innerHTML =
-        "⏳ جاري رفع الفيديو...";
-
-
-      try {
-
-        const extension =
-          file.name
-            .split(".")
-            .pop()
-            .toLowerCase();
-
-
-        const path =
-          "videos/"
-          + Date.now()
-          + "_"
-          + crypto.randomUUID()
-          + "."
-          + extension;
-
-
-        const {
-          error: uploadError
-        } =
-          await supabaseClient
-            .storage
-            .from(BUCKET)
-            .upload(
-              path,
-              file,
-              {
-                cacheControl: "3600",
-                upsert: false,
-                contentType:
-                  file.type
-              }
-            );
-
-
-        if (uploadError) {
-          throw uploadError;
-        }
-
-
-        const {
-          error: dbError
-        } =
-          await supabaseClient
-            .from("lectures")
-            .insert({
-
-              title:
-                title,
-
-              description:
-                description,
-
-              video_url:
-                path
-
-            });
-
-
-        if (dbError) {
-
-          await supabaseClient
-            .storage
-            .from(BUCKET)
-            .remove([
-              path
-            ]);
-
-          throw dbError;
-
-        }
-
-
-        status.innerHTML =
-          "✅ تم رفع الفيديو وإضافته للمحاضرات بنجاح";
-
-
-        document
-          .getElementById(
-            "uploadVideoTitle"
-          )
-          .value = "";
-
-
-        document
-          .getElementById(
-            "uploadVideoDescription"
-          )
-          .value = "";
-
-
-        document
-          .getElementById(
-            "videoFile"
-          )
-          .value = "";
-
-
-        loadStats();
-
-      }
-
-      catch (error) {
-
-        console.error(
-          "Video Upload Error:",
-          error
-        );
-
-        status.innerHTML =
-          "❌ فشل رفع الفيديو: "
-          + error.message;
-
-      }
-
-    }
-
-
-    // =========================
-    // الإحصائيات
-    // =========================
-
-    async function loadStats() {
-
-      try {
-
-        const {
-          count: lecturesCount
-        } =
-          await supabaseClient
-            .from("lectures")
-            .select("*", {
-              count: "exact",
-              head: true
-            });
-
-
-        document
-          .getElementById(
-            "videosCount"
-          )
-          .textContent =
-            lecturesCount || 0;
-
-
-        const {
-          count: notesCount
-        } =
-          await supabaseClient
-            .from("notes")
-            .select("*", {
-              count: "exact",
-              head: true
-            });
-
-
-        document
-          .getElementById(
-            "notesCount"
-          )
-          .textContent =
-            notesCount || 0;
-
-
-        const {
-          count: examsCount
-        } =
-          await supabaseClient
-            .from("exams")
-            .select("*", {
-              count: "exact",
-              head: true
-            });
-
-
-        document
-          .getElementById(
-            "examsCount"
-          )
-          .textContent =
-            examsCount || 0;
-
-
-        document
-          .getElementById(
-            "usersCount"
-          )
-          .textContent =
-            "—";
-
-      }
-
-      catch (error) {
-
-        console.error(error);
-
-      }
-
-    }
-
-
-    // =========================
-    // إنشاء اختبار
-    // =========================
-
-    async function createExam() {
-
-      const title =
-        document
-          .getElementById("examTitle")
-          .value
-          .trim();
-
-
-      const description =
-        document
-          .getElementById("examDescription")
-          .value
-          .trim();
-
-
-      const duration =
-        parseInt(
-          document
-            .getElementById(
-              "examDuration"
-            )
-            .value
-        );
-
-
-      const status =
-        document
-          .getElementById(
-            "examCreateStatus"
-          );
-
-
-      if (!title) {
-
-        status.innerHTML =
-          "❌ اكتب اسم الاختبار";
-
-        return;
-
-      }
-
-
-      if (!duration || duration < 1) {
-
-        status.innerHTML =
-          "❌ اكتب مدة صحيحة للاختبار";
-
-        return;
-
-      }
-
-
-      status.innerHTML =
-        "⏳ جاري إنشاء الاختبار...";
-
-
-      try {
-
-        const {
-          data,
-          error
-        } =
-          await supabaseClient
-            .from("exams")
-            .insert({
-
-              title:
-                title,
-
-              description:
-                description,
-
-              duration:
-                duration
-
-            })
-            .select()
-            .single();
-
-
-        if (error) {
-          throw error;
-        }
-
-
-        status.innerHTML =
-          "✅ تم إنشاء الاختبار بنجاح";
-
-
-        document
-          .getElementById(
-            "examTitle"
-          )
-          .value = "";
-
-
-        document
-          .getElementById(
-            "examDescription"
-          )
-          .value = "";
-
-
-        document
-          .getElementById(
-            "examDuration"
-          )
-          .value = "10";
-
-
+        const { error } = await supabaseClient.from("exams").delete().eq("id", examId);
+        if (error) throw error;
+
+        alert("✅ تم حذف الاختبار بنجاح");
+        if (selectedExamId === examId) closeQuestionEditor();
         await loadExams();
-
-
-        openQuestionEditor(
-          data.id,
-          data.title
-        );
-
-
         loadStats();
-
-      }
-
-      catch (error) {
-
+      } catch (error) {
         console.error(error);
-
-        status.innerHTML =
-          "❌ فشل إنشاء الاختبار: "
-          + error.message;
-
+        alert("❌ فشل حذف الاختبار: " + error.message);
       }
-
     }
 
-
-    // =========================
-    // تحميل الاختبارات
-    // =========================
-
-    async function loadExams() {
-
-      const list =
-        document
-          .getElementById(
-            "examsList"
-          );
-
-
-      list.innerHTML =
-        "⏳ جاري تحميل الاختبارات...";
-
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .from("exams")
-          .select("*")
-          .order(
-            "created_at",
-            {
-              ascending: false
-            }
-          );
-
-
-      if (error) {
-
-        list.innerHTML =
-          "❌ تعذر تحميل الاختبارات: "
-          + error.message;
-
-        return;
-
-      }
-
-
-      if (!data || data.length === 0) {
-
-        list.innerHTML =
-          "لا توجد اختبارات حتى الآن.";
-
-        return;
-
-      }
-
-
-      list.innerHTML = "";
-
-
-      for (const exam of data) {
-
-        const {
-          count
-        } =
-          await supabaseClient
-            .from("exam_questions")
-            .select("*", {
-              count: "exact",
-              head: true
-            })
-            .eq(
-              "exam_id",
-              exam.id
-            );
-
-
-        const item =
-          document.createElement("div");
-
-
-        item.className =
-          "exam-item";
-
-
-        item.innerHTML = `
-
-          <h3>
-            📝 ${escapeHtml(
-              exam.title
-            )}
-          </h3>
-
-          <p>
-            ${escapeHtml(
-              exam.description ||
-              "بدون وصف"
-            )}
-          </p>
-
-          <p>
-            ⏱️ مدة الاختبار:
-            ${exam.duration} دقيقة
-          </p>
-
-          <span class="questions-count">
-            ❓ ${count || 0} سؤال
-          </span>
-
-          <div class="exam-actions">
-
-            <button
-              onclick="openQuestionEditor(
-                '${exam.id}',
-                ${JSON.stringify(
-                  exam.title
-                )}
-              )">
-              ✏️ إدارة الأسئلة
-            </button>
-
-            <button
-              class="danger"
-              onclick="deleteExam(
-                '${exam.id}'
-              )">
-              🗑️ حذف الاختبار
-            </button>
-
-          </div>
-
-        `;
-
-
-        list.appendChild(item);
-
-      }
-
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
 
-
-    // =========================
-    // فتح محرر الأسئلة
-    // =========================
-
-    async function openQuestionEditor(
-      examId,
-      examTitle
-    ) {
-
-      selectedExamId =
-        examId;
-
-
-      document
-        .getElementById(
-          "questionEditor"
-        )
-        .classList
-        .remove("hidden");
-
-
-      document
-        .getElementById(
-          "selectedExamName"
-        )
-        .textContent =
-          "الاختبار الحالي: "
-          + examTitle;
-
-
-      clearQuestionFields();
-
-
-      await loadQuestions();
-
-
-      document
-        .getElementById(
-          "questionEditor"
-        )
-        .scrollIntoView({
-          behavior: "smooth"
-        });
-
-    }
-
-
-    function closeQuestionEditor() {
-
-      selectedExamId =
-        null;
-
-
-      document
-        .getElementById(
-          "questionEditor"
-        )
-        .classList
-        .add("hidden");
-
-    }
-
-
-    // =========================
-    // إضافة سؤال
-    // =========================
-
-    async function addQuestion() {
-
-      if (!selectedExamId) {
-
-        alert(
-          "❌ اختر اختبارًا أولًا"
-        );
-
-        return;
-
-      }
-
-
-      const question =
-        document
-          .getElementById(
-            "questionText"
-          )
-          .value
-          .trim();
-
-
-      const optionA =
-        document
-          .getElementById(
-            "optionA"
-          )
-          .value
-          .trim();
-
-
-      const optionB =
-        document
-          .getElementById(
-            "optionB"
-          )
-          .value
-          .trim();
-
-
-      const optionC =
-        document
-          .getElementById(
-            "optionC"
-          )
-          .value
-          .trim();
-
-
-      const optionD =
-        document
-          .getElementById(
-            "optionD"
-          )
-          .value
-          .trim();
-
-
-      const correct =
-        document
-          .getElementById(
-            "correctAnswer"
-          )
-          .value;
-
-
-      const status =
-        document
-          .getElementById(
-            "questionStatus"
-          );
-
-
-      if (
-        !question ||
-        !optionA ||
-        !optionB ||
-        !optionC ||
-        !optionD ||
-        !correct
-      ) {
-
-        status.innerHTML =
-          "❌ يجب كتابة السؤال وجميع الاختيارات وتحديد الإجابة الصحيحة";
-
-        return;
-
-      }
-
-
-      status.innerHTML =
-        "⏳ جاري إضافة السؤال...";
-
-
-      try {
-
-        const {
-          error
-        } =
-          await supabaseClient
-            .from("exam_questions")
-            .insert({
-
-              exam_id:
-                selectedExamId,
-
-              question:
-                question,
-
-              option_a:
-                optionA,
-
-              option_b:
-                optionB,
-
-              option_c:
-                optionC,
-
-              option_d:
-                optionD,
-
-              correct_answer:
-                correct
-
-            });
-
-
-        if (error) {
-          throw error;
-        }
-
-
-        status.innerHTML =
-          "✅ تم إضافة السؤال بنجاح";
-
-
-        clearQuestionFields();
-
-
-        await loadQuestions();
-
-        await loadExams();
-
-      }
-
-      catch (error) {
-
-        console.error(error);
-
-        status.innerHTML =
-          "❌ فشل إضافة السؤال: "
-          + error.message;
-
-      }
-
-    }
-
-
-    // =========================
-    // تحميل الأسئلة
-    // =========================
-
-    async function loadQuestions() {
-
-      const container =
-        document
-          .getElementById(
-            "currentQuestions"
-          );
-
-
-      if (!selectedExamId) {
-
-        container.innerHTML =
-          "";
-
-        return;
-
-      }
-
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .from("exam_questions")
-          .select("*")
-          .eq(
-            "exam_id",
-            selectedExamId
-          )
-          .order(
-            "created_at",
-            {
-              ascending: true
-            }
-          );
-
-
-      if (error) {
-
-        container.innerHTML =
-          "❌ تعذر تحميل الأسئلة: "
-          + error.message;
-
-        return;
-
-      }
-
-
-      if (!data || data.length === 0) {
-
-        container.innerHTML =
-          "<p style='margin-top:15px;color:#777;'>لم تتم إضافة أسئلة لهذا الاختبار بعد.</p>";
-
-        return;
-
-      }
-
-
-      container.innerHTML =
-        "";
-
-
-      data.forEach(
-        (question, index) => {
-
-          const box =
-            document.createElement(
-              "div"
-            );
-
-
-          box.className =
-            "question-box";
-
-
-          const correctText =
-            question.correct_answer
-              .toUpperCase();
-
-
-          box.innerHTML = `
-
-            <h4>
-              السؤال ${index + 1}:
-              ${escapeHtml(
-                question.question
-              )}
-            </h4>
-
-            <p>
-              أ) ${escapeHtml(
-                question.option_a
-              )}
-            </p>
-
-            <p>
-              ب) ${escapeHtml(
-                question.option_b
-              )}
-            </p>
-
-            <p>
-              ج) ${escapeHtml(
-                question.option_c
-              )}
-            </p>
-
-            <p>
-              د) ${escapeHtml(
-                question.option_d
-              )}
-            </p>
-
-            <div class="correct-answer">
-              ✅ الإجابة الصحيحة:
-              ${correctText}
-            </div>
-
-            <button
-              class="danger"
-              onclick="deleteQuestion(
-                '${question.id}'
-              )">
-              🗑️ حذف السؤال
-            </button>
-
-          `;
-
-
-          container.appendChild(
-            box
-          );
-
-        }
-      );
-
-    }
-
-
-    async function deleteQuestion(
-      questionId
-    ) {
-
-      if (
-        !confirm(
-          "هل تريد حذف هذا السؤال؟"
-        )
-      ) {
-
-        return;
-
-      }
-
-
-      const {
-        error
-      } =
-        await supabaseClient
-          .from("exam_questions")
-          .delete()
-          .eq(
-            "id",
-            questionId
-          );
-
-
-      if (error) {
-
-        alert(
-          "❌ فشل حذف السؤال: "
-          + error.message
-        );
-
-        return;
-
-      }
-
-
-      await loadQuestions();
-
-      await loadExams();
-
-    }
-
-
-    async function deleteExam(
-      examId
-    ) {
-
-      if (
-        !confirm(
-          "⚠️ حذف الاختبار سيحذف جميع أسئلته أيضًا. هل تريد المتابعة؟"
-        )
-      ) {
-
-        return;
-
-      }
-
-
-      const {
-        error
-      } =
-        await supabaseClient
-          .from("exams")
-          .delete()
-          .eq(
-            "id",
-            examId
-          );
-
-
-      if (error) {
-
-        alert(
-          "❌ فشل حذف الاختبار: "
-          + error.message
-        );
-
-        return;
-
-      }
-
-
-      if (
-        selectedExamId === examId
-      ) {
-
-        closeQuestionEditor();
-
-      }
-
-
-      await loadExams();
-
-      await loadStats();
-
-    }
-
-
-    function clearQuestionFields() {
-
-      document
-        .getElementById(
-          "questionText"
-        )
-        .value = "";
-
-
-      document
-        .getElementById(
-          "optionA"
-        )
-        .value = "";
-
-
-      document
-        .getElementById(
-          "optionB"
-        )
-        .value = "";
-
-
-      document
-        .getElementById(
-          "optionC"
-        )
-        .value = "";
-
-
-      document
-        .getElementById(
-          "optionD"
-        )
-        .value = "";
-
-
-      document
-        .getElementById(
-          "correctAnswer"
-        )
-        .value = "";
-
-    }
-
-
-    // =========================
-    // المستخدمون
-    // =========================
-
-    async function loadUsers() {
-
-      const list =
-        document
-          .getElementById(
-            "usersList"
-          );
-
-
-      const select =
-        document
-          .getElementById(
-            "userSelect"
-          );
-
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .from("profiles")
-          .select(
-            "id, full_name, email, role"
-          )
-          .order(
-            "created_at",
-            {
-              ascending: false
-            }
-          );
-
-
-      if (error) {
-
-        list.innerHTML =
-          "❌ تعذر تحميل المستخدمين: "
-          + error.message;
-
-        return;
-
-      }
-
-
-      if (!data || data.length === 0) {
-
-        list.innerHTML =
-          "لا يوجد مستخدمون ظاهرون حاليًا.";
-
-        return;
-
-      }
-
-
-      list.innerHTML =
-        "";
-
-
-      select.innerHTML = `
-        <option value="">
-          اختر المستخدم
-        </option>
-      `;
-
-
-      data.forEach(user => {
-
-        const item =
-          document.createElement(
-            "div"
-          );
-
-
-        item.className =
-          "user-item";
-
-
-        item.innerHTML = `
-
-          <strong>
-            ${escapeHtml(
-              user.full_name ||
-              "بدون اسم"
-            )}
-          </strong>
-
-          <br>
-
-          📧 ${escapeHtml(
-            user.email || ""
-          )}
-
-          <br>
-
-          👤 ${escapeHtml(
-            user.role || "student"
-          )}
-
-        `;
-
-
-        list.appendChild(
-          item
-        );
-
-
-        const option =
-          document.createElement(
-            "option"
-          );
-
-
-        option.value =
-          user.id;
-
-
-        option.textContent =
-          (
-            user.full_name ||
-            user.email ||
-            user.id
-          );
-
-
-        select.appendChild(
-          option
-        );
-
+    function logout() {
+      supabaseClient.auth.signOut().then(() => {
+        location.href = "../login/index.html";
       });
-
     }
 
-
-    // =========================
-    // تغيير كلمة السر
-    // =========================
-
-    async function changePassword() {
-
-      const userId =
-        document
-          .getElementById(
-            "userSelect"
-          )
-          .value;
-
-
-      const password =
-        document
-          .getElementById(
-            "newPassword"
-          )
-          .value
-          .trim();
-
-
-      const status =
-        document
-          .getElementById(
-            "passwordStatus"
-          );
-
-
-      if (!userId) {
-
-        status.innerHTML =
-          "❌ اختر المستخدم";
-
-        return;
-
+    // تشغيل الدوال عند تحميل الصفحة
+    window.addEventListener("DOMContentLoaded", async () => {
+      const isAdmin = await checkAdmin();
+      if (isAdmin) {
+        loadStats();
+        loadChampions();
+        loadExams();
       }
-
-
-      if (password.length < 6) {
-
-        status.innerHTML =
-          "❌ كلمة السر يجب أن تكون 6 أحرف على الأقل";
-
-        return;
-
-      }
-
-
-      status.innerHTML =
-        "⏳ جاري تغيير كلمة السر...";
-
-
-      try {
-
-        const {
-          error
-        } =
-          await supabaseClient
-            .functions
-            .invoke(
-              "admin-change-password",
-              {
-                body: {
-                  user_id:
-                    userId,
-
-                  new_password:
-                    password
-                }
-              }
-            );
-
-
-        if (error) {
-          throw error;
-        }
-
-
-        status.innerHTML =
-          "✅ تم تغيير كلمة السر بنجاح";
-
-
-        document
-          .getElementById(
-            "newPassword"
-          )
-          .value = "";
-
-      }
-
-      catch (error) {
-
-        console.error(error);
-
-        status.innerHTML =
-          "❌ فشل تغيير كلمة السر: "
-          + error.message;
-
-      }
-
-    }
-
-
-    // =========================
-    // تسجيل الخروج
-    // =========================
-
-    async function logout() {
-
-      await supabaseClient
-        .auth
-        .signOut();
-
-
-      location.href =
-        "../login/index.html";
-
-    }
-
-
-    // =========================
-    // حماية النصوص
-    // =========================
-
-    function escapeHtml(text) {
-
-      return String(text)
-        .replace(
-          /&/g,
-          "&amp;"
-        )
-        .replace(
-          /</g,
-          "&lt;"
-        )
-        .replace(
-          />/g,
-          "&gt;"
-        )
-        .replace(
-          /"/g,
-          "&quot;"
-        )
-        .replace(
-          /'/g,
-          "&#039;"
-        );
-
-    }
-
-
-    // =========================
-    // التشغيل
-    // =========================
-
-    (async function() {
-
-      const allowed =
-        await checkAdmin();
-
-
-      if (!allowed) {
-        return;
-      }
-
-
-      await loadStats();
-
-      await loadUsers();
-
-      await loadExams();
-
-      await loadChampions();
-
-    })();
-
+    });
   </script>
-
 </body>
-
-    </html>
+</html>
