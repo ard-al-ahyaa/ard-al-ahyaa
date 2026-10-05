@@ -1,36 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://sitemaps.org">
-
-  <!-- 1. الصفحة الرئيسية للمنصة -->
+  <!--  1. الصفحة الرئيسية للمنصة  -->
   <url>
-    <loc>https://github.io</loc>
+    <loc>https://ard-al-ahyaa.vercel.app/</loc>
     <lastmod>2026-09-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
-
-  <!-- 2. قسم المحاضرات (Videos) -->
+  <!--  2. قسم المحاضرات (Videos)  -->
   <url>
-    <loc>https://github.iovideos/</loc>
+    <loc>https://ard-al-ahyaa.vercel.app/videos/</loc>
     <lastmod>2026-09-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
-
-  <!-- 3. قسم Mذكرات والملخصات (Notes) -->
+  <!--  3. قسم المذكرات والملخصات (Notes)  -->
   <url>
-    <loc>https://github.ionotes/</loc>
+    <loc>https://ard-al-ahyaa.vercel.app/notes/</loc>
     <lastmod>2026-09-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
-
-  <!-- 4. المنتدى التعليمي للطلاب (Forum) -->
+  <!--  4. المنتدى التعليمي للطلاب (Forum)  -->
   <url>
-    <loc>https://github.ioforum/</loc>
+    <loc>https://ard-al-ahyaa.vercel.app/forum/</loc>
     <lastmod>2026-09-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
-
 </urlset>
