@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منصة أرض الأحياء | أحياء الصف الثالث الثانوي</title>
+  <meta name="description" content="منصة أرض الأحياء التعليمية لطلاب الصف الثالث الثانوي، محاضرات ومذكرات ومنتدى تعليمي.">
+  <meta name="keywords" content="منصة أرض الأحياء, أحياء, الصف الثالث الثانوي, ثانوية عامة, محاضرات أحياء, مذكرات أحياء">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/">
+  <meta property="og:title" content="منصة أرض الأحياء | أحياء الصف الثالث الثانوي">
+  <meta property="og:description" content="منصة تعليمية لطلاب الصف الثالث الثانوي في مادة الأحياء.">
+  <meta property="og:image" content="https://ard-al-ahyaa.github.io/ard-al-ahyaa/logo.png">
+  <meta property="og:url" content="https://ard-al-ahyaa.github.io/ard-al-ahyaa/">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="favicon.png">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Tahoma, sans-serif;
+    }
+
+    body {
+      background: #f4f6f8;
+      color: #222;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* =========================
+       الشريط الجانبي (على اليمين)
+    ========================= */
+    .sidebar {
+      width: 260px;
+      background: #026857;
+      color: white;
+      position: fixed;
+      right: 0;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 1000;
+      box-shadow: -3px 0 15px rgba(0,0,0,0.1);
+    }
+
+    .sidebar-top {
+      padding: 25px 20px;
+    }
+
+    .logo-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .logo-box img {
+      width: 45px;
+      height: 45px;
+      object-fit: contain;
+      border-radius: 50%;
+      background: #fff;
+      padding: 2px;
+    }
+
+    .logo-box h2 {
+      font-size: 18px;
+      color: #fff;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .menu a, .logout-btn {
+      text-decoration: none;
+      color: #e2f1ee;
+      padding: 12px 15px;
+      border-radius: 8px;
+      transition: 0.2s;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: transparent;
+      border: none;
+      width: 100%;
+      text-align: right;
+      cursor: pointer;
+    }
+
+    .menu a:hover, .menu a.active, .logout-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    .logout-btn {
+      margin-top: 20px;
+      color: #ffcccc;
+    }
+
+    /* =========================
+       المحتوى الرئيسي
+    ========================= */
+    .main {
+      margin-right: 260px;
+      flex: 1;
+      padding: 20px 30px;
+      background: #f4f6f8;
+      min-height: 100vh;
+    }
+
+    /* الهيدر العلوي وشريط البحث */
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      padding: 20px 25px;
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      margin-bottom: 25px;
+      gap: 20px;
+    }
+
+    .search-container {
+      flex: 1;
+      max-width: 400px;
+      position: relative;
+    }
+
+    .search-container input {
+      width: 100%;
+      padding: 12px 20px;
+      border: 1px solid #e1e4e8;
+      border-radius: 25px;
+      outline: none;
+      font-size: 14px;
+      background: #f8fafc;
+    }
+
+    .search-container input:focus {
+      border-color: #026857;
+      background: #fff;
+    }
+
+    /* بانر التحفيز الأسطوري */
+    .motivation-banner {
+      background: linear-gradient(135deg, #026857 0%, #034d40 100%);
+      color: white;
+      padding: 25px 30px;
+      border-radius: 16px;
+      margin-bottom: 25px;
+      box-shadow: 0 5px 20px rgba(2, 104, 87, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .motivation-banner h2 {
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+
+    .motivation-banner p {
+      font-size: 14px;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    /* كروت الكورسات والأقسام */
+    .courses {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .course-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      text-decoration: none;
+      color: #222;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+      transition: 0.25s;
+      border: 1px solid #eaeaea;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .course-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      border-color: #026857;
+    }
+
+    .card-img-top {
+      height: 140px;
+      background: linear-gradient(135deg, #e6f4f1, #c8e6df);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 50px;
+    }
+
+    .card-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .course-card h3 {
+      color: #026857;
+      font-size: 17px;
+    }
+
+    .course-card p {
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* صندوق التليجرام */
+    .telegram-box {
+      margin-top: 30px;
+      background: white;
+      border-radius: 14px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .telegram-box h2 {
+      color: #026857;
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .telegram-box p {
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .telegram-btn {
+      display: inline-block;
+      background: #229ed9;
+      color: white;
+      text-decoration: none;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    .telegram-btn:hover {
+      opacity: 0.9;
+    }
+
+    footer {
+      margin-top: 30px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 12px;
+      padding: 10px;
+    }
+
+    /* شاشة الدخول */
+    #authScreen {
+      position: fixed;
+      inset: 0;
+      background: #f4f6f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 20px;
+    }
+
+    .auth-box {
+      width: 100%;
+      max-width: 400px;
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .auth-box img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      border-radius: 50%;
+      margin-bottom: 15px;
+    }
+
+    .auth-box h2 {
+      color: #026857;
+      margin-bottom: 10px;
+    }
+
+    .auth-box p {
+      color: #64748b;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .auth-btn {
+      width: 100%;
+      border: none;
+      background: #026857;
+      color: white;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .auth-btn:hover {
+      background: #014f42;
+    }
+
+    .account-name {
+      color: #026857 !important;
+      font-weight: bold;
+    }
+
+    /* زر تليجرام العائم */
+    .telegram-floating {
+      position: fixed;
+      left: 20px;
+      bottom: 20px;
+      width: 50px;
+      height: 50px;
+      background: #229ed9;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 2000;
+      transition: 0.2s;
+    }
+
+    .telegram-floating:hover {
+      transform: scale(1.08);
+    }
+
+    /* الشريط السفلي للموبايل */
+    .bottom-nav {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+      .main {
+        margin-right: 0;
+        padding: 15px;
+      }
+      .bottom-nav {
+        position: fixed;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        bottom: 0;
+        right: 0;
+        left: 0;
+        height: 60px;
+        background: #026857;
+        z-index: 3000;
+        box-shadow: 0 -3px 10px rgba(0,0,0,0.1);
+      }
+      .bottom-nav-item {
+        color: white;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        font-size: 16px;
+      }
+      .bottom-nav-item small {
+        font-size: 9px;
+      }
+      .bottom-nav-item.active {
+        background: rgba(255,255,255,0.15);
+      }
+      body {
+        padding-bottom: 60px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- شاشة الدخول -->
+  <div id="authScreen">
+    <div class="auth-box">
+      <img src="logo.png" alt="شعار منصة أرض الأحياء">
+      <h2>منصة أرض الأحياء 🌿</h2>
+      <p>يجب تسجيل الدخول للوصول إلى المنصة</p>
+      <button class="auth-btn" onclick="goToLogin()">تسجيل الدخول</button>
+    </div>
+  </div>
+
+  <!-- التطبيق -->
+  <div id="app" style="display:none; width: 100%;">
+
+    <!-- الشريط الجانبي -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <div class="logo-box">
+          <img src="logo.png" alt="شعار المنصة">
+          <div>
+            <h2>أرض الأحياء</h2>
+            <p style="font-size: 11px; opacity: 0.8;">ثالثة ثانوي</p>
+          </div>
+        </div>
+
+        <nav class="menu">
+          <a href="index.html" class="active">🏠 الرئيسية</a>
+          <a href="videos/index.html">🎥 المحاضرات</a>
+          <a href="notes/index.html">📚 المذكرات</a>
+          <a href="champion/index.html">🏆 بطل الفصل</a>
+          <a href="forum/index.html">💬 المنتدى</a>
+          <a href="account/index.html">👤 حساب الطالب</a>
+          <button class="logout-btn" onclick="logout()">🚪 تسجيل الخروج</button>
+        </nav>
+      </div>
+      <div style="padding: 15px; font-size: 11px; text-align: center; opacity: 0.7;">
+        جميع الحقوق محفوظة © 2026
+      </div>
+    </aside>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="main">
+
+      <!-- الهيدر العلوي وشريط البحث -->
+      <div class="header-bar">
+        <div>
+          <h1 style="color: #026857; font-size: 20px; margin-bottom: 3px;" id="welcomeHeader">أهلاً بك 🌿</h1>
+          <p style="color: #64748b; font-size: 13px;" id="welcomeText">بوابتك الأولى للتميز في مادة الأحياء</p>
+        </div>
+        <div class="search-container">
+          <input type="text" id="searchInput" placeholder="ابحث في أقسام المنصة..." oninput="searchCards()">
+        </div>
+      </div>
+
+      <!-- بانر تحفيزي أسطوري -->
+      <div class="motivation-banner">
+        <h2>✨ اصنع مجدك بنفسك في الثانوية العامة!</h2>
+        <p>الطريق إلى القمة يبدأ بخطوة. استمر في السعي، شاهد محاضراتك، واقترب خطوة جديدة كل يوم نحو حلمك وحلم أهلك. أنت لها! 🚀</p>
+      </div>
+
+      <!-- الأقسام والكروت الاحترافية -->
+      <div class="courses" id="courses">
+
+        <a class="course-card" href="videos/index.html">
+          <div class="card-img-top">🎥</div>
+          <div class="card-body">
+            <h3>المحاضرات</h3>
+            <p>شاهد محاضرات الأحياء للصف الثالث الثانوي وشرح تفصيلي لأدق التفاصيل.</p>
+          </div>
+        </a>
+
+        <a class="course-card" href="notes/index.html">
+          <div class="card-img-top">📚</div>
+          <div class="card-body">
+            <h3>المذكرات والملخصات</h3>
+            <p>تصفح وتحميل مذكرات الأحياء وأقوى بنوك الأسئلة والتدريبات.</p>
+          </div>
+        </a>
+
+        <a class="course-card" href="champion/index.html">
+          <div class="card-img-top">🏆</div>
+          <div class="card-body">
+            <h3>بطل الفصل</h3>
+            <p>لوحة الشرف التي تضم أوائل الطلاب والفرسان المتصدرين للمنصة.</p>
+          </div>
+        </a>
+
+        <a class="course-card" href="forum/index.html">
+          <div class="card-img-top">💬</div>
+          <div class="card-body">
+            <h3>المنتدى التعليمي</h3>
+            <p>شارك استفساراتك، ناقش زملائك، واكتسب أفكاراً جديدة لحل المسائل.</p>
+          </div>
+        </a>
+
+        <a class="course-card" href="account/index.html">
+          <div class="card-img-top">👨‍🎓</div>
+          <div class="card-body">
+            <h3>حساب الطالب</h3>
+            <p id="studentInfo" class="account-name">جاري تحميل بيانات الحساب...</p>
+          </div>
+        </a>
+
+      </div>
+
+      <!-- تليجرام -->
+      <div class="telegram-box">
+        <h2>📢 انضم إلى مجموعة التليجرام الرسمية</h2>
+        <p>تابع أحدث المحاضرات والامتحانات التمهيدية والتنبيهات أولاً بأول</p>
+        <a class="telegram-btn" href="https://t.me/+KB1Z0dws0f01YjNk" target="_blank" rel="noopener noreferrer">الانضمام إلى التليجرام</a>
+      </div>
+
+      <footer>
+        © 2026 منصة أرض الأحياء — جميع الحقوق محفوظة
+      </footer>
+
+    </main>
+
+    <!-- زر التليجرام العائم -->
+    <a class="telegram-floating" href="https://t.me/+KB1Z0dws0f01YjNk" target="_blank" rel="noopener noreferrer" title="مجموعة التليجرام">✈️</a>
+
+    <!-- الشريط السفلي للموبايل -->
+    <nav class="bottom-nav" aria-label="التنقل الرئيسي">
+      <a href="index.html" class="bottom-nav-item active">
+        <span>🌱</span>
+        <small>الرئيسية</small>
+      </a>
+      <a href="videos/index.html" class="bottom-nav-item">
+        <span>🎥</span>
+        <small>المحاضرات</small>
+      </a>
+      <a href="champion/index.html" class="bottom-nav-item">
+        <span>🏆</span>
+        <small>البطل</small>
+      </a>
+      <a href="notes/index.html" class="bottom-nav-item">
+        <span>📚</span>
+        <small>المذكرات</small>
+      </a>
+      <a href="account/index.html" class="bottom-nav-item">
+        <span>👤</span>
+        <small>حسابي</small>
+      </a>
+    </nav>
+
+  </div>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function checkUser() {
+      const authScreen = document.getElementById("authScreen");
+      const app = document.getElementById("app");
+      const studentInfo = document.getElementById("studentInfo");
+      const welcomeHeader = document.getElementById("welcomeHeader");
+      const welcomeText = document.getElementById("welcomeText");
+
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+
+        if (!session) {
+          authScreen.style.display = "flex";
+          app.style.display = "none";
+          return;
+        }
+
+        authScreen.style.display = "none";
+        app.style.display = "flex";
+
+        const user = session.user;
+        const { data: profile, error } = await supabaseClient
+          .from("profiles")
+          .select("id, full_name, phone, email, role")
+          .eq("id", user.id)
+          .maybeSingle();
+
+        const name = profile?.full_name || user.user_metadata?.full_name || user.email || "الطالب";
+
+        studentInfo.textContent = "مرحبًا " + name;
+        welcomeHeader.textContent = "أهلاً بك يا " + name + " 🌿";
+        welcomeText.textContent = "بوابتك الأولى للتميز والتفوق في مادة الأحياء — الصف الثالث الثانوي";
+
+      } catch (error) {
+        console.error("Auth error:", error);
+      }
+    }
+
+    function goToLogin() {
+      window.location.href = "login/index.html";
+    }
+
+    async function logout() {
+      try {
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) throw error;
+        window.location.href = "login/index.html";
+      } catch (error) {
+        console.error("Logout error:", error);
+        alert("❌ حدث خطأ أثناء تسجيل الخروج");
+      }
+    }
+
+    function searchCards() {
+      const value = document.getElementById("searchInput").value.trim().toLowerCase();
+      const cards = document.querySelectorAll(".course-card");
+
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        if (text.includes(value)) {
+          card.style.display = "";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    }
+
+    checkUser();
+  </script>
+
+</body>
+  </html>
