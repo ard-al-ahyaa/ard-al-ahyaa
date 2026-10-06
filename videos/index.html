@@ -30,7 +30,9 @@
       color: #222;
     }
 
-    /* الشريط الجانبي */
+    /* ===============================
+       الشريط الجانبي
+       =============================== */
 
     .sidebar {
       position: fixed;
@@ -87,7 +89,9 @@
       background: rgba(255, 255, 255, 0.15);
     }
 
-    /* المحتوى */
+    /* ===============================
+       المحتوى
+       =============================== */
 
     .main {
       margin-right: 250px;
@@ -114,9 +118,11 @@
       font-size: 15px;
     }
 
-    /* المحاضرات */
+    /* ===============================
+       الفيديوهات والمحاضرات
+       =============================== */
 
-    .lectures-container {
+    .videos-container {
       background: white;
       border-radius: 15px;
       padding: 25px;
@@ -129,113 +135,55 @@
       margin-bottom: 20px;
     }
 
-    .lecture-list {
+    .videos-list {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 20px;
     }
 
-    .lecture-card {
+    .video-card {
       border: 1px solid #e5e5e5;
       border-radius: 14px;
+      background: white;
       overflow: hidden;
-      background: #fff;
       transition: 0.2s;
     }
 
-    .lecture-card:hover {
+    .video-card:hover {
       transform: translateY(-3px);
       box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
     }
 
-    /* الفيديو */
-
-    .video-box {
+    .video-player-box {
       width: 100%;
+      height: 180px;
       background: #000;
-      height: 190px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: relative;
     }
 
-    .video-box video {
-      display: block;
+    .video-player-box video,
+    .video-player-box iframe {
       width: 100%;
-      height: 190px;
+      height: 100%;
       object-fit: cover;
+      border: none;
     }
 
-    /* صندوق تليجرام */
-
-    .telegram-video {
-      height: 190px;
-      background: linear-gradient(135deg, #168dcc, #229ed9);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 20px;
-    }
-
-    .telegram-video .telegram-icon {
-      width: 60px;
-      height: 60px;
-      margin-bottom: 10px;
-    }
-
-    .telegram-video h4 {
-      font-size: 17px;
-      margin-bottom: 5px;
-    }
-
-    .telegram-video p {
-      color: rgba(255, 255, 255, .9);
-      font-size: 13px;
-    }
-
-    .lecture-content {
+    .video-content {
       padding: 18px;
     }
 
-    .lecture-card h3 {
+    .video-content h3 {
       color: #075e4d;
       font-size: 19px;
       margin-bottom: 10px;
+      line-height: 1.5;
     }
 
-    .lecture-card p {
+    .video-content p {
       color: #666;
+      font-size: 13px;
       line-height: 1.7;
-      font-size: 14px;
-    }
-
-    .watch-btn {
-      display: inline-block;
-      margin-top: 15px;
-      text-decoration: none;
-      background: #075e4d;
-      color: white;
-      padding: 10px 17px;
-      border-radius: 8px;
-      font-size: 14px;
-      transition: 0.2s;
-      border: none;
-      cursor: pointer;
-    }
-
-    .watch-btn:hover {
-      background: #064c3f;
-    }
-
-    .telegram-btn {
-      background: #229ed9;
-    }
-
-    .telegram-btn:hover {
-      background: #168dcc;
     }
 
     .loading,
@@ -255,7 +203,6 @@
     .security-message {
       text-align: center;
       padding: 25px;
-      margin-bottom: 20px;
       border-radius: 12px;
       background: #fff8e1;
       color: #795548;
@@ -273,7 +220,9 @@
       border-radius: 8px;
     }
 
-    /* الموبايل */
+    /* ===============================
+       الموبايل
+       =============================== */
 
     @media (max-width: 700px) {
 
@@ -311,14 +260,8 @@
         font-size: 22px;
       }
 
-      .lecture-list {
+      .videos-list {
         grid-template-columns: 1fr;
-      }
-
-      .video-box,
-      .video-box video,
-      .telegram-video {
-        height: 200px;
       }
     }
   </style>
@@ -326,7 +269,9 @@
 
 <body>
 
-  <!-- الشريط الجانبي -->
+  <!-- ===============================
+       الشريط الجانبي
+       =============================== -->
 
   <aside class="sidebar">
 
@@ -365,7 +310,9 @@
   </aside>
 
 
-  <!-- المحتوى -->
+  <!-- ===============================
+       المحتوى
+       =============================== -->
 
   <main class="main">
 
@@ -374,21 +321,21 @@
       <h1>🎥 المحاضرات</h1>
 
       <p>
-        محاضرات الصف الثالث الثانوي
+        فيديوهات وشرح منهج الأحياء للصف الثالث الثانوي
       </p>
 
     </div>
 
 
-    <section class="lectures-container">
+    <section class="videos-container">
 
       <h2 class="section-title">
-        محاضرات الأحياء
+        قائمة المحاضرات
       </h2>
 
       <div
-        id="lectureList"
-        class="lecture-list">
+        id="videosList"
+        class="videos-list">
 
         <div class="loading">
           جاري تحميل المحاضرات...
@@ -401,7 +348,9 @@
   </main>
 
 
-  <!-- Supabase -->
+  <!-- ===============================
+       Supabase
+       =============================== -->
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -420,18 +369,8 @@
     const BUCKET =
       "lectures";
 
-
-    /*
-      مدة الرابط المؤقت:
-
-      30 دقيقة
-
-      بعد انتهاء المدة يتم إنشاء
-      رابط جديد تلقائيًا.
-    */
-
     const SIGNED_URL_TIME =
-      30 * 60;
+      30 * 60; // 30 دقيقة
 
 
     const supabaseClient =
@@ -442,178 +381,60 @@
 
 
     /* =====================================================
-       محاضرة تليجرام
-       ===================================================== */
-
-    const telegramLecture = {
-
-      title:
-        "محاضرة أحياء - فيديو تليجرام",
-
-      description:
-        "شاهد فيديو المحاضرة على قناة منصة أرض الأحياء في تليجرام.",
-
-      video_url:
-        "https://t.me/c/3916276502/60"
-
-    };
-
-
-    /* =====================================================
-       إضافة رسالة تسجيل الدخول
+       رسالة تسجيل الدخول
        ===================================================== */
 
     function showLoginMessage() {
 
-      const lectureList =
-        document.getElementById("lectureList");
+      const videosList =
+        document.getElementById(
+          "videosList"
+        );
 
-      lectureList.innerHTML = "";
+      videosList.innerHTML = "";
 
 
       const box =
         document.createElement("div");
+
 
       box.className =
         "security-message";
 
 
       box.innerHTML = `
-        <strong>🔐 المحتوى محمي</strong>
+
+        <strong>
+          🔐 المحتوى محمي
+        </strong>
+
         <br>
-        يجب تسجيل الدخول إلى منصة أرض الأحياء
-        لمشاهدة المحاضرات.
+
+        يجب تسجيل الدخول إلى منصة
+        أرض الأحياء لمشاهدة المحاضرات.
+
         <br>
+
         <a
           class="login-btn"
           href="../login/index.html">
+
           🔑 تسجيل الدخول
+
         </a>
-      `;
-
-
-      lectureList.appendChild(box);
-
-    }
-
-
-    /* =====================================================
-       إضافة محاضرة تليجرام
-       ===================================================== */
-
-    function addTelegramLecture(lectureList) {
-
-      const card =
-        document.createElement("div");
-
-      card.className =
-        "lecture-card";
-
-
-      const videoBox =
-        document.createElement("div");
-
-      videoBox.className =
-        "video-box";
-
-
-      const telegramBox =
-        document.createElement("div");
-
-      telegramBox.className =
-        "telegram-video";
-
-
-      telegramBox.innerHTML = `
-
-        <svg
-          class="telegram-icon"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-
-          <path
-            fill="white"
-            d="M21.9 3.3L18.6 20c-.25 1.18-.9 1.47-1.82.92l-5.01-3.69-2.42 2.33c-.27.27-.5.5-1.02.5l.36-5.1 9.28-8.38c.4-.36-.09-.56-.62-.2L5.87 13.63.94 12.09c-1.07-.34-1.09-1.07.22-1.58L20.42 2.9c.91-.34 1.7.2 1.48.4z"
-          />
-
-        </svg>
-
-        <h4>
-          فيديو المحاضرة
-        </h4>
-
-        <p>
-          اضغط على زر مشاهدة الفيديو
-        </p>
 
       `;
 
 
-      videoBox.appendChild(
-        telegramBox
+      videosList.appendChild(
+        box
       );
 
-
-      const content =
-        document.createElement("div");
-
-      content.className =
-        "lecture-content";
-
-
-      const title =
-        document.createElement("h3");
-
-      title.textContent =
-        lecture.title;
-
-
-      const description =
-        document.createElement("p");
-
-      description.textContent =
-        lecture.description;
-
-
-      const button =
-        document.createElement("a");
-
-      button.className =
-        "watch-btn telegram-btn";
-
-      button.href =
-        lecture.video_url;
-
-      button.target =
-        "_blank";
-
-      button.rel =
-        "noopener noreferrer";
-
-      button.textContent =
-        "▶ مشاهدة الفيديو";
-
-
-      content.appendChild(title);
-
-      content.appendChild(description);
-
-      content.appendChild(button);
-
-
-      card.appendChild(videoBox);
-
-      card.appendChild(content);
-
-
-      lectureList.appendChild(card);
-
     }
 
 
     /* =====================================================
-       التحقق من أن القيمة رابط خارجي
+       التحقق من نوع الرابط
        ===================================================== */
 
     function isExternalUrl(value) {
@@ -621,7 +442,6 @@
       if (!value) {
         return false;
       }
-
 
       return (
         value.startsWith("http://") ||
@@ -632,45 +452,24 @@
 
 
     /* =====================================================
-       الحصول على رابط آمن للفيديو
+       إنشاء Signed URL للفيديو
        ===================================================== */
 
-    async function getSecureVideoUrl(videoValue) {
+    async function getSecureVideoUrl(
+      filePath
+    ) {
 
-      if (!videoValue) {
-
+      if (!filePath) {
         throw new Error(
           "مسار الفيديو غير موجود"
         );
-
       }
 
-
-      /*
-        لو القيمة رابط خارجي مثل:
-
-        https://youtube.com/...
-        https://t.me/...
-        https://example.com/video.mp4
-
-        يتم استخدام الرابط كما هو.
-      */
-
-      if (isExternalUrl(videoValue)) {
-
-        return videoValue;
-
+      if (
+        isExternalUrl(filePath)
+      ) {
+        return filePath;
       }
-
-
-      /*
-        لو القيمة مسار داخل Supabase
-        مثل:
-
-        videos/1750000000_xxx.mp4
-
-        يتم إنشاء Signed URL.
-      */
 
       const {
         data,
@@ -679,31 +478,26 @@
         .storage
         .from(BUCKET)
         .createSignedUrl(
-          videoValue,
+          filePath,
           SIGNED_URL_TIME
         );
 
-
       if (error) {
-
         console.error(
           "Signed URL Error:",
           error
         );
-
         throw error;
-
       }
 
-
-      if (!data || !data.signedUrl) {
-
+      if (
+        !data ||
+        !data.signedUrl
+      ) {
         throw new Error(
-          "تعذر إنشاء رابط الفيديو الآمن"
+          "تعذر إنشاء الرابط الآمن للفيديو"
         );
-
       }
-
 
       return data.signedUrl;
 
@@ -711,268 +505,135 @@
 
 
     /* =====================================================
-       إضافة فيديو إلى الصفحة
+       إنشاء كارت المحاضرة
        ===================================================== */
 
-    async function addLecture(lecture) {
+    async function createVideoCard(
+      videoItem
+    ) {
+
+      const card =
+        document.createElement("div");
+
+      card.className =
+        "video-card";
+
+
+      /* ===============================
+         مشغل الفيديو
+         =============================== */
+
+      const playerBox =
+        document.createElement("div");
+
+      playerBox.className =
+        "video-player-box";
+
 
       try {
 
-        /*
-          الحصول على رابط آمن
-
-          - رابط خارجي → يستخدم مباشرة
-          - ملف Private → Signed URL
-        */
-
-        const secureVideoUrl =
+        const secureUrl =
           await getSecureVideoUrl(
-            lecture.video_url
+            videoItem.file_path || videoItem.video_url
           );
 
-
-        const card =
-          document.createElement("div");
-
-        card.className =
-          "lecture-card";
-
-
-        /* ===============================
-           صندوق الفيديو
-           =============================== */
-
-        const videoBox =
-          document.createElement("div");
-
-        videoBox.className =
-          "video-box";
-
-
-        const video =
+        const videoElem =
           document.createElement("video");
 
+        videoElem.src =
+          secureUrl;
 
-        video.controls =
+        videoElem.controls =
           true;
 
-
-        video.preload =
+        videoElem.preload =
           "metadata";
 
-
-        video.playsInline =
-          true;
-
-
-        /*
-          تقليل خيارات تحميل الفيديو
-          من واجهة المتصفح.
-        */
-
-        video.setAttribute(
-          "controlsList",
-          "nodownload"
+        playerBox.appendChild(
+          videoElem
         );
-
-
-        video.src =
-          secureVideoUrl;
-
-
-        /*
-          منع قائمة الضغط بالزر الأيمن
-          على الفيديو.
-        */
-
-        video.addEventListener(
-          "contextmenu",
-          function(event) {
-
-            event.preventDefault();
-
-          }
-        );
-
-
-        videoBox.appendChild(
-          video
-        );
-
-
-        /* ===============================
-           محتوى المحاضرة
-           =============================== */
-
-        const content =
-          document.createElement("div");
-
-        content.className =
-          "lecture-content";
-
-
-        const title =
-          document.createElement("h3");
-
-        title.textContent =
-          lecture.title ||
-          "محاضرة بدون عنوان";
-
-
-        const description =
-          document.createElement("p");
-
-        description.textContent =
-          lecture.description ||
-          "لا يوجد وصف لهذه المحاضرة.";
-
-
-        /* ===============================
-           زر فتح الفيديو
-           =============================== */
-
-        const button =
-          document.createElement("a");
-
-
-        button.className =
-          "watch-btn";
-
-
-        button.href =
-          secureVideoUrl;
-
-
-        button.target =
-          "_blank";
-
-
-        button.rel =
-          "noopener noreferrer";
-
-
-        button.textContent =
-          "▶ فتح الفيديو";
-
-
-        content.appendChild(
-          title
-        );
-
-
-        content.appendChild(
-          description
-        );
-
-
-        content.appendChild(
-          button
-        );
-
-
-        card.appendChild(
-          videoBox
-        );
-
-
-        card.appendChild(
-          content
-        );
-
-
-        return card;
 
       }
-
 
       catch (error) {
 
         console.error(
-          "Video Error:",
+          "Video URL Error:",
           error
         );
 
-
-        /*
-          في حالة فشل إنشاء الرابط الآمن
-        */
-
-        const card =
-          document.createElement("div");
-
-
-        card.className =
-          "lecture-card";
-
-
-        const content =
-          document.createElement("div");
-
-
-        content.className =
-          "lecture-content";
-
-
-        const title =
-          document.createElement("h3");
-
-
-        title.textContent =
-          lecture.title ||
-          "محاضرة";
-
-
-        const message =
-          document.createElement("p");
-
-
-        message.textContent =
-          "تعذر فتح الفيديو حاليًا. حاول تحديث الصفحة.";
-
-
-        message.style.color =
-          "#b00020";
-
-
-        content.appendChild(
-          title
-        );
-
-
-        content.appendChild(
-          message
-        );
-
-
-        card.appendChild(
-          content
-        );
-
-
-        return card;
+        playerBox.innerHTML = `
+          <div style="color: white; text-align: center; padding-top: 70px; font-size: 13px;">
+            تعذر تحميل الفيديو حالياً
+          </div>
+        `;
 
       }
+
+
+      /* ===============================
+         محتوى الكارت
+         =============================== */
+
+      const content =
+        document.createElement("div");
+
+      content.className =
+        "video-content";
+
+
+      const title =
+        document.createElement("h3");
+
+      title.textContent =
+        videoItem.title ||
+        "محاضرة بدون عنوان";
+
+
+      const description =
+        document.createElement("p");
+
+      description.textContent =
+        videoItem.description ||
+        "شرح تفصيلي لأهم جزئيات المنهج.";
+
+
+      content.appendChild(
+        title
+      );
+
+      content.appendChild(
+        description
+      );
+
+
+      card.appendChild(
+        playerBox
+      );
+
+      card.appendChild(
+        content
+      );
+
+
+      return card;
 
     }
 
 
     /* =====================================================
-       تحميل المحاضرات
+       تحميل المحاضرات من قاعدة البيانات
        ===================================================== */
 
-    async function loadLectures() {
+    async function loadVideos() {
 
-      const lectureList =
+      const videosList =
         document.getElementById(
-          "lectureList"
+          "videosList"
         );
 
 
       try {
-
-        /*
-          التحقق من تسجيل الدخول
-        */
 
         const {
           data: sessionData,
@@ -983,43 +644,28 @@
 
 
         if (sessionError) {
-
           throw sessionError;
-
         }
-
 
         const session =
           sessionData.session;
 
 
-        /*
-          المحتوى محمي للمستخدمين
-          المسجلين فقط.
-        */
-
         if (!session) {
-
           showLoginMessage();
-
           return;
-
         }
 
-
-        /*
-          تحميل بيانات المحاضرات
-        */
 
         const {
           data,
           error
         } = await supabaseClient
 
-          .from("lectures")
+          .from("videos") // أو جدول المحاضرات المعتمد لديك
 
           .select(
-            "id,title,description,video_url,created_at"
+            "id,title,description,file_path,video_url,created_at"
           )
 
           .order(
@@ -1031,78 +677,52 @@
 
 
         if (error) {
-
           throw error;
-
         }
 
 
-        /*
-          مسح القائمة القديمة
-        */
-
-        lectureList.innerHTML = "";
+        videosList.innerHTML = "";
 
 
-        /*
-          إضافة محاضرة تليجرام أولًا
-        */
-
-        addTelegramLecture(
-          lectureList
-        );
-
-
-        /*
-          لا توجد محاضرات
-        */
-
-        if (!data || data.length === 0) {
+        if (
+          !data ||
+          data.length === 0
+        ) {
 
           const empty =
             document.createElement("div");
 
-
           empty.className =
             "empty";
-
 
           empty.textContent =
             "لا توجد محاضرات مضافة حاليًا.";
 
-
-          lectureList.appendChild(
+          videosList.appendChild(
             empty
           );
-
 
           return;
 
         }
 
 
-        /*
-          إنشاء بطاقات المحاضرات
-        */
-
         for (
-          const lecture of data
+          const videoItem of data
         ) {
 
           const card =
-            await addLecture(
-              lecture
+            await createVideoCard(
+              videoItem
             );
 
-
-          lectureList.appendChild(
+          videosList.appendChild(
             card
           );
 
         }
 
       }
-
 
       catch (error) {
 
@@ -1111,40 +731,18 @@
           error
         );
 
-
-        /*
-          مسح القائمة
-        */
-
-        lectureList.innerHTML = "";
-
-
-        /*
-          تظل محاضرة تليجرام ظاهرة
-        */
-
-        addTelegramLecture(
-          lectureList
-        );
-
+        videosList.innerHTML = "";
 
         const errorMessage =
           document.createElement("div");
 
-
         errorMessage.className =
           "error";
-
-
-        errorMessage.style.marginTop =
-          "10px";
-
 
         errorMessage.textContent =
           "تعذر تحميل المحاضرات حاليًا. حاول تحديث الصفحة.";
 
-
-        lectureList.appendChild(
+        videosList.appendChild(
           errorMessage
         );
 
@@ -1154,7 +752,7 @@
 
 
     /* =====================================================
-       مراقبة تسجيل الدخول والخروج
+       مراقبة حالة تسجيل الدخول
        ===================================================== */
 
     supabaseClient
@@ -1163,14 +761,9 @@
         function(event, session) {
 
           if (!session) {
-
             showLoginMessage();
-
-          }
-          else {
-
-            loadLectures();
-
+          } else {
+            loadVideos();
           }
 
         }
@@ -1178,22 +771,13 @@
 
 
     /* =====================================================
-       تشغيل الصفحة
+       تشغيل الصفحة وتجديد الروابط
        ===================================================== */
 
-    loadLectures();
-
-
-    /*
-      تحديث Signed URLs كل 25 دقيقة.
-
-      الرابط صالح 30 دقيقة،
-      لذلك يتم إنشاء روابط جديدة
-      قبل انتهاء الرابط القديم.
-    */
+    loadVideos();
 
     setInterval(
-      loadLectures,
+      loadVideos,
       25 * 60 * 1000
     );
 
@@ -1202,3 +786,4 @@
 </body>
 
 </html>
+ 
