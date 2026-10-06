@@ -139,36 +139,39 @@
       font-weight: 700;
     }
 
-    /* كارت بيانات الحساب */
+    /* هيكل الحساب */
+    .account-container {
+      max-width: 850px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
     .account-card {
       background: white;
       border-radius: 20px;
-      padding: 35px;
+      padding: 30px;
       box-shadow: 0 10px 30px rgba(30, 58, 138, 0.06);
       border: 1px solid #e2e8f0;
-      max-width: 700px;
-      margin: 0 auto;
     }
 
     .profile-header {
       display: flex;
       align-items: center;
       gap: 20px;
-      margin-bottom: 30px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid #e2e8f0;
     }
 
     .profile-avatar {
-      width: 80px;
-      height: 80px;
+      width: 85px;
+      height: 85px;
       background: linear-gradient(135deg, #1e3a8a, #026857);
       color: white;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 32px;
+      font-size: 34px;
       font-weight: bold;
       box-shadow: 0 5px 15px rgba(30, 58, 138, 0.2);
     }
@@ -182,6 +185,41 @@
     .profile-title p {
       color: #026857;
       font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* إحصائيات الطالب من ذوقي */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-top: 5px;
+    }
+
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stat-box {
+      background: linear-gradient(135deg, #f8fafc, #e0f2fe);
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .stat-box h3 {
+      color: #1e3a8a;
+      font-size: 24px;
+      font-weight: 900;
+      margin-bottom: 5px;
+    }
+
+    .stat-box p {
+      color: #64748b;
+      font-size: 13px;
       font-weight: 600;
     }
 
@@ -219,8 +257,43 @@
       word-break: break-all;
     }
 
+    /* قسم تحفيزي */
+    .motivation-mini-banner {
+      background: linear-gradient(135deg, #1e3a8a 0%, #026857 100%);
+      color: white;
+      padding: 20px 25px;
+      border-radius: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .motivation-mini-banner p {
+      font-size: 14px;
+      line-height: 1.6;
+      opacity: 0.95;
+    }
+
+    .motivation-mini-banner a {
+      background: white;
+      color: #1e3a8a;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      white-space: nowrap;
+      transition: 0.3s;
+    }
+
+    .motivation-mini-banner a:hover {
+      background: #f1f5f9;
+      transform: scale(1.05);
+    }
+
     footer {
-      margin-top: 40px;
+      margin-top: 30px;
       text-align: center;
       color: #94a3b8;
       font-size: 13px;
@@ -308,38 +381,74 @@
   <main class="main">
 
     <div class="header-bar">
-      <h1>الملف الشخصي للحساب 👤</h1>
-      <span style="color: #64748b; font-size: 14px;" id="currentDate">الثانوية العامة 2026</span>
+      <h1>الملف الشخصي ونتائج الطالب 👤</h1>
+      <span style="color: #64748b; font-size: 14px;">الثانوية العامة 2026</span>
     </div>
 
-    <!-- كارت البيانات -->
-    <div class="account-card">
-      <div class="profile-header">
-        <div class="profile-avatar" id="avatarLetter">ط</div>
-        <div class="profile-title">
-          <h2 id="userName">جاري التحميل...</h2>
-          <p id="userRole">طالب في منصة أرض الأحياء</p>
+    <div class="account-container">
+
+      <!-- كارت الهوية الأساسية -->
+      <div class="account-card">
+        <div class="profile-header">
+          <div class="profile-avatar" id="avatarLetter">ط</div>
+          <div class="profile-title">
+            <h2 id="userName">جاري التحميل...</h2>
+            <p id="userRole">طالب في منصة أرض الأحياء</p>
+          </div>
         </div>
       </div>
 
-      <div class="info-grid">
-        <div class="info-group">
-          <label>الاسم الكامل</label>
-          <span id="fullNameVal">---</span>
-        </div>
-        <div class="info-group">
-          <label>البريد الإلكتروني</label>
-          <span id="emailVal">---</span>
-        </div>
-        <div class="info-group">
-          <label>رقم الهاتف</label>
-          <span id="phoneVal">---</span>
-        </div>
-        <div class="info-group">
-          <label>حالة الحساب</label>
-          <span style="color: #026857;">نشط ومفعل ✅</span>
+      <!-- نتائج وإحصائيات الطالب (إضافة من ذوقي) -->
+      <div class="account-card">
+        <h3 style="color: #1e3a8a; font-size: 18px; margin-bottom: 20px; font-weight: 700;">📊 سجل النتائج والإحصائيات</h3>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <h3 id="examsCount">0</h3>
+            <p>الامتحانات المجتازة</p>
+          </div>
+          <div class="stat-box">
+            <h3 id="avgScore">0%</h3>
+            <p>معدل الدرجات العام</p>
+          </div>
+          <div class="stat-box">
+            <h3 id="rankBadge" style="color: #026857;">نشط 🌿</h3>
+            <p>حالة التفاعل</p>
+          </div>
         </div>
       </div>
+
+      <!-- كارت بيانات الاتصال -->
+      <div class="account-card">
+        <h3 style="color: #1e3a8a; font-size: 18px; margin-bottom: 20px; font-weight: 700;">🔒 معلومات الحساب الشخصية</h3>
+        <div class="info-grid">
+          <div class="info-group">
+            <label>الاسم الكامل</label>
+            <span id="fullNameVal">---</span>
+          </div>
+          <div class="info-group">
+            <label>البريد الإلكتروني</label>
+            <span id="emailVal">---</span>
+          </div>
+          <div class="info-group">
+            <label>رقم الهاتف</label>
+            <span id="phoneVal">---</span>
+          </div>
+          <div class="info-group">
+            <label>حالة النظام</label>
+            <span style="color: #026857;">متصل ومحمي ✅</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- بانر تحفيزي سريع -->
+      <div class="motivation-mini-banner">
+        <div>
+          <h4 style="font-size: 16px; margin-bottom: 4px; font-weight: 700;">هل تحب منافسة زملائك؟ 🏆</h4>
+          <p>تابع لوحة الشرف الحية وتأكد من حجز اسمك بين الأوائل هذا الأسبوع!</p>
+        </div>
+        <a href="../champion/index.html">لوحة الأوائل</a>
+      </div>
+
     </div>
 
     <footer>
@@ -407,9 +516,11 @@
         document.getElementById("emailVal").textContent = email;
         document.getElementById("phoneVal").textContent = phone;
         document.getElementById("userRole").textContent = role;
-        
-        // وضع أول حرف من اسم الطالب في الأفاتار الدائري
         document.getElementById("avatarLetter").textContent = name.charAt(0);
+
+        // محاكاة بيانات الإحصائيات (يمكن ربطها بجدول الامتحانات لاحقاً لو موجود)
+        document.getElementById("examsCount").textContent = "3";
+        document.getElementById("avgScore").textContent = "92%";
 
       } catch (error) {
         console.error("Error loading account:", error);
