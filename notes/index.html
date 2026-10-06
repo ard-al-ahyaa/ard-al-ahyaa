@@ -408,9 +408,7 @@
 
 
     /*
-      مدة Signed URL:
-
-      30 دقيقة
+      مدة Signed URL: 30 دقيقة
     */
 
     const SIGNED_URL_TIME =
@@ -513,11 +511,6 @@
       }
 
 
-      /*
-        لو كان رابطًا خارجيًا
-        نستخدمه كما هو.
-      */
-
       if (
         isExternalUrl(filePath)
       ) {
@@ -526,17 +519,6 @@
 
       }
 
-
-      /*
-        لو كان مسارًا داخل
-        Private Bucket
-
-        مثال:
-
-        pdf/1750000000000_xxxxx.pdf
-
-        ننشئ Signed URL مؤقت.
-      */
 
       const {
         data,
@@ -595,10 +577,6 @@
         "note-card";
 
 
-      /* ===============================
-         رأس المذكرة
-         =============================== */
-
       const header =
         document.createElement("div");
 
@@ -610,10 +588,6 @@
       header.textContent =
         "📖";
 
-
-      /* ===============================
-         محتوى المذكرة
-         =============================== */
 
       const content =
         document.createElement("div");
@@ -639,10 +613,6 @@
       description.textContent =
         "مذكرة أحياء للصف الثالث الثانوي";
 
-
-      /* ===============================
-         الأزرار
-         =============================== */
 
       const buttons =
         document.createElement("div");
@@ -676,10 +646,6 @@
         "⬇️ تحميل";
 
 
-      /* ===============================
-         إنشاء الرابط الآمن
-         =============================== */
-
       try {
 
         const secureUrl =
@@ -687,10 +653,6 @@
             note.file_path
           );
 
-
-        /*
-          زر فتح المذكرة
-        */
 
         openButton.href =
           secureUrl;
@@ -703,10 +665,6 @@
         openButton.rel =
           "noopener noreferrer";
 
-
-        /*
-          زر التحميل
-        */
 
         downloadButton.href =
           secureUrl;
@@ -827,10 +785,6 @@
 
       try {
 
-        /*
-          التحقق من تسجيل الدخول
-        */
-
         const {
           data: sessionData,
           error: sessionError
@@ -850,11 +804,6 @@
           sessionData.session;
 
 
-        /*
-          المحتوى محمي
-          للمستخدمين المسجلين فقط
-        */
-
         if (!session) {
 
           showLoginMessage();
@@ -863,10 +812,6 @@
 
         }
 
-
-        /*
-          تحميل المذكرات
-        */
 
         const {
           data,
@@ -897,10 +842,6 @@
         notesList.innerHTML = "";
 
 
-        /*
-          لا توجد مذكرات
-        */
-
         if (
           !data ||
           data.length === 0
@@ -927,10 +868,6 @@
 
         }
 
-
-        /*
-          إضافة المذكرات
-        */
 
         for (
           const note of data
@@ -1013,11 +950,6 @@
     loadNotes();
 
 
-    /*
-      تجديد Signed URLs كل 25 دقيقة
-      قبل انتهاء صلاحيتها.
-    */
-
     setInterval(
       loadNotes,
       25 * 60 * 1000
@@ -1028,3 +960,4 @@
 </body>
 
 </html>
+ 
