@@ -1,687 +1,533 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>المنتدى | منصة أرض الأحياء</title><link rel="icon" type="image/png" href="../favicon.png"><style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    font-family:Tahoma,Arial,sans-serif;
-    background:#f5f7f6;
-    color:#18352e;
-    direction:rtl;
-}
-
-/* =========================
-   الشريط الجانبي
-========================= */
-
-.sidebar{
-    position:fixed;
-    right:0;
-    top:0;
-    width:250px;
-    height:100vh;
-
-    background:#075e4d;
-    color:white;
-
-    padding:20px 15px;
-
-    overflow-y:auto;
-
-    z-index:1000;
-}
-
-.logo{
-    text-align:center;
-    padding-bottom:25px;
-    border-bottom:1px solid rgba(255,255,255,.18);
-}
-
-.logo img{
-    width:65px;
-    height:65px;
-    object-fit:contain;
-    border-radius:15px;
-    margin-bottom:8px;
-}
-
-.logo h2{
-    font-size:20px;
-}
-
-.logo p{
-    font-size:12px;
-    opacity:.75;
-    margin-top:5px;
-}
-
-/* روابط الشريط */
-
-.menu{
-    margin-top:25px;
-}
-
-.menu a{
-    display:flex;
-    align-items:center;
-    gap:12px;
-
-    color:white;
-    text-decoration:none;
-
-    padding:13px 14px;
-    margin-bottom:7px;
-
-    border-radius:10px;
-
-    transition:.2s;
-}
-
-.menu a:hover{
-    background:rgba(255,255,255,.12);
-}
-
-.menu a.active{
-    background:rgba(255,255,255,.18);
-}
-
-.menu-icon{
-    width:25px;
-    text-align:center;
-    font-size:18px;
-}
-
-/* =========================
-   المحتوى
-========================= */
-
-.main{
-    margin-right:250px;
-    min-height:100vh;
-    padding:25px;
-}
-
-.topbar{
-    background:white;
-
-    border-radius:15px;
-
-    padding:15px 20px;
-
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    box-shadow:0 4px 16px rgba(0,0,0,.05);
-
-    margin-bottom:20px;
-}
-
-.page-title{
-    color:#075e4d;
-    font-size:23px;
-}
-
-.back-home{
-    background:#075e4d;
-    color:white;
-
-    text-decoration:none;
-
-    padding:9px 15px;
-
-    border-radius:9px;
-}
-
-/* =========================
-   المنتدى
-========================= */
-
-.forum-header{
-    background:white;
-
-    padding:22px;
-
-    border-radius:15px;
-
-    box-shadow:0 4px 16px rgba(0,0,0,.05);
-
-    margin-bottom:18px;
-}
-
-.forum-header h1{
-    color:#075e4d;
-    font-size:25px;
-    margin-bottom:8px;
-}
-
-.forum-header p{
-    color:#687772;
-    line-height:1.8;
-}
-
-.new-topic{
-    display:inline-block;
-
-    margin-top:15px;
-
-    background:#075e4d;
-    color:white;
-
-    border:none;
-
-    padding:11px 17px;
-
-    border-radius:9px;
-
-    cursor:pointer;
-
-    font-family:inherit;
-}
-
-/* المواضيع */
-
-.topic{
-    background:white;
-
-    padding:20px;
-
-    border-radius:14px;
-
-    margin-bottom:12px;
-
-    box-shadow:0 3px 13px rgba(0,0,0,.04);
-
-    border:1px solid #e5ebe8;
-}
-
-.topic h3{
-    color:#075e4d;
-    font-size:18px;
-    margin-bottom:8px;
-}
-
-.topic p{
-    color:#687772;
-    line-height:1.8;
-}
-
-.topic-info{
-    margin-top:10px;
-    color:#929d99;
-    font-size:12px;
-}
-
-/* =========================
-   النافذة
-========================= */
-
-.modal{
-    display:none;
-
-    position:fixed;
-
-    inset:0;
-
-    background:rgba(0,0,0,.5);
-
-    align-items:center;
-    justify-content:center;
-
-    padding:15px;
-
-    z-index:2000;
-}
-
-.modal-box{
-    width:100%;
-    max-width:500px;
-
-    background:white;
-
-    border-radius:15px;
-
-    padding:22px;
-}
-
-.modal-box h2{
-    color:#075e4d;
-    margin-bottom:15px;
-}
-
-.modal-box input,
-.modal-box textarea{
-    width:100%;
-
-    padding:12px;
-
-    margin-bottom:12px;
-
-    border:1px solid #dce4e1;
-
-    border-radius:9px;
-
-    font-family:inherit;
-
-    outline:none;
-}
-
-.modal-box textarea{
-    min-height:120px;
-    resize:vertical;
-}
-
-.modal-buttons{
-    display:flex;
-    gap:8px;
-}
-
-.save{
-    background:#075e4d;
-    color:white;
-
-    border:none;
-
-    padding:10px 18px;
-
-    border-radius:8px;
-
-    cursor:pointer;
-}
-
-.close{
-    background:#e8edeb;
-    color:#18352e;
-
-    border:none;
-
-    padding:10px 18px;
-
-    border-radius:8px;
-
-    cursor:pointer;
-}
-
-/* =========================
-   الموبايل
-========================= */
-
-@media(max-width:750px){
-
-    .sidebar{
-        width:75px;
-        padding:15px 8px;
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>المنتدى التعليمي | منصة أرض الأحياء</title>
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="../favicon.png">
+  
+  <!-- استدعاء خط Cairo الاحترافي -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', sans-serif !important;
     }
 
-    .logo h2,
-    .logo p,
-    .menu-text{
-        display:none;
+    body {
+      background: #f0f4f8;
+      color: #2c3e50;
+      display: flex;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .logo img{
-        width:48px;
-        height:48px;
+    /* الشريط الجانبي */
+    .sidebar {
+      width: 270px;
+      background: linear-gradient(180deg, #026857 0%, #1e3a8a 100%);
+      color: white;
+      position: fixed;
+      right: 0;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 1000;
+      box-shadow: -5px 0 20px rgba(0, 0, 0, 0.08);
     }
 
-    .menu a{
-        justify-content:center;
-        padding:13px 5px;
+    .sidebar-top {
+      padding: 30px 20px;
     }
 
-    .main{
-        margin-right:75px;
-        padding:15px;
+    .logo-box {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 35px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     }
 
-    .topbar{
-        padding:13px;
+    .logo-box img {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      border-radius: 50%;
+      background: #fff;
+      padding: 3px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
     }
 
-    .page-title{
-        font-size:18px;
+    .logo-box h2 {
+      font-size: 19px;
+      color: #fff;
+      font-weight: 700;
     }
 
-}
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
-</style></head><body><!-- =========================
-     الشريط الجانبي
-========================= --><aside class="sidebar"><div class="logo">
+    .menu a, .logout-btn {
+      text-decoration: none;
+      color: #e2f1ee;
+      padding: 12px 16px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: transparent;
+      border: none;
+      width: 100%;
+      text-align: right;
+      cursor: pointer;
+    }
 
-    <img
-        src="../logo.png"
-        alt="منصة أرض الأحياء"
-    >
+    .menu a:hover, .menu a.active {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      transform: translateX(-4px);
+    }
 
-    <h2>
-        منصة أرض الأحياء
-    </h2>
+    .logout-btn {
+      margin-top: 25px;
+      color: #ffdddd;
+    }
 
-    <p>
-        منصة تعليمية
-    </p>
+    .logout-btn:hover {
+      background: rgba(231, 76, 60, 0.25);
+      color: #ff6b6b;
+    }
 
-</div>
+    /* المحتوى الرئيسي */
+    .main {
+      margin-right: 270px;
+      flex: 1;
+      padding: 30px 40px;
+      background: #f0f4f8;
+      min-height: 100vh;
+    }
 
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      padding: 22px 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(30, 58, 138, 0.04);
+      margin-bottom: 30px;
+      border: 1px solid #e2e8f0;
+    }
 
-<nav class="menu">
+    .header-bar h1 {
+      color: #1e3a8a;
+      font-size: 22px;
+      font-weight: 700;
+    }
 
-    <a href="../index.html">
+    /* حاوية المنتدى */
+    .forum-container {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
 
-        <span class="menu-icon">🏠</span>
+    /* كارت إضافة منشور جديد */
+    .post-creator {
+      background: white;
+      border-radius: 18px;
+      padding: 25px;
+      box-shadow: 0 8px 25px rgba(30, 58, 138, 0.05);
+      border: 1px solid #e2e8f0;
+    }
 
-        <span class="menu-text">
-            الرئيسية
-        </span>
+    .post-creator textarea {
+      width: 100%;
+      padding: 15px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      outline: none;
+      font-size: 15px;
+      background: #f8fafc;
+      resize: vertical;
+      min-height: 110px;
+      transition: all 0.3s ease;
+    }
 
-    </a>
+    .post-creator textarea:focus {
+      border-color: #1e3a8a;
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.1);
+    }
 
+    .post-creator-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+    }
 
-    <a href="../videos/index.html">
+    .post-btn {
+      background: #1e3a8a;
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(30, 58, 138, 0.2);
+    }
 
-        <span class="menu-icon">🎥</span>
+    .post-btn:hover {
+      background: #1e40af;
+      transform: translateY(-2px);
+    }
 
-        <span class="menu-text">
-            المحاضرات
-        </span>
+    /* قائمة المنشورات */
+    .posts-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
 
-    </a>
+    .post-card {
+      background: white;
+      border-radius: 18px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+      border: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
 
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-    <a href="../notes/index.html">
+    .post-avatar {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, #1e3a8a, #026857);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: bold;
+    }
 
-        <span class="menu-icon">📚</span>
+    .post-author h4 {
+      color: #1e3a8a;
+      font-size: 16px;
+      font-weight: 700;
+    }
 
-        <span class="menu-text">
-            المذكرات
-        </span>
+    .post-author span {
+      color: #94a3b8;
+      font-size: 12px;
+    }
 
-    </a>
+    .post-content {
+      color: #334155;
+      font-size: 15px;
+      line-height: 1.8;
+      word-break: break-word;
+    }
 
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 13px;
+      padding: 15px;
+    }
 
-    <a
-        href="index.html"
-        class="active"
-    >
+    /* الشريط السفلي للموبايل */
+    .bottom-nav {
+      display: none;
+    }
 
-        <span class="menu-icon">💬</span>
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+      .main {
+        margin-right: 0;
+        padding: 15px;
+      }
+      .bottom-nav {
+        position: fixed;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        bottom: 0;
+        right: 0;
+        left: 0;
+        height: 65px;
+        background: #1e3a8a;
+        z-index: 3000;
+        box-shadow: -5px 0 20px rgba(0,0,0,0.12);
+      }
+      .bottom-nav-item {
+        color: white;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        font-size: 18px;
+      }
+      .bottom-nav-item small {
+        font-size: 10px;
+        font-weight: 600;
+      }
+      .bottom-nav-item.active {
+        background: rgba(255,255,255,0.2);
+      }
+      body {
+        padding-bottom: 70px;
+      }
+    }
+  </style>
+</head>
 
-        <span class="menu-text">
-            المنتدى
-        </span>
+<body>
 
-    </a>
+  <!-- الشريط الجانبي -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo-box">
+        <img src="../logo.png" alt="شعار المنصة">
+        <div>
+          <h2>أرض الأحياء</h2>
+          <p style="font-size: 12px; opacity: 0.85; font-weight: 600;">ثالثة ثانوي</p>
+        </div>
+      </div>
 
+      <nav class="menu">
+        <a href="../index.html">🏠 الرئيسية</a>
+        <a href="../videos/index.html">🎥 المحاضرات</a>
+        <a href="../notes/index.html">📚 المذكرات</a>
+        <a href="../champion/index.html">🏆 بطل الفصل</a>
+        <a href="index.html" class="active">💬 المنتدى</a>
+        <a href="../account/index.html">👤 حساب الطالب</a>
+        <button class="logout-btn" onclick="logout()">🚪 تسجيل الخروج</button>
+      </nav>
+    </div>
+    <div style="padding: 15px; font-size: 12px; text-align: center; opacity: 0.75; font-weight: 600;">
+      جميع الحقوق محفوظة © 2026
+    </div>
+  </aside>
 
-    <a href="../classes/index.html">
+  <!-- المحتوى الرئيسي -->
+  <main class="main">
 
-        <span class="menu-icon">🎓</span>
-
-        <span class="menu-text">
-            الصفوف
-        </span>
-
-    </a>
-
-</nav>
-
-</aside><!-- =========================
-     المحتوى الرئيسي
-========================= --><main class="main"><div class="topbar">
-
-    <div class="page-title">
-        💬 المنتدى
+    <div class="header-bar">
+      <h1>المنتدى التعليمي والنقاشات 💬</h1>
+      <span style="color: #64748b; font-size: 14px;">اسأل وشارك زملائك</span>
     </div>
 
-    <a
-        href="../index.html"
-        class="back-home"
-    >
-        الرئيسية
-    </a>
+    <div class="forum-container">
 
-</div>
-
-
-<section class="forum-header">
-
-    <h1>
-        منتدى أرض الأحياء
-    </h1>
-
-    <p>
-        مكان بسيط لمناقشة دروس الأحياء
-        وطرح الأسئلة بين الطلاب.
-    </p>
-
-    <button
-        class="new-topic"
-        onclick="openModal()"
-    >
-        + إنشاء موضوع جديد
-    </button>
-
-</section>
-
-
-<!-- المواضيع -->
-
-<section id="topics">
-
-
-    <article class="topic">
-
-        <h3>
-            🧬 أسئلة عامة في الأحياء
-        </h3>
-
-        <p>
-            يمكنك هنا طرح أي سؤال متعلق
-            بمادة الأحياء ومناقشته.
-        </p>
-
-        <div class="topic-info">
-            👤 منصة أرض الأحياء
-            · 💬 مناقشة تعليمية
+      <!-- كتابة منشور جديد -->
+      <div class="post-creator">
+        <textarea id="postContentInput" placeholder="اكتب سؤالك أو استفسارك في المنهج هنا ليراها زملاؤك..."></textarea>
+        <div class="post-creator-footer">
+          <span style="color: #64748b; font-size: 13px;" id="charHint">كن متبادلاً للاستفادة ومفيداً لغيرك 🌿</span>
+          <button class="post-btn" onclick="createPost()">نشر السؤال 🚀</button>
         </div>
+      </div>
 
-    </article>
-
-
-    <article class="topic">
-
-        <h3>
-            🔬 مناقشة درس الخلية
-        </h3>
-
-        <p>
-            مساحة لمناقشة درس الخلية
-            وأهم النقاط والأسئلة.
-        </p>
-
-        <div class="topic-info">
-            👤 منصة أرض الأحياء
-            · 💬 مناقشة تعليمية
+      <!-- حائط المنشورات -->
+      <div class="posts-feed" id="postsFeed">
+        <div class="post-card" style="text-align: center; color: #64748b;">
+          جاري تحميل المناقشات...
         </div>
-
-    </article>
-
-
-    <article class="topic">
-
-        <h3>
-            🌱 أسئلة النبات
-        </h3>
-
-        <p>
-            اطرح أسئلتك المتعلقة
-            بموضوعات النبات.
-        </p>
-
-        <div class="topic-info">
-            👤 منصة أرض الأحياء
-            · 💬 مناقشة تعليمية
-        </div>
-
-    </article>
-
-
-</section>
-
-</main><!-- =========================
-     نافذة موضوع جديد
-========================= --><div
-    class="modal"
-    id="modal"
-><div class="modal-box">
-
-    <h2>
-        إنشاء موضوع جديد
-    </h2>
-
-
-    <input
-        type="text"
-        id="title"
-        placeholder="عنوان الموضوع"
-    >
-
-
-    <textarea
-        id="content"
-        placeholder="اكتب سؤالك أو موضوعك..."
-    ></textarea>
-
-
-    <div class="modal-buttons">
-
-        <button
-            class="save"
-            onclick="addTopic()"
-        >
-            نشر الموضوع
-        </button>
-
-
-        <button
-            class="close"
-            onclick="closeModal()"
-        >
-            إلغاء
-        </button>
+      </div>
 
     </div>
 
-</div>
+    <footer>
+      © 2026 منصة أرض الأحياء — جميع الحقوق محفوظة
+    </footer>
 
-</div><script>
+  </main>
 
-function openModal(){
+  <!-- الشريط السفلي للموبايل -->
+  <nav class="bottom-nav" aria-label="التنقل الرئيسي">
+    <a href="../index.html" class="bottom-nav-item">
+      <span>🌱</span>
+      <small>الرئيسية</small>
+    </a>
+    <a href="../videos/index.html" class="bottom-nav-item">
+      <span>🎥</span>
+      <small>المحاضرات</small>
+    </a>
+    <a href="../champion/index.html" class="bottom-nav-item">
+      <span>🏆</span>
+      <small>البطل</small>
+    </a>
+    <a href="../notes/index.html" class="bottom-nav-item">
+      <span>📚</span>
+      <small>المذكرات</small>
+    </a>
+    <a href="index.html" class="bottom-nav-item active">
+      <span>💬</span>
+      <small>المنتدى</small>
+    </a>
+  </nav>
 
-    document
-        .getElementById("modal")
-        .style.display = "flex";
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-}
+  <script>
+    const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
 
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-function closeModal(){
+    let currentUser = null;
 
-    document
-        .getElementById("modal")
-        .style.display = "none";
-
-}
-
-
-function addTopic(){
-
-    const title =
-        document
-        .getElementById("title")
-        .value
-        .trim();
-
-
-    const content =
-        document
-        .getElementById("content")
-        .value
-        .trim();
-
-
-    if(!title || !content){
-
-        alert(
-            "اكتب عنوان الموضوع والمحتوى أولاً."
-        );
-
+    async function checkAuthAndLoadPosts() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        window.location.href = "../login/index.html";
         return;
+      }
+      currentUser = session.user;
+      fetchPosts();
     }
 
+    async function fetchPosts() {
+      const feed = document.getElementById("postsFeed");
+      try {
+        // نفترض جدول باسم forum_posts أو posts (تأكد من إنشاء جدول في سوبابيس يحتوي على id, content, user_name, created_at)
+        const { data, error } = await supabaseClient
+          .from("forum_posts")
+          .select("*")
+          .order("created_at", { ascending: false });
 
-    const article =
-        document.createElement("article");
+        if (error) {
+          // لو الجدول مش موجود لسه، بنعرض رسالة توجيهية لطيفة
+          feed.innerHTML = `
+            <div class="post-card" style="text-align: center; color: #1e3a8a;">
+              <h3>أهلاً بك في المنتدى! 🌿</h3>
+              <p style="color: #64748b; margin-top: 8px;">مساحة النقاش جاهزة. ابدأ بكتابة أول سؤال لك في الأعلى.</p>
+            </div>`;
+          return;
+        }
 
+        if (!data || data.length === 0) {
+          feed.innerHTML = `<div class="post-card" style="text-align: center; color: #64748b;">لا توجد منشورات حتى الآن. كن أول من يبدأ النقاش!</div>`;
+          return;
+        }
 
-    article.className = "topic";
+        feed.innerHTML = "";
+        data.forEach(post => {
+          const dateStr = new Date(post.created_at).toLocaleDateString("ar-EG");
+          const card = document.createElement("div");
+          card.className = "post-card";
+          card.innerHTML = `
+            <div class="post-header">
+              <div class="post-avatar">${(post.user_name || "ط").charAt(0)}</div>
+              <div class="post-author">
+                <h4>${post.user_name || "طالب مميز"}</h4>
+                <span>${dateStr}</span>
+              </div>
+            </div>
+            <div class="post-content">${escapeHtml(post.content)}</div>
+          `;
+          feed.appendChild(card);
+        });
 
+      } catch (err) {
+        console.error("Error fetching posts:", err);
+      }
+    }
 
-    const h3 =
-        document.createElement("h3");
+    async function createPost() {
+      const textarea = document.getElementById("postContentInput");
+      const content = textarea.value.trim();
 
-    h3.textContent =
-        "💬 " + title;
+      if (!content) {
+        alert("⚠️️ يرجى كتابة محتوى السؤال أو المنشور أولاً");
+        return;
+      }
 
+      try {
+        // جلب اسم الطالب من جدول profiles
+        const { data: profile } = await supabaseClient
+          .from("profiles")
+          .select("full_name")
+          .eq("id", currentUser.id)
+          .maybeSingle();
 
-    const p =
-        document.createElement("p");
+        const authorName = profile?.full_name || currentUser.email || "طالب مميز";
 
-    p.textContent =
-        content;
+        const { error } = await supabaseClient
+          .from("forum_posts")
+          .insert([
+            { content: content, user_id: currentUser.id, user_name: authorName }
+          ]);
 
+        if (error) {
+          alert("❌ تأكد من إنشاء جدول forum_posts في Supabase لتمكين النشر المباشر.");
+          console.error(error);
+          return;
+        }
 
-    const info =
-        document.createElement("div");
+        textarea.value = "";
+        fetchPosts();
 
-    info.className =
-        "topic-info";
+      } catch (err) {
+        console.error("Error creating post:", err);
+      }
+    }
 
-    info.textContent =
-        "👤 عضو جديد · 💬 موضوع جديد";
+    function escapeHtml(text) {
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    }
 
+    async function logout() {
+      try {
+        await supabaseClient.auth.signOut();
+        window.location.href = "../login/index.html";
+      } catch (error) {
+        console.error(error);
+      }
+    }
 
-    article.appendChild(h3);
+    checkAuthAndLoadPosts();
+  </script>
 
-    article.appendChild(p);
-
-    article.appendChild(info);
-
-
-    document
-        .getElementById("topics")
-        .prepend(article);
-
-
-    document
-        .getElementById("title")
-        .value = "";
-
-
-    document
-        .getElementById("content")
-        .value = "";
-
-
-    closeModal();
-
-}
-
-
-</script></body>
+</body>
 </html>
