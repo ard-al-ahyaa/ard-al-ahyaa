@@ -18,7 +18,7 @@
 
     body {
       font-family: Arial, Tahoma, sans-serif;
-      background: linear-gradient(135deg, #0f5132, #198754);
+      background: linear-gradient(135deg, #075e4d, #0b806a);
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -45,7 +45,7 @@
 
     h1 {
       text-align: center;
-      color: #0f5132;
+      color: #075e4d;
       margin-bottom: 10px;
       font-size: 25px;
     }
@@ -75,8 +75,8 @@
     }
 
     input:focus {
-      border-color: #198754;
-      box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.1);
+      border-color: #075e4d;
+      box-shadow: 0 0 0 3px rgba(7, 94, 77, 0.1);
     }
 
     button {
@@ -84,7 +84,7 @@
       border: none;
       padding: 14px;
       border-radius: 10px;
-      background: #198754;
+      background: #075e4d;
       color: white;
       font-size: 17px;
       font-weight: bold;
@@ -93,7 +93,7 @@
     }
 
     button:hover {
-      background: #146c43;
+      background: #064c3f;
     }
 
     button:disabled {
@@ -126,7 +126,7 @@
       display: block;
       text-align: center;
       margin-top: 20px;
-      color: #198754;
+      color: #075e4d;
       text-decoration: none;
       font-weight: bold;
     }
@@ -233,24 +233,20 @@
       submitBtn.textContent = "جاري تغيير كلمة المرور...";
 
       try {
+        // التأكد من وجود جلسة نشطة للمستخدم القادم من رابط الاستعادة
+        const { data: sessionData } = await supabaseClient.auth.getSession();
+        
+        if (!sessionData.session) {
+          throw new Error("انتهت صلاحية رابط الاستعادة أو أن الجلسة غير صالحة. يجدر بك طلب رابط جديد.");
+        }
 
-        const { data, error } =
+        const { error } =
           await supabaseClient.auth.updateUser({
             password: newPassword
           });
 
         if (error) {
-          console.error(error);
-
-          showMessage(
-            "تعذر تغيير كلمة المرور. قد تكون صلاحية رابط الاستعادة انتهت، اطلب رسالة جديدة.",
-            "error"
-          );
-
-          submitBtn.disabled = false;
-          submitBtn.textContent = "تغيير كلمة المرور";
-
-          return;
+          throw error;
         }
 
         showMessage(
@@ -269,7 +265,7 @@
         console.error(err);
 
         showMessage(
-          "حدث خطأ غير متوقع. حاول مرة أخرى.",
+          err.message || "تعذر تغيير كلمة المرور. قد تكون صلاحية رابط الاستعادة انتهت، اطلب رسالة جديدة.",
           "error"
         );
 
