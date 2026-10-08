@@ -128,8 +128,8 @@
 
     .videos-list {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 25px;
     }
 
     .video-card {
@@ -137,34 +137,43 @@
       border-radius: 16px;
       background: white;
       overflow: hidden;
-      padding: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     .video-card h3 {
       color: #1e3a8a;
-      font-size: 17px;
-      margin-bottom: 8px;
+      font-size: 18px;
+      font-weight: 700;
     }
 
     .video-card p {
       color: #64748b;
       font-size: 13px;
-      margin-bottom: 12px;
+      line-height: 1.6;
     }
 
     video {
       width: 100%;
-      height: 170px;
+      height: 180px;
       background: #000;
-      border-radius: 8px;
+      border-radius: 10px;
     }
 
     .loading, .empty, .error {
       text-align: center;
-      padding: 30px;
+      padding: 40px;
       color: #64748b;
       font-weight: 600;
       grid-column: 1 / -1;
+      font-size: 16px;
+    }
+
+    .error {
+      color: #e74c3c;
     }
 
     @media (max-width: 768px) {
@@ -218,13 +227,15 @@
     async function loadVideos() {
       const listDiv = document.getElementById("videosList");
       try {
-        // جلب الفيديوهات مباشرة من الجدول من غير شروط معقدة
+        // جلب البيانات من جدول videos مباشرة
         const { data, error } = await supabaseClient
           .from("videos")
           .select("*")
           .order("created_at", { ascending: false });
 
-        if (error) throw error;
+        if (error) {
+          throw error;
+        }
 
         if (!data || data.length === 0) {
           listDiv.innerHTML = `<div class="empty">لا توجد محاضرات مضافة حاليًا. ارفع فيديوهات من لوحة التحكم.</div>`;
@@ -246,9 +257,9 @@
           listDiv.appendChild(card);
         });
 
-      } catch (err) {
-        console.error("Error:", err);
-        listDiv.innerHTML = `<div class="error">تأكد من إنشاء جدول videos في Supabase. التفاصيل في الكونسول.</div>`;
+    } catch (err) {
+        console.error("Supabase Error:", err);
+        listDiv.innerHTML = `<div class="error">تعذر تحميل الفيديوهات. تأكد من إنشاء جدول videos في قاعدة بيانات Supabase.</div>`;
       }
     }
 
@@ -256,5 +267,5 @@
   </script>
 
 </body>
+
 </html>
- 
