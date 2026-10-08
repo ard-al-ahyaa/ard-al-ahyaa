@@ -4,548 +4,329 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>المحاضرات | منصة أرض الأحياء</title>
-
-  <meta name="description"
-    content="محاضرات وفيديوهات أحياء الصف الثالث الثانوي على منصة أرض الأحياء.">
-
-  <meta name="robots" content="index, follow">
-
-  <link rel="canonical"
-    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/videos/">
-
+  <title>المنتدى | منصة أرض الأحياء</title>
   <link rel="icon" href="../favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: Arial, Tahoma, sans-serif;
+      font-family: 'Cairo', sans-serif !important;
     }
 
     body {
-      background: #f5f7f7;
-      color: #222;
+      background: #f0f4f8;
+      color: #2c3e50;
+      display: flex;
+      min-height: 100vh;
     }
 
-    /* ===============================
-       الشريط الجانبي
-       =============================== */
-
     .sidebar {
+      width: 270px;
+      background: linear-gradient(180deg, #026857 0%, #1e3a8a 100%);
+      color: white;
       position: fixed;
       right: 0;
       top: 0;
-      width: 250px;
       height: 100vh;
-      background: #075e4d;
-      color: white;
-      padding: 25px 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       z-index: 1000;
     }
 
+    .sidebar-top {
+      padding: 30px 20px;
+    }
+
     .logo-box {
-      text-align: center;
+      display: flex;
+      align-items: center;
+      gap: 14px;
       margin-bottom: 35px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     }
 
     .logo-box img {
-      width: 75px;
-      height: 75px;
+      width: 50px;
+      height: 50px;
       object-fit: contain;
       border-radius: 50%;
-      margin-bottom: 10px;
+      background: #fff;
+      padding: 3px;
     }
 
     .logo-box h2 {
-      font-size: 20px;
-      margin-bottom: 5px;
-    }
-
-    .logo-box p {
-      font-size: 13px;
-      opacity: 0.8;
+      font-size: 19px;
+      color: #fff;
+      font-weight: 700;
     }
 
     .menu {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     .menu a {
       text-decoration: none;
-      color: white;
-      padding: 14px 15px;
-      border-radius: 10px;
-      transition: 0.2s;
+      color: #e2f1ee;
+      padding: 12px 16px;
+      border-radius: 12px;
       font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
 
-    .menu a:hover,
-    .menu a.active {
-      background: rgba(255, 255, 255, 0.15);
+    .menu a:hover, .menu a.active {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
     }
-
-    /* ===============================
-       المحتوى
-       =============================== */
 
     .main {
-      margin-right: 250px;
-      padding: 30px;
-      min-height: 100vh;
+      margin-right: 270px;
+      flex: 1;
+      padding: 30px 40px;
     }
 
-    .topbar {
+    .top-bar {
       background: white;
-      border-radius: 15px;
-      padding: 20px 25px;
+      padding: 22px 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(30, 58, 138, 0.04);
+      margin-bottom: 30px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .top-bar h1 {
+      color: #1e3a8a;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: 0 8px 25px rgba(30, 58, 138, 0.05);
+      border: 1px solid #e2e8f0;
       margin-bottom: 25px;
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
     }
 
-    .topbar h1 {
-      color: #075e4d;
-      font-size: 28px;
-      margin-bottom: 8px;
+    .card h3 {
+      color: #1e3a8a;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 15px;
     }
 
-    .topbar p {
-      color: #666;
+    textarea {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 15px;
+      outline: none;
+      resize: vertical;
+      min-height: 100px;
+      margin-bottom: 12px;
+    }
+
+    textarea:focus {
+      border-color: #1e3a8a;
+      box-shadow: 0 0 0 3px rgba(30,58,138,0.1);
+    }
+
+    button {
+      background: #1e3a8a;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #1e40af;
+    }
+
+    .post-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 20px;
+      margin-top: 15px;
+    }
+
+    .post-author {
+      font-weight: 700;
+      color: #026857;
+      margin-bottom: 6px;
       font-size: 15px;
     }
 
-    /* ===============================
-       الفيديوهات والمحاضرات
-       =============================== */
-
-    .videos-container {
-      background: white;
-      border-radius: 15px;
-      padding: 25px;
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
-    }
-
-    .section-title {
-      color: #075e4d;
-      font-size: 22px;
-      margin-bottom: 20px;
-    }
-
-    .videos-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 25px;
-    }
-
-    .video-card {
-      border: 1px solid #e5e5e5;
-      border-radius: 14px;
-      background: white;
-      overflow: hidden;
-      transition: 0.2s;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .video-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
-    }
-
-    .video-player-box {
-      width: 100%;
-      height: 190px;
-      background: #000;
-      position: relative;
-    }
-
-    .video-player-box video,
-    .video-player-box iframe {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border: none;
-    }
-
-    .video-content {
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-    }
-
-    .video-content h3 {
-      color: #075e4d;
-      font-size: 19px;
-      margin-bottom: 8px;
-      line-height: 1.5;
-    }
-
-    .video-content p {
-      color: #666;
-      font-size: 13px;
+    .post-content {
+      color: #334155;
+      font-size: 14px;
       line-height: 1.7;
-      margin-bottom: 15px;
-      flex-grow: 1;
     }
 
-    /* أزرار الملحقات تحت المحاضرة */
-    .lecture-attachments {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: auto;
-      padding-top: 12px;
-      border-top: 1px solid #eee;
-    }
-
-    .attachment-btn {
-      flex: 1;
-      min-width: calc(50% - 4px);
-      text-align: center;
-      text-decoration: none;
-      padding: 9px 10px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: bold;
-      transition: 0.2s;
-    }
-
-    .btn-note {
-      background: #eef6f4;
-      color: #075e4d;
-      border: 1px solid #d0e8e2;
-    }
-    .btn-note:hover {
-      background: #075e4d;
-      color: white;
-    }
-
-    .btn-homework {
-      background: #fff8e1;
-      color: #8f6b00;
-      border: 1px solid #ffe082;
-    }
-    .btn-homework:hover {
-      background: #ffb300;
-      color: white;
-    }
-
-    .btn-exam {
-      background: #e8f4fd;
-      color: #0d6efd;
-      border: 1px solid #b6d4fe;
-      width: 100%;
-    }
-    .btn-exam:hover {
-      background: #0d6efd;
-      color: white;
-    }
-
-    .loading,
-    .empty,
-    .error {
-      text-align: center;
-      padding: 40px 15px;
-      color: #777;
-      font-size: 16px;
-      grid-column: 1 / -1;
-    }
-
-    .error {
-      color: #b00020;
-    }
-
-    .security-message {
+    .loading, .empty {
       text-align: center;
       padding: 25px;
-      border-radius: 12px;
-      background: #fff8e1;
-      color: #795548;
-      border: 1px solid #ffe082;
-      grid-column: 1 / -1;
+      color: #64748b;
+      font-weight: 600;
     }
 
-    .login-btn {
-      display: inline-block;
-      margin-top: 15px;
-      padding: 10px 18px;
-      background: #075e4d;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-    }
-
-    /* ===============================
-       الموبايل
-       =============================== */
-
-    @media (max-width: 700px) {
-      .sidebar {
-        width: 75px;
-        padding: 20px 8px;
-      }
-
-      .logo-box h2,
-      .logo-box p {
-        display: none;
-      }
-
-      .logo-box img {
-        width: 55px;
-        height: 55px;
-      }
-
-      .menu a {
-        text-align: center;
-        font-size: 0;
-        padding: 14px 5px;
-      }
-
-      .menu a::first-letter {
-        font-size: 20px;
-      }
-
-      .main {
-        margin-right: 75px;
-        padding: 15px;
-      }
-
-      .topbar h1 {
-        font-size: 22px;
-      }
-
-      .videos-list {
-        grid-template-columns: 1fr;
-      }
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-right: 0; padding: 15px; }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ===============================
-       الشريط الجانبي
-       =============================== -->
-
   <aside class="sidebar">
-    <div class="logo-box">
-      <img src="../logo.png" alt="شعار منصة أرض الأحياء">
-      <h2>منصة أرض الأحياء</h2>
-      <p>منصة تعليمية</p>
+    <div class="sidebar-top">
+      <div class="logo-box">
+        <img src="../logo.png" alt="شعار">
+        <div>
+          <h2>أرض الأحياء</h2>
+          <p style="font-size: 12px; opacity: 0.85;">ثالثة ثانوي</p>
+        </div>
+      </div>
+      <nav class="menu">
+        <a href="../index.html">🏠 الرئيسية</a>
+        <a href="../videos/index.html">🎥 المحاضرات</a>
+        <a href="../notes/index.html">📚 المذكرات</a>
+        <a href="../champion/index.html">🏆 بطل الفصل</a>
+        <a href="index.html" class="active">💬 المنتدى</a>
+        <a href="../account/index.html">👤 حساب الطالب</a>
+      </nav>
     </div>
-    <nav class="menu">
-      <a href="../index.html">🏠 الرئيسية</a>
-      <a href="index.html" class="active">🎥 المحاضرات</a>
-      <a href="../forum/index.html">💬 المنتدى</a>
-      <a href="../notes/index.html">📚 المذكرات</a>
-    </nav>
   </aside>
 
-  <!-- ===============================
-       المحتوى
-       =============================== -->
-
   <main class="main">
-    <div class="topbar">
-      <h1>🎥 المحاضرات</h1>
-      <p>فيديوهات وشرح منهج الأحياء للصف الثالث الثانوي مع المذكرات والواجبات</p>
+    <div class="top-bar">
+      <h1>💬 منتدى النقاش والأسئلة</h1>
     </div>
 
-    <section class="videos-container">
-      <h2 class="section-title">قائمة المحاضرات</h2>
-      <div id="videosList" class="videos-list">
-        <div class="loading">جاري تحميل المحاضرات...</div>
+    <!-- صندوق إضافة منشور جديد -->
+    <div class="card">
+      <h3>اكتب سؤالك أو استفسارك لزملائك وأستاذ المادة:</h3>
+      <textarea id="postContent" placeholder="شارك فكرة، اسأل عن جزئية في الأحياء..."></textarea>
+      <button onclick="addPost()">نشر المنشور 🚀</button>
+      <div id="statusMsg" style="margin-top: 10px; font-weight: bold; font-size: 14px;"></div>
+    </div>
+
+    <!-- قائمة المنشورات -->
+    <div class="card">
+      <h3>المناقشات الأخيرة</h3>
+      <div id="postsList">
+        <div class="loading">جاري تحميل المناقشات...</div>
       </div>
-    </section>
+    </div>
   </main>
 
-  <!-- ===============================
-       Supabase
-       =============================== -->
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <script>
     const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
     const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
-    const BUCKET = "lectures";
-    const SIGNED_URL_TIME = 30 * 60; // 30 دقيقة
-
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    function showLoginMessage() {
-      const videosList = document.getElementById("videosList");
-      videosList.innerHTML = "";
-      const box = document.createElement("div");
-      box.className = "security-message";
-      box.innerHTML = `
-        <strong>🔐 المحتوى محمي</strong><br>
-        يجب تسجيل الدخول إلى منصة أرض الأحياء لمشاهدة المحاضرات.<br>
-        <a class="login-btn" href="../login/index.html">🔑 تسجيل الدخول</a>
-      `;
-      videosList.appendChild(box);
-    }
+    async function addPost() {
+      const content = document.getElementById("postContent").value.trim();
+      const status = document.getElementById("statusMsg");
 
-    function isExternalUrl(value) {
-      if (!value) return false;
-      return value.startsWith("http://") || value.startsWith("https://");
-    }
+      if (!content) {
+        status.style.color = "#e74c3c";
+        status.textContent = "❌ يرجى كتابة محتوى المنشور أولاً.";
+        return;
+      }
 
-    async function getSecureUrl(filePath) {
-      if (!filePath) return "";
-      if (isExternalUrl(filePath)) return filePath;
-
-      const { data, error } = await supabaseClient
-        .storage
-        .from(BUCKET)
-        .createSignedUrl(filePath, SIGNED_URL_TIME);
-
-      if (error || !data) return "";
-      return data.signedUrl;
-    }
-
-    async function createVideoCard(item) {
-      const card = document.createElement("div");
-      card.className = "video-card";
-
-      // مشغل الفيديو
-      const playerBox = document.createElement("div");
-      playerBox.className = "video-player-box";
+      status.style.color = "#1e3a8a";
+      status.textContent = "⏳ جاري النشر...";
 
       try {
-        const secureVideoUrl = await getSecureUrl(item.file_path || item.video_url);
-        if (secureVideoUrl) {
-          const videoElem = document.createElement("video");
-          videoElem.src = secureVideoUrl;
-          videoElem.controls = true;
-          videoElem.preload = "metadata";
-          playerBox.appendChild(videoElem);
-        } else {
-          throw new Error("No URL");
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        
+        let authorName = "طالب بالمنصة";
+        if (session && session.user) {
+          const { data: profile } = await supabaseClient
+            .from("profiles")
+            .select("full_name")
+            .eq("id", session.user.id)
+            .maybeSingle();
+          if (profile?.full_name) authorName = profile.full_name;
         }
+
+        const { error } = await supabaseClient
+          .from("forum")
+          .insert({ content: content, author_name: authorName });
+
+        if (error) throw error;
+
+        status.style.color = "#026857";
+        status.textContent = "✅ تم النشر بنجاح!";
+        document.getElementById("postContent").value = "";
+        loadPosts();
+
+        setTimeout(() => { status.textContent = ""; }, 3000);
+
       } catch (err) {
-        playerBox.innerHTML = `
-          <div style="color: white; text-align: center; padding-top: 75px; font-size: 13px;">
-            تعذر تحميل الفيديو حالياً
-          </div>
-        `;
+        console.error(err);
+        status.style.color = "#e74c3c";
+        status.textContent = "❌ تعذر النشر. (تأكد من إنشاء جدول forum في Supabase).";
       }
-
-      // محتوى المحاضرة
-      const content = document.createElement("div");
-      content.className = "video-content";
-
-      const title = document.createElement("h3");
-      title.textContent = item.title || "محاضرة بدون عنوان";
-
-      const description = document.createElement("p");
-      description.textContent = item.description || "شرح تفصيلي لأهم جزئيات المنهج.";
-
-      content.appendChild(title);
-      content.appendChild(description);
-
-      // قسم الملحقات (مذكرة، واجب، امتحان)
-      const attachments = document.createElement("div");
-      attachments.className = "lecture-attachments";
-
-      // 1. زر المذكرة (لو موجود في قاعدة البيانات note_url أو note_path)
-      if (item.note_url || item.note_path) {
-        const noteBtn = document.createElement("a");
-        noteBtn.className = "attachment-btn btn-note";
-        noteBtn.textContent = "📖 مذكرة الشرح";
-        getSecureUrl(item.note_url || item.note_path).then(url => {
-          noteBtn.href = url || "#";
-        });
-        noteBtn.target = "_blank";
-        noteBtn.rel = "noopener noreferrer";
-        attachments.appendChild(noteBtn);
-      }
-
-      // 2. زر الواجب (لو موجود homework_url)
-      if (item.homework_url) {
-        const hwBtn = document.createElement("a");
-        hwBtn.className = "attachment-btn btn-homework";
-        hwBtn.textContent = "📝 حل الواجب";
-        hwBtn.href = item.homework_url;
-        hwBtn.target = "_blank";
-        hwBtn.rel = "noopener noreferrer";
-        attachments.appendChild(hwBtn);
-      }
-
-      // 3. زر الامتحان (لو موجود exam_url)
-      if (item.exam_url) {
-        const examBtn = document.createElement("a");
-        examBtn.className = "attachment-btn btn-exam";
-        examBtn.textContent = "🏆 امتحان المحاضرة";
-        examBtn.href = item.exam_url;
-        examBtn.target = "_blank";
-        examBtn.rel = "noopener noreferrer";
-        attachments.appendChild(examBtn);
-      }
-
-      if (attachments.children.length > 0) {
-        content.appendChild(attachments);
-      }
-
-      card.appendChild(playerBox);
-      card.appendChild(content);
-
-      return card;
     }
 
-    async function loadVideos() {
-      const videosList = document.getElementById("videosList");
-
+    async function loadPosts() {
+      const listDiv = document.getElementById("postsList");
       try {
-        const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
-        if (sessionError) throw sessionError;
-
-        if (!sessionData.session) {
-          showLoginMessage();
-          return;
-        }
-
-        // جلب المحاضرات مع الحقول الخاصة بالملحقات
         const { data, error } = await supabaseClient
-          .from("videos")
-          .select("id, title, description, file_path, video_url, note_url, note_path, homework_url, exam_url, created_at")
+          .from("forum")
+          .select("*")
           .order("created_at", { ascending: false });
 
         if (error) throw error;
 
-        videosList.innerHTML = "";
-
         if (!data || data.length === 0) {
-          videosList.innerHTML = `<div class="empty">لا توجد محاضرات مضافة حاليًا.</div>`;
+          listDiv.innerHTML = `<div class="empty">لا توجد مناقشات حتى الآن. كن أول من يشارك!</div>`;
           return;
         }
 
-        for (const item of data) {
-          const card = await createVideoCard(item);
-          videosList.appendChild(card);
-        }
+        listDiv.innerHTML = "";
+        data.forEach(post => {
+          const box = document.createElement("div");
+          box.className = "post-box";
+          box.innerHTML = `
+            <div class="post-author">👤 ${escapeHtml(post.author_name || "طالب")}</div>
+            <div class="post-content">${escapeHtml(post.content)}</div>
+          `;
+          listDiv.appendChild(box);
+        });
 
-      } catch (error) {
-        console.error("Supabase Error:", error);
-        videosList.innerHTML = `<div class="error">تعذر تحميل المحاضرات حاليًا. حاول تحديث الصفحة.</div>`;
+      } catch (err) {
+        console.error(err);
+        listDiv.innerHTML = `<div class="empty" style="color:#e74c3c;">تعذر تحميل المنتدى. تأكد من وجود جدول forum في Supabase.</div>`;
       }
     }
 
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-      if (!session) {
-        showLoginMessage();
-      } else {
-        loadVideos();
-      }
-    });
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
 
-    loadVideos();
-    setInterval(loadVideos, 25 * 60 * 1000);
+    loadPosts();
   </script>
 
 </body>
