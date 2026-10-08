@@ -4,135 +4,158 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>المحاضرات | منصة أرض الأحياء</title>
-
-  <meta name="description"
-    content="محاضرات وفيديوهات أحياء الصف الثالث الثانوي على منصة أرض الأحياء.">
-
   <meta name="robots" content="index, follow">
-
-  <link rel="canonical"
-    href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/videos/">
-
   <link rel="icon" href="../favicon.png">
+  
+  <!-- استدعاء خط Cairo الاحترافي -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: Arial, Tahoma, sans-serif;
+      font-family: 'Cairo', sans-serif !important;
     }
 
     body {
-      background: #f5f7f7;
-      color: #222;
+      background: #f0f4f8;
+      color: #2c3e50;
+      display: flex;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ===============================
-       الشريط الجانبي
-       =============================== */
-
+    /* الشريط الجانبي الفخم */
     .sidebar {
+      width: 270px;
+      background: linear-gradient(180deg, #026857 0%, #1e3a8a 100%);
+      color: white;
       position: fixed;
       right: 0;
       top: 0;
-      width: 250px;
       height: 100vh;
-      background: #075e4d;
-      color: white;
-      padding: 25px 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       z-index: 1000;
+      box-shadow: -5px 0 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .sidebar-top {
+      padding: 30px 20px;
     }
 
     .logo-box {
-      text-align: center;
+      display: flex;
+      align-items: center;
+      gap: 14px;
       margin-bottom: 35px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     }
 
     .logo-box img {
-      width: 75px;
-      height: 75px;
+      width: 50px;
+      height: 50px;
       object-fit: contain;
       border-radius: 50%;
-      margin-bottom: 10px;
+      background: #fff;
+      padding: 3px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
     }
 
     .logo-box h2 {
-      font-size: 20px;
-      margin-bottom: 5px;
-    }
-
-    .logo-box p {
-      font-size: 13px;
-      opacity: 0.8;
+      font-size: 19px;
+      color: #fff;
+      font-weight: 700;
     }
 
     .menu {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .menu a {
+    .menu a, .logout-btn {
       text-decoration: none;
-      color: white;
-      padding: 14px 15px;
-      border-radius: 10px;
-      transition: 0.2s;
+      color: #e2f1ee;
+      padding: 12px 16px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
       font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: transparent;
+      border: none;
+      width: 100%;
+      text-align: right;
+      cursor: pointer;
     }
 
-    .menu a:hover,
-    .menu a.active {
-      background: rgba(255, 255, 255, 0.15);
+    .menu a:hover, .menu a.active {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      transform: translateX(-4px);
     }
 
-    /* ===============================
-       المحتوى
-       =============================== */
+    .logout-btn {
+      margin-top: 25px;
+      color: #ffdddd;
+    }
 
+    .logout-btn:hover {
+      background: rgba(231, 76, 60, 0.25);
+      color: #ff6b6b;
+    }
+
+    /* المحتوى الرئيسي */
     .main {
-      margin-right: 250px;
-      padding: 30px;
+      margin-right: 270px;
+      flex: 1;
+      padding: 30px 40px;
+      background: #f0f4f8;
       min-height: 100vh;
     }
 
-    .topbar {
+    /* الشريط العلوي */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       background: white;
-      border-radius: 15px;
-      padding: 20px 25px;
-      margin-bottom: 25px;
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+      padding: 22px 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(30, 58, 138, 0.04);
+      margin-bottom: 30px;
+      border: 1px solid #e2e8f0;
     }
 
-    .topbar h1 {
-      color: #075e4d;
-      font-size: 28px;
-      margin-bottom: 8px;
+    .top-bar h1 {
+      color: #1e3a8a;
+      font-size: 22px;
+      font-weight: 700;
     }
 
-    .topbar p {
-      color: #666;
-      font-size: 15px;
-    }
-
-    /* ===============================
-       الفيديوهات والمحاضرات
-       =============================== */
-
+    /* حاوية الفيديوهات */
     .videos-container {
       background: white;
-      border-radius: 15px;
-      padding: 25px;
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: 0 8px 25px rgba(30, 58, 138, 0.05);
+      border: 1px solid #e2e8f0;
     }
 
     .section-title {
-      color: #075e4d;
-      font-size: 22px;
-      margin-bottom: 20px;
+      color: #1e3a8a;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 25px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #f1f5f9;
     }
 
     .videos-list {
@@ -142,24 +165,26 @@
     }
 
     .video-card {
-      border: 1px solid #e5e5e5;
-      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
       background: white;
       overflow: hidden;
-      transition: 0.2s;
+      transition: all 0.3s ease;
       display: flex;
       flex-direction: column;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
     }
 
     .video-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(30, 58, 138, 0.08);
+      border-color: #cbd5e1;
     }
 
     .video-player-box {
       width: 100%;
       height: 190px;
-      background: #000;
+      background: #0f172a;
       position: relative;
     }
 
@@ -172,24 +197,25 @@
     }
 
     .video-content {
-      padding: 18px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       flex-grow: 1;
     }
 
     .video-content h3 {
-      color: #075e4d;
-      font-size: 19px;
-      margin-bottom: 8px;
+      color: #1e3a8a;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
       line-height: 1.5;
     }
 
     .video-content p {
-      color: #666;
+      color: #64748b;
       font-size: 13px;
       line-height: 1.7;
-      margin-bottom: 15px;
+      margin-bottom: 18px;
       flex-grow: 1;
     }
 
@@ -197,52 +223,52 @@
     .lecture-attachments {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 10px;
       margin-top: auto;
-      padding-top: 12px;
-      border-top: 1px solid #eee;
+      padding-top: 15px;
+      border-top: 1px solid #f1f5f9;
     }
 
     .attachment-btn {
       flex: 1;
-      min-width: calc(50% - 4px);
+      min-width: calc(50% - 5px);
       text-align: center;
       text-decoration: none;
-      padding: 9px 10px;
-      border-radius: 8px;
+      padding: 10px 12px;
+      border-radius: 10px;
       font-size: 13px;
-      font-weight: bold;
-      transition: 0.2s;
+      font-weight: 700;
+      transition: all 0.3s ease;
     }
 
     .btn-note {
-      background: #eef6f4;
-      color: #075e4d;
-      border: 1px solid #d0e8e2;
+      background: #f0fdf4;
+      color: #026857;
+      border: 1px solid #bbf7d0;
     }
     .btn-note:hover {
-      background: #075e4d;
+      background: #026857;
       color: white;
     }
 
     .btn-homework {
-      background: #fff8e1;
-      color: #8f6b00;
-      border: 1px solid #ffe082;
+      background: #fffbeb;
+      color: #d97706;
+      border: 1px solid #fde68a;
     }
     .btn-homework:hover {
-      background: #ffb300;
+      background: #d97706;
       color: white;
     }
 
     .btn-exam {
-      background: #e8f4fd;
-      color: #0d6efd;
-      border: 1px solid #b6d4fe;
+      background: #f0fdf4;
+      color: #1e3a8a;
+      border: 1px solid #bae6fd;
       width: 100%;
     }
     .btn-exam:hover {
-      background: #0d6efd;
+      background: #1e3a8a;
       color: white;
     }
 
@@ -251,76 +277,93 @@
     .error {
       text-align: center;
       padding: 40px 15px;
-      color: #777;
-      font-size: 16px;
+      color: #64748b;
+      font-size: 15px;
       grid-column: 1 / -1;
+      font-weight: 600;
     }
 
     .error {
-      color: #b00020;
+      color: #e74c3c;
     }
 
     .security-message {
       text-align: center;
-      padding: 25px;
-      border-radius: 12px;
-      background: #fff8e1;
-      color: #795548;
-      border: 1px solid #ffe082;
+      padding: 30px;
+      border-radius: 14px;
+      background: #fffbeb;
+      color: #92400e;
+      border: 1px solid #fde68a;
       grid-column: 1 / -1;
+      font-weight: 600;
+      line-height: 1.8;
     }
 
     .login-btn {
       display: inline-block;
       margin-top: 15px;
-      padding: 10px 18px;
-      background: #075e4d;
+      padding: 12px 24px;
+      background: #1e3a8a;
       color: white;
       text-decoration: none;
-      border-radius: 8px;
+      border-radius: 10px;
+      font-weight: 700;
+      box-shadow: 0 4px 15px rgba(30, 58, 138, 0.2);
     }
 
-    /* ===============================
-       الموبايل
-       =============================== */
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 13px;
+      padding: 15px;
+      font-weight: 600;
+    }
 
-    @media (max-width: 700px) {
+    /* الشريط السفلي للموبايل */
+    .bottom-nav {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
       .sidebar {
-        width: 75px;
-        padding: 20px 8px;
-      }
-
-      .logo-box h2,
-      .logo-box p {
         display: none;
       }
-
-      .logo-box img {
-        width: 55px;
-        height: 55px;
-      }
-
-      .menu a {
-        text-align: center;
-        font-size: 0;
-        padding: 14px 5px;
-      }
-
-      .menu a::first-letter {
-        font-size: 20px;
-      }
-
       .main {
-        margin-right: 75px;
+        margin-right: 0;
         padding: 15px;
       }
-
-      .topbar h1 {
-        font-size: 22px;
+      .bottom-nav {
+        position: fixed;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        bottom: 0;
+        right: 0;
+        left: 0;
+        height: 65px;
+        background: #1e3a8a;
+        z-index: 3000;
+        box-shadow: -5px 0 20px rgba(0,0,0,0.12);
       }
-
-      .videos-list {
-        grid-template-columns: 1fr;
+      .bottom-nav-item {
+        color: white;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        font-size: 18px;
+      }
+      .bottom-nav-item small {
+        font-size: 10px;
+        font-weight: 600;
+      }
+      .bottom-nav-item.active {
+        background: rgba(255,255,255,0.2);
+      }
+      body {
+        padding-bottom: 70px;
       }
     }
   </style>
@@ -328,46 +371,75 @@
 
 <body>
 
-  <!-- ===============================
-       الشريط الجانبي
-       =============================== -->
-
+  <!-- الشريط الجانبي الفخم -->
   <aside class="sidebar">
-    <div class="logo-box">
-      <img src="../logo.png" alt="شعار منصة أرض الأحياء">
-      <h2>منصة أرض الأحياء</h2>
-      <p>منصة تعليمية</p>
+    <div class="sidebar-top">
+      <div class="logo-box">
+        <img src="../logo.png" alt="شعار منصة أرض الأحياء">
+        <div>
+          <h2>أرض الأحياء</h2>
+          <p style="font-size: 12px; opacity: 0.85; font-weight: 600;">ثالثة ثانوي</p>
+        </div>
+      </div>
+      <nav class="menu">
+        <a href="../index.html">🏠 الرئيسية</a>
+        <a href="index.html" class="active">🎥 المحاضرات</a>
+        <a href="../notes/index.html">📚 المذكرات</a>
+        <a href="../champion/index.html">🏆 بطل الفصل</a>
+        <a href="../forum/index.html">💬 المنتدى</a>
+        <a href="../account/index.html">👤 حساب الطالب</a>
+        <button class="logout-btn" onclick="logout()">🚪 تسجيل الخروج</button>
+      </nav>
     </div>
-    <nav class="menu">
-      <a href="../index.html">🏠 الرئيسية</a>
-      <a href="index.html" class="active">🎥 المحاضرات</a>
-      <a href="../forum/index.html">💬 المنتدى</a>
-      <a href="../notes/index.html">📚 المذكرات</a>
-    </nav>
+    <div style="padding: 15px; font-size: 12px; text-align: center; opacity: 0.75; font-weight: 600;">
+      جميع الحقوق محفوظة © 2026
+    </div>
   </aside>
 
-  <!-- ===============================
-       المحتوى
-       =============================== -->
-
+  <!-- المحتوى الرئيسي -->
   <main class="main">
-    <div class="topbar">
-      <h1>🎥 المحاضرات</h1>
-      <p>فيديوهات وشرح منهج الأحياء للصف الثالث الثانوي مع المذكرات والواجبات</p>
+    <div class="top-bar">
+      <h1>🎥 المحاضرات والدروس</h1>
+      <span style="color: #64748b; font-size: 13px; font-weight: 600;">شرح منهج الأحياء</span>
     </div>
 
     <section class="videos-container">
-      <h2 class="section-title">قائمة المحاضرات</h2>
+      <h2 class="section-title">قائمة المحاضرات المتاحة</h2>
       <div id="videosList" class="videos-list">
         <div class="loading">جاري تحميل المحاضرات...</div>
       </div>
     </section>
+
+    <footer>
+      © 2026 منصة أرض الأحياء — جميع الحقوق محفوظة
+    </footer>
   </main>
 
-  <!-- ===============================
-       Supabase
-       =============================== -->
+  <!-- الشريط السفلي للموبايل -->
+  <nav class="bottom-nav" aria-label="التنقل الرئيسي">
+    <a href="../index.html" class="bottom-nav-item">
+      <span>🌱</span>
+      <small>الرئيسية</small>
+    </a>
+    <a href="index.html" class="bottom-nav-item active">
+      <span>🎥</span>
+      <small>المحاضرات</small>
+    </a>
+    <a href="../champion/index.html" class="bottom-nav-item">
+      <span>🏆</span>
+      <small>البطل</small>
+    </a>
+    <a href="../notes/index.html" class="bottom-nav-item">
+      <span>📚</span>
+      <small>المذكرات</small>
+    </a>
+    <a href="../account/index.html" class="bottom-nav-item">
+      <span>👤</span>
+      <small>حسابي</small>
+    </a>
+  </nav>
 
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
@@ -453,7 +525,6 @@
       const attachments = document.createElement("div");
       attachments.className = "lecture-attachments";
 
-      // 1. زر المذكرة (لو موجود في قاعدة البيانات note_url أو note_path)
       if (item.note_url || item.note_path) {
         const noteBtn = document.createElement("a");
         noteBtn.className = "attachment-btn btn-note";
@@ -466,7 +537,6 @@
         attachments.appendChild(noteBtn);
       }
 
-      // 2. زر الواجب (لو موجود homework_url)
       if (item.homework_url) {
         const hwBtn = document.createElement("a");
         hwBtn.className = "attachment-btn btn-homework";
@@ -477,7 +547,6 @@
         attachments.appendChild(hwBtn);
       }
 
-      // 3. زر الامتحان (لو موجود exam_url)
       if (item.exam_url) {
         const examBtn = document.createElement("a");
         examBtn.className = "attachment-btn btn-exam";
@@ -485,69 +554,4 @@
         examBtn.href = item.exam_url;
         examBtn.target = "_blank";
         examBtn.rel = "noopener noreferrer";
-        attachments.appendChild(examBtn);
-      }
-
-      if (attachments.children.length > 0) {
-        content.appendChild(attachments);
-      }
-
-      card.appendChild(playerBox);
-      card.appendChild(content);
-
-      return card;
-    }
-
-    async function loadVideos() {
-      const videosList = document.getElementById("videosList");
-
-      try {
-        const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
-        if (sessionError) throw sessionError;
-
-        if (!sessionData.session) {
-          showLoginMessage();
-          return;
-        }
-
-        // جلب المحاضرات مع الحقول الخاصة بالملحقات
-        const { data, error } = await supabaseClient
-          .from("videos")
-          .select("id, title, description, file_path, video_url, note_url, note_path, homework_url, exam_url, created_at")
-          .order("created_at", { ascending: false });
-
-        if (error) throw error;
-
-        videosList.innerHTML = "";
-
-        if (!data || data.length === 0) {
-          videosList.innerHTML = `<div class="empty">لا توجد محاضرات مضافة حاليًا.</div>`;
-          return;
-        }
-
-        for (const item of data) {
-          const card = await createVideoCard(item);
-          videosList.appendChild(card);
-        }
-
-      } catch (error) {
-        console.error("Supabase Error:", error);
-        videosList.innerHTML = `<div class="error">تعذر تحميل المحاضرات حاليًا. حاول تحديث الصفحة.</div>`;
-      }
-    }
-
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-      if (!session) {
-        showLoginMessage();
-      } else {
-        loadVideos();
-      }
-    });
-
-    loadVideos();
-    setInterval(loadVideos, 25 * 60 * 1000);
-  </script>
-
-</body>
-
-</html>
+        attachments.appendChild(
