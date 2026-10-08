@@ -251,7 +251,7 @@
       border-radius: 12px;
     }
 
-    /* قسم نشاطك التعليمي (الدائرة والرسم البياني) */
+    /* قسم نشاطك التعليمي */
     .activity-section {
       display: grid;
       grid-template-columns: 1fr 2fr;
@@ -283,7 +283,6 @@
       align-items: center;
     }
 
-    /* محاكاة الدائرة لنسبة التقدم */
     .progress-circle-box {
       display: flex;
       flex-direction: column;
@@ -337,7 +336,7 @@
       background: #1e40af;
     }
 
-    /* قسم الكورسات اللي مشترك فيها */
+    /* قسم الكورسات */
     .courses-section-title {
       font-size: 18px;
       font-weight: 700;
@@ -370,9 +369,14 @@
 
     .course-img {
       width: 100%;
-      height: 150px;
-      object-fit: cover;
-      background: #1e3a8a;
+      height: 140px;
+      background: linear-gradient(135deg, #1e3a8a, #0284c7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
     }
 
     .course-body {
@@ -503,7 +507,7 @@
   <!-- المحتوى الرئيسي -->
   <main class="main">
 
-    <!-- الشريط العلوي -->
+    <!-- الشريط العلوي مع اسم الطالب الحقيقي -->
     <div class="top-bar">
       <div class="top-bar-title">
         <h1 id="welcomeUser">أهلاً بك، جاري التحميل... 🌿</h1>
@@ -515,16 +519,16 @@
     <div class="guide-banner">
       <div class="guide-info">
         <h3>▶ شوف فيديو: طريقة الشحن والاشتراك</h3>
-        <p>لو عايز تعرف طريقة الشحن والاشتراك، افتح فيديو الشرح من كتاالوج المنصة</p>
+        <p>لو عايز تعرف طريقة الشحن والاشتراك، افتح فيديو الشرح من كتالوج المنصة</p>
       </div>
       <a href="../videos/index.html" class="guide-btn">شاهد الفيديو 📺</a>
     </div>
 
-    <!-- كروت الإحصائيات العلوية الثلاثة -->
+    <!-- كروت الإحصائيات العلوية -->
     <div class="stats-top-grid">
       <div class="stat-card-top">
         <div>
-          <div class="stat-number">0</div>
+          <div class="stat-number" id="completedCoursesCount">0</div>
           <div class="stat-label">كورسات مكتملة</div>
         </div>
         <div class="stat-icon">🎓</div>
@@ -532,8 +536,8 @@
 
       <div class="stat-card-top">
         <div>
-          <div class="stat-number">2</div>
-          <div class="stat-label">كورسات جانبية</div>
+          <div class="stat-number" id="activeCoursesCount">1</div>
+          <div class="stat-label">الكورسات المشترك بها</div>
         </div>
         <div class="stat-icon">🌿</div>
       </div>
@@ -549,14 +553,13 @@
 
     <!-- قسم نشاطك التعليمي -->
     <div class="activity-section">
-      <!-- مقياس التقدم -->
       <div class="activity-card">
         <div class="activity-title">
-          <span>تقدمك</span>
+          <span>تقدمك الدراسي</span>
         </div>
         <div class="progress-circle-box">
           <div class="circle-graphic">
-            <div class="circle-inner">12%</div>
+            <div class="circle-inner" id="progressPercent">12%</div>
           </div>
           <p style="color: #64748b; font-size: 13px; line-height: 1.5; font-weight: 600;">
             مقياس لكفاية الدروس السابقة والمبقية في كورساتك الحالية.
@@ -565,14 +568,12 @@
         </div>
       </div>
 
-      <!-- الرسم البياني للنشاط -->
       <div class="activity-card">
         <div class="activity-title">
           <span>نشاطك التعليمي</span>
           <span style="font-size: 12px; color: #64748b; font-weight: normal;">الأسبوع الحالي</span>
         </div>
         <div style="height: 180px; display: flex; align-items: flex-end; justify-content: space-between; padding-top: 20px; border-bottom: 2px solid #e2e8f0; position: relative;">
-          <!-- محاكاة رسم بياني بسيط -->
           <div style="position: absolute; top: 30px; right: 10px; left: 10px; height: 120px; display: flex; align-items: flex-end;">
             <svg style="width: 100%; height: 100%; overflow: visible;" viewBox="0 0 500 100">
               <path d="M 0,90 Q 80,20 160,85 T 320,90 Q 400,90 480,10" fill="none" stroke="#0284c7" stroke-width="3" />
@@ -596,46 +597,16 @@
     <!-- الكورسات اللي مشترك فيها -->
     <div class="courses-section-title">الكورسات اللي مشترك فيها 📚</div>
     
-    <div class="courses-grid">
+    <div class="courses-grid" id="coursesGrid">
       <div class="course-card">
-        <div class="course-img" style="background: linear-gradient(135deg, #1e3a8a, #0284c7); display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold;">
-          🌱 الكورس الأساسي
-        </div>
+        <div class="course-img">🌱 الكورس الأساسي</div>
         <div class="course-body">
           <div class="course-title">الكورس الأساسي في الأحياء - ثالثة ثانوي</div>
           <div class="course-meta">
-            <span>📹 عدد المحاضرات: 25 محاضرة</span>
-            <span>📅 المواعيد: السبت والثلاثاء</span>
+            <span>📹 منهج كامل للباب الأول والثاني</span>
+            <span>📅 متاح الآن للمشاهدة</span>
           </div>
           <a href="../videos/index.html" class="course-action-btn">الدخول للكورس</a>
-        </div>
-      </div>
-
-      <div class="course-card">
-        <div class="course-img" style="background: linear-gradient(135deg, #026857, #0284c7); display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold;">
-          🧬 الشهر الأول
-        </div>
-        <div class="course-body">
-          <div class="course-title">الشهر الأول (الدعامة والحركة في الكائنات الحية)</div>
-          <div class="course-meta">
-            <span>📹 عدد المحاضرات: 8 محاضرات</span>
-            <span>📅 متاح الآن للشاهدة</span>
-          </div>
-          <a href="../videos/index.html" class="course-action-btn">الدخول للكورس</a>
-        </div>
-      </div>
-
-      <div class="course-card">
-        <div class="course-img" style="background: linear-gradient(135deg, #1e3a8a, #026857); display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold;">
-          🔬 الشهر الثاني
-        </div>
-        <div class="course-body">
-          <div class="course-title">الشهر الثاني (الهرمونات والتكاثر)</div>
-          <div class="course-meta">
-            <span>📹 عدد المحاضرات: قريباً</span>
-            <span>📅 يبدأ الشهر القادم</span>
-          </div>
-          <a href="../videos/index.html" class="course-action-btn" style="background: #64748b;">قريباً</a>
         </div>
       </div>
     </div>
@@ -679,8 +650,9 @@
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    async function loadUserData() {
+    async function loadDashboardData() {
       try {
+        // التحقق من جلسة الطالب المسجل
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (!session) {
           window.location.href = "../login/index.html";
@@ -688,16 +660,19 @@
         }
 
         const user = session.user;
+        
+        // جلب اسم الطالب الحقيقي من جدول profiles
         const { data: profile } = await supabaseClient
           .from("profiles")
           .select("full_name")
           .eq("id", user.id)
           .maybeSingle();
 
-        const name = profile?.full_name || user.user_metadata?.full_name || "طالب مميز";
-        document.getElementById("welcomeUser").textContent = `أهلاً بك، ${name} 🌿`;
+        const studentName = profile?.full_name || user.user_metadata?.full_name || user.email.split('@')[0] || "طالب مميز";
+        document.getElementById("welcomeUser").textContent = `أهلاً بك، ${studentName} 🌿`;
+
       } catch (err) {
-        console.error("Error loading user:", err);
+        console.error("Error loading user dashboard:", err);
       }
     }
 
@@ -710,9 +685,8 @@
       }
     }
 
-    loadUserData();
+    loadDashboardData();
   </script>
 
 </body>
 </html>
- 
