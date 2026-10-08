@@ -3,12 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لوحة التحكم الشاملة - إدارة المنصة</title>
+  <title>لوحة التحكم الشاملة - إدارة المنصة | أرض الأحياء</title>
+  <link rel="icon" href="../favicon.png">
   <!-- مكتبة Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
-      font-family: 'Cairo', Tahoma, sans-serif;
+      font-family: Arial, Tahoma, sans-serif;
       background-color: #f4f7f6;
       margin: 0;
       padding: 20px;
@@ -22,8 +26,8 @@
     .card {
       background: white;
       padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
       margin-bottom: 20px;
     }
     h2, h3 {
@@ -32,22 +36,35 @@
     .form-group {
       margin-bottom: 15px;
     }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #333;
+    }
     input, textarea, select {
       width: 100%;
-      padding: 10px;
+      padding: 11px;
       margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-sizing: border-box;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: #075e4d;
+      box-shadow: 0 0 0 3px rgba(7,94,77,.08);
     }
     button {
       background-color: #075e4d;
       color: white;
       border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
+      padding: 11px 20px;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: bold;
+      font-size: 15px;
+      transition: 0.2s;
     }
     button:hover {
       background-color: #054c3f;
@@ -70,7 +87,7 @@
     .item-box {
       background: #f9f9f9;
       padding: 15px;
-      border-radius: 5px;
+      border-radius: 8px;
       margin-top: 10px;
       border-right: 4px solid #075e4d;
     }
@@ -87,11 +104,14 @@
       background: #075e4d;
       color: white;
       padding: 15px 20px;
-      border-radius: 10px;
+      border-radius: 12px;
       margin-bottom: 20px;
     }
     .header-bar button {
       background: #e74c3c;
+    }
+    .header-bar button:hover {
+      background: #c0392b;
     }
   </style>
 </head>
@@ -126,7 +146,7 @@
       <h3>📚 إضافة مذكرات وملفات تعليمية</h3>
       <div class="form-group">
         <label>عنوان المذكرة / الملف:</label>
-        <input type="text" id="noteTitle" placeholder="مثال: مذكرة شرح الباب الأول كيمياء">
+        <input type="text" id="noteTitle" placeholder="مثال: مذكرة شرح الباب الأول أحياء">
       </div>
       <div class="form-group">
         <label>طريقة الإضافة:</label>
@@ -154,7 +174,7 @@
       <h3>🎥 إضافة محتوى فيديو للمنصة</h3>
       <div class="form-group">
         <label>عنوان الفيديو:</label>
-        <input type="text" id="videoTitle" placeholder="مثال: شرح درس الكيمياء الأول">
+        <input type="text" id="videoTitle" placeholder="مثال: شرح درس الدعامة والحركة">
       </div>
       <div class="form-group">
         <label>طريقة الإضافة:</label>
@@ -195,7 +215,7 @@
       <h3>📝 إنشاء اختبار جديد</h3>
       <div class="form-group">
         <label>عنوان الاختبار:</label>
-        <input type="text" id="examTitle" placeholder="مثال: اختبار الوحدة الأولى">
+        <input type="text" id="examTitle" placeholder="مثال: اختبار الدعامة والحركة">
       </div>
       <div class="form-group">
         <label>وصف الاختبار:</label>
@@ -238,8 +258,8 @@
   </div>
 
   <script>
-    const SUPABASE_URL = "YOUR_SUPABASE_URL";
-    const SUPABASE_KEY = "YOUR_SUPABASE_SERVICE_ROLE_OR_ANON_KEY"; 
+    const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d"; 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let selectedExamId = null;
@@ -263,7 +283,7 @@
         const { count: videosCount } = await supabaseClient.from("videos").select("*", { count: 'exact', head: true });
         const { count: notesCount } = await supabaseClient.from("notes").select("*", { count: 'exact', head: true });
         
-        let usersCount = "غير متوفر";
+        let usersCount = "متوفر";
         const { data: usersData, error: userErr } = await supabaseClient.auth.admin.listUsers();
         if (!userErr && usersData) {
           usersCount = usersData.users.length;
@@ -279,7 +299,7 @@
         `;
       } catch (error) {
         console.error(error);
-        container.innerHTML = "تعذر تحميل بعض الإحصائيات (تأكد من صلاحيات مفتاح الأدمن).";
+        container.innerHTML = "تعذر تحميل بعض الإحصائيات.";
       }
     }
 
@@ -317,7 +337,7 @@
         document.getElementById("newUserPassword").value = "";
       } catch (error) {
         console.error(error);
-        alert("❌ فشل تحديث كلمة السر: تأكد من استخدام مفتاح الأدمن (Service Role Key). الخطأ: " + error.message);
+        alert("❌ فشل تحديث كلمة السر: تأكد من الصلاحيات. الخطأ: " + error.message);
       }
     }
 
@@ -345,7 +365,7 @@
         return;
       }
 
-      status.innerHTML = "⏳ جاري رفع النشر...";
+      status.innerHTML = "⏳ جاري النشر والرفع...";
 
       try {
         let finalUrl = "";
@@ -365,8 +385,7 @@
           const file = fileInput.files[0];
           const fileName = `notes_${Date.now()}_${file.name}`;
           
-          // تأكد من وجود Bucket باسم 'notes' في Supabase Storage أو استخدم 'videos'
-          const { data: uploadData, error: uploadError } = await supabaseClient.storage
+          const { error: uploadError } = await supabaseClient.storage
             .from("notes")
             .upload(fileName, file);
 
@@ -483,7 +502,7 @@
           const file = fileInput.files[0];
           const fileName = `video_${Date.now()}_${file.name}`;
           
-          const { data: uploadData, error: uploadError } = await supabaseClient.storage
+          const { error: uploadError } = await supabaseClient.storage
             .from("videos")
             .upload(fileName, file);
 
@@ -533,7 +552,7 @@
           box.className = "item-box";
           box.innerHTML = `
             <strong>🎥 ${escapeHtml(v.title)}</strong>
-            <p style="font-size:12px; color:#555; word-break: break-all;">الرابط: ${escapeHtml(v.video_url)}</p>
+            <p style="font-size:12px; color:#555; word-break: break-all;">الرابط: ${escapeHtml(v.video_url || v.file_path)}</p>
             <button class="danger" onclick="deleteVideo('${v.id}')" style="padding: 5px 10px; font-size: 12px;">🗑️ حذف الفيديو</button>
           `;
           container.appendChild(box);
@@ -557,7 +576,7 @@
     }
 
     // =========================
-    // أبطال الفصل (تصحيح الخطأ والترتيب التنازلي ثم الأبجدي)
+    // أبطال الفصل
     // =========================
     async function saveChampion() {
       const id = document.getElementById("championId").value;
