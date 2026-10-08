@@ -137,8 +137,8 @@
 
     .videos-list {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 25px;
     }
 
     .video-card {
@@ -147,6 +147,8 @@
       background: white;
       overflow: hidden;
       transition: 0.2s;
+      display: flex;
+      flex-direction: column;
     }
 
     .video-card:hover {
@@ -156,7 +158,7 @@
 
     .video-player-box {
       width: 100%;
-      height: 180px;
+      height: 190px;
       background: #000;
       position: relative;
     }
@@ -171,12 +173,15 @@
 
     .video-content {
       padding: 18px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
     }
 
     .video-content h3 {
       color: #075e4d;
       font-size: 19px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       line-height: 1.5;
     }
 
@@ -184,6 +189,61 @@
       color: #666;
       font-size: 13px;
       line-height: 1.7;
+      margin-bottom: 15px;
+      flex-grow: 1;
+    }
+
+    /* أزرار الملحقات تحت المحاضرة */
+    .lecture-attachments {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid #eee;
+    }
+
+    .attachment-btn {
+      flex: 1;
+      min-width: calc(50% - 4px);
+      text-align: center;
+      text-decoration: none;
+      padding: 9px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .btn-note {
+      background: #eef6f4;
+      color: #075e4d;
+      border: 1px solid #d0e8e2;
+    }
+    .btn-note:hover {
+      background: #075e4d;
+      color: white;
+    }
+
+    .btn-homework {
+      background: #fff8e1;
+      color: #8f6b00;
+      border: 1px solid #ffe082;
+    }
+    .btn-homework:hover {
+      background: #ffb300;
+      color: white;
+    }
+
+    .btn-exam {
+      background: #e8f4fd;
+      color: #0d6efd;
+      border: 1px solid #b6d4fe;
+      width: 100%;
+    }
+    .btn-exam:hover {
+      background: #0d6efd;
+      color: white;
     }
 
     .loading,
@@ -225,7 +285,6 @@
        =============================== */
 
     @media (max-width: 700px) {
-
       .sidebar {
         width: 75px;
         padding: 20px 8px;
@@ -274,79 +333,36 @@
        =============================== -->
 
   <aside class="sidebar">
-
     <div class="logo-box">
-
-      <img
-        src="../logo.png"
-        alt="شعار منصة أرض الأحياء">
-
+      <img src="../logo.png" alt="شعار منصة أرض الأحياء">
       <h2>منصة أرض الأحياء</h2>
-
       <p>منصة تعليمية</p>
-
     </div>
-
     <nav class="menu">
-
-      <a href="../index.html">
-        🏠 الرئيسية
-      </a>
-
-      <a href="index.html" class="active">
-        🎥 المحاضرات
-      </a>
-
-      <a href="../forum/index.html">
-        💬 المنتدى
-      </a>
-
-      <a href="../notes/index.html">
-        📚 المذكرات
-      </a>
-
+      <a href="../index.html">🏠 الرئيسية</a>
+      <a href="index.html" class="active">🎥 المحاضرات</a>
+      <a href="../forum/index.html">💬 المنتدى</a>
+      <a href="../notes/index.html">📚 المذكرات</a>
     </nav>
-
   </aside>
-
 
   <!-- ===============================
        المحتوى
        =============================== -->
 
   <main class="main">
-
     <div class="topbar">
-
       <h1>🎥 المحاضرات</h1>
-
-      <p>
-        فيديوهات وشرح منهج الأحياء للصف الثالث الثانوي
-      </p>
-
+      <p>فيديوهات وشرح منهج الأحياء للصف الثالث الثانوي مع المذكرات والواجبات</p>
     </div>
 
-
     <section class="videos-container">
-
-      <h2 class="section-title">
-        قائمة المحاضرات
-      </h2>
-
-      <div
-        id="videosList"
-        class="videos-list">
-
-        <div class="loading">
-          جاري تحميل المحاضرات...
-        </div>
-
+      <h2 class="section-title">قائمة المحاضرات</h2>
+      <div id="videosList" class="videos-list">
+        <div class="loading">جاري تحميل المحاضرات...</div>
       </div>
-
     </section>
-
   </main>
-
 
   <!-- ===============================
        Supabase
@@ -355,435 +371,183 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
+    const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+    const BUCKET = "lectures";
+    const SIGNED_URL_TIME = 30 * 60; // 30 دقيقة
 
-    /* =====================================================
-       إعداد Supabase - المشروع الحالي
-       ===================================================== */
-
-    const SUPABASE_URL =
-      "https://fpfbmjtpzamzlyzitmsd.supabase.co";
-
-    const SUPABASE_KEY =
-      "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
-
-    const BUCKET =
-      "lectures";
-
-    const SIGNED_URL_TIME =
-      30 * 60; // 30 دقيقة
-
-
-    const supabaseClient =
-      supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-      );
-
-
-    /* =====================================================
-       رسالة تسجيل الدخول
-       ===================================================== */
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     function showLoginMessage() {
-
-      const videosList =
-        document.getElementById(
-          "videosList"
-        );
-
+      const videosList = document.getElementById("videosList");
       videosList.innerHTML = "";
-
-
-      const box =
-        document.createElement("div");
-
-
-      box.className =
-        "security-message";
-
-
+      const box = document.createElement("div");
+      box.className = "security-message";
       box.innerHTML = `
-
-        <strong>
-          🔐 المحتوى محمي
-        </strong>
-
-        <br>
-
-        يجب تسجيل الدخول إلى منصة
-        أرض الأحياء لمشاهدة المحاضرات.
-
-        <br>
-
-        <a
-          class="login-btn"
-          href="../login/index.html">
-
-          🔑 تسجيل الدخول
-
-        </a>
-
+        <strong>🔐 المحتوى محمي</strong><br>
+        يجب تسجيل الدخول إلى منصة أرض الأحياء لمشاهدة المحاضرات.<br>
+        <a class="login-btn" href="../login/index.html">🔑 تسجيل الدخول</a>
       `;
-
-
-      videosList.appendChild(
-        box
-      );
-
+      videosList.appendChild(box);
     }
-
-
-    /* =====================================================
-       التحقق من نوع الرابط
-       ===================================================== */
 
     function isExternalUrl(value) {
-
-      if (!value) {
-        return false;
-      }
-
-      return (
-        value.startsWith("http://") ||
-        value.startsWith("https://")
-      );
-
+      if (!value) return false;
+      return value.startsWith("http://") || value.startsWith("https://");
     }
 
+    async function getSecureUrl(filePath) {
+      if (!filePath) return "";
+      if (isExternalUrl(filePath)) return filePath;
 
-    /* =====================================================
-       إنشاء Signed URL للفيديو
-       ===================================================== */
-
-    async function getSecureVideoUrl(
-      filePath
-    ) {
-
-      if (!filePath) {
-        throw new Error(
-          "مسار الفيديو غير موجود"
-        );
-      }
-
-      if (
-        isExternalUrl(filePath)
-      ) {
-        return filePath;
-      }
-
-      const {
-        data,
-        error
-      } = await supabaseClient
+      const { data, error } = await supabaseClient
         .storage
         .from(BUCKET)
-        .createSignedUrl(
-          filePath,
-          SIGNED_URL_TIME
-        );
+        .createSignedUrl(filePath, SIGNED_URL_TIME);
 
-      if (error) {
-        console.error(
-          "Signed URL Error:",
-          error
-        );
-        throw error;
-      }
-
-      if (
-        !data ||
-        !data.signedUrl
-      ) {
-        throw new Error(
-          "تعذر إنشاء الرابط الآمن للفيديو"
-        );
-      }
-
+      if (error || !data) return "";
       return data.signedUrl;
-
     }
 
+    async function createVideoCard(item) {
+      const card = document.createElement("div");
+      card.className = "video-card";
 
-    /* =====================================================
-       إنشاء كارت المحاضرة
-       ===================================================== */
-
-    async function createVideoCard(
-      videoItem
-    ) {
-
-      const card =
-        document.createElement("div");
-
-      card.className =
-        "video-card";
-
-
-      /* ===============================
-         مشغل الفيديو
-         =============================== */
-
-      const playerBox =
-        document.createElement("div");
-
-      playerBox.className =
-        "video-player-box";
-
+      // مشغل الفيديو
+      const playerBox = document.createElement("div");
+      playerBox.className = "video-player-box";
 
       try {
-
-        const secureUrl =
-          await getSecureVideoUrl(
-            videoItem.file_path || videoItem.video_url
-          );
-
-        const videoElem =
-          document.createElement("video");
-
-        videoElem.src =
-          secureUrl;
-
-        videoElem.controls =
-          true;
-
-        videoElem.preload =
-          "metadata";
-
-        playerBox.appendChild(
-          videoElem
-        );
-
-      }
-
-      catch (error) {
-
-        console.error(
-          "Video URL Error:",
-          error
-        );
-
+        const secureVideoUrl = await getSecureUrl(item.file_path || item.video_url);
+        if (secureVideoUrl) {
+          const videoElem = document.createElement("video");
+          videoElem.src = secureVideoUrl;
+          videoElem.controls = true;
+          videoElem.preload = "metadata";
+          playerBox.appendChild(videoElem);
+        } else {
+          throw new Error("No URL");
+        }
+      } catch (err) {
         playerBox.innerHTML = `
-          <div style="color: white; text-align: center; padding-top: 70px; font-size: 13px;">
+          <div style="color: white; text-align: center; padding-top: 75px; font-size: 13px;">
             تعذر تحميل الفيديو حالياً
           </div>
         `;
-
       }
 
+      // محتوى المحاضرة
+      const content = document.createElement("div");
+      content.className = "video-content";
 
-      /* ===============================
-         محتوى الكارت
-         =============================== */
+      const title = document.createElement("h3");
+      title.textContent = item.title || "محاضرة بدون عنوان";
 
-      const content =
-        document.createElement("div");
+      const description = document.createElement("p");
+      description.textContent = item.description || "شرح تفصيلي لأهم جزئيات المنهج.";
 
-      content.className =
-        "video-content";
+      content.appendChild(title);
+      content.appendChild(description);
 
+      // قسم الملحقات (مذكرة، واجب، امتحان)
+      const attachments = document.createElement("div");
+      attachments.className = "lecture-attachments";
 
-      const title =
-        document.createElement("h3");
+      // 1. زر المذكرة (لو موجود في قاعدة البيانات note_url أو note_path)
+      if (item.note_url || item.note_path) {
+        const noteBtn = document.createElement("a");
+        noteBtn.className = "attachment-btn btn-note";
+        noteBtn.textContent = "📖 مذكرة الشرح";
+        getSecureUrl(item.note_url || item.note_path).then(url => {
+          noteBtn.href = url || "#";
+        });
+        noteBtn.target = "_blank";
+        noteBtn.rel = "noopener noreferrer";
+        attachments.appendChild(noteBtn);
+      }
 
-      title.textContent =
-        videoItem.title ||
-        "محاضرة بدون عنوان";
+      // 2. زر الواجب (لو موجود homework_url)
+      if (item.homework_url) {
+        const hwBtn = document.createElement("a");
+        hwBtn.className = "attachment-btn btn-homework";
+        hwBtn.textContent = "📝 حل الواجب";
+        hwBtn.href = item.homework_url;
+        hwBtn.target = "_blank";
+        hwBtn.rel = "noopener noreferrer";
+        attachments.appendChild(hwBtn);
+      }
 
+      // 3. زر الامتحان (لو موجود exam_url)
+      if (item.exam_url) {
+        const examBtn = document.createElement("a");
+        examBtn.className = "attachment-btn btn-exam";
+        examBtn.textContent = "🏆 امتحان المحاضرة";
+        examBtn.href = item.exam_url;
+        examBtn.target = "_blank";
+        examBtn.rel = "noopener noreferrer";
+        attachments.appendChild(examBtn);
+      }
 
-      const description =
-        document.createElement("p");
+      if (attachments.children.length > 0) {
+        content.appendChild(attachments);
+      }
 
-      description.textContent =
-        videoItem.description ||
-        "شرح تفصيلي لأهم جزئيات المنهج.";
-
-
-      content.appendChild(
-        title
-      );
-
-      content.appendChild(
-        description
-      );
-
-
-      card.appendChild(
-        playerBox
-      );
-
-      card.appendChild(
-        content
-      );
-
+      card.appendChild(playerBox);
+      card.appendChild(content);
 
       return card;
-
     }
 
-
-    /* =====================================================
-       تحميل المحاضرات من قاعدة البيانات
-       ===================================================== */
-
     async function loadVideos() {
-
-      const videosList =
-        document.getElementById(
-          "videosList"
-        );
-
+      const videosList = document.getElementById("videosList");
 
       try {
+        const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
+        if (sessionError) throw sessionError;
 
-        const {
-          data: sessionData,
-          error: sessionError
-        } = await supabaseClient
-          .auth
-          .getSession();
-
-
-        if (sessionError) {
-          throw sessionError;
-        }
-
-        const session =
-          sessionData.session;
-
-
-        if (!session) {
+        if (!sessionData.session) {
           showLoginMessage();
           return;
         }
 
+        // جلب المحاضرات مع الحقول الخاصة بالملحقات
+        const { data, error } = await supabaseClient
+          .from("videos")
+          .select("id, title, description, file_path, video_url, note_url, note_path, homework_url, exam_url, created_at")
+          .order("created_at", { ascending: false });
 
-        const {
-          data,
-          error
-        } = await supabaseClient
-
-          .from("videos") // أو جدول المحاضرات المعتمد لديك
-
-          .select(
-            "id,title,description,file_path,video_url,created_at"
-          )
-
-          .order(
-            "created_at",
-            {
-              ascending: false
-            }
-          );
-
-
-        if (error) {
-          throw error;
-        }
-
+        if (error) throw error;
 
         videosList.innerHTML = "";
 
-
-        if (
-          !data ||
-          data.length === 0
-        ) {
-
-          const empty =
-            document.createElement("div");
-
-          empty.className =
-            "empty";
-
-          empty.textContent =
-            "لا توجد محاضرات مضافة حاليًا.";
-
-          videosList.appendChild(
-            empty
-          );
-
+        if (!data || data.length === 0) {
+          videosList.innerHTML = `<div class="empty">لا توجد محاضرات مضافة حاليًا.</div>`;
           return;
-
         }
 
-
-        for (
-          const videoItem of data
-        ) {
-
-          const card =
-            await createVideoCard(
-              videoItem
-            );
-
-          videosList.appendChild(
-            card
-          );
-
+        for (const item of data) {
+          const card = await createVideoCard(item);
+          videosList.appendChild(card);
         }
 
+      } catch (error) {
+        console.error("Supabase Error:", error);
+        videosList.innerHTML = `<div class="error">تعذر تحميل المحاضرات حاليًا. حاول تحديث الصفحة.</div>`;
       }
-
-      catch (error) {
-
-        console.error(
-          "Supabase Error:",
-          error
-        );
-
-        videosList.innerHTML = "";
-
-        const errorMessage =
-          document.createElement("div");
-
-        errorMessage.className =
-          "error";
-
-        errorMessage.textContent =
-          "تعذر تحميل المحاضرات حاليًا. حاول تحديث الصفحة.";
-
-        videosList.appendChild(
-          errorMessage
-        );
-
-      }
-
     }
 
-
-    /* =====================================================
-       مراقبة حالة تسجيل الدخول
-       ===================================================== */
-
-    supabaseClient
-      .auth
-      .onAuthStateChange(
-        function(event, session) {
-
-          if (!session) {
-            showLoginMessage();
-          } else {
-            loadVideos();
-          }
-
-        }
-      );
-
-
-    /* =====================================================
-       تشغيل الصفحة وتجديد الروابط
-       ===================================================== */
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (!session) {
+        showLoginMessage();
+      } else {
+        loadVideos();
+      }
+    });
 
     loadVideos();
-
-    setInterval(
-      loadVideos,
-      25 * 60 * 1000
-    );
-
+    setInterval(loadVideos, 25 * 60 * 1000);
   </script>
 
 </body>
 
 </html>
- 
