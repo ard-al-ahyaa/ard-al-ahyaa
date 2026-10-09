@@ -1,856 +1,265 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لوحة التحكم الشاملة - إدارة المنصة | أرض الأحياء</title>
+  <title>لوحة التحكم | منصة أرض الأحياء</title>
   <link rel="icon" href="../favicon.png">
-  <!-- مكتبة Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+
   <style>
     * {
       box-sizing: border-box;
-    }
-    body {
-      font-family: Arial, Tahoma, sans-serif;
-      background-color: #f4f7f6;
       margin: 0;
-      padding: 20px;
-      direction: rtl;
-      text-align: right;
+      padding: 0;
+      font-family: 'Cairo', sans-serif !important;
     }
+
+    body {
+      background: #f0f4f8;
+      color: #2c3e50;
+      padding: 20px;
+    }
+
     .container {
-      max-width: 950px;
+      max-width: 900px;
       margin: 0 auto;
     }
+
     .card {
       background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(30, 58, 138, 0.05);
+      border: 1px solid #e2e8f0;
+      margin-bottom: 25px;
+    }
+
+    .card h2 {
+      color: #1e3a8a;
+      font-size: 20px;
+      font-weight: 700;
       margin-bottom: 20px;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 10px;
     }
-    h2, h3 {
-      color: #075e4d;
-    }
+
     .form-group {
       margin-bottom: 15px;
     }
-    label {
+
+    .form-group label {
       display: block;
-      font-weight: bold;
-      margin-bottom: 5px;
-      color: #333;
+      font-weight: 700;
+      color: #026857;
+      margin-bottom: 6px;
+      font-size: 14px;
     }
-    input, textarea, select {
+
+    input, textarea {
       width: 100%;
-      padding: 11px;
-      margin-top: 5px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 15px;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 14px;
       outline: none;
     }
-    input:focus, textarea:focus, select:focus {
-      border-color: #075e4d;
-      box-shadow: 0 0 0 3px rgba(7,94,77,.08);
+
+    input:focus, textarea:focus {
+      border-color: #1e3a8a;
+      box-shadow: 0 0 0 3px rgba(30,58,138,0.1);
     }
+
     button {
-      background-color: #075e4d;
+      background: #1e3a8a;
       color: white;
       border: none;
-      padding: 11px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
+      padding: 12px 24px;
+      border-radius: 10px;
       font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
       transition: 0.2s;
     }
+
     button:hover {
-      background-color: #054c3f;
+      background: #1e40af;
     }
-    button.danger {
-      background-color: #e74c3c;
-    }
-    button.danger:hover {
-      background-color: #c0392b;
-    }
-    button.warning {
-      background-color: #f39c12;
-    }
-    button.warning:hover {
-      background-color: #d68910;
-    }
-    .hidden {
-      display: none;
-    }
-    .item-box {
-      background: #f9f9f9;
+
+    .item-row {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
       padding: 15px;
-      border-radius: 8px;
-      margin-top: 10px;
-      border-right: 4px solid #075e4d;
-    }
-    .actions {
-      margin-top: 10px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .header-bar {
+      border-radius: 10px;
+      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #075e4d;
-      color: white;
-      padding: 15px 20px;
-      border-radius: 12px;
-      margin-bottom: 20px;
     }
-    .header-bar button {
+
+    .delete-btn {
       background: #e74c3c;
+      padding: 8px 14px;
+      font-size: 13px;
     }
-    .header-bar button:hover {
+
+    .delete-btn:hover {
       background: #c0392b;
+    }
+
+    .status {
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 14px;
     }
   </style>
 </head>
+
 <body>
 
   <div class="container">
-    <div class="header-bar">
-      <h2>لوحة التحكم الإدارية الشاملة</h2>
-      <button onclick="logout()">تسجيل الخروج</button>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+      <h1 style="color: #1e3a8a; font-size: 24px;">⚙️ لوحة التحكم الشاملة</h1>
+      <a href="../index.html" style="background:#026857; color:#fff; padding:10px 20px; border-radius:8px; text-decoration:none; font-weight:700;">🏠 العودة للمنصة</a>
     </div>
 
-    <!-- الإحصائيات السريعة -->
+    <!-- إضافة محاضرة جديدة (مع المذكرة والشرح والواجب) -->
     <div class="card">
-      <h3>📊 إحصائيات عامة للمنصة</h3>
-      <div id="statsContainer">جاري تحميل الإحصائيات...</div>
-    </div>
-
-    <!-- قسم إدارة المستخدمين وتغيير كلمات السر -->
-    <div class="card">
-      <h3>👥 إدارة المستخدمين وكلمات السر</h3>
-      <p style="font-size: 13px; color: #666;">يمكنك معرفة عدد المستخدمين وتغيير كلمة السر لأي حساب مستخدم بالمنصة مباشرة.</p>
+      <h2>🎥 إضافة محاضرة جديدة</h2>
       <div class="form-group">
-        <input type="text" id="targetUserEmail" placeholder="البريد الإلكتروني للمستخدم المراد تغيير كلمة سره">
-        <input type="password" id="newUserPassword" placeholder="كلمة السر الجديدة (6 أحرف أو أكثر)" style="margin-top: 10px;">
-        <button onclick="updateUserPassword()" class="warning" style="margin-top: 10px;">🔒 تحديث كلمة السر للمستخدم</button>
-      </div>
-      <div id="usersListContainer" style="margin-top: 15px;"></div>
-    </div>
-
-    <!-- قسم إضافة المذكرات والملفات -->
-    <div class="card">
-      <h3>📚 إضافة مذكرات وملفات تعليمية</h3>
-      <div class="form-group">
-        <label>عنوان المذكرة / الملف:</label>
-        <input type="text" id="noteTitle" placeholder="مثال: مذكرة شرح الباب الأول أحياء">
+        <label>عنوان المحاضرة:</label>
+        <input type="text" id="lecTitle" placeholder="مثال: المحاضرة الأولى: الدعامة والجهاز الحركي">
       </div>
       <div class="form-group">
-        <label>طريقة الإضافة:</label>
-        <select id="noteType" onchange="toggleNoteInputs()">
-          <option value="file">رفع ملف (PDF أو مستند)</option>
-          <option value="link">رابط خارجي (Google Drive / رابط مباشر)</option>
-        </select>
-      </div>
-      <div class="form-group" id="noteFileInputGroup">
-        <label>اختر الملف:</label>
-        <input type="file" id="noteFile" accept=".pdf,.doc,.docx,.ppt,.pptx,.zip">
-      </div>
-      <div class="form-group hidden" id="noteLinkInputGroup">
-        <label>رابط الملف:</label>
-        <input type="text" id="noteUrl" placeholder="https://...">
-      </div>
-      <button onclick="addNote()">➕ نشر المذكرة على المنصة</button>
-      <div id="noteStatus" style="margin-top: 10px; font-weight: bold;"></div>
-      
-      <div id="notesList" style="margin-top: 20px;"></div>
-    </div>
-
-    <!-- قسم إضافة الفيديوهات (برابط أو ملف) -->
-    <div class="card">
-      <h3>🎥 إضافة محتوى فيديو للمنصة</h3>
-      <div class="form-group">
-        <label>عنوان الفيديو:</label>
-        <input type="text" id="videoTitle" placeholder="مثال: شرح درس الدعامة والحركة">
+        <label>الباب / الفصل التعليمي:</label>
+        <input type="text" id="lecChapter" placeholder="مثال: الباب الأول - الأحياء">
       </div>
       <div class="form-group">
-        <label>طريقة الإضافة:</label>
-        <select id="videoType" onchange="toggleVideoInputs()">
-          <option value="link">رابط فيديو (يوتيوب / رابط مباشر)</option>
-          <option value="file">رفع ملف فيديو (من الجهاز)</option>
-        </select>
-      </div>
-      <div class="form-group" id="linkInputGroup">
         <label>رابط الفيديو:</label>
-        <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=...">
+        <input type="text" id="lecVideoUrl" placeholder="رابط الفيديو (YouTube أو رابط مباشر)">
       </div>
-      <div class="form-group hidden" id="fileInputGroup">
-        <label>اختر ملف الفيديو:</label>
-        <input type="file" id="videoFile" accept="video/*">
+      <div class="form-group">
+        <label>تفاصيل الشرح (النصي):</label>
+        اكتب تفاصيل الشرح هنا...
+        <textarea id="lecDetails" placeholder="اكتب تفاصيل الشرح هنا..."></textarea>
       </div>
-      <button onclick="addVideo()">➕ نشر الفيديو على المنصة</button>
-      <div id="videoStatus" style="margin-top: 10px; font-weight: bold;"></div>
-      
-      <div id="videosList" style="margin-top: 20px;"></div>
+      <div class="form-group">
+        <label>رابط مذكرة المحاضرة (PDF):</label>
+        <input type="text" id="lecPdfUrl" placeholder="رابط ملف الـ PDF الخاص بالمذكرة">
+      </div>
+      <div class="form-group">
+        <label>رابط الواجب / الامتحان:</label>
+        <input type="text" id="lecHomeworkUrl" placeholder="رابط جوجل فورم أو الامتحان">
+      </div>
+      <div class="form-group">
+        <label>وصف مختصر:</label>
+        <input type="text" id="lecDesc" placeholder="وصف قصير للمحاضرة">
+      </div>
+      <button onclick="addLecture()">رفع المحاضرة 🚀</button>
+      <div id="lecStatus" class="status"></div>
     </div>
 
-    <!-- قسم إدارة أبطال الفصل (لوحة الشرف) -->
+    <!-- إدارة أبطال الفصل -->
     <div class="card">
-      <h3>🏆 إدارة أبطال الفصل (ترتيب تنازلي بالنقاط ثم أبجدي)</h3>
-      <div class="form-group" style="margin-top: 15px;">
-        <input type="hidden" id="championId">
-        <input type="text" id="championName" placeholder="اسم الطالب">
-        <input type="number" id="championPoints" placeholder="عدد النقاط (مثلاً: 9)" style="margin-top: 10px;">
-        <button onclick="saveChampion()" id="saveChampBtn" style="margin-top: 10px;">➕ إضافة البطل</button>
-        <button onclick="resetChampionForm()" id="cancelChampBtn" class="danger hidden" style="margin-top: 10px;">إلغاء التعديل</button>
+      <h2>🏆 إدارة أبطال الفصل</h2>
+      <div class="form-group">
+        <label>اسم الطالب:</label>
+        <input type="text" id="champName" placeholder="اسم البطل">
       </div>
-      <div id="championsList" style="margin-top: 20px;"></div>
+      <div class="form-group">
+        <label>الدرجة / النقاط:</label>
+        <input type="text" id="champScore" placeholder="مثال: الدرجة النهائية 50/50">
+      </div>
+      <button onclick="addChampion()">إضافة البطل 🌟</button>
+      <div id="champStatus" class="status"></div>
     </div>
 
-    <!-- قسم إنشاء اختبار جديد -->
-    <div class="card">
-      <h3>📝 إنشاء اختبار جديد</h3>
-      <div class="form-group">
-        <label>عنوان الاختبار:</label>
-        <input type="text" id="examTitle" placeholder="مثال: اختبار الدعامة والحركة">
-      </div>
-      <div class="form-group">
-        <label>وصف الاختبار:</label>
-        <textarea id="examDescription" placeholder="تعليمات الاختبار..."></textarea>
-      </div>
-      <div class="form-group">
-        <label>مدة الاختبار (بالدقائق):</label>
-        <input type="number" id="examDuration" value="15">
-      </div>
-      <button onclick="createExam()">إنشاء والانتقال لإضافة الأسئلة</button>
-      <div id="examStatus" style="margin-top: 10px; font-weight: bold;"></div>
-    </div>
-
-    <!-- قسم قائمة الاختبارات -->
-    <div class="card">
-      <h3>📚 الاختبارات المتاحة</h3>
-      <div id="examsList">جاري تحميل الاختبارات...</div>
-    </div>
-
-    <!-- محرر الأسئلة -->
-    <div id="questionEditor" class="card hidden">
-      <h3 id="selectedExamName">إضافة أسئلة للاختبار</h3>
-      <div class="form-group"><label>نص السؤال:</label><textarea id="questionText"></textarea></div>
-      <div class="form-group"><label>الاختيار أ:</label><input type="text" id="optionA"></div>
-      <div class="form-group"><label>الاختيار ب:</label><input type="text" id="optionB"></div>
-      <div class="form-group"><label>الاختيار ج:</label><input type="text" id="optionC"></div>
-      <div class="form-group"><label>الاختيار د:</label><input type="text" id="optionD"></div>
-      <div class="form-group">
-        <label>الإجابة الصحيحة:</label>
-        <select id="correctAnswer">
-          <option value="">-- اختر الإجابة --</option>
-          <option value="a">أ</option><option value="b">ب</option><option value="c">ج</option><option value="d">د</option>
-        </select>
-      </div>
-      <button onclick="addQuestion()">➕ حفظ السؤال</button>
-      <button class="danger" onclick="closeQuestionEditor()" style="margin-right: 10px;">إغلاق</button>
-      <div id="questionStatus" style="margin-top: 10px; font-weight: bold;"></div>
-      <div id="currentQuestions"></div>
-    </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d"; 
+    const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let selectedExamId = null;
+    async function addLecture() {
+      const title = document.getElementById("lecTitle").value.trim();
+      const chapter = document.getElementById("lecChapter").value.trim();
+      const video_url = document.getElementById("lecVideoUrl").value.trim();
+      const details = document.getElementById("lecDetails").value.trim();
+      const pdf_url = document.getElementById("lecPdfUrl").value.trim();
+      const homework_url = document.getElementById("lecHomeworkUrl").value.trim();
+      const description = document.getElementById("lecDesc").value.trim();
+      const status = document.getElementById("lecStatus");
 
-    async function checkAdmin() {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (!session) {
-        alert("⚠ يجب تسجيل الدخول أولاً");
-        location.href = "../login/index.html";
-        return false;
-      }
-      return true;
-    }
-
-    async function loadStats() {
-      const container = document.getElementById("statsContainer");
-      try {
-        const { count: examsCount } = await supabaseClient.from("exams").select("*", { count: 'exact', head: true });
-        const { count: questionsCount } = await supabaseClient.from("questions").select("*", { count: 'exact', head: true });
-        const { count: championsCount } = await supabaseClient.from("champions").select("*", { count: 'exact', head: true });
-        const { count: videosCount } = await supabaseClient.from("videos").select("*", { count: 'exact', head: true });
-        const { count: notesCount } = await supabaseClient.from("notes").select("*", { count: 'exact', head: true });
-        
-        let usersCount = "متوفر";
-        const { data: usersData, error: userErr } = await supabaseClient.auth.admin.listUsers();
-        if (!userErr && usersData) {
-          usersCount = usersData.users.length;
-        }
-
-        container.innerHTML = `
-          <p>👥 إجمالي عدد المستخدمين: <strong>${usersCount}</strong></p>
-          <p>📚 إجمالي المذكرات والملفات: <strong>${notesCount || 0}</strong></p>
-          <p>🎥 إجمالي الفيديوهات: <strong>${videosCount || 0}</strong></p>
-          <p>📝 إجمالي الاختبارات: <strong>${examsCount || 0}</strong></p>
-          <p>❓ إجمالي الأسئلة: <strong>${questionsCount || 0}</strong></p>
-          <p>🏆 طلاب لوحة الشرف: <strong>${championsCount || 0}</strong></p>
-        `;
-      } catch (error) {
-        console.error(error);
-        container.innerHTML = "تعذر تحميل بعض الإحصائيات.";
-      }
-    }
-
-    // =========================
-    // إدارة المستخدمين وتغيير كلمات السر
-    // =========================
-    async function updateUserPassword() {
-      const email = document.getElementById("targetUserEmail").value.trim();
-      const newPassword = document.getElementById("newUserPassword").value.trim();
-
-      if (!email || !newPassword || newPassword.length < 6) {
-        alert("❌ يرجى إدخال البريد الإلكتروني وكلمة سر جديدة لا تقل عن 6 أحرف");
+      if (!title || !video_url) {
+        status.style.color = "#e74c3c";
+        status.textContent = "❌ يرجى إدخال عنوان المحاضرة ورابط الفيديو على الأقل.";
         return;
       }
 
+      status.style.color = "#1e3a8a";
+      status.textContent = "⏳ جاري رفع المحاضرة...";
+
       try {
-        const { data: listData, error: listError } = await supabaseClient.auth.admin.listUsers();
-        if (listError) throw listError;
+        const { error } = await supabaseClient.from("videos").insert({
+          title, chapter, video_url, details, pdf_url, homework_url, description
+        });
 
-        const targetUser = listData.users.find(u => u.email.toLowerCase() === email.toLowerCase());
-        if (!targetUser) {
-          alert("❌ لم يتم العثور على مستخدم بهذا البريد الإلكتروني مسجل في المنصة");
-          return;
-        }
+        if (error) throw error;
 
-        const { error: updateError } = await supabaseClient.auth.admin.updateUserById(
-          targetUser.id,
-          { password: newPassword }
-        );
+        status.style.color = "#026857";
+        status.textContent = "✅ تمت إضافة المحاضرة ومرفقاتها بنجاح!";
+        document.getElementById("lecTitle").value = "";
+        document.getElementById("lecChapter").value = "";
+        document.getElementById("lecVideoUrl").value = "";
+        document.getElementById("lecDetails").value = "";
+        document.getElementById("lecPdfUrl").value = "";
+        document.getElementById("lecHomeworkUrl").value = "";
+        document.getElementById("lecDesc").value = "";
 
-        if (updateError) throw updateError;
-
-        alert("✅ تم تغيير كلمة السر للمستخدم بنجاح!");
-        document.getElementById("targetUserEmail").value = "";
-        document.getElementById("newUserPassword").value = "";
-      } catch (error) {
-        console.error(error);
-        alert("❌ فشل تحديث كلمة السر: تأكد من الصلاحيات. الخطأ: " + error.message);
+      } catch (err) {
+        console.error(err);
+        status.style.color = "#e74c3c";
+        status.textContent = "❌ خطأ: " + err.message;
       }
     }
 
-    // =========================
-    // إدارة المذكرات والملفات
-    // =========================
-    function toggleNoteInputs() {
-      const type = document.getElementById("noteType").value;
-      if (type === "file") {
-        document.getElementById("noteFileInputGroup").classList.remove("hidden");
-        document.getElementById("noteLinkInputGroup").classList.add("hidden");
-      } else {
-        document.getElementById("noteFileInputGroup").classList.add("hidden");
-        document.getElementById("noteLinkInputGroup").classList.remove("hidden");
-      }
-    }
+    async function addChampion() {
+      const student_name = document.getElementById("champName").value.trim();
+      const score = document.getElementById("champScore").value.trim();
+      const status = document.getElementById("champStatus");
 
-    async function addNote() {
-      const title = document.getElementById("noteTitle").value.trim();
-      const type = document.getElementById("noteType").value;
-      const status = document.getElementById("noteStatus");
-
-      if (!title) {
-        status.innerHTML = "❌ يرجى كتابة عنوان المذكرة";
+      if (!student_name) {
+        status.style.color = "#e74c3c";
+        status.textContent = "❌ يرجى كتابة اسم الطالب.";
         return;
       }
 
-      status.innerHTML = "⏳ جاري النشر والرفع...";
+      status.style.color = "#1e3a8a";
+      status.textContent = "⏳ جاري الإضافة...";
 
       try {
-        let finalUrl = "";
-
-        if (type === "link") {
-          finalUrl = document.getElementById("noteUrl").value.trim();
-          if (!finalUrl) {
-            status.innerHTML = "❌ يرجى إدخال رابط المذكرة";
-            return;
-          }
-        } else {
-          const fileInput = document.getElementById("noteFile");
-          if (fileInput.files.length === 0) {
-            status.innerHTML = "❌ يرجى اختيار ملف لرفعه";
-            return;
-          }
-          const file = fileInput.files[0];
-          const fileName = `notes_${Date.now()}_${file.name}`;
-          
-          const { error: uploadError } = await supabaseClient.storage
-            .from("notes")
-            .upload(fileName, file);
-
-          if (uploadError) throw uploadError;
-
-          const { data: publicUrlData } = supabaseClient.storage
-            .from("notes")
-            .getPublicUrl(fileName);
-
-          finalUrl = publicUrlData.publicUrl;
-        }
-
-        const { error: dbError } = await supabaseClient
-          .from("notes")
-          .insert({ title, file_url: finalUrl });
-
-        if (dbError) throw dbError;
-
-        status.innerHTML = "✅ تم إضافة المذكرة بنجاح!";
-        document.getElementById("noteTitle").value = "";
-        document.getElementById("noteUrl").value = "";
-        document.getElementById("noteFile").value = "";
-        loadNotes();
-        loadStats();
-      } catch (error) {
-        console.error(error);
-        status.innerHTML = "❌ فشل رفع المذكرة (تأكد من إنشاء Storage Bucket باسم notes): " + error.message;
-      }
-    }
-
-    async function loadNotes() {
-      const container = document.getElementById("notesList");
-      if (!container) return;
-
-      try {
-        const { data, error } = await supabaseClient.from("notes").select("*").order("created_at", { ascending: false });
-        if (error) throw error;
-
-        if (!data || data.length === 0) {
-          container.innerHTML = "<p style='color:#666;'>لا توجد مذكرات مرفوعة حتى الآن.</p>";
-          return;
-        }
-
-        container.innerHTML = `<h4 style="color:#075e4d; margin-top:15px;">المذكرات الحالية (${data.length}):</h4>`;
-        data.forEach(n => {
-          const box = document.createElement("div");
-          box.className = "item-box";
-          box.innerHTML = `
-            <strong>📚 ${escapeHtml(n.title)}</strong>
-            <p style="font-size:12px; color:#555; word-break: break-all;">الرابط: ${escapeHtml(n.file_url)}</p>
-            <button class="danger" onclick="deleteNote('${n.id}')" style="padding: 5px 10px; font-size: 12px;">🗑️ حذف المذكرة</button>
-          `;
-          container.appendChild(box);
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    async function deleteNote(id) {
-      if (!confirm("هل تريد حذف هذه المذكرة؟")) return;
-      try {
-        const { error } = await supabaseClient.from("notes").delete().eq("id", id);
-        if (error) throw error;
-        alert("✅ تم حذف المذكرة");
-        loadNotes();
-        loadStats();
-      } catch (error) {
-        alert("❌ فشل الحذف: " + error.message);
-      }
-    }
-
-    // =========================
-    // إدارة الفيديوهات
-    // =========================
-    function toggleVideoInputs() {
-      const type = document.getElementById("videoType").value;
-      if (type === "link") {
-        document.getElementById("linkInputGroup").classList.remove("hidden");
-        document.getElementById("fileInputGroup").classList.add("hidden");
-      } else {
-        document.getElementById("linkInputGroup").classList.add("hidden");
-        document.getElementById("fileInputGroup").classList.remove("hidden");
-      }
-    }
-
-    async function addVideo() {
-      const title = document.getElementById("videoTitle").value.trim();
-      const type = document.getElementById("videoType").value;
-      const status = document.getElementById("videoStatus");
-
-      if (!title) {
-        status.innerHTML = "❌ يرجى كتابة عنوان الفيديو";
-        return;
-      }
-
-      status.innerHTML = "⏳ جاري نشر الفيديو...";
-
-      try {
-        let finalUrl = "";
-
-        if (type === "link") {
-          finalUrl = document.getElementById("videoUrl").value.trim();
-          if (!finalUrl) {
-            status.innerHTML = "❌ يرجى إدخال رابط الفيديو";
-            return;
-          }
-        } else {
-          const fileInput = document.getElementById("videoFile");
-          if (fileInput.files.length === 0) {
-            status.innerHTML = "❌ يرجى اختيار ملف فيديو لرفعه";
-            return;
-          }
-          const file = fileInput.files[0];
-          const fileName = `video_${Date.now()}_${file.name}`;
-          
-          const { error: uploadError } = await supabaseClient.storage
-            .from("videos")
-            .upload(fileName, file);
-
-          if (uploadError) throw uploadError;
-
-          const { data: publicUrlData } = supabaseClient.storage
-            .from("videos")
-            .getPublicUrl(fileName);
-
-          finalUrl = publicUrlData.publicUrl;
-        }
-
-        const { error: dbError } = await supabaseClient
-          .from("videos")
-          .insert({ title, video_url: finalUrl });
-
-        if (dbError) throw dbError;
-
-        status.innerHTML = "✅ تم إضافة الفيديو بنجاح!";
-        document.getElementById("videoTitle").value = "";
-        document.getElementById("videoUrl").value = "";
-        document.getElementById("videoFile").value = "";
-        loadVideos();
-        loadStats();
-      } catch (error) {
-        console.error(error);
-        status.innerHTML = "❌ فشل رفع الفيديو: " + error.message;
-      }
-    }
-
-    async function loadVideos() {
-      const container = document.getElementById("videosList");
-      if (!container) return;
-
-      try {
-        const { data, error } = await supabaseClient.from("videos").select("*").order("created_at", { ascending: false });
-        if (error) throw error;
-
-        if (!data || data.length === 0) {
-          container.innerHTML = "<p style='color:#666;'>لا توجد فيديوهات مرفوعة حتى الآن.</p>";
-          return;
-        }
-
-        container.innerHTML = `<h4 style="color:#075e4d; margin-top:15px;">الفيديوهات الحالية (${data.length}):</h4>`;
-        data.forEach(v => {
-          const box = document.createElement("div");
-          box.className = "item-box";
-          box.innerHTML = `
-            <strong>🎥 ${escapeHtml(v.title)}</strong>
-            <p style="font-size:12px; color:#555; word-break: break-all;">الرابط: ${escapeHtml(v.video_url || v.file_path)}</p>
-            <button class="danger" onclick="deleteVideo('${v.id}')" style="padding: 5px 10px; font-size: 12px;">🗑️ حذف الفيديو</button>
-          `;
-          container.appendChild(box);
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    async function deleteVideo(id) {
-      if (!confirm("هل تريد حذف هذا الفيديو؟")) return;
-      try {
-        const { error } = await supabaseClient.from("videos").delete().eq("id", id);
-        if (error) throw error;
-        alert("✅ تم حذف الفيديو");
-        loadVideos();
-        loadStats();
-      } catch (error) {
-        alert("❌ فشل الحذف: " + error.message);
-      }
-    }
-
-    // =========================
-    // أبطال الفصل
-    // =========================
-    async function saveChampion() {
-      const id = document.getElementById("championId").value;
-      const name = document.getElementById("championName").value.trim();
-      const points = parseInt(document.getElementById("championPoints").value);
-
-      if (!name || isNaN(points)) {
-        alert("❌ يرجى إدخال اسم الطالب وعدد النقاط بشكل صحيح");
-        return;
-      }
-
-      try {
-        if (id && id !== "") {
-          const { error } = await supabaseClient
-            .from("champions")
-            .update({ student_name: name, points: points })
-            .eq("id", id);
-          if (error) throw error;
-          alert("✅ تم تحديث بيانات البطل بنجاح");
-        } else {
-          const { error } = await supabaseClient
-            .from("champions")
-            .insert({ student_name: name, points: points });
-          if (error) throw error;
-          alert("🏆 تم إضافة البطل بنجاح!");
-        }
-
-        resetChampionForm();
-        loadChampions();
-        loadStats();
-      } catch (error) {
-        console.error(error);
-        alert("❌ حدث خطأ: " + error.message);
-      }
-    }
-
-    async function loadChampions() {
-      const container = document.getElementById("championsList");
-      if (!container) return;
-
-      container.innerHTML = "⏳ جاري تحميل الأبطال...";
-
-      try {
-        const { data, error } = await supabaseClient.from("champions").select("*");
-        if (error) throw error;
-
-        if (!data || data.length === 0) {
-          container.innerHTML = "<p style='color:#666;'>لا يوجد أبطال مسجلين حتى الآن.</p>";
-          return;
-        }
-
-        data.sort((a, b) => {
-          if (b.points !== a.points) {
-            return b.points - a.points; 
-          }
-          return a.student_name.localeCompare(b.student_name, 'ar'); 
+        const { error } = await supabaseClient.from("champions").insert({
+          student_name, score
         });
 
-        container.innerHTML = `<h4 style="color:#075e4d; margin-top:15px;">لوحة الشرف والأبطال (${data.length}):</h4>`;
-
-        data.forEach((champ, index) => {
-          const box = document.createElement("div");
-          box.className = "item-box";
-          box.style.display = "flex";
-          box.style.justifyContent = "space-between";
-          box.style.alignItems = "center";
-          
-          box.innerHTML = `
-            <div>
-              <strong>#${index + 1} - ${escapeHtml(champ.student_name)}</strong> 
-              <span style="color: #e67e22; margin-right: 15px;">⭐ ${champ.points} نقطة</span>
-            </div>
-            <div style="display: flex; gap: 5px;">
-              <button onclick="editChampion('${champ.id}', '${escapeHtml(champ.student_name)}', ${champ.points})" class="warning" style="padding: 5px 10px; font-size: 12px;">✏️ تعديل</button>
-              <button onclick="deleteChampion('${champ.id}')" class="danger" style="padding: 5px 10px; font-size: 12px;">🗑️ حذف</button>
-            </div>
-          `;
-          container.appendChild(box);
-        });
-      } catch (error) {
-        console.error(error);
-        container.innerHTML = "❌ تعذر تحميل قائمة الأبطال";
-      }
-    }
-
-    function editChampion(id, name, points) {
-      document.getElementById("championId").value = id;
-      document.getElementById("championName").value = name;
-      document.getElementById("championPoints").value = points;
-      document.getElementById("saveChampBtn").textContent = "💾 حفظ التعديلات";
-      document.getElementById("cancelChampBtn").classList.remove("hidden");
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function resetChampionForm() {
-      document.getElementById("championId").value = "";
-      document.getElementById("championName").value = "";
-      document.getElementById("championPoints").value = "";
-      document.getElementById("saveChampBtn").textContent = "➕ إضافة البطل";
-      document.getElementById("cancelChampBtn").classList.add("hidden");
-    }
-
-    async function deleteChampion(champId) {
-      if (!confirm("هل تريد حذف هذا الطالب من لوحة الشرف؟")) return;
-      try {
-        const { error } = await supabaseClient.from("champions").delete().eq("id", champId);
-        if (error) throw error;
-        alert("✅ تم الحذف بنجاح");
-        loadChampions();
-        loadStats();
-      } catch (error) {
-        alert("❌ فشل الحذف: " + error.message);
-      }
-    }
-
-    // =========================
-    // الاختبارات والأسئلة
-    // =========================
-    async function createExam() {
-      const title = document.getElementById("examTitle").value.trim();
-      const description = document.getElementById("examDescription").value.trim();
-      const duration = parseInt(document.getElementById("examDuration").value) || 15;
-      const status = document.getElementById("examStatus");
-
-      if (!title) {
-        status.innerHTML = "❌ يرجى كتابة عنوان الاختبار";
-        return;
-      }
-
-      try {
-        const { data, error } = await supabaseClient
-          .from("exams")
-          .insert({ title, description, duration })
-          .select()
-          .single();
-
         if (error) throw error;
 
-        status.innerHTML = "✅ تم إنشاء الاختبار بنجاح.";
-        document.getElementById("examTitle").value = "";
-        document.getElementById("examDescription").value = "";
-        loadExams();
-        loadStats();
-        openQuestionEditor(data.id, data.title);
-      } catch (error) {
-        status.innerHTML = "❌ خطأ: " + error.message;
+        status.style.color = "#026857";
+        status.textContent = "✅ تمت إضافة البطل بنجاح!";
+        document.getElementById("champName").value = "";
+        document.getElementById("champScore").value = "";
+
+      } catch (err) {
+        console.error(err);
+        status.style.color = "#e74c3c";
+        status.textContent = "❌ خطأ: " + err.message;
       }
     }
-
-    async function openQuestionEditor(examId, examTitle) {
-      selectedExamId = examId;
-      document.getElementById("selectedExamName").textContent = "إضافة أسئلة للاختبار: " + examTitle;
-      document.getElementById("questionEditor").classList.remove("hidden");
-      document.getElementById("questionEditor").scrollIntoView({ behavior: "smooth" });
-      await loadCurrentQuestions();
-    }
-
-    function closeQuestionEditor() {
-      selectedExamId = null;
-      document.getElementById("questionEditor").classList.add("hidden");
-    }
-
-    async function addQuestion() {
-      if (!selectedExamId) return;
-      const text = document.getElementById("questionText").value.trim();
-      const option_a = document.getElementById("optionA").value.trim();
-      const option_b = document.getElementById("optionB").value.trim();
-      const option_c = document.getElementById("optionC").value.trim();
-      const option_d = document.getElementById("optionD").value.trim();
-      const correct_answer = document.getElementById("correctAnswer").value;
-      const status = document.getElementById("questionStatus");
-
-      if (!text || !option_a || !option_b || !option_c || !option_d || !correct_answer) {
-        status.innerHTML = "❌ يرجى ملء كافة الحقول";
-        return;
-      }
-
-      try {
-        const { error } = await supabaseClient.from("questions").insert({
-          exam_id: selectedExamId, question_text: text, option_a, option_b, option_c, option_d, correct_answer
-        });
-        if (error) throw error;
-
-        status.innerHTML = "✅ تمت إضافة السؤال بنجاح";
-        document.getElementById("questionText").value = "";
-        document.getElementById("optionA").value = "";
-        document.getElementById("optionB").value = "";
-        document.getElementById("optionC").value = "";
-        document.getElementById("optionD").value = "";
-        document.getElementById("correctAnswer").value = "";
-        loadCurrentQuestions();
-        loadStats();
-      } catch (error) {
-        status.innerHTML = "❌ خطأ: " + error.message;
-      }
-    }
-
-    async function loadCurrentQuestions() {
-      const container = document.getElementById("currentQuestions");
-      if (!selectedExamId) return;
-      try {
-        const { data } = await supabaseClient.from("questions").select("*").eq("exam_id", selectedExamId);
-        if (!data || data.length === 0) {
-          container.innerHTML = "<p>لا توجد أسئلة بعد.</p>";
-          return;
-        }
-        container.innerHTML = `<h4>الأسئلة (${data.length}):</h4>`;
-        data.forEach((q, idx) => {
-          container.innerHTML += `
-            <div class="item-box">
-              <p><strong>س${idx+1}:</strong> ${escapeHtml(q.question_text)}</p>
-              <button class="danger" onclick="deleteQuestion('${q.id}')" style="padding:4px 8px; font-size:11px;">حذف السؤال</button>
-            </div>`;
-        });
-      } catch (e) { console.error(e); }
-    }
-
-    async function deleteQuestion(id) {
-      if (!confirm("حذف السؤال؟")) return;
-      await supabaseClient.from("questions").delete().eq("id", id);
-      loadCurrentQuestions();
-      loadStats();
-    }
-
-    async function loadExams() {
-      const list = document.getElementById("examsList");
-      if (!list) return;
-      try {
-        const { data } = await supabaseClient.from("exams").select("*").order("created_at", { ascending: false });
-        if (!data || data.length === 0) {
-          list.innerHTML = "لا توجد اختبارات.";
-          return;
-        }
-        list.innerHTML = "";
-        data.forEach(ex => {
-          list.innerHTML += `
-            <div class="item-box">
-              <h3>📝 ${escapeHtml(ex.title)}</h3>
-              <p>${escapeHtml(ex.description || "")}</p>
-              <div class="actions">
-                <button onclick="openQuestionEditor('${ex.id}', '${escapeHtml(ex.title)}')">إدارة الأسئلة</button>
-                <button class="danger" onclick="deleteExam('${ex.id}')">حذف الاختبار</button>
-              </div>
-            </div>`;
-        });
-      } catch (e) { console.error(e); }
-    }
-
-    async function deleteExam(id) {
-      if (!confirm("حذف الاختبار؟")) return;
-      await supabaseClient.from("exams").delete().eq("id", id);
-      loadExams();
-      loadStats();
-    }
-
-    function escapeHtml(str) {
-      if (!str) return "";
-      return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-    }
-
-    function logout() {
-      supabaseClient.auth.signOut().then(() => { location.href = "../login/index.html"; });
-    }
-
-    window.addEventListener("DOMContentLoaded", async () => {
-      const isAdmin = await checkAdmin();
-      if (isAdmin) {
-        loadStats();
-        loadNotes();
-        loadVideos();
-        loadChampions();
-        loadExams();
-      }
-    });
   </script>
+
 </body>
+
 </html>
