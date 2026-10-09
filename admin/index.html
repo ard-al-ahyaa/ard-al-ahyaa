@@ -117,9 +117,9 @@
       </div>
     </div>
 
-    <!-- إضافة محاضرة جديدة (مع رفع الملفات من الجهاز والشرح والواجب) -->
+    <!-- إضافة محاضرة جديدة (مع رفع المذكرات والفيديوهات من الجهاز) -->
     <div class="card">
-      <h2>🎥 إضافة محاضرة جديدة (رفع من الجهاز أو روابط)</h2>
+      <h2>🎥 إضافة محاضرة جديدة (رفع المذكرات والفيديوهات من الجهاز)</h2>
       <div class="form-group">
         <label>عنوان المحاضرة:</label>
         <input type="text" id="lecTitle" placeholder="مثال: المحاضرة الأولى: الدعامة والجهاز الحركي">
@@ -130,12 +130,11 @@
       </div>
       
       <div class="form-group">
-        <label>اختر ملف الفيديو من الجهاز:</label>
+        <label>📁 اختر ملف الفيديو من الجهاز:</label>
         <input type="file" id="videoFile" accept="video/*">
       </div>
-      <div style="text-align: center; margin: 10px 0; color: #64748b; font-weight: 600;">أو أدخل رابط فيديو خارجي (يوتيوب مثلاً):</div>
+      <div style="text-align: center; margin: 8px 0; color: #64748b; font-size: 13px;">أو ضع رابط يوتيوب/فيديو خارجي:</div>
       <div class="form-group">
-        <label>رابط فيديو خارجي:</label>
         <input type="text" id="lecVideoUrl" placeholder="https://...">
       </div>
 
@@ -145,12 +144,11 @@
       </div>
 
       <div class="form-group">
-        <label>اختر ملف المذكرة (PDF) من الجهاز:</label>
+        <label>📄 اختر ملف المذكرة (PDF) من الجهاز:</label>
         <input type="file" id="pdfFile" accept="application/pdf">
       </div>
-      <div style="text-align: center; margin: 10px 0; color: #64748b; font-weight: 600;">أو رابط مذكرة خارجي:</div>
+      <div style="text-align: center; margin: 8px 0; color: #64748b; font-size: 13px;">أو رابط مذكرة خارجي:</div>
       <div class="form-group">
-        <label>رابط مذكرة (PDF) خارجي:</label>
         <input type="text" id="lecPdfUrl" placeholder="https://...">
       </div>
 
@@ -162,7 +160,7 @@
         <label>وصف مختصر:</label>
         <input type="text" id="lecDesc" placeholder="وصف قصير للمحاضرة">
       </div>
-      <button onclick="addLecture()">رفع المحاضرة وحفظها 🚀</button>
+      <button onclick="addLecture()">رفع المحاضرة والمذكرة وحفظها 🚀</button>
       <div id="lecStatus" class="status"></div>
     </div>
 
@@ -205,10 +203,10 @@
     }
     fetchStudentsCount();
 
-    // 2. دالة رفع الملفات إلى Supabase Storage
+    // 2. دالة رفع الملفات (فيديوهات ومذكرات PDF) إلى Supabase Storage
     async function uploadFileToStorage(file, bucketName) {
       const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}_${Math.random().toString(36.substring(2))}.${fileExt}`;
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
       
       const { data, error } = await supabaseClient.storage
         .from(bucketName)
@@ -223,7 +221,7 @@
       return publicUrl;
     }
 
-    // 3. إضافة محاضرة مع دعم الرفع من الجهاز
+    // 3. إضافة محاضرة مع دعم رفع المذكرة والفيديو من الجهاز
     async function addLecture() {
       const title = document.getElementById("lecTitle").value.trim();
       const chapter = document.getElementById("lecChapter").value.trim();
@@ -256,7 +254,7 @@
 
         // رفع ملف المذكرة PDF من الجهاز لو تم اختياره
         if (pdfFileInput.files.length > 0) {
-          status.textContent = "⏳ جاري رفع ملف المذكرة (PDF)...";
+          status.textContent = "⏳ جاري رفع ملف المذكرة (PDF) إلى السحابة...";
           pdf_url = await uploadFileToStorage(pdfFileInput.files[0], "uploads");
         }
 
@@ -272,9 +270,9 @@
         if (error) throw error;
 
         status.style.color = "#026857";
-        status.textContent = "✅ تمت إضافة المحاضرة ومرفقاتها بنجاح!";
+        status.textContent = "✅ تمت إضافة المحاضرة ومذكرة الـ PDF بنجاح!";
         
-        // تفريغ الحقول
+        // تفريغ الحقول بعد الحفظ الناجح
         document.getElementById("lecTitle").value = "";
         document.getElementById("lecChapter").value = "";
         document.getElementById("lecVideoUrl").value = "";
