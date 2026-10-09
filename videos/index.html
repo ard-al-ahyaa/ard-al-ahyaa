@@ -155,7 +155,28 @@
 
     .lecture-body.open {
       padding: 20px 25px;
-      max-height: 1000px;
+      max-height: 1200px;
+    }
+
+    .video-container {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%; /* نسبة عرض لارتفاع 16:9 */
+      height: 0;
+      background: #000;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+
+    .video-container iframe,
+    .video-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
     }
 
     .dropdown-section {
@@ -202,14 +223,6 @@
 
     .btn-link:hover {
       background: #014d40;
-    }
-
-    video {
-      width: 100%;
-      max-height: 400px;
-      border-radius: 10px;
-      background: #000;
-      margin-bottom: 15px;
     }
 
     .loading, .empty {
@@ -263,6 +276,20 @@
     const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    // دالة لتحويل رابط يوتيوب العادي إلى رابط مضمن صحيح (Embed)
+    function getYoutubeEmbedUrl(url) {
+      if (!url) return "";
+      let videoId = "";
+      if (url.includes("youtu.be/")) {
+        videoId = url.split("youtu.be/")[1]?.split("?")[0];
+      } else if (url.includes("watch?v=")) {
+        videoId = url.split("watch?v=")[1]?.split("&")[0];
+      } else if (url.includes("embed/")) {
+        return url;
+      }
+      return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+    }
+
     async function loadLectures() {
       const listDiv = document.getElementById("lecturesList");
       try {
@@ -283,6 +310,16 @@
           const card = document.createElement("div");
           card.className = "lecture-card";
           
+          let videoPlayerHtml = "";
+          const rawUrl = lec.video_url || "";
+          
+          if (rawUrl.includes("youtube.com") || rawUrl.includes("youtu.be")) {
+            const embedUrl = getYoutubeEmbedUrl(rawUrl);
+            videoPlayerHtml = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
+          } else {
+            videoPlayerHtml = `<video controls><source src="${rawUrl}" type="video/mp4">متصفحك لا يدعم عرض الفيديو.</video>`;
+          }
+
           card.innerHTML = `
             <div class="lecture-header" onclick="toggleLecture(${index})">
               <div class="lecture-title">
@@ -292,10 +329,9 @@
               <div class="arrow-icon" id="arrow-${index}">▼</div>
             </div>
             <div class="lecture-body" id="body-${index}">
-              <video controls>
-                <source src="${lec.video_url}" type="video/mp4">
-                متصفحك لا يدعم عرض الفيديو.
-              </video>
+              <div class="video-container">
+                ${videoPlayerHtml}
+              </div>
               <p style="margin-bottom: 15px; color: #475569; font-size: 14px;">${escapeHtml(lec.description || "")}</p>
 
               <!-- الشرح -->
@@ -320,7 +356,7 @@
                 </div>
               </div>
 
-              <!-- تسليم الواجب / الواجب -->
+              <!-- الواجب -->
               <div class="dropdown-section">
                 <div class="dropdown-header" onclick="toggleSub(this)">
                   <span>✏️ واجب المحاضرة</span>
