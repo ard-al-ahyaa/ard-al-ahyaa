@@ -109,71 +109,114 @@
       font-weight: 700;
     }
 
-    .videos-container {
+    /* تصميم المحاضرات المنسدل */
+    .lecture-card {
       background: white;
-      border-radius: 18px;
-      padding: 30px;
-      box-shadow: 0 8px 25px rgba(30, 58, 138, 0.05);
+      border-radius: 14px;
       border: 1px solid #e2e8f0;
-    }
-
-    .section-title {
-      color: #1e3a8a;
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 25px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid #f1f5f9;
-    }
-
-    .videos-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 25px;
-    }
-
-    .video-card {
-      border: 1px solid #e2e8f0;
-      border-radius: 16px;
-      background: white;
+      margin-bottom: 20px;
       overflow: hidden;
-      padding: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      box-shadow: 0 4px 15px rgba(30,58,138,0.03);
     }
 
-    .video-card h3 {
-      color: #1e3a8a;
+    .lecture-header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+      color: white;
+      padding: 18px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .lecture-title h3 {
       font-size: 18px;
       font-weight: 700;
+      margin-bottom: 4px;
     }
 
-    .video-card p {
-      color: #64748b;
+    .lecture-title p {
       font-size: 13px;
-      line-height: 1.6;
+      opacity: 0.9;
+    }
+
+    .arrow-icon {
+      font-size: 18px;
+      transition: transform 0.3s;
+    }
+
+    .lecture-body {
+      padding: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out, padding 0.3s;
+      background: #fafafa;
+    }
+
+    .lecture-body.open {
+      padding: 20px 25px;
+      max-height: 1000px;
+    }
+
+    .dropdown-section {
+      background: #e8f5e9;
+      border: 1px solid #c8e6c9;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .dropdown-header {
+      padding: 12px 18px;
+      font-weight: 700;
+      color: #2e7d32;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      background: #f1f8e9;
+    }
+
+    .dropdown-content {
+      padding: 15px 18px;
+      background: white;
+      border-top: 1px solid #c8e6c9;
+      display: none;
+    }
+
+    .dropdown-content.open {
+      display: block;
+    }
+
+    .btn-link {
+      display: inline-block;
+      background: #026857;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    .btn-link:hover {
+      background: #014d40;
     }
 
     video {
       width: 100%;
-      height: 180px;
-      background: #000;
+      max-height: 400px;
       border-radius: 10px;
+      background: #000;
+      margin-bottom: 15px;
     }
 
-    .loading, .empty, .error {
+    .loading, .empty {
       text-align: center;
-      padding: 40px;
+      padding: 30px;
       color: #64748b;
       font-weight: 600;
-      grid-column: 1 / -1;
-      font-size: 16px;
-    }
-
-    .error {
-      color: #e74c3c;
     }
 
     @media (max-width: 768px) {
@@ -197,7 +240,6 @@
       <nav class="menu">
         <a href="../index.html">🏠 الرئيسية</a>
         <a href="index.html" class="active">🎥 المحاضرات</a>
-        <a href="../notes/index.html">📚 المذكرات</a>
         <a href="../champion/index.html">🏆 بطل الفصل</a>
         <a href="../forum/index.html">💬 المنتدى</a>
         <a href="../account/index.html">👤 حساب الطالب</a>
@@ -207,15 +249,12 @@
 
   <main class="main">
     <div class="top-bar">
-      <h1>🎥 المحاضرات والدروس</h1>
+      <h1>🎥 محاضرات منهج الأحياء</h1>
     </div>
 
-    <section class="videos-container">
-      <h2 class="section-title">قائمة المحاضرات</h2>
-      <div id="videosList" class="videos-list">
-        <div class="loading">جاري تحميل المحاضرات...</div>
-      </div>
-    </section>
+    <div id="lecturesList">
+      <div class="loading">جاري تحميل المحاضرات...</div>
+    </div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -224,46 +263,103 @@
     const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    async function loadVideos() {
-      const listDiv = document.getElementById("videosList");
+    async function loadLectures() {
+      const listDiv = document.getElementById("lecturesList");
       try {
-        // جلب البيانات من جدول videos مباشرة
         const { data, error } = await supabaseClient
           .from("videos")
           .select("*")
-          .order("created_at", { ascending: false });
+          .order("created_at", { ascending: true });
 
-        if (error) {
-          throw error;
-        }
+        if (error) throw error;
 
         if (!data || data.length === 0) {
-          listDiv.innerHTML = `<div class="empty">لا توجد محاضرات مضافة حاليًا. ارفع فيديوهات من لوحة التحكم.</div>`;
+          listDiv.innerHTML = `<div class="empty">لا توجد محاضرات مرفوعة حالياً.</div>`;
           return;
         }
 
         listDiv.innerHTML = "";
-        data.forEach(item => {
+        data.forEach((lec, index) => {
           const card = document.createElement("div");
-          card.className = "video-card";
-          
-          let videoSrc = item.video_url || item.file_path || "";
+          card.className = "lecture-card";
           
           card.innerHTML = `
-            <h3>${item.title || "محاضرة بدون عنوان"}</h3>
-            <p>${item.description || "شرح منهج الأحياء"}</p>
-            <video controls src="${videoSrc}" preload="metadata"></video>
+            <div class="lecture-header" onclick="toggleLecture(${index})">
+              <div class="lecture-title">
+                <h3>${escapeHtml(lec.title)}</h3>
+                <p>${escapeHtml(lec.chapter || "الباب التعليمي")}</p>
+              </div>
+              <div class="arrow-icon" id="arrow-${index}">▼</div>
+            </div>
+            <div class="lecture-body" id="body-${index}">
+              <video controls>
+                <source src="${lec.video_url}" type="video/mp4">
+                متصفحك لا يدعم عرض الفيديو.
+              </video>
+              <p style="margin-bottom: 15px; color: #475569; font-size: 14px;">${escapeHtml(lec.description || "")}</p>
+
+              <!-- الشرح -->
+              <div class="dropdown-section">
+                <div class="dropdown-header" onclick="toggleSub(this)">
+                  <span>📖 الشرح التفصيلي</span>
+                  <span>▼</span>
+                </div>
+                <div class="dropdown-content">
+                  <p>${escapeHtml(lec.details || "لا توجد تفاصيل نصية إضافية.")}</p>
+                </div>
+              </div>
+
+              <!-- المذكرة (PDF) -->
+              <div class="dropdown-section">
+                <div class="dropdown-header" onclick="toggleSub(this)">
+                  <span>📚 مذكرة المحاضرة (PDF)</span>
+                  <span>▼</span>
+                </div>
+                <div class="dropdown-content">
+                  ${lec.pdf_url ? `<a href="\${lec.pdf_url}" target="_blank" class="btn-link">تحميل أو استعراض المذكرة 📄</a>` : '<p style="color:#64748b;">المذكرة غير متوفرة لهذه المحاضرة حالياً.</p>'}
+                </div>
+              </div>
+
+              <!-- تسليم الواجب / الواجب -->
+              <div class="dropdown-section">
+                <div class="dropdown-header" onclick="toggleSub(this)">
+                  <span>✏️ واجب المحاضرة</span>
+                  <span>▼</span>
+                </div>
+                <div class="dropdown-content">
+                  ${lec.homework_url ? `<a href="\${lec.homework_url}" target="_blank" class="btn-link">فتح الواجب / الامتحان 📝</a>` : '<p style="color:#64748b;">الواجب غير متوفر حالياً.</p>'}
+                </div>
+              </div>
+
+            </div>
           `;
           listDiv.appendChild(card);
         });
 
-    } catch (err) {
-        console.error("Supabase Error:", err);
-        listDiv.innerHTML = `<div class="error">تعذر تحميل الفيديوهات. تأكد من إنشاء جدول videos في قاعدة بيانات Supabase.</div>`;
+      } catch (err) {
+        console.error(err);
+        listDiv.innerHTML = `<div class="empty" style="color:#e74c3c;">تعذر تحميل المحاضرات: ${err.message}</div>`;
       }
     }
 
-    loadVideos();
+    function toggleLecture(index) {
+      const body = document.getElementById(`body-${index}`);
+      const arrow = document.getElementById(`arrow-${index}`);
+      body.classList.toggle("open");
+      arrow.style.transform = body.classList.contains("open") ? "rotate(180deg)" : "rotate(0deg)";
+    }
+
+    function toggleSub(headerElement) {
+      const content = headerElement.nextElementSibling;
+      content.classList.toggle("open");
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    loadLectures();
   </script>
 
 </body>
