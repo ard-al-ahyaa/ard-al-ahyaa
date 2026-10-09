@@ -66,6 +66,12 @@
       outline: none;
     }
 
+    input[type="file"] {
+      padding: 8px;
+      background: #f8fafc;
+      cursor: pointer;
+    }
+
     input:focus, textarea:focus {
       border-color: #1e3a8a;
       box-shadow: 0 0 0 3px rgba(30,58,138,0.1);
@@ -87,27 +93,6 @@
       background: #1e40af;
     }
 
-    .item-row {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .delete-btn {
-      background: #e74c3c;
-      padding: 8px 14px;
-      font-size: 13px;
-    }
-
-    .delete-btn:hover {
-      background: #c0392b;
-    }
-
     .status {
       margin-top: 10px;
       font-weight: bold;
@@ -124,9 +109,17 @@
       <a href="../index.html" style="background:#026857; color:#fff; padding:10px 20px; border-radius:8px; text-decoration:none; font-weight:700;">🏠 العودة للمنصة</a>
     </div>
 
-    <!-- إضافة محاضرة جديدة (مع المذكرة والشرح والواجب) -->
+    <!-- إحصائيات المنصة (عدد الطلاب) -->
     <div class="card">
-      <h2>🎥 إضافة محاضرة جديدة</h2>
+      <h2>📊 إحصائيات المنصة</h2>
+      <div style="font-size: 18px; font-weight: 700; color: #1e3a8a;" id="usersCount">
+        ⏳ جاري حساب عدد الطلاب المسجلين...
+      </div>
+    </div>
+
+    <!-- إضافة محاضرة جديدة (مع رفع الملفات من الجهاز والشرح والواجب) -->
+    <div class="card">
+      <h2>🎥 إضافة محاضرة جديدة (رفع من الجهاز أو روابط)</h2>
       <div class="form-group">
         <label>عنوان المحاضرة:</label>
         <input type="text" id="lecTitle" placeholder="مثال: المحاضرة الأولى: الدعامة والجهاز الحركي">
@@ -135,19 +128,32 @@
         <label>الباب / الفصل التعليمي:</label>
         <input type="text" id="lecChapter" placeholder="مثال: الباب الأول - الأحياء">
       </div>
+      
       <div class="form-group">
-        <label>رابط الفيديو:</label>
-        <input type="text" id="lecVideoUrl" placeholder="رابط الفيديو (YouTube أو رابط مباشر)">
+        <label>اختر ملف الفيديو من الجهاز:</label>
+        <input type="file" id="videoFile" accept="video/*">
       </div>
+      <div style="text-align: center; margin: 10px 0; color: #64748b; font-weight: 600;">أو أدخل رابط فيديو خارجي (يوتيوب مثلاً):</div>
+      <div class="form-group">
+        <label>رابط فيديو خارجي:</label>
+        <input type="text" id="lecVideoUrl" placeholder="https://...">
+      </div>
+
       <div class="form-group">
         <label>تفاصيل الشرح (النصي):</label>
-        اكتب تفاصيل الشرح هنا...
         <textarea id="lecDetails" placeholder="اكتب تفاصيل الشرح هنا..."></textarea>
       </div>
+
       <div class="form-group">
-        <label>رابط مذكرة المحاضرة (PDF):</label>
-        <input type="text" id="lecPdfUrl" placeholder="رابط ملف الـ PDF الخاص بالمذكرة">
+        <label>اختر ملف المذكرة (PDF) من الجهاز:</label>
+        <input type="file" id="pdfFile" accept="application/pdf">
       </div>
+      <div style="text-align: center; margin: 10px 0; color: #64748b; font-weight: 600;">أو رابط مذكرة خارجي:</div>
+      <div class="form-group">
+        <label>رابط مذكرة (PDF) خارجي:</label>
+        <input type="text" id="lecPdfUrl" placeholder="https://...">
+      </div>
+
       <div class="form-group">
         <label>رابط الواجب / الامتحان:</label>
         <input type="text" id="lecHomeworkUrl" placeholder="رابط جوجل فورم أو الامتحان">
@@ -156,7 +162,7 @@
         <label>وصف مختصر:</label>
         <input type="text" id="lecDesc" placeholder="وصف قصير للمحاضرة">
       </div>
-      <button onclick="addLecture()">رفع المحاضرة 🚀</button>
+      <button onclick="addLecture()">رفع المحاضرة وحفظها 🚀</button>
       <div id="lecStatus" class="status"></div>
     </div>
 
@@ -183,26 +189,82 @@
     const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    // 1. جلب وحساب عدد الطلاب المسجلين
+    async function fetchStudentsCount() {
+      try {
+        const { count, error } = await supabaseClient
+          .from("profiles")
+          .select("*", { count: 'exact', head: true });
+
+        if (error) throw error;
+        document.getElementById("usersCount").innerHTML = `👥 عدد الطلاب المسجلين على المنصة: <span style="color: #026857; font-size: 22px;">${count || 0}</span> طالب`;
+      } catch (err) {
+        console.error(err);
+        document.getElementById("usersCount").textContent = "تعذر حساب عدد الطلاب.";
+      }
+    }
+    fetchStudentsCount();
+
+    // 2. دالة رفع الملفات إلى Supabase Storage
+    async function uploadFileToStorage(file, bucketName) {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}_${Math.random().toString(36.substring(2))}.${fileExt}`;
+      
+      const { data, error } = await supabaseClient.storage
+        .from(bucketName)
+        .upload(fileName, file);
+
+      if (error) throw error;
+
+      const { data: { publicUrl } } = supabaseClient.storage
+        .from(bucketName)
+        .getPublicUrl(fileName);
+
+      return publicUrl;
+    }
+
+    // 3. إضافة محاضرة مع دعم الرفع من الجهاز
     async function addLecture() {
       const title = document.getElementById("lecTitle").value.trim();
       const chapter = document.getElementById("lecChapter").value.trim();
-      const video_url = document.getElementById("lecVideoUrl").value.trim();
       const details = document.getElementById("lecDetails").value.trim();
-      const pdf_url = document.getElementById("lecPdfUrl").value.trim();
       const homework_url = document.getElementById("lecHomeworkUrl").value.trim();
       const description = document.getElementById("lecDesc").value.trim();
+      
+      const videoFileInput = document.getElementById("videoFile");
+      const pdfFileInput = document.getElementById("pdfFile");
+      let video_url = document.getElementById("lecVideoUrl").value.trim();
+      let pdf_url = document.getElementById("lecPdfUrl").value.trim();
+      
       const status = document.getElementById("lecStatus");
 
-      if (!title || !video_url) {
+      if (!title) {
         status.style.color = "#e74c3c";
-        status.textContent = "❌ يرجى إدخال عنوان المحاضرة ورابط الفيديو على الأقل.";
+        status.textContent = "❌ يرجى إدخال عنوان المحاضرة على الأقل.";
         return;
       }
 
       status.style.color = "#1e3a8a";
-      status.textContent = "⏳ جاري رفع المحاضرة...";
+      status.textContent = "⏳ جاري رفع الملفات ومعالجة البيانات...";
 
       try {
+        // رفع الفيديو من الجهاز لو تم اختياره
+        if (videoFileInput.files.length > 0) {
+          status.textContent = "⏳ جاري رفع ملف الفيديو إلى السحابة...";
+          video_url = await uploadFileToStorage(videoFileInput.files[0], "uploads");
+        }
+
+        // رفع ملف المذكرة PDF من الجهاز لو تم اختياره
+        if (pdfFileInput.files.length > 0) {
+          status.textContent = "⏳ جاري رفع ملف المذكرة (PDF)...";
+          pdf_url = await uploadFileToStorage(pdfFileInput.files[0], "uploads");
+        }
+
+        if (!video_url) {
+          throw new Error("يجب اختيار ملف فيديو من الجهاز أو وضع رابط فيديو صحيح.");
+        }
+
+        // حفظ البيانات في جدول videos
         const { error } = await supabaseClient.from("videos").insert({
           title, chapter, video_url, details, pdf_url, homework_url, description
         });
@@ -211,6 +273,8 @@
 
         status.style.color = "#026857";
         status.textContent = "✅ تمت إضافة المحاضرة ومرفقاتها بنجاح!";
+        
+        // تفريغ الحقول
         document.getElementById("lecTitle").value = "";
         document.getElementById("lecChapter").value = "";
         document.getElementById("lecVideoUrl").value = "";
@@ -218,14 +282,17 @@
         document.getElementById("lecPdfUrl").value = "";
         document.getElementById("lecHomeworkUrl").value = "";
         document.getElementById("lecDesc").value = "";
+        videoFileInput.value = "";
+        pdfFileInput.value = "";
 
       } catch (err) {
         console.error(err);
         status.style.color = "#e74c3c";
-        status.textContent = "❌ خطأ: " + err.message;
+        status.textContent = "❌ خطأ أثناء الرفع: " + err.message;
       }
     }
 
+    // 4. إضافة بطل الفصل
     async function addChampion() {
       const student_name = document.getElementById("champName").value.trim();
       const score = document.getElementById("champScore").value.trim();
