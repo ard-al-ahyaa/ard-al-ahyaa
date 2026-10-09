@@ -93,6 +93,28 @@
       background: #1e40af;
     }
 
+    .lecture-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .delete-btn {
+      background: #e74c3c;
+      padding: 8px 14px;
+      font-size: 13px;
+      border-radius: 8px;
+    }
+
+    .delete-btn:hover {
+      background: #c0392b;
+    }
+
     .status {
       margin-top: 10px;
       font-weight: bold;
@@ -117,9 +139,9 @@
       </div>
     </div>
 
-    <!-- إضافة محاضرة جديدة (مع رفع المذكرات والفيديوهات من الجهاز) -->
+    <!-- إضافة محاضرة جديدة -->
     <div class="card">
-      <h2>🎥 إضافة محاضرة جديدة (رفع المذكرات والفيديوهات من الجهاز)</h2>
+      <h2>🎥 إضافة محاضرة جديدة</h2>
       <div class="form-group">
         <label>عنوان المحاضرة:</label>
         <input type="text" id="lecTitle" placeholder="مثال: المحاضرة الأولى: الدعامة والجهاز الحركي">
@@ -164,6 +186,14 @@
       <div id="lecStatus" class="status"></div>
     </div>
 
+    <!-- قائمة المحاضرات الحالية (للحذف والتعديل) -->
+    <div class="card">
+      <h2>🗑️ إدارة وحذف المحاضرات الحالية</h2>
+      <div id="manageLecturesList">
+        <p style="color: #64748b;">جاري تحميل المحاضرات...</p>
+      </div>
+    </div>
+
     <!-- إدارة أبطال الفصل -->
     <div class="card">
       <h2>🏆 إدارة أبطال الفصل</h2>
@@ -187,13 +217,12 @@
     const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // 1. جلب وحساب عدد الطلاب المسجلين
+    // 1. حساب عدد الطلاب
     async function fetchStudentsCount() {
       try {
         const { count, error } = await supabaseClient
           .from("profiles")
           .select("*", { count: 'exact', head: true });
-
         if (error) throw error;
         document.getElementById("usersCount").innerHTML = `👥 عدد الطلاب المسجلين على المنصة: <span style="color: #026857; font-size: 22px;">${count || 0}</span> طالب`;
       } catch (err) {
@@ -203,25 +232,73 @@
     }
     fetchStudentsCount();
 
-    // 2. دالة رفع الملفات (فيديوهات ومذكرات PDF) إلى Supabase Storage
+    // 2. جلب وعرض المحاضرات في لوحة التحكم لحذفها
+    async function loadAdminLectures() {
+      const container = document.getElementById("manageLecturesList");
+      try {
+        const { data, error } = await supabaseClient
+          .from("videos")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          container.innerHTML = `<p style="color: #64748b;">لا توجد محاضرات مرفوعة حالياً.</p>`;
+          return;
+        }
+
+        container.innerHTML = "";
+        data.forEach(lec => {
+          const item = document.createElement("div");
+          item.className = "lecture-item";
+          item.innerHTML = `
+            <div>
+              <strong style="color: #1e3a8a; font-size: 15px;">${lec.title}</strong>
+              <div style="font-size: 12px; color: #64748b;">${lec.chapter || 'بدون باب'}</div>
+            </div>
+            <button class="delete-btn" onclick="deleteLecture(${lec.id})">حذف 🗑️</button>
+          `;
+          container.appendChild(item);
+        });
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = `<p style="color: #e74c3c;">خطأ في تحميل القائمة.</p>`;
+      }
+    }
+    loadAdminLectures();
+
+    // 3. دالة حذف المحاضرة
+    async function deleteLecture(id) {
+      if (!confirm("هل أنت متأكد من حذف هذه المحاضرة نهائياً؟")) return;
+
+      try {
+        const { error } = await supabaseClient
+          .from("videos")
+          .delete()
+          .eq("id", id);
+
+        if (error) throw error;
+
+        alert("✅ تم حذف المحاضرة بنجاح!");
+        loadAdminLectures(); // تحديث القائمة فوراً
+      } catch (err) {
+        console.error(err);
+        alert("❌ خطأ أثناء الحذف: " + err.message);
+      }
+    }
+
+    // 4. رفع الملفات للسحابة
     async function uploadFileToStorage(file, bucketName) {
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-      
-      const { data, error } = await supabaseClient.storage
-        .from(bucketName)
-        .upload(fileName, file);
-
+      const { data, error } = await supabaseClient.storage.from(bucketName).upload(fileName, file);
       if (error) throw error;
-
-      const { data: { publicUrl } } = supabaseClient.storage
-        .from(bucketName)
-        .getPublicUrl(fileName);
-
+      const { data: { publicUrl } } = supabaseClient.storage.from(bucketName).getPublicUrl(fileName);
       return publicUrl;
     }
 
-    // 3. إضافة محاضرة مع دعم رفع المذكرة والفيديو من الجهاز
+    // 5. إضافة محاضرة جديدة
     async function addLecture() {
       const title = document.getElementById("lecTitle").value.trim();
       const chapter = document.getElementById("lecChapter").value.trim();
@@ -246,23 +323,20 @@
       status.textContent = "⏳ جاري رفع الملفات ومعالجة البيانات...";
 
       try {
-        // رفع الفيديو من الجهاز لو تم اختياره
         if (videoFileInput.files.length > 0) {
-          status.textContent = "⏳ جاري رفع ملف الفيديو إلى السحابة...";
+          status.textContent = "⏳ جاري رفع الفيديو للسحابة...";
           video_url = await uploadFileToStorage(videoFileInput.files[0], "uploads");
         }
 
-        // رفع ملف المذكرة PDF من الجهاز لو تم اختياره
         if (pdfFileInput.files.length > 0) {
-          status.textContent = "⏳ جاري رفع ملف المذكرة (PDF) إلى السحابة...";
+          status.textContent = "⏳ جاري رفع المذكرة PDF للسحابة...";
           pdf_url = await uploadFileToStorage(pdfFileInput.files[0], "uploads");
         }
 
         if (!video_url) {
-          throw new Error("يجب اختيار ملف فيديو من الجهاز أو وضع رابط فيديو صحيح.");
+          throw new Error("يجب اختيار ملف فيديو أو وضع رابط.");
         }
 
-        // حفظ البيانات في جدول videos
         const { error } = await supabaseClient.from("videos").insert({
           title, chapter, video_url, details, pdf_url, homework_url, description
         });
@@ -270,9 +344,8 @@
         if (error) throw error;
 
         status.style.color = "#026857";
-        status.textContent = "✅ تمت إضافة المحاضرة ومذكرة الـ PDF بنجاح!";
+        status.textContent = "✅ تمت إضافة المحاضرة بنجاح!";
         
-        // تفريغ الحقول بعد الحفظ الناجح
         document.getElementById("lecTitle").value = "";
         document.getElementById("lecChapter").value = "";
         document.getElementById("lecVideoUrl").value = "";
@@ -283,6 +356,8 @@
         videoFileInput.value = "";
         pdfFileInput.value = "";
 
+        loadAdminLectures(); // إعادة تحميل القائمة لتظهر المحاضرة الجديدة
+
       } catch (err) {
         console.error(err);
         status.style.color = "#e74c3c";
@@ -290,7 +365,7 @@
       }
     }
 
-    // 4. إضافة بطل الفصل
+    // 6. إضافة بطل الفصل
     async function addChampion() {
       const student_name = document.getElementById("champName").value.trim();
       const score = document.getElementById("champScore").value.trim();
@@ -306,17 +381,12 @@
       status.textContent = "⏳ جاري الإضافة...";
 
       try {
-        const { error } = await supabaseClient.from("champions").insert({
-          student_name, score
-        });
-
+        const { error } = await supabaseClient.from("champions").insert({ student_name, score });
         if (error) throw error;
-
         status.style.color = "#026857";
         status.textContent = "✅ تمت إضافة البطل بنجاح!";
         document.getElementById("champName").value = "";
         document.getElementById("champScore").value = "";
-
       } catch (err) {
         console.error(err);
         status.style.color = "#e74c3c";
