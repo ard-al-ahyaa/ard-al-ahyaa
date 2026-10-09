@@ -257,21 +257,9 @@
       status.textContent = "⏳ جاري النشر...";
 
       try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        
-        let authorName = "طالب بالمنصة";
-        if (session && session.user) {
-          const { data: profile } = await supabaseClient
-            .from("profiles")
-            .select("full_name")
-            .eq("id", session.user.id)
-            .maybeSingle();
-          if (profile?.full_name) authorName = profile.full_name;
-        }
-
         const { error } = await supabaseClient
           .from("forum")
-          .insert({ content: content, author_name: authorName });
+          .insert({ content: content, author_name: "طالب بالمنصة" });
 
         if (error) throw error;
 
@@ -285,7 +273,7 @@
       } catch (err) {
         console.error(err);
         status.style.color = "#e74c3c";
-        status.textContent = "❌ تعذر النشر. (تأكد من إنشاء جدول forum في Supabase).";
+        status.textContent = "❌ تعذر النشر: " + (err.message || "خطأ غير معروف");
       }
     }
 
@@ -317,7 +305,7 @@
 
       } catch (err) {
         console.error(err);
-        listDiv.innerHTML = `<div class="empty" style="color:#e74c3c;">تعذر تحميل المنتدى. تأكد من وجود جدول forum في Supabase.</div>`;
+        listDiv.innerHTML = `<div class="empty" style="color:#e74c3c;">تعذر تحميل المنتدى: ${err.message || "تأكد من الجدول"}</div>`;
       }
     }
 
