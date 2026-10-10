@@ -19,7 +19,7 @@
     body {
       background: #f0f4f8;
       color: #2c3e50;
-      padding: 30px;
+      padding: 25px;
     }
 
     .container {
@@ -30,19 +30,14 @@
     .header {
       background: linear-gradient(135deg, #026857 0%, #1e3a8a 100%);
       color: white;
-      padding: 25px 30px;
+      padding: 25px;
       border-radius: 16px;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 15px;
-    }
-
-    .header-title h1 {
-      font-size: 22px;
-      font-weight: 900;
     }
 
     .header-sub {
@@ -55,16 +50,16 @@
     .card {
       background: white;
       border-radius: 16px;
-      padding: 25px 30px;
+      padding: 25px;
       box-shadow: 0 4px 15px rgba(30, 58, 138, 0.05);
       border: 1px solid #e2e8f0;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
 
     .card h2 {
       color: #1e3a8a;
-      font-size: 20px;
-      margin-bottom: 20px;
+      font-size: 19px;
+      margin-bottom: 18px;
       border-bottom: 2px solid #f1f5f9;
       padding-bottom: 10px;
     }
@@ -77,22 +72,21 @@
       display: block;
       font-weight: 700;
       color: #026857;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
-    .form-group input, .form-group textarea, .form-group select {
+    .form-group input, .form-group textarea {
       width: 100%;
-      padding: 12px 15px;
+      padding: 12px;
       border: 1px solid #cbd5e1;
       border-radius: 10px;
-      font-size: 15px;
+      font-size: 14px;
       outline: none;
-      background: #fff;
     }
 
     .form-row {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 15px;
     }
 
@@ -100,7 +94,7 @@
       background: #026857;
       color: white;
       border: none;
-      padding: 12px 25px;
+      padding: 12px;
       border-radius: 10px;
       font-size: 15px;
       font-weight: 700;
@@ -120,9 +114,10 @@
     }
 
     th, td {
-      padding: 12px 15px;
+      padding: 12px;
       text-align: right;
       border-bottom: 1px solid #e2e8f0;
+      font-size: 14px;
     }
 
     th {
@@ -137,65 +132,56 @@
       padding: 6px 12px;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12px;
     }
 
     .btn-delete:hover {
       background: #c0392b;
     }
 
-    /* المنتدى والردود */
+    /* المنتدى */
     .forum-item {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
       border-radius: 12px;
       padding: 15px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
+
     .forum-user {
       font-weight: 700;
       color: #1e3a8a;
-      font-size: 15px;
       margin-bottom: 5px;
     }
+
     .reply-box {
       background: white;
-      padding: 15px;
+      padding: 12px;
       border-radius: 10px;
       border: 1px dashed #cbd5e1;
       margin-top: 10px;
     }
-    .audio-controls {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 12px 0;
-      flex-wrap: wrap;
-    }
+
     .btn-mic {
       background: #e74c3c;
       color: white;
       border: none;
-      padding: 8px 15px;
+      padding: 8px 14px;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 700;
+      font-size: 13px;
     }
+
     .btn-mic.recording {
       animation: pulse 1s infinite;
       background: #c0392b;
     }
+
     @keyframes pulse {
       0% { opacity: 1; }
       50% { opacity: 0.5; }
       100% { opacity: 1; }
-    }
-    .loading-overlay {
-      font-size: 13px;
-      color: #026857;
-      font-weight: bold;
-      margin-top: 5px;
-      display: none;
     }
   </style>
 </head>
@@ -203,17 +189,18 @@
 <body>
 
   <div class="container">
+    <!-- الهيدر الرئيسي -->
     <div class="header">
-      <div class="header-title">
-        <h1>⚙️ لوحة التحكم الشاملة | أرض الأحياء</h1>
+      <div>
+        <h1 style="font-size: 22px;">⚙️ لوحة التحكم الشاملة | أرض الأحياء</h1>
         <div class="header-sub">تحت إشراف الأستاذ / محمد حامد 🧬</div>
       </div>
       <a href="../index.html" style="color: white; text-decoration: none; font-weight: bold; background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 8px;">🏠 الرئيسية</a>
     </div>
 
-    <!-- 🎥 1. قسم رفع المحاضرات (من الجهاز أو رابط) -->
+    <!-- 🎥 1. قسم المحاضرات -->
     <div class="card">
-      <h2>🎥 إضافة محاضرة جديدة (مع رفع الفيديو والمذكرات من الجهاز)</h2>
+      <h2>🎥 إضافة محاضرة جديدة (مع الواجب والامتحان والمذكرات)</h2>
       <form id="lectureForm">
         <div class="form-group">
           <label>عنوان المحاضرة:</label>
@@ -221,49 +208,36 @@
         </div>
         
         <div class="form-group">
-          <label>اختر ملف الفيديو من الجهاز (أو ضَع رابط يوتيوب في الأسفل):</label>
-          <input type="file" id="videoFile" accept="video/*">
-        </div>
-
-        <div class="form-group">
-          <label>أو ضع رابط يوتيوب مباشر (اختياري لو لم ترفع فيديو من الجهاز):</label>
-          <input type="text" id="lectureUrl" placeholder="https://www.youtube.com/watch?v=...">
+          <label>رابط فيديو المحاضرة (يوتيوب أو رابط مباشر):</label>
+          <input type="text" id="lectureUrl" placeholder="https://www.youtube.com/watch?v=..." required>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>📝 رابط واجب المحاضرة:</label>
+            <label>📝 رابط الواجب (اختياري):</label>
             <input type="url" id="homeworkUrl" placeholder="رابط Google Forms">
           </div>
           <div class="form-group">
-            <label>✍️ رابط امتحان المحاضرة:</label>
+            <label>✍️ رابط الامتحان (اختياري):</label>
             <input type="url" id="examUrl" placeholder="رابط الاختبار الإلكتروني">
           </div>
         </div>
 
-        <h4 style="color:#026857; margin: 15px 0 10px 0;">📚 مذكرات ومرفقات المحاضرة (اختر ملفات PDF من جهازك):</h4>
         <div class="form-group">
-          <label style="font-size: 13px; color: #64748b;">المذكرة الأولى:</label>
-          <input type="file" id="noteFile1" accept=".pdf,.doc,.docx,image/*" style="margin-bottom:8px;">
-          
-          <label style="font-size: 13px; color: #64748b;">المذكرة الثانية:</label>
-          <input type="file" id="noteFile2" accept=".pdf,.doc,.docx,image/*" style="margin-bottom:8px;">
-          
-          <label style="font-size: 13px; color: #64748b;">المذكرة الثالثة:</label>
-          <input type="file" id="noteFile3" accept=".pdf,.doc,.docx,image/*">
+          <label>📚 رابط المذكرة / المرفق (PDF):</label>
+          <input type="url" id="noteUrl1" placeholder="https://drive.google.com/...">
         </div>
 
-        <div id="uploadProgress" class="loading-overlay">⏳ جاري رفع الملفات للسيرفر، يرجى الانتظار...</div>
-        <button type="submit" class="btn-submit" style="margin-top: 15px;">نشر المحاضرة ومرفقاتها 🚀</button>
+        <button type="submit" class="btn-submit">نشر المحاضرة والمرفقات 🚀</button>
       </form>
 
-      <h3 style="margin-top:25px; color:#1e3a8a; font-size:16px;">المحاضرات المضافة حالياً:</h3>
+      <h3 style="margin-top:20px; color:#1e3a8a; font-size:15px;">المحاضرات المضافة حالياً:</h3>
       <table>
         <thead>
           <tr>
             <th>عنوان المحاضرة</th>
             <th>الواجب والامتحان</th>
-            <th>المذكرات</th>
+            <th>المذكرة</th>
             <th>الإجراء</th>
           </tr>
         </thead>
@@ -315,7 +289,7 @@
       </table>
     </div>
 
-    <!-- 💬 4. قسم المنتدى والردود -->
+    <!-- 💬 4. قسم استفسارات المنتدى -->
     <div class="card">
       <h2>💬 الرد على استفسارات الطلاب (كتابة أو تسجيل صوتي)</h2>
       <div id="forumPostsList">
@@ -323,8 +297,8 @@
       </div>
     </div>
 
-    <div style="text-align: center; color: #64748b; font-size: 14px; margin-top: 20px; font-weight: 700;">
-      منصة أرض الأحياء — تحت إشراف أ/ محمد حامد 🧬
+    <div style="text-align: center; color: #64748b; font-size: 13px; margin-top: 20px; font-weight: 700;">
+      منصة أرض الأحياء — تحت إشراف الأستاذ / محمد حامد 🧬
     </div>
 
   </div>
@@ -335,45 +309,17 @@
     const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // دالة مساعدة لرفع الملفات إلى دلو uploads
-    async function uploadFileToSupabase(fileInputId) {
-      const fileInput = document.getElementById(fileInputId);
-      if (!fileInput || fileInput.files.length === 0) return null;
-
-      const file = fileInput.files[0];
-      const fileName = `media_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-
-      const { error: uploadErr } = await supabaseClient.storage
-        .from("uploads")
-        .upload(fileName, file);
-
-      if (uploadErr) throw new Error("خطأ في رفع الملف: " + uploadErr.message);
-
-      const { data: publicUrlData } = supabaseClient.storage
-        .from("uploads")
-        .getPublicUrl(fileName);
-
-      return publicUrlData.publicUrl;
-    }
-
-    // --- 1. إدارة المحاضرات والرفع من الجهاز ---
+    // --- 1. تحميل المحاضرات ---
     async function loadLectures() {
       const tbody = document.getElementById("lecturesTable");
-      if (!tbody) return;
       try {
-        const { data, error } = await supabaseClient.from("videos").select("*").order("created_at", { ascending: false });
-        if (error) throw error;
-        if (!data || data.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">لا توجد محاضرات مضافة حالياً.</td></tr>`;
+        const { data, error } = await supabaseClient.from("videos").select("*");
+        if (error || !data || data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">لا توجد محاضرات حالياً.</td></tr>`;
           return;
         }
         tbody.innerHTML = "";
         data.forEach(item => {
-          let notesCount = 0;
-          if (item.note_url1) notesCount++;
-          if (item.note_url2) notesCount++;
-          if (item.note_url3) notesCount++;
-
           tbody.innerHTML += `
             <tr>
               <td><strong>${item.title || 'محاضرة'}</strong></td>
@@ -382,74 +328,47 @@
                 ${item.exam_url ? `<a href="\${item.exam_url}" target="_blank">✍️ الامتحان</a>` : ''}
                 ${!item.homework_url && !item.exam_url ? 'لا يوجد' : ''}
               </td>
-              <td>${notesCount > 0 ? `📚 (\${notesCount}) مذكرات` : 'بدون مذكرات'}</td>
+              <td>${item.note_url1 ? `<a href="\${item.note_url1}" target="_blank">📚 المذكرة</a>` : 'لا توجد'}</td>
               <td><button class="btn-delete" onclick="deleteLecture('${item.id}')">حذف 🗑️</button></td>
             </tr>`;
         });
       } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">خطأ في تحميل المحاضرات.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">لا توجد محاضرات حالياً.</td></tr>`;
       }
     }
 
     document.getElementById("lectureForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const title = document.getElementById("lectureTitle").value;
-      let videoUrl = document.getElementById("lectureUrl").value;
+      const url = document.getElementById("lectureUrl").value;
       const homework = document.getElementById("homeworkUrl").value;
       const exam = document.getElementById("examUrl").value;
-      const progressDiv = document.getElementById("uploadProgress");
+      const note1 = document.getElementById("noteUrl1").value;
 
       try {
-        progressDiv.style.display = "block";
-
-        // رفع الفيديو من الجهاز لو تم اختياره
-        const uploadedVideoUrl = await uploadFileToSupabase("videoFile");
-        if (uploadedVideoUrl) {
-          videoUrl = uploadedVideoUrl;
-        }
-
-        if (!videoUrl) {
-          alert("يرجى إما اختيار ملف فيديو من الجهاز أو وضع رابط يوتيوب!");
-          progressDiv.style.display = "none";
-          return;
-        }
-
-        // رفع المذكرات من الجهاز
-        const note1 = await uploadFileToSupabase("noteFile1");
-        const note2 = await uploadFileToSupabase("noteFile2");
-        const note3 = await uploadFileToSupabase("noteFile3");
-
-        // حفظ البيانات في جدول videos
         const { error } = await supabaseClient.from("videos").insert([{
           title: title,
-          url: videoUrl,
-          video_url: videoUrl,
+          url: url,
+          video_url: url,
           homework_url: homework,
           exam_url: exam,
-          note_url1: note1,
-          note_url2: note2,
-          note_url3: note3
+          note_url1: note1
         }]);
 
         if (error) throw error;
-
-        alert("تمت إضافة المحاضرة ومرفقاتها بنجاح تحت إشراف أ/ محمد حامد! 🎥📚");
+        alert("تم نشر المحاضرة بنجاح! 🎥");
         document.getElementById("lectureForm").reset();
         loadLectures();
-      } catch (err) {
-        alert("حدث خطأ أثناء الرفع: " + err.message);
-      } finally {
-        progressDiv.style.display = "none";
-      }
+      } catch (err) { alert("خطأ: " + err.message); }
     });
 
     async function deleteLecture(id) {
-      if (!confirm("هل أنت متأكد من حذف المحاضرة؟")) return;
+      if (!confirm("هل أنت متأكد من الحذف؟")) return;
       await supabaseClient.from("videos").delete().eq("id", id);
       loadLectures();
     }
 
-    // --- 2. الإعلانات ---
+    // --- 2. نشر الإعلانات ---
     document.getElementById("announcementForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const text = document.getElementById("announcementText").value;
@@ -464,18 +383,13 @@
     // --- 3. بطل الفصل ---
     async function loadChampions() {
       const tbody = document.getElementById("championsTable");
-      if (!tbody) return;
       try {
         const { data, error } = await supabaseClient.from("champions").select("*");
-        if (error) throw error;
-
-        if (!data || data.length === 0) {
+        if (error || !data || data.length === 0) {
           tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">لا يوجد أبطال مضافون حالياً.</td></tr>`;
           return;
         }
-
         data.sort((a, b) => (b.points || 0) - (a.points || 0));
-
         tbody.innerHTML = "";
         data.forEach((item, index) => {
           const rank = index + 1;
@@ -489,7 +403,7 @@
             </tr>`;
         });
       } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">خطأ في التحميل.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">لا يوجد أبطال مضافون حالياً.</td></tr>`;
       }
     }
 
@@ -512,19 +426,16 @@
       loadChampions();
     }
 
-    // --- 4. المنتدى والرد الصوتي والكتابي ---
+    // --- 4. أسئلة المنتدى والرد الصوتي والكتابي ---
     let mediaRecorder;
     let audioChunks = [];
     let recordedAudioBlob = null;
 
     async function loadForumPosts() {
       const container = document.getElementById("forumPostsList");
-      if (!container) return;
       try {
         const { data, error } = await supabaseClient.from("forum").select("*");
-        if (error) throw error;
-
-        if (!data || data.length === 0) {
+        if (error || !data || data.length === 0) {
           container.innerHTML = `<p style="text-align:center; color:#64748b; padding:15px;">لا توجد أسئلة بالمنتدى حالياً.</p>`;
           return;
         }
@@ -548,23 +459,23 @@
             ` : ''}
 
             <div class="reply-box">
-              <h4 style="font-size:14px; color:#026857; margin-bottom:8px;">إضافة رد (كتابي أو بصوت الفويس):</h4>
+              <h4 style="font-size:13px; color:#026857; margin-bottom:8px;">إضافة رد (كتابي أو فويس):</h4>
               <textarea id="textReply_${post.id}" placeholder="اكتب الرد النصي هنا..." rows="2" style="width:100%; padding:8px; border-radius:8px; border:1px solid #cbd5e1; margin-bottom:10px;"></textarea>
               
-              <div class="audio-controls">
+              <div class="audio-controls" style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
                 <button type="button" class="btn-mic" id="micBtn_${post.id}" onclick="toggleRecord('${post.id}')">🎙️ تسجيل فويس</button>
                 <span id="micStatus_${post.id}" style="font-size:12px; color:#64748b;">لم يتم التسجيل</span>
                 <audio id="audioPreview_${post.id}" controls style="display:none; height:35px;"></audio>
               </div>
 
-              <button type="button" class="btn-submit" onclick="sendReply('${post.id}')" style="margin-top:10px;">إرسال الرد 🚀</button>
+              <button type="button" class="btn-submit" onclick="sendReply('${post.id}')">إرسال الرد 🚀</button>
             </div>
           `;
           container.appendChild(postDiv);
         });
 
       } catch (err) {
-        container.innerHTML = `<p style="color:#64748b; text-align:center; padding:15px;">لا توجد أسئلة حالياً.</p>`;
+        container.innerHTML = `<p style="text-align:center; color:#64748b; padding:15px;">لا توجد أسئلة بالمنتدى حالياً.</p>`;
       }
     }
 
@@ -634,11 +545,9 @@
     }
 
     // التشغيل عند فتح الصفحة
-    window.addEventListener('DOMContentLoaded', () => {
-      loadLectures();
-      loadChampions();
-      loadForumPosts();
-    });
+    loadLectures();
+    loadChampions();
+    loadForumPosts();
   </script>
 
 </body>
