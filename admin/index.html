@@ -1,58 +1,507 @@
--- 1. جدول ملفات الطلاب الشخصية (Profiles)
-create table if not exists public.profiles (
-  id uuid references auth.users on delete cascade primary key,
-  full_name text,
-  phone text,
-  last_active_token text,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null
-);
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 
--- 2. جدول إعلانات المنصة (Announcements)
-create table if not exists public.announcements (
-  id uuid default gen_random_uuid() primary key,
-  content text not null,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null
-);
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التحكم الشاملة | أرض الأحياء</title>
+  <link rel="icon" href="../favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 
--- 3. جدول المذكرات والملفات (Notes)
-create table if not exists public.notes (
-  id uuid default gen_random_uuid() primary key,
-  title text not null,
-  file_url text not null,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null
-);
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', sans-serif !important;
+    }
 
--- 4. جدول بطل الفصل والنقاط (Champions)
-create table if not exists public.champions (
-  id uuid default gen_random_uuid() primary key,
-  student_name text not null,
-  points integer default 0 not null,
-  student_rank integer,
-  score text,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null
-);
+    body {
+      background: #f0f4f8;
+      color: #2c3e50;
+      padding: 30px;
+    }
 
--- 5. جدول أسئلة المنتدى والردود المكتوبة والصوتية (Forum)
-create table if not exists public.forum (
-  id uuid default gen_random_uuid() primary key,
-  user_id uuid references auth.users on delete cascade,
-  user_name text,
-  content text,
-  admin_reply_text text,
-  admin_reply_voice text,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null
-);
+    .container {
+      max-width: 950px;
+      margin: 0 auto;
+    }
 
--- 6. تفعيل صلاحيات القراءة والعمليات العامة على الجداول (RLS Policies)
-alter table public.profiles enable row level security;
-alter table public.announcements enable row level security;
-alter table public.notes enable row level security;
-alter table public.champions enable row level security;
-alter table public.forum enable row level security;
+    .header {
+      background: linear-gradient(135deg, #026857 0%, #1e3a8a 100%);
+      color: white;
+      padding: 25px 30px;
+      border-radius: 16px;
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
--- السماح بالوصول الكامل لجميع الجداول
-create policy "Public Access Profiles" on public.profiles for all using (true) with check (true);
-create policy "Public Access Announcements" on public.announcements for all using (true) with check (true);
-create policy "Public Access Notes" on public.notes for all using (true) with check (true);
-create policy "Public Access Champions" on public.champions for all using (true) with check (true);
-create policy "Public Access Forum" on public.forum for all using (true) with check (true);
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 25px 30px;
+      box-shadow: 0 4px 15px rgba(30, 58, 138, 0.05);
+      border: 1px solid #e2e8f0;
+      margin-bottom: 30px;
+    }
+
+    .card h2 {
+      color: #1e3a8a;
+      font-size: 20px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 700;
+      color: #026857;
+      margin-bottom: 8px;
+    }
+
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: #2563eb;
+    }
+
+    .btn-submit {
+      background: #026857;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      transition: 0.2s;
+    }
+
+    .btn-submit:hover {
+      background: #014d40;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: right;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #1e3a8a;
+    }
+
+    .btn-delete {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .btn-delete:hover {
+      background: #c0392b;
+    }
+
+    /* تنسيق المنتدى والرد الصوتي */
+    .forum-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .forum-user {
+      font-weight: 700;
+      color: #1e3a8a;
+      font-size: 15px;
+      margin-bottom: 5px;
+    }
+    .forum-content {
+      color: #334155;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    .reply-box {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px dashed #cbd5e1;
+      margin-top: 10px;
+    }
+    .audio-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 12px 0;
+      flex-wrap: wrap;
+    }
+    .btn-mic {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .btn-mic.recording {
+      animation: pulse 1s infinite;
+      background: #c0392b;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>⚙️ لوحة التحكم الشاملة | أرض الأحياء</h1>
+      <a href="../index.html" style="color: white; text-decoration: none; font-weight: bold;">🏠 الذهاب للرئيسية</a>
+    </div>
+
+    <!-- 📢 1. قسم إعلانات المنصة -->
+    <div class="card">
+      <h2>📢 نشر إعلان رئيسي للطلاب</h2>
+      <form id="announcementForm">
+        <div class="form-group">
+          <label>نص الإعلان:</label>
+          <textarea id="announcementText" rows="3" placeholder="أدخل الإعلان الذي سيظهر للطلاب..." required></textarea>
+        </div>
+        <button type="submit" class="btn-submit">نشر الإعلان 🚀</button>
+      </form>
+    </div>
+
+    <!-- 📚 2. قسم إدارة المذكرات -->
+    <div class="card">
+      <h2>📚 إدارة المذكرات والملفات</h2>
+      <form id="noteForm">
+        <div class="form-group">
+          <label>عنوان المذكرة:</label>
+          <input type="text" id="noteTitle" placeholder="مثال: مذكرة شرح الباب الأول" required>
+        </div>
+        <div class="form-group">
+          <label>رابط المذكرة (PDF / Google Drive):</label>
+          <input type="url" id="noteUrl" placeholder="https://..." required>
+        </div>
+        <button type="submit" class="btn-submit">حفظ ونشر المذكرة 📖</button>
+      </form>
+
+      <table>
+        <thead>
+          <tr>
+            <th>عنوان المذكرة</th>
+            <th>الرابط</th>
+            <th>الإجراء</th>
+          </tr>
+        </thead>
+        <tbody id="notesTable">
+          <tr><td colspan="3" style="text-align:center;">جاري التحميل...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 🏆 3. قسم بطل الفصل -->
+    <div class="card">
+      <h2>🏆 إدارة بطل الفصل (الترتيب حسب النقاط)</h2>
+      <form id="championForm">
+        <div class="form-group">
+          <label>اسم الطالب الكامل:</label>
+          <input type="text" id="studentName" placeholder="أدخل اسم الطالب" required>
+        </div>
+        <div class="form-group">
+          <label>عدد النقاط:</label>
+          <input type="number" id="studentPoints" placeholder="مثال: 95" required>
+        </div>
+        <button type="submit" class="btn-submit">حفظ وترتيب الطالب 🥇</button>
+      </form>
+
+      <table>
+        <thead>
+          <tr>
+            <th>المركز</th>
+            <th>اسم الطالب</th>
+            <th>النقاط</th>
+            <th>الإجراء</th>
+          </tr>
+        </thead>
+        <tbody id="championsTable">
+          <tr><td colspan="4" style="text-align:center;">جاري التحميل...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 💬 4. قسم استفسارات المنتدى والرد عليها (نص أو فويس) -->
+    <div class="card">
+      <h2>💬 الرد على استفسارات الطلاب (كتابة أو تسجيل صوتي)</h2>
+      <div id="forumPostsList">
+        <p style="text-align: center; color: #64748b;">جاري تحميل الأسئلة والاستفسارات...</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // --- 1. الإعلانات ---
+    document.getElementById("announcementForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const text = document.getElementById("announcementText").value;
+      try {
+        const { error } = await supabaseClient.from("announcements").insert([{ content: text }]);
+        if (error) throw error;
+        alert("تم نشر الإعلان بنجاح! 📢");
+        document.getElementById("announcementForm").reset();
+      } catch (err) { alert("خطأ: " + err.message); }
+    });
+
+    // --- 2. المذكرات ---
+    async function loadNotes() {
+      const tbody = document.getElementById("notesTable");
+      try {
+        const { data, error } = await supabaseClient.from("notes").select("*").order("created_at", { ascending: false });
+        if (error) throw error;
+        if (!data || data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">لا توجد مذكرات مضافة.</td></tr>`;
+          return;
+        }
+        tbody.innerHTML = "";
+        data.forEach(item => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${item.title}</td>
+              <td><a href="${item.file_url}" target="_blank">عرض الملف 🔗</a></td>
+              <td><button class="btn-delete" onclick="deleteNote('${item.id}')">حذف 🗑️</button></td>
+            </tr>`;
+        });
+      } catch (err) { tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">خطأ في التحميل</td></tr>`; }
+    }
+
+    document.getElementById("noteForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const title = document.getElementById("noteTitle").value;
+      const url = document.getElementById("noteUrl").value;
+      try {
+        const { error } = await supabaseClient.from("notes").insert([{ title: title, file_url: url }]);
+        if (error) throw error;
+        alert("تم إضافة المذكرة بنجاح! 📚");
+        document.getElementById("noteForm").reset();
+        loadNotes();
+      } catch (err) { alert("خطأ: " + err.message); }
+    });
+
+    async function deleteNote(id) {
+      if (!confirm("هل أنت تأكد من الحذف؟")) return;
+      await supabaseClient.from("notes").delete().eq("id", id);
+      loadNotes();
+    }
+
+    // --- 3. بطل الفصل ---
+    async function loadChampions() {
+      const tbody = document.getElementById("championsTable");
+      try {
+        const { data, error } = await supabaseClient.from("champions").select("*").order("points", { ascending: false });
+        if (error) throw error;
+        if (!data || data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">لا يوجد أبطال مضافون.</td></tr>`;
+          return;
+        }
+        tbody.innerHTML = "";
+        data.forEach((item, index) => {
+          const rank = index + 1;
+          let medal = rank === 1 ? '🥇 الأول' : (rank === 2 ? '🥈 الثاني' : (rank === 3 ? '🥉 الثالث' : `#${rank}`));
+          tbody.innerHTML += `
+            <tr>
+              <td><strong>${medal}</strong></td>
+              <td>${item.student_name}</td>
+              <td>${item.points} نقطة</td>
+              <td><button class="btn-delete" onclick="deleteChampion('${item.id}')">حذف 🗑️</button></td>
+            </tr>`;
+        });
+      } catch (err) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">خطأ في التحميل</td></tr>`; }
+    }
+
+    document.getElementById("championForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("studentName").value;
+      const points = parseInt(document.getElementById("studentPoints").value);
+      try {
+        const { error } = await supabaseClient.from("champions").insert([{ student_name: name, points: points }]);
+        if (error) throw error;
+        alert("تم تحديث قائمة الأبطال بنجاح! 🏆");
+        document.getElementById("championForm").reset();
+        loadChampions();
+      } catch (err) { alert("خطأ: " + err.message); }
+    });
+
+    async function deleteChampion(id) {
+      if (!confirm("هل أنت تأكد من الحذف؟")) return;
+      await supabaseClient.from("champions").delete().eq("id", id);
+      loadChampions();
+    }
+
+    // --- 4. المنتدى والرد الصوتي والكتابي ---
+    let mediaRecorder;
+    let audioChunks = [];
+    let recordedAudioBlob = null;
+
+    async function loadForumPosts() {
+      const container = document.getElementById("forumPostsList");
+      try {
+        const { data, error } = await supabaseClient
+          .from("forum")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          container.innerHTML = `<p style="text-align:center; color:#64748b;">لا توجد أسئلة في المنتدى حالياً.</p>`;
+          return;
+        }
+
+        container.innerHTML = "";
+        data.forEach(post => {
+          const hasReply = post.admin_reply_text || post.admin_reply_voice;
+
+          const postDiv = document.createElement("div");
+          postDiv.className = "forum-item";
+          postDiv.innerHTML = `
+            <div class="forum-user">👤 ${post.user_name || 'طالب بالمنصة'}</div>
+            <div class="forum-content">❓ ${post.content || ''}</div>
+            
+            ${hasReply ? `
+              <div style="background:#e0f2fe; padding:10px; border-radius:8px; margin-top:10px; color:#0369a1;">
+                <strong>الرد الحالي:</strong> \${post.admin_reply_text || 'رد صوّتي مسجل'}
+                \${post.admin_reply_voice ? `<br><audio controls src="${post.admin_reply_voice}" style="margin-top:8px; height:35px; width:100%;"></audio>` : ''}
+              </div>
+            ` : ''}
+
+            <div class="reply-box">
+              <h4 style="font-size:14px; color:#026857; margin-bottom:8px;">إضافة رد (كتابي أو بصوت الفويس):</h4>
+              <textarea id="textReply_${post.id}" placeholder="اكتب الرد النصي هنا (اختياري)..." rows="2" style="width:100%; padding:8px; border-radius:8px; border:1px solid #cbd5e1; margin-bottom:10px;"></textarea>
+              
+              <div class="audio-controls">
+                <button type="button" class="btn-mic" id="micBtn_${post.id}" onclick="toggleRecord('${post.id}')">🎙️ تسجيل فويس</button>
+                <span id="micStatus_${post.id}" style="font-size:12px; color:#64748b;">لم يتم التسجيل</span>
+                <audio id="audioPreview_${post.id}" controls style="display:none; height:35px;"></audio>
+              </div>
+
+              <button type="button" class="btn-submit" onclick="sendReply('${post.id}')" style="margin-top:10px;">إرسال الرد للطلاب 🚀</button>
+            </div>
+          `;
+          container.appendChild(postDiv);
+        });
+
+      } catch (err) {
+        container.innerHTML = `<p style="color:red; text-align:center;">خطأ في تحميل أسئلة المنتدى.</p>`;
+      }
+    }
+
+    async function toggleRecord(postId) {
+      const micBtn = document.getElementById(`micBtn_${postId}`);
+      const micStatus = document.getElementById(`micStatus_${postId}`);
+      const audioPreview = document.getElementById(`audioPreview_${postId}`);
+
+      if (mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+        micBtn.classList.remove("recording");
+        micBtn.textContent = "🎙️ تسجيل فويس";
+        micStatus.textContent = "تم التسجيل بنجاح ✓";
+      } else {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+
+          mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+          mediaRecorder.onstop = () => {
+            recordedAudioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
+            audioPreview.src = URL.createObjectURL(recordedAudioBlob);
+            audioPreview.style.display = "block";
+          };
+
+          mediaRecorder.start();
+          micBtn.classList.add("recording");
+          micBtn.textContent = "⏹️ إيقاف التسجيل";
+          micStatus.textContent = "جاري التسجيل الآن...";
+        } catch (err) {
+          alert("يرجى السماح بالوصول للمايك من إعدادات المتصفح!");
+        }
+      }
+    }
+
+    async function sendReply(postId) {
+      const textReply = document.getElementById(`textReply_${postId}`).value;
+      let voiceUrl = null;
+
+      try {
+        if (recordedAudioBlob) {
+          const fileName = `voice_reply_${postId}_${Date.now()}.mp3`;
+          const { error: uploadErr } = await supabaseClient.storage.from("uploads").upload(fileName, recordedAudioBlob);
+          if (uploadErr) throw uploadErr;
+
+          const { data: publicUrlData } = supabaseClient.storage.from("uploads").getPublicUrl(fileName);
+          voiceUrl = publicUrlData.publicUrl;
+        }
+
+        const { error: updateErr } = await supabaseClient
+          .from("forum")
+          .update({
+            admin_reply_text: textReply,
+            admin_reply_voice: voiceUrl
+          })
+          .eq("id", postId);
+
+        if (updateErr) throw updateErr;
+
+        alert("تم إرسال الرد بنجاح! 🎉");
+        recordedAudioBlob = null;
+        loadForumPosts();
+      } catch (err) {
+        alert("حدث خطأ أثناء الإرسال: " + err.message);
+      }
+    }
+
+    // تشغيل الدوال عند تحميل الصفحة
+    loadNotes();
+    loadChampions();
+    loadForumPosts();
+  </script>
+
+</body>
+
+</html>
