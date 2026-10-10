@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لوحة التحكم الشاملة | أرض الأحياء</title>
+  <title>لوحة التحكم | منصة أرض الأحياء</title>
   <link rel="icon" href="../favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 
@@ -19,47 +19,28 @@
     body {
       background: #f0f4f8;
       color: #2c3e50;
-      padding: 25px;
+      padding: 20px;
     }
 
     .container {
-      max-width: 950px;
+      max-width: 900px;
       margin: 0 auto;
-    }
-
-    .header {
-      background: linear-gradient(135deg, #026857 0%, #1e3a8a 100%);
-      color: white;
-      padding: 25px;
-      border-radius: 16px;
-      margin-bottom: 25px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
-
-    .header-sub {
-      font-size: 14px;
-      color: #a7f3d0;
-      font-weight: 700;
-      margin-top: 4px;
     }
 
     .card {
       background: white;
       border-radius: 16px;
       padding: 25px;
-      box-shadow: 0 4px 15px rgba(30, 58, 138, 0.05);
+      box-shadow: 0 4px 20px rgba(30, 58, 138, 0.05);
       border: 1px solid #e2e8f0;
       margin-bottom: 25px;
     }
 
     .card h2 {
       color: #1e3a8a;
-      font-size: 19px;
-      margin-bottom: 18px;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
       border-bottom: 2px solid #f1f5f9;
       padding-bottom: 10px;
     }
@@ -73,9 +54,10 @@
       font-weight: 700;
       color: #026857;
       margin-bottom: 6px;
+      font-size: 14px;
     }
 
-    .form-group input, .form-group textarea {
+    input, textarea {
       width: 100%;
       padding: 12px;
       border: 1px solid #cbd5e1;
@@ -84,104 +66,59 @@
       outline: none;
     }
 
-    .form-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 15px;
+    input[type="file"] {
+      padding: 8px;
+      background: #f8fafc;
+      cursor: pointer;
     }
 
-    .btn-submit {
-      background: #026857;
+    input:focus, textarea:focus {
+      border-color: #1e3a8a;
+      box-shadow: 0 0 0 3px rgba(30,58,138,0.1);
+    }
+
+    button {
+      background: #1e3a8a;
       color: white;
       border: none;
-      padding: 12px;
+      padding: 12px 24px;
       border-radius: 10px;
       font-size: 15px;
       font-weight: 700;
       cursor: pointer;
-      width: 100%;
       transition: 0.2s;
     }
 
-    .btn-submit:hover {
-      background: #014d40;
+    button:hover {
+      background: #1e40af;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
-
-    th, td {
-      padding: 12px;
-      text-align: right;
-      border-bottom: 1px solid #e2e8f0;
-      font-size: 14px;
-    }
-
-    th {
-      background: #f8fafc;
-      color: #1e3a8a;
-    }
-
-    .btn-delete {
-      background: #e74c3c;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-
-    .btn-delete:hover {
-      background: #c0392b;
-    }
-
-    /* المنتدى */
-    .forum-item {
+    .lecture-item {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
-      border-radius: 12px;
       padding: 15px;
-      margin-bottom: 15px;
-    }
-
-    .forum-user {
-      font-weight: 700;
-      color: #1e3a8a;
-      margin-bottom: 5px;
-    }
-
-    .reply-box {
-      background: white;
-      padding: 12px;
       border-radius: 10px;
-      border: 1px dashed #cbd5e1;
-      margin-top: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .btn-mic {
+    .delete-btn {
       background: #e74c3c;
-      color: white;
-      border: none;
       padding: 8px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 700;
       font-size: 13px;
+      border-radius: 8px;
     }
 
-    .btn-mic.recording {
-      animation: pulse 1s infinite;
+    .delete-btn:hover {
       background: #c0392b;
     }
 
-    @keyframes pulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.5; }
-      100% { opacity: 1; }
+    .status {
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -189,116 +126,87 @@
 <body>
 
   <div class="container">
-    <!-- الهيدر الرئيسي -->
-    <div class="header">
-      <div>
-        <h1 style="font-size: 22px;">⚙️ لوحة التحكم الشاملة | أرض الأحياء</h1>
-        <div class="header-sub">تحت إشراف الأستاذ / محمد حامد 🧬</div>
-      </div>
-      <a href="../index.html" style="color: white; text-decoration: none; font-weight: bold; background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 8px;">🏠 الرئيسية</a>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+      <h1 style="color: #1e3a8a; font-size: 24px;">⚙️ لوحة التحكم الشاملة</h1>
+      <a href="../index.html" style="background:#026857; color:#fff; padding:10px 20px; border-radius:8px; text-decoration:none; font-weight:700;">🏠 العودة للمنصة</a>
     </div>
 
-    <!-- 🎥 1. قسم المحاضرات -->
+    <!-- إحصائيات المنصة (عدد الطلاب) -->
     <div class="card">
-      <h2>🎥 إضافة محاضرة جديدة (مع الواجب والامتحان والمذكرات)</h2>
-      <form id="lectureForm">
-        <div class="form-group">
-          <label>عنوان المحاضرة:</label>
-          <input type="text" id="lectureTitle" placeholder="مثال: شرح تركيب العظام والمفاصل" required>
-        </div>
-        
-        <div class="form-group">
-          <label>رابط فيديو المحاضرة (يوتيوب أو رابط مباشر):</label>
-          <input type="text" id="lectureUrl" placeholder="https://www.youtube.com/watch?v=..." required>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>📝 رابط الواجب (اختياري):</label>
-            <input type="url" id="homeworkUrl" placeholder="رابط Google Forms">
-          </div>
-          <div class="form-group">
-            <label>✍️ رابط الامتحان (اختياري):</label>
-            <input type="url" id="examUrl" placeholder="رابط الاختبار الإلكتروني">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>📚 رابط المذكرة / المرفق (PDF):</label>
-          <input type="url" id="noteUrl1" placeholder="https://drive.google.com/...">
-        </div>
-
-        <button type="submit" class="btn-submit">نشر المحاضرة والمرفقات 🚀</button>
-      </form>
-
-      <h3 style="margin-top:20px; color:#1e3a8a; font-size:15px;">المحاضرات المضافة حالياً:</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>عنوان المحاضرة</th>
-            <th>الواجب والامتحان</th>
-            <th>المذكرة</th>
-            <th>الإجراء</th>
-          </tr>
-        </thead>
-        <tbody id="lecturesTable">
-          <tr><td colspan="4" style="text-align:center;">جاري تحميل المحاضرات...</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- 📢 2. قسم الإعلانات -->
-    <div class="card">
-      <h2>📢 نشر إعلان رئيسي للطلاب</h2>
-      <form id="announcementForm">
-        <div class="form-group">
-          <label>نص الإعلان:</label>
-          <textarea id="announcementText" rows="3" placeholder="أدخل الإعلان الذي سيظهر للطلاب..." required></textarea>
-        </div>
-        <button type="submit" class="btn-submit">نشر الإعلان 🚀</button>
-      </form>
-    </div>
-
-    <!-- 🏆 3. قسم بطل الفصل -->
-    <div class="card">
-      <h2>🏆 إدارة بطل الفصل (الترتيب حسب النقاط)</h2>
-      <form id="championForm">
-        <div class="form-group">
-          <label>اسم الطالب الكامل:</label>
-          <input type="text" id="studentName" placeholder="أدخل اسم الطالب" required>
-        </div>
-        <div class="form-group">
-          <label>عدد النقاط:</label>
-          <input type="number" id="studentPoints" placeholder="مثال: 95" required>
-        </div>
-        <button type="submit" class="btn-submit">حفظ وترتيب الطالب 🥇</button>
-      </form>
-
-      <table>
-        <thead>
-          <tr>
-            <th>المركز</th>
-            <th>اسم الطالب</th>
-            <th>النقاط</th>
-            <th>الإجراء</th>
-          </tr>
-        </thead>
-        <tbody id="championsTable">
-          <tr><td colspan="4" style="text-align:center;">جاري التحميل...</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- 💬 4. قسم استفسارات المنتدى -->
-    <div class="card">
-      <h2>💬 الرد على استفسارات الطلاب (كتابة أو تسجيل صوتي)</h2>
-      <div id="forumPostsList">
-        <p style="text-align: center; color: #64748b;">جاري تحميل الأسئلة...</p>
+      <h2>📊 إحصائيات المنصة</h2>
+      <div style="font-size: 18px; font-weight: 700; color: #1e3a8a;" id="usersCount">
+        ⏳ جاري حساب عدد الطلاب المسجلين...
       </div>
     </div>
 
-    <div style="text-align: center; color: #64748b; font-size: 13px; margin-top: 20px; font-weight: 700;">
-      منصة أرض الأحياء — تحت إشراف الأستاذ / محمد حامد 🧬
+    <!-- إضافة محاضرة جديدة -->
+    <div class="card">
+      <h2>🎥 إضافة محاضرة جديدة</h2>
+      <div class="form-group">
+        <label>عنوان المحاضرة:</label>
+        <input type="text" id="lecTitle" placeholder="مثال: المحاضرة الأولى: الدعامة والجهاز الحركي">
+      </div>
+      <div class="form-group">
+        <label>الباب / الفصل التعليمي:</label>
+        <input type="text" id="lecChapter" placeholder="مثال: الباب الأول - الأحياء">
+      </div>
+      
+      <div class="form-group">
+        <label>📁 اختر ملف الفيديو من الجهاز:</label>
+        <input type="file" id="videoFile" accept="video/*">
+      </div>
+      <div style="text-align: center; margin: 8px 0; color: #64748b; font-size: 13px;">أو ضع رابط يوتيوب/فيديو خارجي:</div>
+      <div class="form-group">
+        <input type="text" id="lecVideoUrl" placeholder="https://...">
+      </div>
+
+      <div class="form-group">
+        <label>تفاصيل الشرح (النصي):</label>
+        <textarea id="lecDetails" placeholder="اكتب تفاصيل الشرح هنا..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>📄 اختر ملف المذكرة (PDF) من الجهاز:</label>
+        <input type="file" id="pdfFile" accept="application/pdf">
+      </div>
+      <div style="text-align: center; margin: 8px 0; color: #64748b; font-size: 13px;">أو رابط مذكرة خارجي:</div>
+      <div class="form-group">
+        <input type="text" id="lecPdfUrl" placeholder="https://...">
+      </div>
+
+      <div class="form-group">
+        <label>رابط الواجب / الامتحان:</label>
+        <input type="text" id="lecHomeworkUrl" placeholder="رابط جوجل فورم أو الامتحان">
+      </div>
+      <div class="form-group">
+        <label>وصف مختصر:</label>
+        <input type="text" id="lecDesc" placeholder="وصف قصير للمحاضرة">
+      </div>
+      <button onclick="addLecture()">رفع المحاضرة والمذكرة وحفظها 🚀</button>
+      <div id="lecStatus" class="status"></div>
+    </div>
+
+    <!-- قائمة المحاضرات الحالية (للحذف والتعديل) -->
+    <div class="card">
+      <h2>🗑️ إدارة وحذف المحاضرات الحالية</h2>
+      <div id="manageLecturesList">
+        <p style="color: #64748b;">جاري تحميل المحاضرات...</p>
+      </div>
+    </div>
+
+    <!-- إدارة أبطال الفصل -->
+    <div class="card">
+      <h2>🏆 إدارة أبطال الفصل</h2>
+      <div class="form-group">
+        <label>اسم الطالب:</label>
+        <input type="text" id="champName" placeholder="اسم البطل">
+      </div>
+      <div class="form-group">
+        <label>الدرجة / النقاط:</label>
+        <input type="text" id="champScore" placeholder="مثال: الدرجة النهائية 50/50">
+      </div>
+      <button onclick="addChampion()">إضافة البطل 🌟</button>
+      <div id="champStatus" class="status"></div>
     </div>
 
   </div>
@@ -309,245 +217,182 @@
     const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // --- 1. تحميل المحاضرات ---
-    async function loadLectures() {
-      const tbody = document.getElementById("lecturesTable");
+    // 1. حساب عدد الطلاب
+    async function fetchStudentsCount() {
       try {
-        const { data, error } = await supabaseClient.from("videos").select("*");
-        if (error || !data || data.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">لا توجد محاضرات حالياً.</td></tr>`;
-          return;
-        }
-        tbody.innerHTML = "";
-        data.forEach(item => {
-          tbody.innerHTML += `
-            <tr>
-              <td><strong>${item.title || 'محاضرة'}</strong></td>
-              <td>
-                ${item.homework_url ? `<a href="\${item.homework_url}" target="_blank">📝 الواجب</a> ` : ''}
-                ${item.exam_url ? `<a href="\${item.exam_url}" target="_blank">✍️ الامتحان</a>` : ''}
-                ${!item.homework_url && !item.exam_url ? 'لا يوجد' : ''}
-              </td>
-              <td>${item.note_url1 ? `<a href="\${item.note_url1}" target="_blank">📚 المذكرة</a>` : 'لا توجد'}</td>
-              <td><button class="btn-delete" onclick="deleteLecture('${item.id}')">حذف 🗑️</button></td>
-            </tr>`;
-        });
+        const { count, error } = await supabaseClient
+          .from("profiles")
+          .select("*", { count: 'exact', head: true });
+        if (error) throw error;
+        document.getElementById("usersCount").innerHTML = `👥 عدد الطلاب المسجلين على المنصة: <span style="color: #026857; font-size: 22px;">${count || 0}</span> طالب`;
       } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">لا توجد محاضرات حالياً.</td></tr>`;
+        console.error(err);
+        document.getElementById("usersCount").textContent = "تعذر حساب عدد الطلاب.";
       }
     }
+    fetchStudentsCount();
 
-    document.getElementById("lectureForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const title = document.getElementById("lectureTitle").value;
-      const url = document.getElementById("lectureUrl").value;
-      const homework = document.getElementById("homeworkUrl").value;
-      const exam = document.getElementById("examUrl").value;
-      const note1 = document.getElementById("noteUrl1").value;
-
+    // 2. جلب وعرض المحاضرات في لوحة التحكم لحذفها
+    async function loadAdminLectures() {
+      const container = document.getElementById("manageLecturesList");
       try {
-        const { error } = await supabaseClient.from("videos").insert([{
-          title: title,
-          url: url,
-          video_url: url,
-          homework_url: homework,
-          exam_url: exam,
-          note_url1: note1
-        }]);
+        const { data, error } = await supabaseClient
+          .from("videos")
+          .select("*")
+          .order("created_at", { ascending: false });
 
         if (error) throw error;
-        alert("تم نشر المحاضرة بنجاح! 🎥");
-        document.getElementById("lectureForm").reset();
-        loadLectures();
-      } catch (err) { alert("خطأ: " + err.message); }
-    });
 
-    async function deleteLecture(id) {
-      if (!confirm("هل أنت متأكد من الحذف؟")) return;
-      await supabaseClient.from("videos").delete().eq("id", id);
-      loadLectures();
-    }
-
-    // --- 2. نشر الإعلانات ---
-    document.getElementById("announcementForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const text = document.getElementById("announcementText").value;
-      try {
-        const { error } = await supabaseClient.from("announcements").insert([{ content: text }]);
-        if (error) throw error;
-        alert("تم نشر الإعلان بنجاح! 📢");
-        document.getElementById("announcementForm").reset();
-      } catch (err) { alert("خطأ: " + err.message); }
-    });
-
-    // --- 3. بطل الفصل ---
-    async function loadChampions() {
-      const tbody = document.getElementById("championsTable");
-      try {
-        const { data, error } = await supabaseClient.from("champions").select("*");
-        if (error || !data || data.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">لا يوجد أبطال مضافون حالياً.</td></tr>`;
-          return;
-        }
-        data.sort((a, b) => (b.points || 0) - (a.points || 0));
-        tbody.innerHTML = "";
-        data.forEach((item, index) => {
-          const rank = index + 1;
-          let medal = rank === 1 ? '🥇 الأول' : (rank === 2 ? '🥈 الثاني' : (rank === 3 ? '🥉 الثالث' : `#${rank}`));
-          tbody.innerHTML += `
-            <tr>
-              <td><strong>${medal}</strong></td>
-              <td>${item.student_name || 'طالب'}</td>
-              <td>${item.points || 0} نقطة</td>
-              <td><button class="btn-delete" onclick="deleteChampion('${item.id}')">حذف 🗑️</button></td>
-            </tr>`;
-        });
-      } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">لا يوجد أبطال مضافون حالياً.</td></tr>`;
-      }
-    }
-
-    document.getElementById("championForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const name = document.getElementById("studentName").value;
-      const points = parseInt(document.getElementById("studentPoints").value);
-      try {
-        const { error } = await supabaseClient.from("champions").insert([{ student_name: name, points: points }]);
-        if (error) throw error;
-        alert("تم تحديث قائمة الأبطال بنجاح! 🏆");
-        document.getElementById("championForm").reset();
-        loadChampions();
-      } catch (err) { alert("خطأ: " + err.message); }
-    });
-
-    async function deleteChampion(id) {
-      if (!confirm("هل أنت متأكد من الحذف؟")) return;
-      await supabaseClient.from("champions").delete().eq("id", id);
-      loadChampions();
-    }
-
-    // --- 4. أسئلة المنتدى والرد الصوتي والكتابي ---
-    let mediaRecorder;
-    let audioChunks = [];
-    let recordedAudioBlob = null;
-
-    async function loadForumPosts() {
-      const container = document.getElementById("forumPostsList");
-      try {
-        const { data, error } = await supabaseClient.from("forum").select("*");
-        if (error || !data || data.length === 0) {
-          container.innerHTML = `<p style="text-align:center; color:#64748b; padding:15px;">لا توجد أسئلة بالمنتدى حالياً.</p>`;
+        if (!data || data.length === 0) {
+          container.innerHTML = `<p style="color: #64748b;">لا توجد محاضرات مرفوعة حالياً.</p>`;
           return;
         }
 
         container.innerHTML = "";
-        data.forEach(post => {
-          const questionText = post.content || post.question || post.text || "سؤال من طالب";
-          const hasReply = post.admin_reply_text || post.admin_reply_voice;
-
-          const postDiv = document.createElement("div");
-          postDiv.className = "forum-item";
-          postDiv.innerHTML = `
-            <div class="forum-user">👤 ${post.user_name || 'طالب بالمنصة'}</div>
-            <div style="color:#334155; margin-bottom:10px;">❓ ${questionText}</div>
-            
-            ${hasReply ? `
-              <div style="background:#e0f2fe; padding:10px; border-radius:8px; margin-top:10px; color:#0369a1;">
-                <strong>الرد الحالي:</strong> \${post.admin_reply_text || 'رد صوّتي مسجل'}
-                \${post.admin_reply_voice ? `<br><audio controls src="${post.admin_reply_voice}" style="margin-top:8px; height:35px; width:100%;"></audio>` : ''}
-              </div>
-            ` : ''}
-
-            <div class="reply-box">
-              <h4 style="font-size:13px; color:#026857; margin-bottom:8px;">إضافة رد (كتابي أو فويس):</h4>
-              <textarea id="textReply_${post.id}" placeholder="اكتب الرد النصي هنا..." rows="2" style="width:100%; padding:8px; border-radius:8px; border:1px solid #cbd5e1; margin-bottom:10px;"></textarea>
-              
-              <div class="audio-controls" style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-                <button type="button" class="btn-mic" id="micBtn_${post.id}" onclick="toggleRecord('${post.id}')">🎙️ تسجيل فويس</button>
-                <span id="micStatus_${post.id}" style="font-size:12px; color:#64748b;">لم يتم التسجيل</span>
-                <audio id="audioPreview_${post.id}" controls style="display:none; height:35px;"></audio>
-              </div>
-
-              <button type="button" class="btn-submit" onclick="sendReply('${post.id}')">إرسال الرد 🚀</button>
+        data.forEach(lec => {
+          const item = document.createElement("div");
+          item.className = "lecture-item";
+          item.innerHTML = `
+            <div>
+              <strong style="color: #1e3a8a; font-size: 15px;">${lec.title}</strong>
+              <div style="font-size: 12px; color: #64748b;">${lec.chapter || 'بدون باب'}</div>
             </div>
+            <button class="delete-btn" onclick="deleteLecture(${lec.id})">حذف 🗑️</button>
           `;
-          container.appendChild(postDiv);
+          container.appendChild(item);
         });
-
       } catch (err) {
-        container.innerHTML = `<p style="text-align:center; color:#64748b; padding:15px;">لا توجد أسئلة بالمنتدى حالياً.</p>`;
+        console.error(err);
+        container.innerHTML = `<p style="color: #e74c3c;">خطأ في تحميل القائمة.</p>`;
       }
     }
+    loadAdminLectures();
 
-    async function toggleRecord(postId) {
-      const micBtn = document.getElementById(`micBtn_${postId}`);
-      const micStatus = document.getElementById(`micStatus_${postId}`);
-      const audioPreview = document.getElementById(`audioPreview_${postId}`);
-
-      if (mediaRecorder && mediaRecorder.state === "recording") {
-        mediaRecorder.stop();
-        micBtn.classList.remove("recording");
-        micBtn.textContent = "🎙️ تسجيل فويس";
-        micStatus.textContent = "تم التسجيل بنجاح ✓";
-      } else {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          mediaRecorder = new MediaRecorder(stream);
-          audioChunks = [];
-
-          mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
-          mediaRecorder.onstop = () => {
-            recordedAudioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
-            audioPreview.src = URL.createObjectURL(recordedAudioBlob);
-            audioPreview.style.display = "block";
-          };
-
-          mediaRecorder.start();
-          micBtn.classList.add("recording");
-          micBtn.textContent = "⏹️ إيقاف التسجيل";
-          micStatus.textContent = "جاري التسجيل...";
-        } catch (err) {
-          alert("يرجى السماح بالوصول للمايك من إعدادات المتصفح!");
-        }
-      }
-    }
-
-    async function sendReply(postId) {
-      const textReply = document.getElementById(`textReply_${postId}`).value;
-      let voiceUrl = null;
+    // 3. دالة حذف المحاضرة
+    async function deleteLecture(id) {
+      if (!confirm("هل أنت متأكد من حذف هذه المحاضرة نهائياً؟")) return;
 
       try {
-        if (recordedAudioBlob) {
-          const fileName = `voice_reply_${postId}_${Date.now()}.mp3`;
-          const { error: uploadErr } = await supabaseClient.storage.from("uploads").upload(fileName, recordedAudioBlob);
-          if (uploadErr) throw uploadErr;
+        const { error } = await supabaseClient
+          .from("videos")
+          .delete()
+          .eq("id", id);
 
-          const { data: publicUrlData } = supabaseClient.storage.from("uploads").getPublicUrl(fileName);
-          voiceUrl = publicUrlData.publicUrl;
-        }
+        if (error) throw error;
 
-        const { error: updateErr } = await supabaseClient
-          .from("forum")
-          .update({
-            admin_reply_text: textReply,
-            admin_reply_voice: voiceUrl
-          })
-          .eq("id", postId);
-
-        if (updateErr) throw updateErr;
-
-        alert("تم إرسال الرد بنجاح! 🎉");
-        recordedAudioBlob = null;
-        loadForumPosts();
+        alert("✅ تم حذف المحاضرة بنجاح!");
+        loadAdminLectures(); // تحديث القائمة فوراً
       } catch (err) {
-        alert("حدث خطأ أثناء الإرسال: " + err.message);
+        console.error(err);
+        alert("❌ خطأ أثناء الحذف: " + err.message);
       }
     }
 
-    // التشغيل عند فتح الصفحة
-    loadLectures();
-    loadChampions();
-    loadForumPosts();
+    // 4. رفع الملفات للسحابة
+    async function uploadFileToStorage(file, bucketName) {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const { data, error } = await supabaseClient.storage.from(bucketName).upload(fileName, file);
+      if (error) throw error;
+      const { data: { publicUrl } } = supabaseClient.storage.from(bucketName).getPublicUrl(fileName);
+      return publicUrl;
+    }
+
+    // 5. إضافة محاضرة جديدة
+    async function addLecture() {
+      const title = document.getElementById("lecTitle").value.trim();
+      const chapter = document.getElementById("lecChapter").value.trim();
+      const details = document.getElementById("lecDetails").value.trim();
+      const homework_url = document.getElementById("lecHomeworkUrl").value.trim();
+      const description = document.getElementById("lecDesc").value.trim();
+      
+      const videoFileInput = document.getElementById("videoFile");
+      const pdfFileInput = document.getElementById("pdfFile");
+      let video_url = document.getElementById("lecVideoUrl").value.trim();
+      let pdf_url = document.getElementById("lecPdfUrl").value.trim();
+      
+      const status = document.getElementById("lecStatus");
+
+      if (!title) {
+        status.style.color = "#e74c3c";
+        status.textContent = "❌ يرجى إدخال عنوان المحاضرة على الأقل.";
+        return;
+      }
+
+      status.style.color = "#1e3a8a";
+      status.textContent = "⏳ جاري رفع الملفات ومعالجة البيانات...";
+
+      try {
+        if (videoFileInput.files.length > 0) {
+          status.textContent = "⏳ جاري رفع الفيديو للسحابة...";
+          video_url = await uploadFileToStorage(videoFileInput.files[0], "uploads");
+        }
+
+        if (pdfFileInput.files.length > 0) {
+          status.textContent = "⏳ جاري رفع المذكرة PDF للسحابة...";
+          pdf_url = await uploadFileToStorage(pdfFileInput.files[0], "uploads");
+        }
+
+        if (!video_url) {
+          throw new Error("يجب اختيار ملف فيديو أو وضع رابط.");
+        }
+
+        const { error } = await supabaseClient.from("videos").insert({
+          title, chapter, video_url, details, pdf_url, homework_url, description
+        });
+
+        if (error) throw error;
+
+        status.style.color = "#026857";
+        status.textContent = "✅ تمت إضافة المحاضرة بنجاح!";
+        
+        document.getElementById("lecTitle").value = "";
+        document.getElementById("lecChapter").value = "";
+        document.getElementById("lecVideoUrl").value = "";
+        document.getElementById("lecDetails").value = "";
+        document.getElementById("lecPdfUrl").value = "";
+        document.getElementById("lecHomeworkUrl").value = "";
+        document.getElementById("lecDesc").value = "";
+        videoFileInput.value = "";
+        pdfFileInput.value = "";
+
+        loadAdminLectures(); // إعادة تحميل القائمة لتظهر المحاضرة الجديدة
+
+      } catch (err) {
+        console.error(err);
+        status.style.color = "#e74c3c";
+        status.textContent = "❌ خطأ أثناء الرفع: " + err.message;
+      }
+    }
+
+    // 6. إضافة بطل الفصل
+    async function addChampion() {
+      const student_name = document.getElementById("champName").value.trim();
+      const score = document.getElementById("champScore").value.trim();
+      const status = document.getElementById("champStatus");
+
+      if (!student_name) {
+        status.style.color = "#e74c3c";
+        status.textContent = "❌ يرجى كتابة اسم الطالب.";
+        return;
+      }
+
+      status.style.color = "#1e3a8a";
+      status.textContent = "⏳ جاري الإضافة...";
+
+      try {
+        const { error } = await supabaseClient.from("champions").insert({ student_name, score });
+        if (error) throw error;
+        status.style.color = "#026857";
+        status.textContent = "✅ تمت إضافة البطل بنجاح!";
+        document.getElementById("champName").value = "";
+        document.getElementById("champScore").value = "";
+      } catch (err) {
+        console.error(err);
+        status.style.color = "#e74c3c";
+        status.textContent = "❌ خطأ: " + err.message;
+      }
+    }
   </script>
 
 </body>
