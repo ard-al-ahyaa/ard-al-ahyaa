@@ -36,6 +36,20 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .header-title h1 {
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .header-sub {
+      font-size: 14px;
+      color: #a7f3d0;
+      font-weight: 700;
+      margin-top: 4px;
     }
 
     .card {
@@ -182,11 +196,14 @@
 
   <div class="container">
     <div class="header">
-      <h1>⚙️ لوحة التحكم الشاملة | أرض الأحياء</h1>
-      <a href="../index.html" style="color: white; text-decoration: none; font-weight: bold;">🏠 الرئيسية</a>
+      <div class="header-title">
+        <h1>⚙️ لوحة التحكم الشاملة | أرض الأحياء</h1>
+        <div class="header-sub">تحت إشراف الأستاذ / محمد حامد 🧬</div>
+      </div>
+      <a href="../index.html" style="color: white; text-decoration: none; font-weight: bold; background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 8px;">🏠 الرئيسية</a>
     </div>
 
-    <!-- 🎥 1. قسم المحاضرات (مع المذكرات والواجبات والامتحان) -->
+    <!-- 🎥 1. قسم المحاضرات -->
     <div class="card">
       <h2>🎥 إضافة محاضرة جديدة (شاملة المذكرات، الواجب، والامتحان)</h2>
       <form id="lectureForm">
@@ -285,6 +302,11 @@
       <div id="forumPostsList">
         <p style="text-align: center; color: #64748b;">جاري تحميل الأسئلة...</p>
       </div>
+    </div>
+
+    <!-- حقوق الإشراف -->
+    <div style="text-align: center; color: #64748b; font-size: 14px; margin-top: 20px; font-weight: 700;">
+      منصة أرض الأحياء — تحت إشراف أ/ محمد حامد
     </div>
 
   </div>
@@ -440,13 +462,14 @@
 
         container.innerHTML = "";
         data.forEach(post => {
+          const questionText = post.content || post.question || post.text || "سؤال من طالب";
           const hasReply = post.admin_reply_text || post.admin_reply_voice;
 
           const postDiv = document.createElement("div");
           postDiv.className = "forum-item";
           postDiv.innerHTML = `
             <div class="forum-user">👤 ${post.user_name || 'طالب بالمنصة'}</div>
-            <div style="color:#334155; margin-bottom:10px;">❓ ${post.content || ''}</div>
+            <div style="color:#334155; margin-bottom:10px;">❓ ${questionText}</div>
             
             ${hasReply ? `
               <div style="background:#e0f2fe; padding:10px; border-radius:8px; margin-top:10px; color:#0369a1;">
@@ -472,7 +495,7 @@
         });
 
       } catch (err) {
-        container.innerHTML = `<p style="color:red; text-align:center;">خطأ في تحميل الأسئلة.</p>`;
+        container.innerHTML = `<p style="color:red; text-align:center;">خطأ في تحميل الأسئلة: ${err.message}</p>`;
       }
     }
 
@@ -541,7 +564,7 @@
       }
     }
 
-    // التشغيل عند الفتح
+    // التشغيل عند فتح الصفحة
     loadLectures();
     loadChampions();
     loadForumPosts();
@@ -550,5 +573,3 @@
 </body>
 
 </html>
-                            "تحت اشرف "محمد حامد
-                
