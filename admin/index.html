@@ -393,6 +393,211 @@
         status.textContent = "❌ خطأ: " + err.message;
       }
     }
+    <!-- 💬 قسم الرد على المنتدى (نص أو بصوت) -->
+<div class="card">
+  <h2>💬 استفسارات الطلاب في المنتدى والرد عليها</h2>
+  
+  <div id="forumPostsList">
+    <p style="text-align: center; color: #64748b;">جاري تحميل الأسئلة...</p>
+  </div>
+</div>
+
+<style>
+  .forum-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  .forum-user {
+    font-weight: 700;
+    color: #1e3a8a;
+    font-size: 15px;
+    margin-bottom: 5px;
+  }
+  .forum-content {
+    color: #334155;
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+  .reply-box {
+    background: white;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px dashed #cbd5e1;
+    margin-top: 10px;
+  }
+  .audio-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+  }
+  .btn-mic {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+  .btn-mic.recording {
+    animation: pulse 1s infinite;
+    background: #c0392b;
+  }
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+</style>
+
+<script>
+  // متغيرة لتسجيل الصوت
+  let mediaRecorder;
+  let audioChunks = [];
+  let recordedAudioBlob = null;
+
+  // جلب منشورات المنتدى التي تحتاج لرد
+  async function loadForumPosts() {
+    const container = document.getElementById("forumPostsList");
+    try {
+      const { data, error } = await supabaseClient
+        .from("forum")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        container.innerHTML = `<p style="text-align:center;">لا توجد أسئلة في المنتدى حالياً.</p>`;
+        return;
+      }
+
+      container.innerHTML = "";
+      data.forEach(post => {
+        const hasReply = post.admin_reply_text || post.admin_reply_voice;
+
+        const postDiv = document.createElement("div");
+        postDiv.className = "forum-item";
+        postDiv.innerHTML = `
+          <div class="forum-user">👤 ${post.user_name || 'طالب'}</div>
+          <div class="forum-content">❓ ${post.content || ''}</div>
+          
+          ${hasReply ? `
+            <div style="background:#e0f2fe; padding:10px; border-radius:8px; margin-top:10px; color:#0369a1;">
+              <strong>الرد الحالي:</strong> ${post.admin_reply_text \vert{}\vert{} ''}${post.admin_reply_voice ? `<br><audio controls src="${post.admin_reply_voice}" style="margin-top:5px; height:35px;"></audio>` : ''}
+            </div>
+          ` : ''}
+
+          <div class="reply-box">
+            <h4 style="font-size:14px; color:#026857; margin-bottom:8px;">إضافة رد (كتابة أو تسجيل صوتي):</h4>
+            <textarea id="textReply_${post.id}" placeholder="اكتب ردك هنا..." rows="2" style="width:100%; padding:8px; border-radius:8px; border:1px solid #cbd5e1;"></textarea>
+            
+            <div class="audio-controls">
+              <button type="button" class="btn-mic" id="micBtn_${post.id}" onclick="toggleRecord('${post.id}')">🎙️ تسجيل فويس</button>
+              <span id="micStatus_${post.id}" style="font-size:12px; color:#64748b;">لم يتم التسجيل</span>
+              <audio id="audioPreview_${post.id}" controls style="display:none; height:35px;"></audio>
+            </div>
+
+            <button type="button" class="btn-submit" onclick="sendReply('${post.id}')" style="margin-top:8px;">إرسال الرد 🚀</button>
+          </div>
+        `;
+        container.appendChild(postDiv);
+      });
+
+    } catch (err) {
+      container.innerHTML = `<p style="color:red; text-align:center;">حدث خطأ أثناء جلب الأسئلة.</p>`;
+    }
+  }
+
+  // التحكم في المايك والتسجيل الصوتي
+  async function toggleRecord(postId) {
+    const micBtn = document.getElementById(`micBtn_${postId}`);
+    const micStatus = document.getElementById(`micStatus_${postId}`);
+    const audioPreview = document.getElementById(`audioPreview_${postId}`);
+
+    if (mediaRecorder && mediaRecorder.state === "recording") {
+      // إيقاف التسجيل
+      mediaRecorder.stop();
+      micBtn.classList.remove("recording");
+      micBtn.textContent = "🎙️ تسجيل فويس";
+      micStatus.textContent = "تم التسجيل جاهز للرفع ✓";
+    } else {
+      // بدء التسجيل
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+        mediaRecorder.onstop = () => {
+          recordedAudioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
+          const audioUrl = URL.createObjectURL(recordedAudioBlob);
+          audioPreview.src = audioUrl;
+          audioPreview.style.display = "inline-block";
+        };
+
+        mediaRecorder.start();
+        micBtn.classList.add("recording");
+        micBtn.textContent = "⏹️ إيقاف التسجيل";
+        micStatus.textContent = "جاري التسجيل...";
+      } catch (err) {
+        alert("يرجى السماح بصلاحيات المايك في المتصفح لاستخدام التسجيل الصوتي!");
+      }
+    }
+  }
+
+  // إرسال الرد إلى Supabase
+  async function sendReply(postId) {
+    const textReply = document.getElementById(`textReply_${postId}`).value;
+    let voiceUrl = null;
+
+    try {
+      // 1. رفع الصوت لو فيه تسجيل صوتي
+      if (recordedAudioBlob) {
+        const fileName = `voice_reply_${postId}_${Date.now()}.mp3`;
+        const { data: uploadData, error: uploadErr } = await supabaseClient
+          .storage
+          .from("uploads")
+          .upload(fileName, recordedAudioBlob);
+
+        if (uploadErr) throw uploadErr;
+
+        const { data: publicUrlData } = supabaseClient
+          .storage
+          .from("uploads")
+          .getPublicUrl(fileName);
+
+        voiceUrl = publicUrlData.publicUrl;
+      }
+
+      // 2. تحديث المنشور بالرد النصي أو الصوتي
+      const { error: updateErr } = await supabaseClient
+        .from("forum")
+        .update({
+          admin_reply_text: textReply,
+          admin_reply_voice: voiceUrl
+        })
+        .eq("id", postId);
+
+      if (updateErr) throw updateErr;
+
+      alert("تم إرسال الرد للجميع بنجاح! 🎉");
+      recordedAudioBlob = null;
+      loadForumPosts();
+
+    } catch (err) {
+      alert("حدث خطأ أثناء الحفظ: " + err.message);
+    }
+  }
+
+  // تشغيل القائمة
+  loadForumPosts();
+</script>
+  
   </script>
 
 </body>
