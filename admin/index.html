@@ -66,7 +66,7 @@
       margin-bottom: 8px;
     }
 
-    .form-group input, .form-group textarea {
+    .form-group input, .form-group textarea, .form-group select {
       width: 100%;
       padding: 12px 15px;
       border: 1px solid #cbd5e1;
@@ -127,7 +127,7 @@
       background: #c0392b;
     }
 
-    /* تنسيق المنتدى والرد الصوتي */
+    /* المنتدى */
     .forum-item {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
@@ -186,10 +186,44 @@
   <div class="container">
     <div class="header">
       <h1>⚙️ لوحة التحكم الشاملة | أرض الأحياء</h1>
-      <a href="../index.html" style="color: white; text-decoration: none; font-weight: bold;">🏠 الذهاب للرئيسية</a>
+      <a href="../index.html" style="color: white; text-decoration: none; font-weight: bold;">🏠 الرئيسية</a>
     </div>
 
-    <!-- 📢 1. قسم إعلانات المنصة -->
+    <!-- 🎥 1. قسم إدارة المأكولات/المحاضرات التعليمية (إضافة وإدارة) -->
+    <div class="card">
+      <h2>🎥 إضافة محتاجة/محاضرة تعليمية جديدة</h2>
+      <form id="lectureForm">
+        <div class="form-group">
+          <label>عنوان المحاضرة:</label>
+          <input type="text" id="lectureTitle" placeholder="مثال: الشرح التفصيلي لتركيب العضلات" required>
+        </div>
+        <div class="form-group">
+          <label>الوصف / التفاصيل:</label>
+          <textarea id="lectureDescription" rows="2" placeholder="وصف قصير للمحاضرة..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>رابط فيديو يوتيوب أو رابط مباشر:</label>
+          <input type="text" id="lectureUrl" placeholder="https://www.youtube.com/watch?v=... أو رابط مباشر" required>
+        </div>
+        <button type="submit" class="btn-submit">نشر المحاضرة 🚀</button>
+      </form>
+
+      <h3 style="margin-top:25px; color:#1e3a8a; font-size:16px;">المحاضرات الحالية:</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>العنوان</th>
+            <th>الرابط</th>
+            <th>الإجراء</th>
+          </tr>
+        </thead>
+        <tbody id="lecturesTable">
+          <tr><td colspan="3" style="text-align:center;">جاري تحميل المحاضرات...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 📢 2. قسم إعلانات المنصة -->
     <div class="card">
       <h2>📢 نشر إعلان رئيسي للطلاب</h2>
       <form id="announcementForm">
@@ -201,7 +235,7 @@
       </form>
     </div>
 
-    <!-- 📚 2. قسم إدارة المذكرات -->
+    <!-- 📚 3. قسم إدارة المذكرات -->
     <div class="card">
       <h2>📚 إدارة المذكرات والملفات</h2>
       <form id="noteForm">
@@ -230,7 +264,7 @@
       </table>
     </div>
 
-    <!-- 🏆 3. قسم بطل الفصل -->
+    <!-- 🏆 4. قسم بطل الفصل -->
     <div class="card">
       <h2>🏆 إدارة بطل الفصل (الترتيب حسب النقاط)</h2>
       <form id="championForm">
@@ -260,11 +294,11 @@
       </table>
     </div>
 
-    <!-- 💬 4. قسم استفسارات المنتدى والرد عليها (نص أو فويس) -->
+    <!-- 💬 5. قسم استفسارات المنتدى والرد عليها -->
     <div class="card">
       <h2>💬 الرد على استفسارات الطلاب (كتابة أو تسجيل صوتي)</h2>
       <div id="forumPostsList">
-        <p style="text-align: center; color: #64748b;">جاري تحميل الأسئلة والاستفسارات...</p>
+        <p style="text-align: center; color: #64748b;">جاري تحميل الأسئلة...</p>
       </div>
     </div>
 
@@ -276,7 +310,50 @@
     const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // --- 1. الإعلانات ---
+    // --- 1. إدارة المحاضرات (رفع وحذف) ---
+    async function loadLectures() {
+      const tbody = document.getElementById("lecturesTable");
+      try {
+        const { data, error } = await supabaseClient.from("videos").select("*").order("created_at", { ascending: false });
+        if (error) throw error;
+        if (!data || data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">لا توجد محاضرات مضافة.</td></tr>`;
+          return;
+        }
+        tbody.innerHTML = "";
+        data.forEach(item => {
+          tbody.innerHTML += `
+            <tr>
+              <td><strong>${item.title}</strong></td>
+              <td><a href="${item.url || item.video_url}" target="_blank">رابط المحاضرة 🔗</a></td>
+              <td><button class="btn-delete" onclick="deleteLecture('${item.id}')">حذف 🗑️</button></td>
+            </tr>`;
+        });
+      } catch (err) { tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">خطأ في التحميل</td></tr>`; }
+    }
+
+    document.getElementById("lectureForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const title = document.getElementById("lectureTitle").value;
+      const desc = document.getElementById("lectureDescription").value;
+      const url = document.getElementById("lectureUrl").value;
+
+      try {
+        const { error } = await supabaseClient.from("videos").insert([{ title: title, description: desc, url: url, video_url: url }]);
+        if (error) throw error;
+        alert("تمت إضافة المحاضرة بنجاح! 🎥");
+        document.getElementById("lectureForm").reset();
+        loadLectures();
+      } catch (err) { alert("خطأ: " + err.message); }
+    });
+
+    async function deleteLecture(id) {
+      if (!confirm("هل أنت تأكد من حذف المحاضرة؟")) return;
+      await supabaseClient.from("videos").delete().eq("id", id);
+      loadLectures();
+    }
+
+    // --- 2. الإعلانات ---
     document.getElementById("announcementForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const text = document.getElementById("announcementText").value;
@@ -288,7 +365,7 @@
       } catch (err) { alert("خطأ: " + err.message); }
     });
 
-    // --- 2. المذكرات ---
+    // --- 3. المذكرات ---
     async function loadNotes() {
       const tbody = document.getElementById("notesTable");
       try {
@@ -329,7 +406,7 @@
       loadNotes();
     }
 
-    // --- 3. بطل الفصل ---
+    // --- 4. بطل الفصل ---
     async function loadChampions() {
       const tbody = document.getElementById("championsTable");
       try {
@@ -373,7 +450,7 @@
       loadChampions();
     }
 
-    // --- 4. المنتدى والرد الصوتي والكتابي ---
+    // --- 5. المنتدى والرد الصوتي والكتابي ---
     let mediaRecorder;
     let audioChunks = [];
     let recordedAudioBlob = null;
@@ -412,7 +489,7 @@
 
             <div class="reply-box">
               <h4 style="font-size:14px; color:#026857; margin-bottom:8px;">إضافة رد (كتابي أو بصوت الفويس):</h4>
-              <textarea id="textReply_${post.id}" placeholder="اكتب الرد النصي هنا (اختياري)..." rows="2" style="width:100%; padding:8px; border-radius:8px; border:1px solid #cbd5e1; margin-bottom:10px;"></textarea>
+              <textarea id="textReply_${post.id}" placeholder="اكتب الرد النصي هنا..." rows="2" style="width:100%; padding:8px; border-radius:8px; border:1px solid #cbd5e1; margin-bottom:10px;"></textarea>
               
               <div class="audio-controls">
                 <button type="button" class="btn-mic" id="micBtn_${post.id}" onclick="toggleRecord('${post.id}')">🎙️ تسجيل فويس</button>
@@ -420,14 +497,14 @@
                 <audio id="audioPreview_${post.id}" controls style="display:none; height:35px;"></audio>
               </div>
 
-              <button type="button" class="btn-submit" onclick="sendReply('${post.id}')" style="margin-top:10px;">إرسال الرد للطلاب 🚀</button>
+              <button type="button" class="btn-submit" onclick="sendReply('${post.id}')" style="margin-top:10px;">إرسال الرد 🚀</button>
             </div>
           `;
           container.appendChild(postDiv);
         });
 
       } catch (err) {
-        container.innerHTML = `<p style="color:red; text-align:center;">خطأ في تحميل أسئلة المنتدى.</p>`;
+        container.innerHTML = `<p style="color:red; text-align:center;">خطأ في تحميل الأسئلة.</p>`;
       }
     }
 
@@ -457,7 +534,7 @@
           mediaRecorder.start();
           micBtn.classList.add("recording");
           micBtn.textContent = "⏹️ إيقاف التسجيل";
-          micStatus.textContent = "جاري التسجيل الآن...";
+          micStatus.textContent = "جاري التسجيل...";
         } catch (err) {
           alert("يرجى السماح بالوصول للمايك من إعدادات المتصفح!");
         }
@@ -496,7 +573,8 @@
       }
     }
 
-    // تشغيل الدوال عند تحميل الصفحة
+    // التشغيل عند الفتح
+    loadLectures();
     loadNotes();
     loadChampions();
     loadForumPosts();
