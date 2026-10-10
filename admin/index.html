@@ -80,13 +80,14 @@
       margin-bottom: 8px;
     }
 
-    .form-group input, .form-group textarea {
+    .form-group input, .form-group textarea, .form-group select {
       width: 100%;
       padding: 12px 15px;
       border: 1px solid #cbd5e1;
       border-radius: 10px;
       font-size: 15px;
       outline: none;
+      background: #fff;
     }
 
     .form-row {
@@ -143,7 +144,7 @@
       background: #c0392b;
     }
 
-    /* المنتدى */
+    /* المنتدى والردود */
     .forum-item {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
@@ -189,6 +190,13 @@
       50% { opacity: 0.5; }
       100% { opacity: 1; }
     }
+    .loading-overlay {
+      font-size: 13px;
+      color: #026857;
+      font-weight: bold;
+      margin-top: 5px;
+      display: none;
+    }
   </style>
 </head>
 
@@ -203,9 +211,9 @@
       <a href="../index.html" style="color: white; text-decoration: none; font-weight: bold; background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 8px;">🏠 الرئيسية</a>
     </div>
 
-    <!-- 🎥 1. قسم المحاضرات -->
+    <!-- 🎥 1. قسم رفع المحاضرات (من الجهاز أو رابط) -->
     <div class="card">
-      <h2>🎥 إضافة محاضرة جديدة (شاملة المذكرات، الواجب، والامتحان)</h2>
+      <h2>🎥 إضافة محاضرة جديدة (مع رفع الفيديو والمذكرات من الجهاز)</h2>
       <form id="lectureForm">
         <div class="form-group">
           <label>عنوان المحاضرة:</label>
@@ -213,29 +221,40 @@
         </div>
         
         <div class="form-group">
-          <label>رابط فيديو يوتيوب أو فيديو مباشر:</label>
-          <input type="text" id="lectureUrl" placeholder="https://www.youtube.com/watch?v=..." required>
+          <label>اختر ملف الفيديو من الجهاز (أو ضَع رابط يوتيوب في الأسفل):</label>
+          <input type="file" id="videoFile" accept="video/*">
+        </div>
+
+        <div class="form-group">
+          <label>أو ضع رابط يوتيوب مباشر (اختياري لو لم ترفع فيديو من الجهاز):</label>
+          <input type="text" id="lectureUrl" placeholder="https://www.youtube.com/watch?v=...">
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>📝 رابط واجب المحاضرة (اختياري):</label>
-            <input type="url" id="homeworkUrl" placeholder="رابط Google Forms أو الشيت">
+            <label>📝 رابط واجب المحاضرة:</label>
+            <input type="url" id="homeworkUrl" placeholder="رابط Google Forms">
           </div>
           <div class="form-group">
-            <label>✍️ رابط امتحان المحاضرة (اختياري):</label>
+            <label>✍️ رابط امتحان المحاضرة:</label>
             <input type="url" id="examUrl" placeholder="رابط الاختبار الإلكتروني">
           </div>
         </div>
 
-        <h4 style="color:#026857; margin: 15px 0 10px 0;">📚 مذكرات ومرفقات المحاضرة (حتى 3 مذكرات):</h4>
+        <h4 style="color:#026857; margin: 15px 0 10px 0;">📚 مذكرات ومرفقات المحاضرة (اختر ملفات PDF من جهازك):</h4>
         <div class="form-group">
-          <input type="url" id="noteUrl1" placeholder="رابط المذكرة الأولى (PDF)" style="margin-bottom:8px;">
-          <input type="url" id="noteUrl2" placeholder="رابط المذكرة الثانية (PDF)" style="margin-bottom:8px;">
-          <input type="url" id="noteUrl3" placeholder="رابط المذكرة الثالثة (PDF)">
+          <label style="font-size: 13px; color: #64748b;">المذكرة الأولى:</label>
+          <input type="file" id="noteFile1" accept=".pdf,.doc,.docx,image/*" style="margin-bottom:8px;">
+          
+          <label style="font-size: 13px; color: #64748b;">المذكرة الثانية:</label>
+          <input type="file" id="noteFile2" accept=".pdf,.doc,.docx,image/*" style="margin-bottom:8px;">
+          
+          <label style="font-size: 13px; color: #64748b;">المذكرة الثالثة:</label>
+          <input type="file" id="noteFile3" accept=".pdf,.doc,.docx,image/*">
         </div>
 
-        <button type="submit" class="btn-submit">نشر المحاضرة ومرفقاتها الكاملة 🚀</button>
+        <div id="uploadProgress" class="loading-overlay">⏳ جاري رفع الملفات للسيرفر، يرجى الانتظار...</div>
+        <button type="submit" class="btn-submit" style="margin-top: 15px;">نشر المحاضرة ومرفقاتها 🚀</button>
       </form>
 
       <h3 style="margin-top:25px; color:#1e3a8a; font-size:16px;">المحاضرات المضافة حالياً:</h3>
@@ -254,7 +273,7 @@
       </table>
     </div>
 
-    <!-- 📢 2. قسم إعلانات المنصة -->
+    <!-- 📢 2. قسم الإعلانات -->
     <div class="card">
       <h2>📢 نشر إعلان رئيسي للطلاب</h2>
       <form id="announcementForm">
@@ -296,7 +315,7 @@
       </table>
     </div>
 
-    <!-- 💬 4. قسم استفسارات المنتدى والرد عليها -->
+    <!-- 💬 4. قسم المنتدى والردود -->
     <div class="card">
       <h2>💬 الرد على استفسارات الطلاب (كتابة أو تسجيل صوتي)</h2>
       <div id="forumPostsList">
@@ -304,9 +323,8 @@
       </div>
     </div>
 
-    <!-- حقوق الإشراف -->
     <div style="text-align: center; color: #64748b; font-size: 14px; margin-top: 20px; font-weight: 700;">
-      منصة أرض الأحياء — تحت إشراف أ/ محمد حامد
+      منصة أرض الأحياء — تحت إشراف أ/ محمد حامد 🧬
     </div>
 
   </div>
@@ -317,14 +335,36 @@
     const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // --- 1. إدارة المحاضرات الكاملة ---
+    // دالة مساعدة لرفع الملفات إلى دلو uploads
+    async function uploadFileToSupabase(fileInputId) {
+      const fileInput = document.getElementById(fileInputId);
+      if (!fileInput || fileInput.files.length === 0) return null;
+
+      const file = fileInput.files[0];
+      const fileName = `media_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+
+      const { error: uploadErr } = await supabaseClient.storage
+        .from("uploads")
+        .upload(fileName, file);
+
+      if (uploadErr) throw new Error("خطأ في رفع الملف: " + uploadErr.message);
+
+      const { data: publicUrlData } = supabaseClient.storage
+        .from("uploads")
+        .getPublicUrl(fileName);
+
+      return publicUrlData.publicUrl;
+    }
+
+    // --- 1. إدارة المحاضرات والرفع من الجهاز ---
     async function loadLectures() {
       const tbody = document.getElementById("lecturesTable");
+      if (!tbody) return;
       try {
         const { data, error } = await supabaseClient.from("videos").select("*").order("created_at", { ascending: false });
         if (error) throw error;
         if (!data || data.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">لا توجد محاضرات مضافة.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">لا توجد محاضرات مضافة حالياً.</td></tr>`;
           return;
         }
         tbody.innerHTML = "";
@@ -336,7 +376,7 @@
 
           tbody.innerHTML += `
             <tr>
-              <td><strong>${item.title}</strong></td>
+              <td><strong>${item.title || 'محاضرة'}</strong></td>
               <td>
                 ${item.homework_url ? `<a href="\${item.homework_url}" target="_blank">📝 الواجب</a> ` : ''}
                 ${item.exam_url ? `<a href="\${item.exam_url}" target="_blank">✍️ الامتحان</a>` : ''}
@@ -346,24 +386,44 @@
               <td><button class="btn-delete" onclick="deleteLecture('${item.id}')">حذف 🗑️</button></td>
             </tr>`;
         });
-      } catch (err) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">خطأ في التحميل</td></tr>`; }
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">خطأ في تحميل المحاضرات.</td></tr>`;
+      }
     }
 
     document.getElementById("lectureForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const title = document.getElementById("lectureTitle").value;
-      const url = document.getElementById("lectureUrl").value;
+      let videoUrl = document.getElementById("lectureUrl").value;
       const homework = document.getElementById("homeworkUrl").value;
       const exam = document.getElementById("examUrl").value;
-      const note1 = document.getElementById("noteUrl1").value;
-      const note2 = document.getElementById("noteUrl2").value;
-      const note3 = document.getElementById("noteUrl3").value;
+      const progressDiv = document.getElementById("uploadProgress");
 
       try {
+        progressDiv.style.display = "block";
+
+        // رفع الفيديو من الجهاز لو تم اختياره
+        const uploadedVideoUrl = await uploadFileToSupabase("videoFile");
+        if (uploadedVideoUrl) {
+          videoUrl = uploadedVideoUrl;
+        }
+
+        if (!videoUrl) {
+          alert("يرجى إما اختيار ملف فيديو من الجهاز أو وضع رابط يوتيوب!");
+          progressDiv.style.display = "none";
+          return;
+        }
+
+        // رفع المذكرات من الجهاز
+        const note1 = await uploadFileToSupabase("noteFile1");
+        const note2 = await uploadFileToSupabase("noteFile2");
+        const note3 = await uploadFileToSupabase("noteFile3");
+
+        // حفظ البيانات في جدول videos
         const { error } = await supabaseClient.from("videos").insert([{
           title: title,
-          url: url,
-          video_url: url,
+          url: videoUrl,
+          video_url: videoUrl,
           homework_url: homework,
           exam_url: exam,
           note_url1: note1,
@@ -372,14 +432,19 @@
         }]);
 
         if (error) throw error;
-        alert("تمت إضافة المحاضرة بجميع المرفقات بنجاح! 🎥📚");
+
+        alert("تمت إضافة المحاضرة ومرفقاتها بنجاح تحت إشراف أ/ محمد حامد! 🎥📚");
         document.getElementById("lectureForm").reset();
         loadLectures();
-      } catch (err) { alert("خطأ: " + err.message); }
+      } catch (err) {
+        alert("حدث خطأ أثناء الرفع: " + err.message);
+      } finally {
+        progressDiv.style.display = "none";
+      }
     });
 
     async function deleteLecture(id) {
-      if (!confirm("هل أنت تأكد من حذف المحاضرة؟")) return;
+      if (!confirm("هل أنت متأكد من حذف المحاضرة؟")) return;
       await supabaseClient.from("videos").delete().eq("id", id);
       loadLectures();
     }
@@ -399,13 +464,18 @@
     // --- 3. بطل الفصل ---
     async function loadChampions() {
       const tbody = document.getElementById("championsTable");
+      if (!tbody) return;
       try {
-        const { data, error } = await supabaseClient.from("champions").select("*").order("points", { ascending: false });
+        const { data, error } = await supabaseClient.from("champions").select("*");
         if (error) throw error;
+
         if (!data || data.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">لا يوجد أبطال مضافون.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">لا يوجد أبطال مضافون حالياً.</td></tr>`;
           return;
         }
+
+        data.sort((a, b) => (b.points || 0) - (a.points || 0));
+
         tbody.innerHTML = "";
         data.forEach((item, index) => {
           const rank = index + 1;
@@ -413,12 +483,14 @@
           tbody.innerHTML += `
             <tr>
               <td><strong>${medal}</strong></td>
-              <td>${item.student_name}</td>
-              <td>${item.points} نقطة</td>
+              <td>${item.student_name || 'طالب'}</td>
+              <td>${item.points || 0} نقطة</td>
               <td><button class="btn-delete" onclick="deleteChampion('${item.id}')">حذف 🗑️</button></td>
             </tr>`;
         });
-      } catch (err) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">خطأ في التحميل</td></tr>`; }
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">خطأ في التحميل.</td></tr>`;
+      }
     }
 
     document.getElementById("championForm").addEventListener("submit", async (e) => {
@@ -435,7 +507,7 @@
     });
 
     async function deleteChampion(id) {
-      if (!confirm("هل أنت تأكد من الحذف؟")) return;
+      if (!confirm("هل أنت متأكد من الحذف؟")) return;
       await supabaseClient.from("champions").delete().eq("id", id);
       loadChampions();
     }
@@ -447,16 +519,13 @@
 
     async function loadForumPosts() {
       const container = document.getElementById("forumPostsList");
+      if (!container) return;
       try {
-        const { data, error } = await supabaseClient
-          .from("forum")
-          .select("*")
-          .order("created_at", { ascending: false });
-
+        const { data, error } = await supabaseClient.from("forum").select("*");
         if (error) throw error;
 
         if (!data || data.length === 0) {
-          container.innerHTML = `<p style="text-align:center; color:#64748b;">لا توجد أسئلة في المنتدى حالياً.</p>`;
+          container.innerHTML = `<p style="text-align:center; color:#64748b; padding:15px;">لا توجد أسئلة بالمنتدى حالياً.</p>`;
           return;
         }
 
@@ -495,7 +564,7 @@
         });
 
       } catch (err) {
-        container.innerHTML = `<p style="color:red; text-align:center;">خطأ في تحميل الأسئلة: ${err.message}</p>`;
+        container.innerHTML = `<p style="color:#64748b; text-align:center; padding:15px;">لا توجد أسئلة حالياً.</p>`;
       }
     }
 
@@ -565,9 +634,11 @@
     }
 
     // التشغيل عند فتح الصفحة
-    loadLectures();
-    loadChampions();
-    loadForumPosts();
+    window.addEventListener('DOMContentLoaded', () => {
+      loadLectures();
+      loadChampions();
+      loadForumPosts();
+    });
   </script>
 
 </body>
