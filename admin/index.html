@@ -66,7 +66,7 @@
       margin-bottom: 8px;
     }
 
-    .form-group input, .form-group textarea, .form-group select {
+    .form-group input, .form-group textarea {
       width: 100%;
       padding: 12px 15px;
       border: 1px solid #cbd5e1;
@@ -75,8 +75,10 @@
       outline: none;
     }
 
-    .form-group input:focus, .form-group textarea:focus {
-      border-color: #2563eb;
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 15px;
     }
 
     .btn-submit {
@@ -141,11 +143,6 @@
       font-size: 15px;
       margin-bottom: 5px;
     }
-    .forum-content {
-      color: #334155;
-      font-size: 14px;
-      margin-bottom: 12px;
-    }
     .reply-box {
       background: white;
       padding: 15px;
@@ -189,36 +186,53 @@
       <a href="../index.html" style="color: white; text-decoration: none; font-weight: bold;">🏠 الرئيسية</a>
     </div>
 
-    <!-- 🎥 1. قسم إدارة المأكولات/المحاضرات التعليمية (إضافة وإدارة) -->
+    <!-- 🎥 1. قسم المحاضرات (مع المذكرات والواجبات والامتحان) -->
     <div class="card">
-      <h2>🎥 إضافة محتاجة/محاضرة تعليمية جديدة</h2>
+      <h2>🎥 إضافة محاضرة جديدة (شاملة المذكرات، الواجب، والامتحان)</h2>
       <form id="lectureForm">
         <div class="form-group">
           <label>عنوان المحاضرة:</label>
-          <input type="text" id="lectureTitle" placeholder="مثال: الشرح التفصيلي لتركيب العضلات" required>
+          <input type="text" id="lectureTitle" placeholder="مثال: شرح تركيب العظام والمفاصل" required>
         </div>
+        
         <div class="form-group">
-          <label>الوصف / التفاصيل:</label>
-          <textarea id="lectureDescription" rows="2" placeholder="وصف قصير للمحاضرة..."></textarea>
+          <label>رابط فيديو يوتيوب أو فيديو مباشر:</label>
+          <input type="text" id="lectureUrl" placeholder="https://www.youtube.com/watch?v=..." required>
         </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>📝 رابط واجب المحاضرة (اختياري):</label>
+            <input type="url" id="homeworkUrl" placeholder="رابط Google Forms أو الشيت">
+          </div>
+          <div class="form-group">
+            <label>✍️ رابط امتحان المحاضرة (اختياري):</label>
+            <input type="url" id="examUrl" placeholder="رابط الاختبار الإلكتروني">
+          </div>
+        </div>
+
+        <h4 style="color:#026857; margin: 15px 0 10px 0;">📚 مذكرات ومرفقات المحاضرة (حتى 3 مذكرات):</h4>
         <div class="form-group">
-          <label>رابط فيديو يوتيوب أو رابط مباشر:</label>
-          <input type="text" id="lectureUrl" placeholder="https://www.youtube.com/watch?v=... أو رابط مباشر" required>
+          <input type="url" id="noteUrl1" placeholder="رابط المذكرة الأولى (PDF)" style="margin-bottom:8px;">
+          <input type="url" id="noteUrl2" placeholder="رابط المذكرة الثانية (PDF)" style="margin-bottom:8px;">
+          <input type="url" id="noteUrl3" placeholder="رابط المذكرة الثالثة (PDF)">
         </div>
-        <button type="submit" class="btn-submit">نشر المحاضرة 🚀</button>
+
+        <button type="submit" class="btn-submit">نشر المحاضرة ومرفقاتها الكاملة 🚀</button>
       </form>
 
-      <h3 style="margin-top:25px; color:#1e3a8a; font-size:16px;">المحاضرات الحالية:</h3>
+      <h3 style="margin-top:25px; color:#1e3a8a; font-size:16px;">المحاضرات المضافة حالياً:</h3>
       <table>
         <thead>
           <tr>
-            <th>العنوان</th>
-            <th>الرابط</th>
+            <th>عنوان المحاضرة</th>
+            <th>الواجب والامتحان</th>
+            <th>المذكرات</th>
             <th>الإجراء</th>
           </tr>
         </thead>
         <tbody id="lecturesTable">
-          <tr><td colspan="3" style="text-align:center;">جاري تحميل المحاضرات...</td></tr>
+          <tr><td colspan="4" style="text-align:center;">جاري تحميل المحاضرات...</td></tr>
         </tbody>
       </table>
     </div>
@@ -235,36 +249,7 @@
       </form>
     </div>
 
-    <!-- 📚 3. قسم إدارة المذكرات -->
-    <div class="card">
-      <h2>📚 إدارة المذكرات والملفات</h2>
-      <form id="noteForm">
-        <div class="form-group">
-          <label>عنوان المذكرة:</label>
-          <input type="text" id="noteTitle" placeholder="مثال: مذكرة شرح الباب الأول" required>
-        </div>
-        <div class="form-group">
-          <label>رابط المذكرة (PDF / Google Drive):</label>
-          <input type="url" id="noteUrl" placeholder="https://..." required>
-        </div>
-        <button type="submit" class="btn-submit">حفظ ونشر المذكرة 📖</button>
-      </form>
-
-      <table>
-        <thead>
-          <tr>
-            <th>عنوان المذكرة</th>
-            <th>الرابط</th>
-            <th>الإجراء</th>
-          </tr>
-        </thead>
-        <tbody id="notesTable">
-          <tr><td colspan="3" style="text-align:center;">جاري التحميل...</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- 🏆 4. قسم بطل الفصل -->
+    <!-- 🏆 3. قسم بطل الفصل -->
     <div class="card">
       <h2>🏆 إدارة بطل الفصل (الترتيب حسب النقاط)</h2>
       <form id="championForm">
@@ -294,7 +279,7 @@
       </table>
     </div>
 
-    <!-- 💬 5. قسم استفسارات المنتدى والرد عليها -->
+    <!-- 💬 4. قسم استفسارات المنتدى والرد عليها -->
     <div class="card">
       <h2>💬 الرد على استفسارات الطلاب (كتابة أو تسجيل صوتي)</h2>
       <div id="forumPostsList">
@@ -310,38 +295,62 @@
     const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // --- 1. إدارة المحاضرات (رفع وحذف) ---
+    // --- 1. إدارة المحاضرات الكاملة ---
     async function loadLectures() {
       const tbody = document.getElementById("lecturesTable");
       try {
         const { data, error } = await supabaseClient.from("videos").select("*").order("created_at", { ascending: false });
         if (error) throw error;
         if (!data || data.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">لا توجد محاضرات مضافة.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">لا توجد محاضرات مضافة.</td></tr>`;
           return;
         }
         tbody.innerHTML = "";
         data.forEach(item => {
+          let notesCount = 0;
+          if (item.note_url1) notesCount++;
+          if (item.note_url2) notesCount++;
+          if (item.note_url3) notesCount++;
+
           tbody.innerHTML += `
             <tr>
               <td><strong>${item.title}</strong></td>
-              <td><a href="${item.url || item.video_url}" target="_blank">رابط المحاضرة 🔗</a></td>
+              <td>
+                ${item.homework_url ? `<a href="\${item.homework_url}" target="_blank">📝 الواجب</a> ` : ''}
+                ${item.exam_url ? `<a href="\${item.exam_url}" target="_blank">✍️ الامتحان</a>` : ''}
+                ${!item.homework_url && !item.exam_url ? 'لا يوجد' : ''}
+              </td>
+              <td>${notesCount > 0 ? `📚 (\${notesCount}) مذكرات` : 'بدون مذكرات'}</td>
               <td><button class="btn-delete" onclick="deleteLecture('${item.id}')">حذف 🗑️</button></td>
             </tr>`;
         });
-      } catch (err) { tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">خطأ في التحميل</td></tr>`; }
+      } catch (err) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">خطأ في التحميل</td></tr>`; }
     }
 
     document.getElementById("lectureForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const title = document.getElementById("lectureTitle").value;
-      const desc = document.getElementById("lectureDescription").value;
       const url = document.getElementById("lectureUrl").value;
+      const homework = document.getElementById("homeworkUrl").value;
+      const exam = document.getElementById("examUrl").value;
+      const note1 = document.getElementById("noteUrl1").value;
+      const note2 = document.getElementById("noteUrl2").value;
+      const note3 = document.getElementById("noteUrl3").value;
 
       try {
-        const { error } = await supabaseClient.from("videos").insert([{ title: title, description: desc, url: url, video_url: url }]);
+        const { error } = await supabaseClient.from("videos").insert([{
+          title: title,
+          url: url,
+          video_url: url,
+          homework_url: homework,
+          exam_url: exam,
+          note_url1: note1,
+          note_url2: note2,
+          note_url3: note3
+        }]);
+
         if (error) throw error;
-        alert("تمت إضافة المحاضرة بنجاح! 🎥");
+        alert("تمت إضافة المحاضرة بجميع المرفقات بنجاح! 🎥📚");
         document.getElementById("lectureForm").reset();
         loadLectures();
       } catch (err) { alert("خطأ: " + err.message); }
@@ -365,48 +374,7 @@
       } catch (err) { alert("خطأ: " + err.message); }
     });
 
-    // --- 3. المذكرات ---
-    async function loadNotes() {
-      const tbody = document.getElementById("notesTable");
-      try {
-        const { data, error } = await supabaseClient.from("notes").select("*").order("created_at", { ascending: false });
-        if (error) throw error;
-        if (!data || data.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">لا توجد مذكرات مضافة.</td></tr>`;
-          return;
-        }
-        tbody.innerHTML = "";
-        data.forEach(item => {
-          tbody.innerHTML += `
-            <tr>
-              <td>${item.title}</td>
-              <td><a href="${item.file_url}" target="_blank">عرض الملف 🔗</a></td>
-              <td><button class="btn-delete" onclick="deleteNote('${item.id}')">حذف 🗑️</button></td>
-            </tr>`;
-        });
-      } catch (err) { tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">خطأ في التحميل</td></tr>`; }
-    }
-
-    document.getElementById("noteForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const title = document.getElementById("noteTitle").value;
-      const url = document.getElementById("noteUrl").value;
-      try {
-        const { error } = await supabaseClient.from("notes").insert([{ title: title, file_url: url }]);
-        if (error) throw error;
-        alert("تم إضافة المذكرة بنجاح! 📚");
-        document.getElementById("noteForm").reset();
-        loadNotes();
-      } catch (err) { alert("خطأ: " + err.message); }
-    });
-
-    async function deleteNote(id) {
-      if (!confirm("هل أنت تأكد من الحذف؟")) return;
-      await supabaseClient.from("notes").delete().eq("id", id);
-      loadNotes();
-    }
-
-    // --- 4. بطل الفصل ---
+    // --- 3. بطل الفصل ---
     async function loadChampions() {
       const tbody = document.getElementById("championsTable");
       try {
@@ -450,7 +418,7 @@
       loadChampions();
     }
 
-    // --- 5. المنتدى والرد الصوتي والكتابي ---
+    // --- 4. المنتدى والرد الصوتي والكتابي ---
     let mediaRecorder;
     let audioChunks = [];
     let recordedAudioBlob = null;
@@ -478,7 +446,7 @@
           postDiv.className = "forum-item";
           postDiv.innerHTML = `
             <div class="forum-user">👤 ${post.user_name || 'طالب بالمنصة'}</div>
-            <div class="forum-content">❓ ${post.content || ''}</div>
+            <div style="color:#334155; margin-bottom:10px;">❓ ${post.content || ''}</div>
             
             ${hasReply ? `
               <div style="background:#e0f2fe; padding:10px; border-radius:8px; margin-top:10px; color:#0369a1;">
@@ -575,7 +543,6 @@
 
     // التشغيل عند الفتح
     loadLectures();
-    loadNotes();
     loadChampions();
     loadForumPosts();
   </script>
