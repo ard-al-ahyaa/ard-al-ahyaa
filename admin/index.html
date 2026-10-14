@@ -2,1021 +2,1628 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>لوحة تحكم أرض الأحياء</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root {
-    --green:#087f5b;
-    --green-dark:#066747;
-    --bg:#f4f7f6;
-    --white:#fff;
-    --text:#20312b;
-    --muted:#718078;
-    --border:#e1e9e5;
-    --red:#d93025;
+    --green: #087f5b;
+    --green-dark: #066747;
+    --bg: #f4f7f6;
+    --white: #ffffff;
+    --text: #24332d;
+    --muted: #6b7c74;
+    --border: #e0e9e4;
+    --red: #dc3545;
+    --blue: #0d6efd;
+    --shadow: 0 5px 20px rgba(0,0,0,.06);
 }
-* {box-sizing:border-box}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
-    margin:0;
-    font-family:Tahoma,Arial,sans-serif;
-    background:var(--bg);
-    color:var(--text);
+    margin: 0;
+    font-family: Tahoma, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
 }
-button,input,textarea,select {font:inherit}
+
+button, input, textarea, select {
+    font-family: inherit;
+    font-size: 15px;
+}
+
 button {
-    cursor:pointer;
-    border:0;
-    border-radius:9px;
-    padding:11px 15px;
-    background:var(--green);
-    color:#fff;
+    cursor: pointer;
 }
-button:hover {background:var(--green-dark)}
-button:disabled {opacity:.6;cursor:wait}
-input,textarea,select {
-    width:100%;
-    padding:12px;
-    border:1px solid var(--border);
-    border-radius:9px;
-    background:#fff;
-    margin:6px 0 12px;
+
+.hidden {
+    display: none !important;
 }
-textarea {min-height:100px;resize:vertical}
-label {font-size:14px;font-weight:bold}
-h1,h2,h3 {margin-top:0}
-.hidden {display:none!important}
-.muted {color:var(--muted)}
-.danger {background:var(--red)}
-.secondary {background:#53665d}
-.small {font-size:12px}
+
+header {
+    background: linear-gradient(135deg, var(--green), var(--green-dark));
+    color: white;
+    padding: 20px;
+    box-shadow: var(--shadow);
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+header h1 {
+    margin: 0 0 7px;
+    font-size: 23px;
+}
+
+header p {
+    margin: 0;
+    opacity: .9;
+    font-size: 13px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 25px auto;
+    padding: 0 15px;
+}
+
 .card {
-    background:var(--white);
-    border:1px solid var(--border);
-    border-radius:15px;
-    padding:20px;
-    margin-bottom:18px;
-    box-shadow:0 3px 12px #14281b08;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
 }
-.login-wrap {
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
+
+.card h2 {
+    color: var(--green-dark);
+    font-size: 19px;
+    margin: 0 0 18px;
 }
-.login-card {width:100%;max-width:430px}
-.brand {
-    color:var(--green);
-    font-weight:bold;
-    font-size:23px;
-    margin-bottom:8px;
-}
-.layout {min-height:100vh}
-.sidebar {
-    position:fixed;
-    right:0;
-    top:0;
-    bottom:0;
-    width:250px;
-    background:#fff;
-    border-left:1px solid var(--border);
-    padding:22px 14px;
-    overflow-y:auto;
-    z-index:10;
-}
-.sidebar .brand {padding:8px 10px 22px;font-size:20px}
-.nav-btn {
-    display:block;
-    width:100%;
-    text-align:right;
-    background:transparent;
-    color:var(--text);
-    margin:5px 0;
-}
-.nav-btn:hover,.nav-btn.active {
-    background:#e8f5ee;
-    color:var(--green-dark);
-}
-.main {margin-right:250px;padding:25px;max-width:1500px}
-.topbar {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:12px;
-    flex-wrap:wrap;
-    margin-bottom:24px;
-}
+
 .grid {
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:18px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
 }
+
+.field {
+    margin-bottom: 15px;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.field input,
+.field textarea,
+.field select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d6e1db;
+    border-radius: 9px;
+    outline: none;
+    background: white;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(8,127,91,.1);
+}
+
+.field textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.btn {
+    border: 0;
+    border-radius: 9px;
+    padding: 12px 17px;
+    color: white;
+    background: var(--green);
+    font-weight: bold;
+}
+
+.btn:hover {
+    filter: brightness(.94);
+}
+
+.btn:disabled {
+    opacity: .6;
+    cursor: wait;
+}
+
+.btn-red {
+    background: var(--red);
+}
+
+.btn-blue {
+    background: var(--blue);
+}
+
+.btn-gray {
+    background: #65736c;
+}
+
+.btn-small {
+    padding: 8px 11px;
+    font-size: 13px;
+    margin: 3px;
+}
+
+.status {
+    padding: 12px;
+    border-radius: 9px;
+    margin-bottom: 15px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+.status.success {
+    background: #e4f7eb;
+    color: #146c43;
+}
+
+.status.error {
+    background: #fde8e8;
+    color: #a61b29;
+}
+
+.status.info {
+    background: #e8f1ff;
+    color: #084298;
+}
+
 .stats {
-    display:grid;
-    grid-template-columns:repeat(3,minmax(0,1fr));
-    gap:14px;
-    margin-bottom:20px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
 }
+
 .stat {
-    padding:18px;
-    background:#fff;
-    border:1px solid var(--border);
-    border-radius:13px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    text-align: center;
+    box-shadow: var(--shadow);
 }
+
 .stat strong {
-    display:block;
-    font-size:25px;
-    color:var(--green);
-    margin-top:8px;
+    display: block;
+    font-size: 28px;
+    color: var(--green);
+    margin-bottom: 6px;
 }
-.item {
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:15px;
-    margin-top:12px;
-    background:#fff;
-    overflow-wrap:anywhere;
+
+.stat span {
+    font-size: 13px;
+    color: var(--muted);
 }
-.item h3 {margin-bottom:8px;font-size:17px}
-.item-actions {
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-    margin-top:12px;
+
+.list-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    background: #fff;
+    overflow-wrap: anywhere;
 }
-.item-actions button {font-size:13px}
-.notice {
-    padding:12px;
-    border-radius:9px;
-    background:#edf8f1;
-    color:#145b36;
-    margin:12px 0;
-    white-space:pre-wrap;
-    overflow-wrap:anywhere;
+
+.list-item h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
 }
-.notice.error {background:#fff0ef;color:#a52018}
-.section {display:none}
-.section.active {display:block}
-hr {border:0;border-top:1px solid var(--border);margin:20px 0}
-@media(max-width:850px) {
-    .sidebar {
-        position:static;
-        width:100%;
-        border-left:0;
-        border-bottom:1px solid var(--border);
-        padding:12px;
+
+.list-item p {
+    margin: 6px 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.list-actions {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+small {
+    color: var(--muted);
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin: 20px 0;
+}
+
+.empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 20px;
+}
+
+@media (max-width: 650px) {
+    .grid {
+        grid-template-columns: 1fr;
     }
-    .sidebar .brand {padding-bottom:10px}
-    .nav-btn {
-        display:inline-block;
-        width:auto;
-        margin:3px;
-        padding:9px 11px;
+
+    .stats {
+        grid-template-columns: 1fr;
     }
-    .main {margin:0;padding:15px}
-}
-@media(max-width:550px) {
-    .grid,.stats {grid-template-columns:1fr}
-    .card {padding:15px}
+
+    .card {
+        padding: 15px;
+    }
+
+    header h1 {
+        font-size: 20px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<!-- تسجيل الدخول -->
-<div id="loginScreen" class="login-wrap">
-    <div class="card login-card">
-        <div class="brand">🌱 أرض الأحياء</div>
-        <h2>تسجيل دخول المدير</h2>
-        <p class="muted">سجّل الدخول بالحساب الذي يحمل صلاحية المدير.</p>
-
-        <form id="loginForm">
-            <label for="loginEmail">البريد الإلكتروني</label>
-            <input id="loginEmail" type="email" required autocomplete="username">
-
-            <label for="loginPassword">كلمة المرور</label>
-            <input id="loginPassword" type="password" required autocomplete="current-password">
-
-            <button id="loginButton" type="submit" style="width:100%">تسجيل الدخول</button>
-        </form>
-        <div id="loginMessage" class="notice hidden"></div>
-    </div>
-</div>
-
-<!-- لوحة التحكم -->
-<div id="dashboard" class="layout hidden">
-
-    <aside class="sidebar">
-        <div class="brand">🌱 أرض الأحياء</div>
-        <p class="muted small">لوحة الإدارة</p>
-
-        <button class="nav-btn active" data-section="home">🏠 الرئيسية</button>
-        <button class="nav-btn" data-section="lectures">🎥 المحاضرات</button>
-        <button class="nav-btn" data-section="notes">📚 المذكرات</button>
-        <button class="nav-btn" data-section="champions">🏆 بطل الفصل</button>
-        <button class="nav-btn" data-section="forum">💬 المنتدى</button>
-
-        <hr>
-        <button class="nav-btn" id="refreshButton">🔄 تحديث البيانات</button>
-        <button class="nav-btn" id="logoutButton">🚪 تسجيل الخروج</button>
-    </aside>
-
-    <main class="main">
-        <div class="topbar">
-            <div>
-                <h1 id="pageTitle">الرئيسية</h1>
-                <div id="adminEmail" class="muted small"></div>
-            </div>
-            <span class="muted small">منصة أرض الأحياء</span>
+<header>
+    <div class="header-content">
+        <div>
+            <h1>🌱 لوحة تحكم أرض الأحياء</h1>
+            <p>إدارة المحاضرات والمذكرات والمنتدى وأبطال الفصل</p>
         </div>
 
-        <div id="globalMessage" class="notice hidden"></div>
+        <button class="btn btn-red" id="logoutBtn"
+                onclick="logout()" hidden>
+            تسجيل الخروج
+        </button>
+    </div>
+</header>
 
-        <!-- الرئيسية -->
-        <section id="section-home" class="section active">
-            <div class="card">
-                <h2>مرحبًا بك في لوحة التحكم 🌱</h2>
-                <p>يمكنك إدارة المحاضرات والمذكرات وترتيب الطلاب والرد على منشورات المنتدى.</p>
+<main class="container">
+
+    <div id="globalStatus" class="status info">
+        جاري الاتصال بقاعدة البيانات...
+    </div>
+
+    <!-- تسجيل الدخول -->
+    <section id="loginSection" class="card hidden">
+        <h2>🔐 تسجيل دخول الإدارة</h2>
+
+        <form id="loginForm">
+            <div class="field">
+                <label for="loginEmail">البريد الإلكتروني</label>
+                <input id="loginEmail" type="email"
+                       autocomplete="username" required>
             </div>
 
-            <div class="stats">
-                <div class="stat">المحاضرات<strong id="statLectures">—</strong></div>
-                <div class="stat">المذكرات<strong id="statNotes">—</strong></div>
-                <div class="stat">منشورات المنتدى<strong id="statPosts">—</strong></div>
+            <div class="field">
+                <label for="loginPassword">كلمة المرور</label>
+                <input id="loginPassword" type="password"
+                       autocomplete="current-password" required>
             </div>
 
-            <div class="card">
-                <h3>حالة الاتصال</h3>
-                <p id="connectionStatus" class="muted">جارٍ التحقق...</p>
-                <button onclick="refreshAll()">تحديث البيانات</button>
+            <button class="btn" type="submit" id="loginBtn">
+                تسجيل الدخول
+            </button>
+        </form>
+    </section>
+
+    <!-- محتويات لوحة الإدارة -->
+    <section id="adminPanel" class="hidden">
+
+        <div class="stats">
+            <div class="stat">
+                <strong id="videosCount">0</strong>
+                <span>المحاضرات</span>
+            </div>
+
+            <div class="stat">
+                <strong id="notesCount">0</strong>
+                <span>المذكرات</span>
+            </div>
+
+            <div class="stat">
+                <strong id="championsCount">0</strong>
+                <span>أبطال الفصل</span>
+            </div>
+        </div>
+
+        <!-- إضافة محاضرة -->
+        <section class="card">
+            <h2>🎥 إضافة محاضرة جديدة</h2>
+
+            <form id="videoForm">
+                <div class="field">
+                    <label for="videoTitle">عنوان المحاضرة</label>
+                    <input id="videoTitle" required maxlength="200">
+                </div>
+
+                <div class="field">
+                    <label for="videoDescription">وصف المحاضرة</label>
+                    <textarea id="videoDescription"></textarea>
+                </div>
+
+                <div class="field">
+                    <label for="videoUrl">
+                        رابط الفيديو (اختياري إذا رفعت ملفًا)
+                    </label>
+                    <input id="videoUrl" type="url"
+                           placeholder="https://example.com/video">
+                </div>
+
+                <div class="field">
+                    <label for="videoFile">أو اختر ملف فيديو من جهازك</label>
+                    <input id="videoFile" type="file"
+                           accept="video/*">
+                    <small>
+                        اتركه فارغًا إذا كنت ستستخدم رابط الفيديو.
+                    </small>
+                </div>
+
+                <button class="btn" type="submit" id="saveVideoBtn">
+                    حفظ المحاضرة
+                </button>
+            </form>
+        </section>
+
+        <!-- قائمة المحاضرات -->
+        <section class="card">
+            <h2>📚 المحاضرات المنشورة</h2>
+
+            <button class="btn btn-blue"
+                    onclick="loadVideos()">
+                تحديث القائمة
+            </button>
+
+            <div id="videosList" style="margin-top:15px">
+                <div class="empty">جاري التحميل...</div>
             </div>
         </section>
 
-        <!-- المحاضرات -->
-        <section id="section-lectures" class="section">
-            <div class="card">
-                <h2>إضافة محاضرة</h2>
-                <form id="lectureForm">
-                    <label for="lectureTitle">عنوان المحاضرة</label>
-                    <input id="lectureTitle" required maxlength="200">
+        <!-- إضافة مذكرة -->
+        <section class="card">
+            <h2>📄 إضافة مذكرة PDF</h2>
 
-                    <label for="lectureChapter">الباب أو الفصل</label>
-                    <input id="lectureChapter" maxlength="200">
-
-                    <label for="lectureDescription">وصف المحاضرة</label>
-                    <textarea id="lectureDescription"></textarea>
-
-                    <label for="lectureVideoUrl">رابط الفيديو (اختياري)</label>
-                    <input id="lectureVideoUrl" type="url" placeholder="https://...">
-
-                    <label for="lectureFile">أو ارفع ملف فيديو</label>
-                    <input id="lectureFile" type="file" accept="video/*">
-
-                    <label for="lecturePdf">ملف PDF إضافي (اختياري)</label>
-                    <input id="lecturePdf" type="file" accept="application/pdf">
-
-                    <label for="lectureHomework">ملف واجب (اختياري)</label>
-                    <input id="lectureHomework" type="file" accept="application/pdf">
-
-                    <button id="lectureSubmit" type="submit">حفظ المحاضرة</button>
-                </form>
-                <p class="muted small">
-                    رفع الملفات يتطلب وجود Storage bucket باسم uploads وأن تسمح سياساته للمدير بالرفع.
-                </p>
-            </div>
-
-            <div class="card">
-                <h2>المحاضرات الحالية</h2>
-                <div id="lecturesList">جارٍ التحميل...</div>
-            </div>
-        </section>
-
-        <!-- المذكرات -->
-        <section id="section-notes" class="section">
-            <div class="card">
-                <h2>إضافة مذكرة</h2>
-                <form id="noteForm">
+            <form id="noteForm">
+                <div class="field">
                     <label for="noteTitle">عنوان المذكرة</label>
                     <input id="noteTitle" required maxlength="200">
+                </div>
 
-                    <label for="noteChapter">الباب أو الفصل</label>
-                    <input id="noteChapter" maxlength="200">
-
+                <div class="field">
                     <label for="noteDescription">وصف المذكرة</label>
                     <textarea id="noteDescription"></textarea>
+                </div>
 
+                <div class="field">
                     <label for="noteFile">ملف PDF</label>
-                    <input id="noteFile" type="file" accept="application/pdf" required>
+                    <input id="noteFile" type="file"
+                           accept=".pdf,application/pdf" required>
+                </div>
 
-                    <button id="noteSubmit" type="submit">حفظ المذكرة</button>
-                </form>
-            </div>
+                <button class="btn" type="submit" id="saveNoteBtn">
+                    رفع المذكرة وحفظها
+                </button>
+            </form>
+        </section>
 
-            <div class="card">
-                <h2>المذكرات الحالية</h2>
-                <div id="notesList">جارٍ التحميل...</div>
+        <!-- قائمة المذكرات -->
+        <section class="card">
+            <h2>📚 المذكرات المنشورة</h2>
+
+            <button class="btn btn-blue"
+                    onclick="loadNotes()">
+                تحديث القائمة
+            </button>
+
+            <div id="notesList" style="margin-top:15px">
+                <div class="empty">جاري التحميل...</div>
             </div>
         </section>
 
-        <!-- بطل الفصل -->
-        <section id="section-champions" class="section">
-            <div class="card">
-                <h2>إضافة طالب إلى بطل الفصل</h2>
-                <form id="championForm">
+        <!-- إضافة بطل الفصل -->
+        <section class="card">
+            <h2>🏆 إدارة أبطال الفصل</h2>
+
+            <form id="championForm">
+                <div class="field">
                     <label for="championName">اسم الطالب</label>
-                    <input id="championName" required maxlength="200">
+                    <input id="championName" required maxlength="150">
+                </div>
 
-                    <label for="championScore">النقاط</label>
-                    <input id="championScore" type="number" min="0" value="0" required>
+                <div class="field">
+                    <label for="championPoints">عدد النقاط</label>
+                    <input id="championPoints" type="number"
+                           min="0" value="0" required>
+                </div>
 
-                    <label for="championRank">الترتيب</label>
-                    <input id="championRank" type="number" min="1" required>
+                <div class="field">
+                    <label for="championDescription">تفاصيل إضافية</label>
+                    <textarea id="championDescription"></textarea>
+                </div>
 
-                    <button type="submit" id="championSubmit">إضافة الطالب</button>
-                </form>
-            </div>
+                <button class="btn" type="submit">
+                    إضافة البطل
+                </button>
+            </form>
 
-            <div class="card">
-                <h2>قائمة الطلاب</h2>
-                <div id="championsList">جارٍ التحميل...</div>
+            <hr>
+
+            <h2>🏅 ترتيب الأبطال</h2>
+
+            <button class="btn btn-blue"
+                    onclick="loadChampions()">
+                تحديث الترتيب
+            </button>
+
+            <div id="championsList" style="margin-top:15px"></div>
+        </section>
+
+        <!-- الرد على المنتدى -->
+        <section class="card">
+            <h2>💬 إدارة المنتدى والردود</h2>
+
+            <button class="btn btn-blue"
+                    onclick="loadForumPosts()">
+                عرض أحدث المنشورات
+            </button>
+
+            <div id="forumList" style="margin-top:15px">
+                <div class="empty">
+                    اضغط على تحديث لعرض منشورات المنتدى.
+                </div>
             </div>
         </section>
 
-        <!-- المنتدى -->
-        <section id="section-forum" class="section">
-            <div class="card">
-                <h2>منشورات المنتدى</h2>
-                <p class="muted">
-                    يمكنك الاطلاع على المنشورات وإضافة رد نصي. تأكد من إعداد جدول forum_posts في Supabase.
-                </p>
-                <button onclick="loadForum()">إعادة تحميل المنشورات</button>
-                <div id="forumList">جارٍ تحميل المنتدى...</div>
-            </div>
-        </section>
-    </main>
-</div>
+    </section>
+</main>
 
 <script>
-(() => {
-'use strict';
+"use strict";
 
-/* إعدادات الاتصال */
-const SUPABASE_URL = 'https://fpfbmjtpzamzlyzitmsd.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d';
+/* =========================================
+   إعدادات Supabase
+   ========================================= */
 
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_URL =
+    "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 
-const $ = id => document.getElementById(id);
+/*
+  ضع هنا مفتاح Publishable الحالي لمشروعك.
+  لا تضع service_role أو أي مفتاح سري في ملف HTML.
+*/
 
+const SUPABASE_KEY = "ضع_مفتاح_SUPABASE_PUBLISHABLE_الحالي_هنا";
+
+/*
+  اسم مخزن الملفات في Supabase Storage.
+  يجب أن يكون هذا المخزن موجودًا بالفعل.
+*/
+
+const STORAGE_BUCKET = "uploads";
+
+let db = null;
 let currentUser = null;
 let busy = false;
 
-const titles = {
-    home: 'الرئيسية',
-    lectures: 'إدارة المحاضرات',
-    notes: 'إدارة المذكرات',
-    champions: 'بطل الفصل',
-    forum: 'إدارة المنتدى'
-};
+
+/* =========================================
+   أدوات عامة
+   ========================================= */
+
+const $ = id => document.getElementById(id);
 
 function escapeHTML(value) {
-    return String(value ?? '').replace(/[&<>"']/g, char => ({
-        '&':'&amp;',
-        '<':'&lt;',
-        '>':'&gt;',
-        '"':'&quot;',
-        "'":'&#39;'
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
     })[char]);
 }
 
-function showMessage(message, isError = false) {
-    const box = $('globalMessage');
+function showStatus(message, type = "info") {
+    const box = $("globalStatus");
+    box.className = "status " + type;
     box.textContent = message;
-    box.classList.remove('hidden', 'error');
-    if (isError) box.classList.add('error');
-    window.scrollTo({top:0, behavior:'smooth'});
 }
 
-function hideMessage() {
-    $('globalMessage').classList.add('hidden');
+function setButtonLoading(button, loading, originalText) {
+    if (!button) return;
+
+    button.disabled = loading;
+
+    if (loading) {
+        button.dataset.originalText = button.textContent;
+        button.textContent = "جاري التنفيذ...";
+    } else {
+        button.textContent =
+            button.dataset.originalText || originalText;
+    }
 }
 
-function setLoginMessage(message, isError = true) {
-    const box = $('loginMessage');
-    box.textContent = message;
-    box.classList.remove('hidden', 'error');
-    if (isError) box.classList.add('error');
+function formatError(error) {
+    if (!error) return "حدث خطأ غير معروف.";
+
+    return error.message ||
+           error.error_description ||
+           String(error);
 }
 
-function friendlyError(error) {
-    const message = error?.message || String(error || 'خطأ غير معروف');
-
-    if (message.includes('forum_posts') && message.includes('schema cache')) {
-        return 'جدول forum_posts غير موجود أو لم يتم تحديث مخطط Supabase. أنشئ الجدول من SQL Editor ثم أعد تحميل الصفحة.';
-    }
-    if (message.includes('Invalid key')) {
-        return 'اسم الملف أو مساره غير مقبول في Storage. حاول رفع الملف مرة أخرى.';
-    }
-    if (message.includes('row-level security')) {
-        return 'رفضت سياسات الأمان العملية. راجع سياسات RLS وصلاحية المدير.';
-    }
-    if (message.includes('Bucket not found')) {
-        return 'لم يتم العثور على Storage bucket باسم uploads.';
-    }
-    if (message.includes('Failed to fetch')) {
-        return 'تعذر الاتصال بـ Supabase. تحقق من الإنترنت وإعدادات المشروع.';
-    }
-
-    return message;
-}
-
-async function requireAdmin() {
-    const {data:{session}, error:sessionError} = await db.auth.getSession();
-
-    if (sessionError) throw sessionError;
-    if (!session?.user) {
-        showLogin();
-        return false;
-    }
-
-    const {data:profile, error} = await db
-        .from('profiles')
-        .select('id,role')
-        .eq('id', session.user.id)
-        .maybeSingle();
-
-    if (error) {
-        throw new Error('تعذر التحقق من صلاحية المدير من جدول profiles: ' + error.message);
-    }
-
-    if (!profile || profile.role !== 'admin') {
-        await db.auth.signOut();
-        showLogin();
-        setLoginMessage('هذا الحساب لا يحمل صلاحية المدير. يجب أن تكون قيمة role هي admin.');
-        return false;
-    }
-
-    currentUser = session.user;
-    $('adminEmail').textContent = currentUser.email || '';
-    $('loginScreen').classList.add('hidden');
-    $('dashboard').classList.remove('hidden');
-    return true;
-}
-
-function showLogin() {
-    $('dashboard').classList.add('hidden');
-    $('loginScreen').classList.remove('hidden');
-    currentUser = null;
-}
-
-function activateSection(name) {
-    document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
-    document.querySelectorAll('.nav-btn[data-section]').forEach(button => button.classList.remove('active'));
-
-    $('section-' + name).classList.add('active');
-    document.querySelector(`[data-section="${name}"]`).classList.add('active');
-    $('pageTitle').textContent = titles[name] || 'لوحة التحكم';
-    hideMessage();
-
-    if (name === 'lectures') loadLectures();
-    if (name === 'notes') loadNotes();
-    if (name === 'champions') loadChampions();
-    if (name === 'forum') loadForum();
-}
-
-document.querySelectorAll('.nav-btn[data-section]').forEach(button => {
-    button.addEventListener('click', () => activateSection(button.dataset.section));
-});
-
-/* تسجيل الدخول */
-$('loginForm').addEventListener('submit', async event => {
-    event.preventDefault();
-
-    const button = $('loginButton');
-    button.disabled = true;
-    button.textContent = 'جارٍ تسجيل الدخول...';
+function validateHttpUrl(value) {
+    if (!value) return true;
 
     try {
-        const {error} = await db.auth.signInWithPassword({
-            email: $('loginEmail').value.trim(),
-            password: $('loginPassword').value
+        const url = new URL(value);
+
+        return url.protocol === "https:" ||
+               url.protocol === "http:";
+    } catch {
+        return false;
+    }
+}
+
+
+/* =========================================
+   أسماء ملفات آمنة لإصلاح Invalid key
+   ========================================= */
+
+function getSafeExtension(file) {
+    const name = file.name || "";
+    const dot = name.lastIndexOf(".");
+
+    let extension = dot >= 0
+        ? name.substring(dot + 1).toLowerCase()
+        : "";
+
+    extension = extension.replace(/[^a-z0-9]/g, "");
+
+    if (!extension || extension.length > 10) {
+        const mimeMap = {
+            "application/pdf": "pdf",
+            "video/mp4": "mp4",
+            "video/webm": "webm",
+            "video/quicktime": "mov",
+            "audio/mpeg": "mp3",
+            "audio/mp4": "m4a",
+            "audio/ogg": "ogg",
+            "audio/wav": "wav",
+            "audio/webm": "webm"
+        };
+
+        extension = mimeMap[file.type] || "bin";
+    }
+
+    return extension;
+}
+
+function makeSafeFilePath(folder, file) {
+    /*
+      المسار الناتج يحتوي على حروف إنجليزية وأرقام وشرطة سفلية
+      وامتداد إنجليزي فقط، ولا يحتوي على اسم الملف العربي.
+    */
+
+    const safeFolder = folder.replace(/[^a-zA-Z0-9_-]/g, "");
+    const extension = getSafeExtension(file);
+
+    const randomPart =
+        crypto.randomUUID
+            ? crypto.randomUUID().replace(/-/g, "")
+            : Math.random().toString(36).slice(2) +
+              Math.random().toString(36).slice(2);
+
+    return safeFolder + "/" +
+           Date.now() + "_" +
+           randomPart + "." +
+           extension;
+}
+
+async function uploadToStorage(file, folder) {
+    if (!file) {
+        throw new Error("لم يتم اختيار أي ملف.");
+    }
+
+    if (!db) {
+        throw new Error("الاتصال بقاعدة البيانات غير جاهز.");
+    }
+
+    const path = makeSafeFilePath(folder, file);
+
+    const contentType = file.type || "application/octet-stream";
+
+    const { data, error } = await db.storage
+        .from(STORAGE_BUCKET)
+        .upload(path, file, {
+            cacheControl: "3600",
+            contentType: contentType,
+            upsert: false
         });
 
-        if (error) throw error;
-
-        const allowed = await requireAdmin();
-        if (allowed) await refreshAll();
-    } catch (error) {
-        setLoginMessage(friendlyError(error));
-    } finally {
-        button.disabled = false;
-        button.textContent = 'تسجيل الدخول';
+    if (error) {
+        throw new Error(
+            "فشل رفع الملف إلى Storage: " + error.message
+        );
     }
-});
 
-$('logoutButton').addEventListener('click', async () => {
-    await db.auth.signOut();
-    showLogin();
-});
-
-$('refreshButton').addEventListener('click', refreshAll);
-
-/* رفع الملفات إلى Storage */
-async function uploadToStorage(file, folder = 'uploads') {
-    if (!file) return null;
-
-    const extension = file.name.includes('.')
-        ? file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '')
-        : 'bin';
-
-    const safeFolder = String(folder).replace(/[^a-zA-Z0-9_-]/g, '') || 'uploads';
-    const randomPart = (window.crypto && typeof crypto.randomUUID === 'function')
-        ? crypto.randomUUID().replace(/-/g, '')
-        : Math.random().toString(36).slice(2) + Date.now().toString(36);
-
-    const path = `${safeFolder}/${Date.now()}_${randomPart}.${extension || 'bin'}`;
-
-    const {data, error} = await db.storage.from('uploads').upload(path, file, {
-        upsert: false,
-        contentType: file.type || 'application/octet-stream'
-    });
-
-    if (error) throw error;
-
-    const {data:publicData} = db.storage.from('uploads').getPublicUrl(data.path);
+    const { data: publicData } = db.storage
+        .from(STORAGE_BUCKET)
+        .getPublicUrl(data.path);
 
     return {
-        url: publicData.publicUrl,
-        path: data.path
+        path: data.path,
+        url: publicData.publicUrl
     };
 }
 
 async function deleteStorageFile(path) {
-    if (!path) return;
-    const {error} = await db.storage.from('uploads').remove([path]);
-    if (error) console.warn('Storage delete failed:', error.message);
-}
+    if (!path || !db) return;
 
-/* المحاضرات */
-async function loadLectures() {
-    const list = $('lecturesList');
-    list.textContent = 'جارٍ تحميل المحاضرات...';
+    const { error } = await db.storage
+        .from(STORAGE_BUCKET)
+        .remove([path]);
 
-    try {
-        const {data, error} = await db
-            .from('videos')
-            .select('*')
-            .limit(200);
-
-        if (error) throw error;
-
-        $('statLectures').textContent = (data || []).length;
-
-        if (!data?.length) {
-            list.textContent = 'لا توجد محاضرات حاليًا.';
-            return;
-        }
-
-        data.sort((a,b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
-
-        list.innerHTML = data.map(row => `
-            <div class="item">
-                <h3>${escapeHTML(row.title || 'محاضرة بلا عنوان')}</h3>
-                <p>${escapeHTML(row.chapter || '')}</p>
-                <p>${escapeHTML(row.description || row.details || '')}</p>
-                ${row.video_url ? `<p><a href="${escapeHTML(row.video_url)}" target="_blank" rel="noopener">فتح الفيديو</a></p>` : ''}
-                ${row.pdf_url ? `<p><a href="${escapeHTML(row.pdf_url)}" target="_blank" rel="noopener">فتح ملف PDF</a></p>` : ''}
-                <div class="item-actions">
-                    <button class="danger" data-delete-video="${escapeHTML(row.id)}">حذف المحاضرة</button>
-                </div>
-            </div>
-        `).join('');
-
-        list.querySelectorAll('[data-delete-video]').forEach(button => {
-            button.addEventListener('click', () => deleteLecture(button.dataset.deleteVideo));
-        });
-    } catch (error) {
-        list.textContent = 'تعذر تحميل المحاضرات: ' + friendlyError(error);
+    if (error) {
+        console.warn("تعذر حذف الملف من Storage:", error.message);
     }
 }
 
-$('lectureForm').addEventListener('submit', async event => {
-    event.preventDefault();
-    const button = $('lectureSubmit');
-    button.disabled = true;
-    button.textContent = 'جارٍ الحفظ...';
 
-    let video = null, pdf = null, homework = null;
+/* =========================================
+   التحقق من صلاحيات الإدارة
+   ========================================= */
+
+async function checkAdminPermission(user) {
+    const { data, error } = await db
+        .from("profiles")
+        .select("id, full_name, role")
+        .eq("id", user.id)
+        .maybeSingle();
+
+    if (error) {
+        throw new Error(
+            "تعذر التحقق من صلاحيات الحساب: " + error.message
+        );
+    }
+
+    if (!data || data.role !== "admin") {
+        throw new Error(
+            "هذا الحساب ليس لديه صلاحيات الإدارة. " +
+            "يجب تعيين role إلى admin في جدول profiles."
+        );
+    }
+
+    return data;
+}
+
+async function showLogin() {
+    $("loginSection").classList.remove("hidden");
+    $("adminPanel").classList.add("hidden");
+    $("logoutBtn").hidden = true;
+}
+
+async function showAdmin() {
+    $("loginSection").classList.add("hidden");
+    $("adminPanel").classList.remove("hidden");
+    $("logoutBtn").hidden = false;
+
+    await Promise.allSettled([
+        loadVideos(),
+        loadNotes(),
+        loadChampions()
+    ]);
+}
+
+async function initialize() {
+    if (
+        SUPABASE_KEY.includes("ضع_مفتاح") ||
+        !SUPABASE_KEY.trim()
+    ) {
+        showLogin();
+
+        showStatus(
+            "أضف مفتاح Supabase Publishable الحالي داخل الكود أولًا.",
+            "error"
+        );
+
+        return;
+    }
 
     try {
-        const videoFile = $('lectureFile').files[0];
-        const pdfFile = $('lecturePdf').files[0];
-        const homeworkFile = $('lectureHomework').files[0];
+        db = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
 
-        if (videoFile) video = await uploadToStorage(videoFile, 'videos');
-        if (pdfFile) pdf = await uploadToStorage(pdfFile, 'pdf');
-        if (homeworkFile) homework = await uploadToStorage(homeworkFile, 'homework');
+        const { data, error } = await db.auth.getSession();
 
-        const record = {
-            title: $('lectureTitle').value.trim(),
-            chapter: $('lectureChapter').value.trim(),
-            description: $('lectureDescription').value.trim(),
-            video_url: video?.url || $('lectureVideoUrl').value.trim() || null
-        };
-
-        if (pdf) record.pdf_url = pdf.url;
-        if (homework) record.homework_url = homework.url;
-
-        const {error} = await db.from('videos').insert(record);
         if (error) throw error;
 
-        $('lectureForm').reset();
-        showMessage('تم حفظ المحاضرة بنجاح.');
-        await loadLectures();
+        if (!data.session) {
+            showLogin();
+
+            showStatus(
+                "سجل الدخول باستخدام حساب الإدارة.",
+                "info"
+            );
+
+            return;
+        }
+
+        currentUser = data.session.user;
+
+        await verifyAndOpenAdmin();
+
     } catch (error) {
-        showMessage('تعذر حفظ المحاضرة: ' + friendlyError(error), true);
+        showLogin();
+
+        showStatus(
+            "تعذر الاتصال: " + formatError(error),
+            "error"
+        );
+    }
+}
+
+async function verifyAndOpenAdmin() {
+    try {
+        const profile = await checkAdminPermission(currentUser);
+
+        showStatus(
+            "مرحبًا " +
+            (profile.full_name || currentUser.email) +
+            "، تم تسجيل الدخول إلى لوحة الإدارة بنجاح.",
+            "success"
+        );
+
+        await showAdmin();
+
+    } catch (error) {
+        await db.auth.signOut();
+
+        currentUser = null;
+
+        showLogin();
+
+        showStatus(formatError(error), "error");
+    }
+}
+
+
+/* =========================================
+   تسجيل الدخول والخروج
+   ========================================= */
+
+$("loginForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const button = $("loginBtn");
+
+    setButtonLoading(button, true, "تسجيل الدخول");
+
+    try {
+        const email = $("loginEmail").value.trim();
+        const password = $("loginPassword").value;
+
+        const { data, error } = await db.auth.signInWithPassword({
+            email,
+            password
+        });
+
+        if (error) throw error;
+
+        currentUser = data.user;
+
+        await verifyAndOpenAdmin();
+
+    } catch (error) {
+        showStatus(
+            "تعذر تسجيل الدخول: " + formatError(error),
+            "error"
+        );
     } finally {
-        button.disabled = false;
-        button.textContent = 'حفظ المحاضرة';
+        setButtonLoading(button, false, "تسجيل الدخول");
     }
 });
 
-async function deleteLecture(id) {
-    if (!confirm('هل تريد حذف هذه المحاضرة؟')) return;
+async function logout() {
+    if (!db) return;
 
-    try {
-        const {error} = await db.from('videos').delete().eq('id', id);
-        if (error) throw error;
-        showMessage('تم حذف المحاضرة.');
-        await loadLectures();
-    } catch (error) {
-        showMessage('تعذر حذف المحاضرة: ' + friendlyError(error), true);
+    const { error } = await db.auth.signOut();
+
+    if (error) {
+        showStatus(formatError(error), "error");
+        return;
     }
+
+    currentUser = null;
+
+    await showLogin();
+
+    showStatus("تم تسجيل الخروج بنجاح.", "success");
 }
 
-/* المذكرات */
-async function loadNotes() {
-    const list = $('notesList');
-    list.textContent = 'جارٍ تحميل المذكرات...';
+if (window.supabase) {
+    window.addEventListener("online", () => {
+        if (db) {
+            showStatus("عاد الاتصال بالإنترنت.", "success");
+        }
+    });
+}
+
+
+/* =========================================
+   إضافة محاضرة
+   ========================================= */
+
+$("videoForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    if (busy) return;
+
+    busy = true;
+
+    const button = $("saveVideoBtn");
+    setButtonLoading(button, true, "حفظ المحاضرة");
+
+    let uploadedPath = null;
 
     try {
-        const {data, error} = await db.from('notes').select('*').limit(200);
+        const title = $("videoTitle").value.trim();
+        const description = $("videoDescription").value.trim();
+        let videoUrl = $("videoUrl").value.trim();
+        const file = $("videoFile").files[0];
+
+        if (!title) {
+            throw new Error("اكتب عنوان المحاضرة.");
+        }
+
+        if (!file && !videoUrl) {
+            throw new Error(
+                "أدخل رابط الفيديو أو اختر ملف فيديو."
+            );
+        }
+
+        if (videoUrl && !validateHttpUrl(videoUrl)) {
+            throw new Error("رابط الفيديو غير صحيح.");
+        }
+
+        let filePath = null;
+
+        if (file) {
+            showStatus("جاري رفع ملف المحاضرة...", "info");
+
+            const uploaded = await uploadToStorage(file, "videos");
+
+            uploadedPath = uploaded.path;
+
+            filePath = uploaded.path;
+
+            videoUrl = uploaded.url;
+        }
+
+        /*
+          الحقول الأساسية:
+          title, description, video_url, file_path
+
+          file_path يخزن مسار الملف في Storage.
+          video_url يخزن رابط المشاهدة.
+        */
+
+        const payload = {
+            title,
+            description,
+            video_url: videoUrl,
+            file_path: filePath
+        };
+
+        const { error } = await db
+            .from("videos")
+            .insert(payload);
+
         if (error) throw error;
 
-        $('statNotes').textContent = (data || []).length;
+        $("videoForm").reset();
 
-        if (!data?.length) {
-            list.textContent = 'لا توجد مذكرات حاليًا.';
+        showStatus(
+            "تم حفظ المحاضرة بنجاح.",
+            "success"
+        );
+
+        await loadVideos();
+
+    } catch (error) {
+        if (uploadedPath) {
+            await deleteStorageFile(uploadedPath);
+        }
+
+        showStatus(
+            "تعذر حفظ المحاضرة: " + formatError(error),
+            "error"
+        );
+
+    } finally {
+        busy = false;
+
+        setButtonLoading(button, false, "حفظ المحاضرة");
+    }
+});
+
+
+/* =========================================
+   عرض وحذف المحاضرات
+   ========================================= */
+
+async function loadVideos() {
+    if (!db) return;
+
+    const list = $("videosList");
+
+    list.innerHTML = '<div class="empty">جاري تحميل المحاضرات...</div>';
+
+    try {
+        const { data, error } = await db
+            .from("videos")
+            .select("*")
+            .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        $("videosCount").textContent = (data || []).length;
+
+        if (!data || data.length === 0) {
+            list.innerHTML =
+                '<div class="empty">لا توجد محاضرات حتى الآن.</div>';
+
             return;
         }
 
-        data.sort((a,b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+        list.innerHTML = data.map(video => `
+            <div class="list-item">
+                <h3>${escapeHTML(video.title)}</h3>
 
-        list.innerHTML = data.map(row => {
-            const fileUrl = row.file_path || row.pdf_url || row.file_url || '';
+                <p>${escapeHTML(video.description || "بدون وصف")}</p>
+
+                ${
+                    video.video_url
+                    ? `<p><a href="${escapeHTML(video.video_url)}"
+                           target="_blank" rel="noopener noreferrer">
+                           فتح الفيديو
+                       </a></p>`
+                    : ""
+                }
+
+                <div class="list-actions">
+                    <button class="btn btn-red btn-small"
+                        onclick="deleteVideo('${escapeHTML(video.id)}')">
+                        حذف المحاضرة
+                    </button>
+                </div>
+            </div>
+        `).join("");
+
+    } catch (error) {
+        list.innerHTML =
+            '<div class="empty">تعذر تحميل المحاضرات.</div>';
+
+        showStatus(
+            "خطأ تحميل المحاضرات: " + formatError(error),
+            "error"
+        );
+    }
+}
+
+async function deleteVideo(id) {
+    if (!confirm("هل تريد حذف هذه المحاضرة؟")) return;
+
+    try {
+        const { data: video, error: findError } = await db
+            .from("videos")
+            .select("id, file_path")
+            .eq("id", id)
+            .maybeSingle();
+
+        if (findError) throw findError;
+
+        const { error } = await db
+            .from("videos")
+            .delete()
+            .eq("id", id);
+
+        if (error) throw error;
+
+        if (video && video.file_path) {
+            await deleteStorageFile(video.file_path);
+        }
+
+        showStatus("تم حذف المحاضرة.", "success");
+
+        await loadVideos();
+
+    } catch (error) {
+        showStatus(
+            "تعذر حذف المحاضرة: " + formatError(error),
+            "error"
+        );
+    }
+}
+
+
+/* =========================================
+   إضافة مذكرة PDF
+   ========================================= */
+
+$("noteForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    if (busy) return;
+
+    busy = true;
+
+    const button = $("saveNoteBtn");
+
+    setButtonLoading(button, true, "رفع المذكرة وحفظها");
+
+    let uploadedPath = null;
+
+    try {
+        const title = $("noteTitle").value.trim();
+        const description = $("noteDescription").value.trim();
+        const file = $("noteFile").files[0];
+
+        if (!title || !file) {
+            throw new Error("اكتب العنوان واختر ملف PDF.");
+        }
+
+        if (
+            file.type !== "application/pdf" &&
+            !file.name.toLowerCase().endsWith(".pdf")
+        ) {
+            throw new Error("يجب اختيار ملف PDF.");
+        }
+
+        showStatus("جاري رفع المذكرة...", "info");
+
+        const uploaded = await uploadToStorage(file, "pdf");
+
+        uploadedPath = uploaded.path;
+
+        const { error } = await db
+            .from("notes")
+            .insert({
+                title,
+                description,
+                file_path: uploaded.path
+            });
+
+        if (error) throw error;
+
+        $("noteForm").reset();
+
+        showStatus("تم رفع المذكرة وحفظها بنجاح.", "success");
+
+        await loadNotes();
+
+    } catch (error) {
+        if (uploadedPath) {
+            await deleteStorageFile(uploadedPath);
+        }
+
+        showStatus(
+            "تعذر حفظ المذكرة: " + formatError(error),
+            "error"
+        );
+
+    } finally {
+        busy = false;
+
+        setButtonLoading(button, false, "رفع المذكرة وحفظها");
+    }
+});
+
+
+/* =========================================
+   عرض وحذف المذكرات
+   ========================================= */
+
+async function loadNotes() {
+    if (!db) return;
+
+    const list = $("notesList");
+
+    list.innerHTML =
+        '<div class="empty">جاري تحميل المذكرات...</div>';
+
+    try {
+        const { data, error } = await db
+            .from("notes")
+            .select("*")
+            .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        $("notesCount").textContent = (data || []).length;
+
+        if (!data || data.length === 0) {
+            list.innerHTML =
+                '<div class="empty">لا توجد مذكرات منشورة.</div>';
+
+            return;
+        }
+
+        list.innerHTML = data.map(note => {
+            const { data: publicData } = db.storage
+                .from(STORAGE_BUCKET)
+                .getPublicUrl(note.file_path || "");
+
             return `
-                <div class="item">
-                    <h3>${escapeHTML(row.title || 'مذكرة بلا عنوان')}</h3>
-                    <p>${escapeHTML(row.chapter || '')}</p>
-                    <p>${escapeHTML(row.description || '')}</p>
-                    ${fileUrl ? `<p><a href="${escapeHTML(fileUrl)}" target="_blank" rel="noopener">فتح المذكرة</a></p>` : '<p class="muted">لا يوجد رابط ملف محفوظ.</p>'}
-                    <div class="item-actions">
-                        <button class="danger" data-delete-note="${escapeHTML(row.id)}">حذف المذكرة</button>
+                <div class="list-item">
+                    <h3>${escapeHTML(note.title)}</h3>
+
+                    <p>${escapeHTML(note.description || "بدون وصف")}</p>
+
+                    ${
+                        note.file_path
+                        ? `<p>
+                            <a href="${escapeHTML(publicData.publicUrl)}"
+                               target="_blank"
+                               rel="noopener noreferrer">
+                               فتح ملف المذكرة
+                            </a>
+                           </p>`
+                        : ""
+                    }
+
+                    <div class="list-actions">
+                        <button class="btn btn-red btn-small"
+                            onclick="deleteNote('${escapeHTML(note.id)}')">
+                            حذف المذكرة
+                        </button>
                     </div>
                 </div>
             `;
-        }).join('');
+        }).join("");
 
-        list.querySelectorAll('[data-delete-note]').forEach(button => {
-            button.addEventListener('click', () => deleteNote(button.dataset.deleteNote));
-        });
     } catch (error) {
-        list.textContent = 'تعذر تحميل المذكرات: ' + friendlyError(error);
+        list.innerHTML =
+            '<div class="empty">تعذر تحميل المذكرات.</div>';
+
+        showStatus(
+            "خطأ تحميل المذكرات: " + formatError(error),
+            "error"
+        );
     }
 }
 
-$('noteForm').addEventListener('submit', async event => {
-    event.preventDefault();
-    const button = $('noteSubmit');
-    button.disabled = true;
-    button.textContent = 'جارٍ رفع المذكرة...';
+async function deleteNote(id) {
+    if (!confirm("هل تريد حذف هذه المذكرة؟")) return;
 
     try {
-        const file = $('noteFile').files[0];
-        if (!file) throw new Error('اختر ملف PDF أولًا.');
+        const { data: note, error: findError } = await db
+            .from("notes")
+            .select("id, file_path")
+            .eq("id", id)
+            .maybeSingle();
 
-        const uploaded = await uploadToStorage(file, 'pdf');
+        if (findError) throw findError;
 
-        const {error} = await db.from('notes').insert({
-            title: $('noteTitle').value.trim(),
-            chapter: $('noteChapter').value.trim(),
-            description: $('noteDescription').value.trim(),
-            file_path: uploaded.url
-        });
+        const { error } = await db
+            .from("notes")
+            .delete()
+            .eq("id", id);
 
         if (error) throw error;
 
-        $('noteForm').reset();
-        showMessage('تم رفع المذكرة وحفظها بنجاح.');
+        if (note && note.file_path) {
+            await deleteStorageFile(note.file_path);
+        }
+
+        showStatus("تم حذف المذكرة.", "success");
+
         await loadNotes();
+
     } catch (error) {
-        showMessage('تعذر حفظ المذكرة: ' + friendlyError(error), true);
-    } finally {
-        button.disabled = false;
-        button.textContent = 'حفظ المذكرة';
+        showStatus(
+            "تعذر حذف المذكرة: " + formatError(error),
+            "error"
+        );
+    }
+}
+
+
+/* =========================================
+   إضافة بطل الفصل
+   ========================================= */
+
+$("championForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    try {
+        const name = $("championName").value.trim();
+
+        const points = Number($("championPoints").value);
+
+        const description =
+            $("championDescription").value.trim();
+
+        if (!name) {
+            throw new Error("اكتب اسم الطالب.");
+        }
+
+        if (!Number.isFinite(points) || points < 0) {
+            throw new Error("عدد النقاط غير صحيح.");
+        }
+
+        const { error } = await db
+            .from("champions")
+            .insert({
+                name,
+                points,
+                description
+            });
+
+        if (error) throw error;
+
+        $("championForm").reset();
+
+        $("championPoints").value = 0;
+
+        showStatus("تمت إضافة بطل الفصل.", "success");
+
+        await loadChampions();
+
+    } catch (error) {
+        showStatus(
+            "تعذر إضافة البطل: " + formatError(error),
+            "error"
+        );
     }
 });
 
-async function deleteNote(id) {
-    if (!confirm('هل تريد حذف هذه المذكرة؟')) return;
 
-    try {
-        const {error} = await db.from('notes').delete().eq('id', id);
-        if (error) throw error;
-        showMessage('تم حذف المذكرة.');
-        await loadNotes();
-    } catch (error) {
-        showMessage('تعذر حذف المذكرة: ' + friendlyError(error), true);
-    }
-}
+/* =========================================
+   عرض ترتيب الأبطال
+   ========================================= */
 
-/* بطل الفصل */
 async function loadChampions() {
-    const list = $('championsList');
-    list.textContent = 'جارٍ تحميل الطلاب...';
+    if (!db) return;
+
+    const list = $("championsList");
+
+    list.innerHTML =
+        '<div class="empty">جاري تحميل الأبطال...</div>';
 
     try {
-        const {data, error} = await db.from('champions').select('*');
+        const { data, error } = await db
+            .from("champions")
+            .select("*")
+            .order("points", { ascending: false });
+
         if (error) throw error;
 
-        if (!data?.length) {
-            list.textContent = 'لا يوجد طلاب في القائمة حتى الآن.';
+        $("championsCount").textContent = (data || []).length;
+
+        if (!data || data.length === 0) {
+            list.innerHTML =
+                '<div class="empty">لا يوجد أبطال حتى الآن.</div>';
+
             return;
         }
 
-        /* الترتيب داخل المتصفح لتجنب مشكلة ORDER BY rank */
-        data.sort((a,b) => {
-            const rankA = Number(a.rank) || 999999;
-            const rankB = Number(b.rank) || 999999;
-            if (rankA !== rankB) return rankA - rankB;
-            return Number(b.score || 0) - Number(a.score || 0);
-        });
+        list.innerHTML = data.map((champion, index) => `
+            <div class="list-item">
+                <h3>
+                    ${index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : "🏅"}
+                    ${escapeHTML(champion.name)}
+                </h3>
 
-        list.innerHTML = data.map(student => `
-            <div class="item">
-                <h3>🏆 ${escapeHTML(student.student_name || 'طالب')}</h3>
-                <p>النقاط: ${escapeHTML(student.score ?? 0)}</p>
-                <label for="rank-${escapeHTML(student.id)}">الترتيب</label>
-                <input id="rank-${escapeHTML(student.id)}" type="number" min="1"
-                    value="${escapeHTML(student.rank ?? '')}">
-                <label for="score-${escapeHTML(student.id)}">النقاط</label>
-                <input id="score-${escapeHTML(student.id)}" type="number" min="0"
-                    value="${escapeHTML(student.score ?? 0)}">
-                <div class="item-actions">
-                    <button data-save-champion="${escapeHTML(student.id)}">حفظ التعديلات</button>
-                    <button class="danger" data-delete-champion="${escapeHTML(student.id)}">حذف الطالب</button>
+                <p>النقاط: ${escapeHTML(champion.points ?? 0)}</p>
+
+                <p>${escapeHTML(champion.description || "")}</p>
+
+                <div class="list-actions">
+                    <button class="btn btn-blue btn-small"
+                        onclick="editChampion('${escapeHTML(champion.id)}',
+                            '${escapeHTML(champion.name)}',
+                            '${escapeHTML(champion.points ?? 0)}')">
+                        تعديل النقاط
+                    </button>
+
+                    <button class="btn btn-red btn-small"
+                        onclick="deleteChampion('${escapeHTML(champion.id)}')">
+                        حذف
+                    </button>
                 </div>
             </div>
-        `).join('');
+        `).join("");
 
-        list.querySelectorAll('[data-save-champion]').forEach(button => {
-            button.addEventListener('click', () => updateChampion(button.dataset.saveChampion));
-        });
-
-        list.querySelectorAll('[data-delete-champion]').forEach(button => {
-            button.addEventListener('click', () => deleteChampion(button.dataset.deleteChampion));
-        });
     } catch (error) {
-        list.textContent = 'تعذر تحميل الطلاب: ' + friendlyError(error);
+        list.innerHTML =
+            '<div class="empty">تعذر تحميل الأبطال.</div>';
+
+        showStatus(
+            "خطأ تحميل الأبطال: " + formatError(error),
+            "error"
+        );
     }
 }
 
-$('championForm').addEventListener('submit', async event => {
-    event.preventDefault();
-    const button = $('championSubmit');
-    button.disabled = true;
+async function editChampion(id, name, oldPoints) {
+    const answer = prompt(
+        "تعديل نقاط الطالب: " + name,
+        oldPoints
+    );
 
-    try {
-        const {error} = await db.from('champions').insert({
-            student_name: $('championName').value.trim(),
-            score: Number($('championScore').value) || 0,
-            rank: Number($('championRank').value)
-        });
+    if (answer === null) return;
 
-        if (error) throw error;
+    const points = Number(answer);
 
-        $('championForm').reset();
-        $('championScore').value = '0';
-        showMessage('تمت إضافة الطالب إلى بطل الفصل.');
-        await loadChampions();
-    } catch (error) {
-        showMessage('تعذر إضافة الطالب: ' + friendlyError(error), true);
-    } finally {
-        button.disabled = false;
-    }
-});
-
-async function updateChampion(id) {
-    const rank = Number($('rank-' + id).value);
-    const score = Number($('score-' + id).value);
-
-    if (!Number.isInteger(rank) || rank < 1) {
-        showMessage('أدخل ترتيبًا صحيحًا يبدأ من 1.', true);
-        return;
-    }
-    if (!Number.isFinite(score) || score < 0) {
-        showMessage('أدخل نقاطًا صحيحة.', true);
+    if (!Number.isFinite(points) || points < 0) {
+        alert("أدخل عدد نقاط صحيحًا.");
         return;
     }
 
     try {
-        const {error} = await db.from('champions')
-            .update({rank, score})
-            .eq('id', id);
+        const { error } = await db
+            .from("champions")
+            .update({ points })
+            .eq("id", id);
 
         if (error) throw error;
-        showMessage('تم تحديث بيانات الطالب.');
+
+        showStatus("تم تحديث النقاط.", "success");
+
         await loadChampions();
+
     } catch (error) {
-        showMessage('تعذر تحديث الطالب: ' + friendlyError(error), true);
+        showStatus(
+            "تعذر تعديل النقاط: " + formatError(error),
+            "error"
+        );
     }
 }
 
 async function deleteChampion(id) {
-    if (!confirm('هل تريد حذف الطالب من قائمة بطل الفصل؟')) return;
-
-    try {
-        const {error} = await db.from('champions').delete().eq('id', id);
-        if (error) throw error;
-        showMessage('تم حذف الطالب.');
-        await loadChampions();
-    } catch (error) {
-        showMessage('تعذر حذف الطالب: ' + friendlyError(error), true);
+    if (!confirm("هل تريد حذف هذا الطالب من قائمة الأبطال؟")) {
+        return;
     }
-}
-
-/* المنتدى: قراءة المنشورات من الجدول الأصلي forum */
-async function loadForum() {
-    const list = $('forumList');
-    list.textContent = 'جارٍ تحميل منشورات المنتدى...';
-
-    try {
-        const { data, error } = await db
-            .from('forum')
-            .select('*')
-            .limit(200);
-
-        if (error) throw error;
-
-        const posts = data || [];
-
-        $('statPosts').textContent = posts.length;
-
-        if (posts.length === 0) {
-            list.textContent = 'لا توجد منشورات ظاهرة في جدول المنتدى.';
-            return;
-        }
-
-        posts.sort((a, b) => {
-            const dateA = new Date(
-                a.created_at || a.timestamp || 0
-            ).getTime();
-
-            const dateB = new Date(
-                b.created_at || b.timestamp || 0
-            ).getTime();
-
-            return dateB - dateA;
-        });
-
-        list.innerHTML = posts.map(post => `
-            <div class="item">
-                <h3>💬 منشور رقم ${escapeHTML(post.id)}</h3>
-
-                <p>
-                    <strong>الكاتب:</strong>
-                    ${escapeHTML(post.author_name || 'طالب')}
-                </p>
-
-                <p style="white-space:pre-wrap;overflow-wrap:anywhere">
-                    ${escapeHTML(post.content || '')}
-                </p>
-
-                <p class="muted small">
-                    التاريخ:
-                    ${escapeHTML(
-                        post.created_at ||
-                        post.timestamp ||
-                        'غير محدد'
-                    )}
-                </p>
-
-                <div class="item-actions">
-                    <button
-                        type="button"
-                        class="danger"
-                        data-delete-old-forum="${escapeHTML(post.id)}">
-                        حذف المنشور
-                    </button>
-                </div>
-            </div>
-        `).join('');
-
-        list.querySelectorAll('[data-delete-old-forum]')
-            .forEach(button => {
-                button.addEventListener('click', async () => {
-                    await deleteOldForumPost(
-                        button.dataset.deleteOldForum
-                    );
-                });
-            });
-
-    } catch (error) {
-        console.error('Forum loading error:', error);
-
-        list.textContent =
-            'تعذر تحميل المنشورات: ' + friendlyError(error);
-    }
-}
-
-/* حذف منشور من الجدول الأصلي */
-async function deleteOldForumPost(id) {
-    if (!confirm('هل تريد حذف هذا المنشور؟')) return;
 
     try {
         const { error } = await db
-            .from('forum')
+            .from("champions")
             .delete()
-            .eq('id', id);
+            .eq("id", id);
 
         if (error) throw error;
 
-        showMessage('تم حذف المنشور بنجاح.');
-        await loadForum();
+        showStatus("تم حذف الطالب من قائمة الأبطال.", "success");
+
+        await loadChampions();
 
     } catch (error) {
-        console.error('Forum deletion error:', error);
-
-        showMessage(
-            'تعذر حذف المنشور: ' + friendlyError(error),
-            true
+        showStatus(
+            "تعذر حذف البطل: " + formatError(error),
+            "error"
         );
     }
-/* تحديث البيانات */
-async function refreshAll() {
-    hideMessage();
-    $('connectionStatus').textContent = 'جارٍ الاتصال بقاعدة البيانات...';
-
-    try {
-        const allowed = await requireAdmin();
-        if (!allowed) return;
-
-        const results = await Promise.allSettled([
-            loadLectures(),
-            loadNotes(),
-            loadChampions(),
-            loadForum()
-        ]);
-
-        const failures = results.filter(result => result.status === 'rejected');
-
-        $('connectionStatus').textContent = failures.length
-            ? 'تم الاتصال، لكن توجد أقسام تحتاج إلى إصلاح. راجع الرسائل داخل كل قسم.'
-            : 'تم الاتصال ومحاولة تحميل جميع الأقسام.';
-    } catch (error) {
-        $('connectionStatus').textContent = 'تعذر التحقق من صلاحية المدير: ' + friendlyError(error);
-        showMessage(friendlyError(error), true);
-    }
 }
 
-/* فحص الجلسة عند فتح الصفحة */
-async function start() {
+
+/* =========================================
+   عرض منشورات المنتدى
+   ========================================= */
+
+async function loadForumPosts() {
+    if (!db) return;
+
+    const list = $("forumList");
+
+    list.innerHTML =
+        '<div class="empty">جاري تحميل منشورات المنتدى...</div>';
+
     try {
-        const {data:{session}, error} = await db.auth.getSession();
+        const { data, error } = await db
+            .from("forum_posts")
+            .select("*")
+            .order("created_at", { ascending: false })
+            .limit(50);
+
         if (error) throw error;
 
-        if (session) {
-            const allowed = await requireAdmin();
-            if (allowed) await refreshAll();
-        } else {
-            showLogin();
+        if (!data || data.length === 0) {
+            list.innerHTML =
+                '<div class="empty">لا توجد منشورات في المنتدى.</div>';
+
+            return;
         }
+
+        list.innerHTML = data.map(post => `
+            <div class="list-item">
+                <h3>${escapeHTML(post.title || "منشور جديد")}</h3>
+
+                <p>${escapeHTML(post.content || post.body || "")}</p>
+
+                <p>
+                    رقم المنشور:
+                    ${escapeHTML(post.id)}
+                </p>
+
+                <div class="field">
+                    <label>الرد على المنشور</label>
+
+                    <textarea
+                        id="reply_${escapeHTML(post.id)}"
+                        placeholder="اكتب رد الإدارة هنا..."></textarea>
+                </div>
+
+                <div class="field">
+                    <label>إرفاق رد صوتي (اختياري)</label>
+
+                    <input
+                        type="file"
+                        id="audio_${escapeHTML(post.id)}"
+                        accept="audio/*">
+                </div>
+
+                <div class="list-actions">
+                    <button class="btn btn-small"
+                        onclick="replyToPost('${escapeHTML(post.id)}')">
+                        إرسال الرد
+                    </button>
+                </div>
+            </div>
+        `).join("");
+
     } catch (error) {
-        showLogin();
-        setLoginMessage('تعذر بدء لوحة التحكم: ' + friendlyError(error));
+        list.innerHTML = `
+            <div class="empty">
+                تعذر تحميل المنتدى.
+                تأكد من وجود جدول forum_posts وصلاحيات الوصول إليه.
+            </div>
+        `;
+
+        showStatus(
+            "خطأ المنتدى: " + formatError(error),
+            "error"
+        );
     }
 }
 
-window.refreshAll = refreshAll;
-window.loadForum = loadForum;
 
-start();
+/* =========================================
+   إرسال رد نصي أو صوتي في المنتدى
+   ========================================= */
 
+async function replyToPost(postId) {
+    let uploadedPath = null;
+
+    try {
+        const textArea = $("reply_" + postId);
+
+        const audioInput = $("audio_" + postId);
+
+        if (!textArea || !audioInput) {
+            throw new Error("تعذر العثور على حقول الرد.");
+        }
+
+        const content = textArea.value.trim();
+
+        const audioFile = audioInput.files[0];
+
+        if (!content && !audioFile) {
+            throw new Error("اكتب ردًا أو اختر ملفًا صوتيًا.");
+        }
+
+        let audioUrl = null;
+
+        if (audioFile) {
+            showStatus("جاري رفع الرد الصوتي...", "info");
+
+            const uploaded = await uploadToStorage(
+                audioFile,
+                "forum-audio"
+            );
+
+            uploadedPath = uploaded.path;
+
+            audioUrl = uploaded.url;
+        }
+
+        /*
+          افتراض بنية جدول forum_replies:
+          post_id, user_id, content, audio_url
+
+          إذا كانت أسماء أعمدة جدولك مختلفة،
+          عدّل هذه الحقول لتطابق قاعدة بياناتك.
+        */
+
+        const { error } = await db
+            .from("forum_replies")
+            .insert({
+                post_id: postId,
+                user_id: currentUser.id,
+                content: content || "",
+                audio_url: audioUrl
+            });
+
+        if (error) throw error;
+
+        textArea.value = "";
+
+        audioInput.value = "";
+
+        showStatus("تم إرسال الرد بنجاح.", "success");
+
+    } catch (error) {
+        if (uploadedPath) {
+            await deleteStorageFile(uploadedPath);
+        }
+
+        showStatus(
+            "تعذر إرسال الرد: " + formatError(error),
+            "error"
+        );
+    }
+}
+
+
+/* =========================================
+   مراقبة حالة تسجيل الدخول
+   ========================================= */
+
+function watchAuthChanges() {
+    if (!db) return;
+
+    db.auth.onAuthStateChange((event, session) => {
+        if (event === "SIGNED_OUT") {
+            currentUser = null;
+
+            $("adminPanel").classList.add("hidden");
+
+            $("loginSection").classList.remove("hidden");
+
+            $("logoutBtn").hidden = true;
+        }
+
+        if (event === "SIGNED_IN" && session) {
+            currentUser = session.user;
+        }
+    });
+}
+
+
+/* =========================================
+   بدء تشغيل لوحة التحكم
+   ========================================= */
+
+(async function startAdminPanel() {
+    await initialize();
+
+    watchAuthChanges();
 })();
 </script>
+
 </body>
 </html>
