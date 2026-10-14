@@ -859,158 +859,113 @@ async function deleteChampion(id) {
     }
 }
 
-/* المنتدى */
+/* المنتدى: قراءة المنشورات من الجدول الأصلي forum */
 async function loadForum() {
     const list = $('forumList');
-    list.textContent = 'جارٍ تحميل المنتدى...';
+    list.textContent = 'جارٍ تحميل منشورات المنتدى...';
 
     try {
-        const {data, error} = await db
-            .from('forum_posts')
+        const { data, error } = await db
+            .from('forum')
             .select('*')
-            .limit(100);
+            .limit(200);
 
         if (error) throw error;
 
-        $('statPosts').textContent = (data || []).length;
+        const posts = data || [];
 
-        if (!data?.length) {
-            list.textContent = 'لا توجد منشورات في المنتدى حاليًا.';
+        $('statPosts').textContent = posts.length;
+
+        if (posts.length === 0) {
+            list.textContent = 'لا توجد منشورات ظاهرة في جدول المنتدى.';
             return;
         }
 
-        data.sort((a,b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+        posts.sort((a, b) => {
+            const dateA = new Date(
+                a.created_at || a.timestamp || 0
+            ).getTime();
 
-        list.innerHTML = data.map(post => {
-            const content = post.content ?? post.body ?? '';
-            return `
-                <div class="item">
-                    <h3>${escapeHTML(post.title || 'منشور في المنتدى')}</h3>
-                    <p>${escapeHTML(content)}</p>
-                    <p class="muted small">التاريخ: ${escapeHTML(post.created_at || '')}</p>
+            const dateB = new Date(
+                b.created_at || b.timestamp || 0
+            ).getTime();
 
-                    <details>
-                        <summary>إضافة رد</summary>
-                        <form data-reply-form="${escapeHTML(post.id)}">
-                            <label>نص الرد</label>
-                            <textarea name="replyContent" required maxlength="5000"></textarea>
-                            <button type="submit">إرسال الرد</button>
-                        </form>
-                    </details>
-
-                    <div class="item-actions">
-                        <button class="danger" data-delete-post="${escapeHTML(post.id)}">حذف المنشور</button>
-                    </div>
-                    <div id="replies-${escapeHTML(post.id)}" class="muted small">جارٍ تحميل الردود...</div>
-                </div>
-            `;
-        }).join('');
-
-        list.querySelectorAll('[data-reply-form]').forEach(form => {
-            form.addEventListener('submit', async event => {
-                event.preventDefault();
-                const postId = form.dataset.replyForm;
-                const content = form.elements.replyContent.value.trim();
-                if (!content) return;
-
-                const button = form.querySelector('button');
-                button.disabled = true;
-
-                try {
-                    const {error} = await db.from('forum_replies').insert({
-                        post_id: postId,
-                        user_id: currentUser.id,
-                        content,
-                        reply_type: 'text'
-                    });
-
-                    if (error) throw error;
-
-                    form.reset();
-                    showMessage('تم إرسال الرد.');
-                    await loadReplies(postId);
-                } catch (error) {
-                    showMessage('تعذر إرسال الرد: ' + friendlyError(error), true);
-                } finally {
-                    button.disabled = false;
-                }
-            });
+            return dateB - dateA;
         });
 
-        list.querySelectorAll('[data-delete-post]').forEach(button => {
-            button.addEventListener('click', () => deletePost(button.dataset.deletePost));
-        });
-
-        for (const post of data) {
-            await loadReplies(post.id);
-        }
-    } catch (error) {
-        list.textContent = 'تعذر تحميل المنتدى: ' + friendlyError(error);
-    }
-}
-
-async function loadReplies(postId) {
-    const container = $('replies-' + postId);
-    if (!container) return;
-
-    try {
-        const {data, error} = await db
-            .from('forum_replies')
-            .select('*')
-            .eq('post_id', postId)
-            .limit(100);
-
-        if (error) throw error;
-
-        if (!data?.length) {
-            container.textContent = 'لا توجد ردود حتى الآن.';
-            return;
-        }
-
-        data.sort((a,b) => String(a.created_at || '').localeCompare(String(b.created_at || '')));
-
-        container.innerHTML = '<hr><strong>الردود:</strong>' + data.map(reply => `
+        list.innerHTML = posts.map(post => `
             <div class="item">
-                <p>${escapeHTML(reply.content || '')}</p>
-                <p class="muted small">${escapeHTML(reply.reply_type || 'text')} — ${escapeHTML(reply.created_at || '')}</p>
-                <button class="danger" data-delete-reply="${escapeHTML(reply.id)}">حذف الرد</button>
+                <h3>💬 منشور رقم ${escapeHTML(post.id)}</h3>
+
+                <p>
+                    <strong>الكاتب:</strong>
+                    ${escapeHTML(post.author_name || 'طالب')}
+                </p>
+
+                <p style="white-space:pre-wrap;overflow-wrap:anywhere">
+                    ${escapeHTML(post.content || '')}
+                </p>
+
+                <p class="muted small">
+                    التاريخ:
+                    ${escapeHTML(
+                        post.created_at ||
+                        post.timestamp ||
+                        'غير محدد'
+                    )}
+                </p>
+
+                <div class="item-actions">
+                    <button
+                        type="button"
+                        class="danger"
+                        data-delete-old-forum="${escapeHTML(post.id)}">
+                        حذف المنشور
+                    </button>
+                </div>
             </div>
         `).join('');
 
-        container.querySelectorAll('[data-delete-reply]').forEach(button => {
-            button.addEventListener('click', () => deleteReply(button.dataset.deleteReply, postId));
-        });
+        list.querySelectorAll('[data-delete-old-forum]')
+            .forEach(button => {
+                button.addEventListener('click', async () => {
+                    await deleteOldForumPost(
+                        button.dataset.deleteOldForum
+                    );
+                });
+            });
+
     } catch (error) {
-        container.textContent = 'تعذر تحميل الردود: ' + friendlyError(error);
+        console.error('Forum loading error:', error);
+
+        list.textContent =
+            'تعذر تحميل المنشورات: ' + friendlyError(error);
     }
 }
 
-async function deletePost(id) {
+/* حذف منشور من الجدول الأصلي */
+async function deleteOldForumPost(id) {
     if (!confirm('هل تريد حذف هذا المنشور؟')) return;
 
     try {
-        const {error} = await db.from('forum_posts').delete().eq('id', id);
+        const { error } = await db
+            .from('forum')
+            .delete()
+            .eq('id', id);
+
         if (error) throw error;
-        showMessage('تم حذف المنشور.');
+
+        showMessage('تم حذف المنشور بنجاح.');
         await loadForum();
+
     } catch (error) {
-        showMessage('تعذر حذف المنشور: ' + friendlyError(error), true);
+        console.error('Forum deletion error:', error);
+
+        showMessage(
+            'تعذر حذف المنشور: ' + friendlyError(error),
+            true
+        );
     }
-}
-
-async function deleteReply(id, postId) {
-    if (!confirm('هل تريد حذف هذا الرد؟')) return;
-
-    try {
-        const {error} = await db.from('forum_replies').delete().eq('id', id);
-        if (error) throw error;
-        showMessage('تم حذف الرد.');
-        await loadReplies(postId);
-    } catch (error) {
-        showMessage('تعذر حذف الرد: ' + friendlyError(error), true);
-    }
-}
-
 /* تحديث البيانات */
 async function refreshAll() {
     hideMessage();
