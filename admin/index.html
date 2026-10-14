@@ -2,334 +2,847 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>لوحة تحكم منصة أرض الأحياء</title>
-<link rel="icon" href="../favicon.png">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة التحكم | منصة أرض الأحياء</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--navy:#1e3a8a;--green:#026857;--red:#c0392b;--bg:#f0f4f8;--line:#e2e8f0}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#263445;font-family:'Cairo',sans-serif}
-button,input,textarea,select{font:inherit}button{border:0;border-radius:10px;padding:10px 16px;background:var(--navy);color:#fff;font-weight:700;cursor:pointer}
-button:hover{filter:brightness(1.08)}button:disabled{opacity:.55;cursor:not-allowed}
-input,textarea,select{width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;outline:none}
-input:focus,textarea:focus,select:focus{border-color:var(--navy);box-shadow:0 0 0 3px #1e3a8a18}
-textarea{min-height:100px;resize:vertical}.container{max-width:1100px;margin:auto;padding:18px}
-.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
-h1{font-size:clamp(21px,4vw,29px);color:var(--navy);margin:0}h2{font-size:19px;color:var(--navy);margin:0 0 18px;padding-bottom:10px;border-bottom:2px solid #f1f5f9}
-.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:18px;box-shadow:0 4px 18px #1e3a8a08}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.field{margin-bottom:14px}.field label{display:block;font-weight:700;color:var(--green);font-size:14px;margin-bottom:6px}
-.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.secondary{background:var(--green)}.danger{background:var(--red)}.muted{color:#64748b;font-size:13px}.status{margin-top:12px;font-weight:700;overflow-wrap:anywhere}.item{border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0;background:#f8fafc;min-width:0}.item-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}.item strong{color:var(--navy)}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tab{background:#dbeafe;color:#1e3a8a}.tab.active{background:var(--navy);color:white}.section{display:none}.section.active{display:block}.badge{display:inline-block;border-radius:999px;background:#dcfce7;color:#166534;padding:3px 10px;font-size:12px;font-weight:700}.audio-preview{width:100%;max-width:420px;margin-top:8px}.login-wrap{max-width:460px;margin:7vh auto}.empty{color:#64748b;padding:14px;text-align:center}.rank-input{max-width:110px}.reply-box{border-top:1px dashed #cbd5e1;margin-top:12px;padding-top:12px}
-@media(max-width:700px){.container{padding:12px}.card{padding:16px}.grid{grid-template-columns:1fr}.topbar{align-items:flex-start}.item-head{display:block}.item-head .actions{margin-top:10px}.rank-input{max-width:100%}}
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#f3f7f6;color:#173b35}
+button,input,textarea,select{font-family:inherit;font-size:15px}
+button{cursor:pointer;border:0;border-radius:9px;padding:11px 16px;background:#087f68;color:white}
+button:hover{opacity:.9}
+button:disabled{opacity:.6;cursor:wait}
+input,textarea,select{width:100%;padding:12px;margin:7px 0 14px;border:1px solid #d4e2de;border-radius:9px;background:white}
+textarea{min-height:100px;resize:vertical}
+label{font-weight:bold}
+.hidden{display:none!important}
+#loginScreen{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
+.login-box{background:white;padding:28px;border-radius:18px;box-shadow:0 8px 30px #00000010;width:100%;max-width:430px}
+.login-box h1{text-align:center;color:#087f68;font-size:25px}
+.subtitle{text-align:center;color:#6a817b;line-height:1.8}
+#app{display:none;min-height:100vh}
+.sidebar{position:fixed;right:0;top:0;bottom:0;width:245px;padding:22px 15px;background:#075e54;color:white;overflow-y:auto}
+.brand{text-align:center;font-size:21px;font-weight:bold;padding:15px 5px 25px;line-height:1.8}
+.nav-btn{display:block;width:100%;text-align:right;margin-bottom:9px;background:transparent;color:white;padding:13px;border-radius:9px}
+.nav-btn:hover,.nav-btn.active{background:#0b806f}
+.main{margin-right:245px;padding:25px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:25px}
+.topbar h1{margin:0;font-size:25px}
+.card{background:white;border-radius:14px;padding:20px;margin-bottom:20px;box-shadow:0 3px 15px #00000008}
+.card h2{margin-top:0;color:#087f68;font-size:21px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-bottom:22px}
+.stat{background:white;border-radius:13px;padding:20px;text-align:center;box-shadow:0 3px 15px #00000008}
+.stat strong{display:block;font-size:28px;color:#087f68;margin-top:10px}
+.item{border:1px solid #e0eae7;border-radius:11px;padding:15px;margin:12px 0;overflow-wrap:anywhere}
+.item h3{margin-top:0}
+.item-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.danger{background:#c0392b}
+.secondary{background:#476c64}
+.success{background:#168653}
+.notice{padding:12px;border-radius:9px;margin:12px 0;line-height:1.7;overflow-wrap:anywhere}
+.notice.error{background:#ffe8e6;color:#a52b20}
+.notice.ok{background:#e1f7e9;color:#176b38}
+.small{font-size:13px;color:#6a817b;line-height:1.8}
+a{color:#087f68;overflow-wrap:anywhere}
+audio{max-width:100%}
+@media(max-width:800px){
+.sidebar{position:static;width:100%;padding:12px}
+.brand{padding:8px}
+.nav-btn{display:inline-block;width:auto;margin:3px}
+.main{margin-right:0;padding:14px}
+.stats{grid-template-columns:1fr}
+}
 </style>
 </head>
+
 <body>
-<div id="loginView" class="container login-wrap">
-  <div class="card">
-    <h1 style="margin-bottom:8px">🔐 دخول الإدارة</h1>
-    <p class="muted" style="margin-bottom:18px">سجّل الدخول بحساب الإدارة المسجل في جدول profiles ودوره admin.</p>
-    <div class="field"><label for="loginEmail">البريد الإلكتروني</label><input id="loginEmail" type="email" autocomplete="username" placeholder="admin@example.com"></div>
-    <div class="field"><label for="loginPassword">كلمة المرور</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="كلمة المرور"></div>
-    <button id="loginBtn" onclick="signIn()" style="width:100%">تسجيل الدخول</button>
-    <div id="loginStatus" class="status" role="status"></div>
-  </div>
+
+<section id="loginScreen">
+<div class="login-box">
+<h1>🌱 منصة أرض الأحياء</h1>
+<p class="subtitle">تسجيل دخول المسؤول إلى لوحة التحكم</p>
+
+<label for="email">البريد الإلكتروني</label>
+<input id="email" type="email" placeholder="أدخل البريد الإلكتروني" autocomplete="username">
+
+<label for="password">كلمة المرور</label>
+<input id="password" type="password" placeholder="أدخل كلمة المرور" autocomplete="current-password">
+
+<button id="loginBtn" style="width:100%" onclick="login()">تسجيل الدخول</button>
+<div id="loginMessage" aria-live="polite"></div>
+<p class="small">يجب أن يكون الحساب مسجلًا في Supabase وأن تكون صلاحية الحساب admin.</p>
+</div>
+</section>
+
+<div id="app">
+<aside class="sidebar">
+<div class="brand">🌱 أرض الأحياء<br><span style="font-size:14px;font-weight:normal">لوحة التحكم</span></div>
+
+<button class="nav-btn active" onclick="showSection('dashboard',this)">📊 الرئيسية</button>
+<button class="nav-btn" onclick="showSection('lectures',this)">🎥 المحاضرات</button>
+<button class="nav-btn" onclick="showSection('notes',this)">📚 المذكرات</button>
+<button class="nav-btn" onclick="showSection('champions',this)">🏆 بطل الفصل</button>
+<button class="nav-btn" onclick="showSection('forum',this)">💬 المنتدى والردود</button>
+<button class="nav-btn" onclick="logout()">🚪 تسجيل الخروج</button>
+</aside>
+
+<main class="main">
+<div class="topbar">
+<h1 id="pageTitle">لوحة التحكم</h1>
+<span id="adminStatus">جارٍ التحقق من الحساب...</span>
 </div>
 
-<div id="appView" class="container" hidden>
-  <header class="topbar">
-    <div><h1>⚙️ لوحة التحكم الشاملة</h1><div class="muted">منصة أرض الأحياء · الصف الثالث الثانوي</div></div>
-    <div class="actions"><a href="../index.html" style="text-decoration:none"><button class="secondary">🏠 العودة للمنصة</button></a><button class="danger" onclick="signOut()">تسجيل الخروج</button></div>
-  </header>
+<div id="appMessage" aria-live="polite"></div>
 
-  <div class="card">
-    <h2>📊 إحصائيات المنصة</h2>
-    <div id="stats" class="grid"><div>⏳ جاري تحميل الإحصائيات...</div></div>
-    <div id="statsStatus" class="status"></div>
-  </div>
+<section id="dashboard" class="page-section">
+<div class="stats">
+<div class="stat">عدد الطلاب<strong id="usersCount">—</strong></div>
+<div class="stat">عدد المحاضرات<strong id="lecturesCount">—</strong></div>
+<div class="stat">عدد المذكرات<strong id="notesCount">—</strong></div>
+</div>
+<div class="card">
+<h2>أهلًا بك في لوحة التحكم</h2>
+<p>من هنا يمكنك إدارة المحاضرات والمذكرات وترتيب الطلاب والرد على مشاركات المنتدى.</p>
+<p class="small">استخدم القائمة الجانبية للانتقال إلى القسم المطلوب.</p>
+</div>
+</section>
 
-  <nav class="tabs" aria-label="أقسام لوحة التحكم">
-    <button class="tab active" data-tab="lectures">🎥 المحاضرات</button>
-    <button class="tab" data-tab="notes">📚 المذكرات PDF</button>
-    <button class="tab" data-tab="champions">🏆 بطل الفصل</button>
-    <button class="tab" data-tab="forum">💬 المنتدى</button>
-  </nav>
+<section id="lectures" class="page-section hidden">
+<div class="card">
+<h2>🎥 إضافة محاضرة جديدة</h2>
+<label for="lectureTitle">عنوان المحاضرة</label>
+<input id="lectureTitle" placeholder="عنوان المحاضرة">
+<label for="lectureChapter">الباب أو الفصل</label>
+<input id="lectureChapter" placeholder="مثال: التنسيق الهرموني">
+<label for="lectureDescription">وصف المحاضرة</label>
+<textarea id="lectureDescription" placeholder="اكتب وصف المحاضرة"></textarea>
+<label for="lectureVideo">رفع ملف فيديو (اختياري)</label>
+<input id="lectureVideo" type="file" accept="video/*">
+<label for="lectureVideoUrl">أو رابط الفيديو</label>
+<input id="lectureVideoUrl" type="url" placeholder="https://...">
+<label for="lecturePdf">ملف PDF للمحاضرة (اختياري)</label>
+<input id="lecturePdf" type="file" accept="application/pdf,.pdf">
+<label for="lecturePdfUrl">أو رابط PDF</label>
+<input id="lecturePdfUrl" type="url" placeholder="https://...">
+<label for="lectureHomework">رابط الواجب (اختياري)</label>
+<input id="lectureHomework" type="url" placeholder="https://...">
+<button onclick="addLecture()">حفظ المحاضرة</button>
+</div>
+<div class="card">
+<h2>المحاضرات المضافة</h2>
+<div id="lecturesList">جارٍ التحميل...</div>
+</div>
+</section>
 
-  <section id="lectures" class="section active">
-    <div class="card">
-      <h2>🎥 إضافة محاضرة جديدة</h2>
-      <div class="field"><label for="lecTitle">عنوان المحاضرة *</label><input id="lecTitle" placeholder="مثال: الدعامة والحركة"></div>
-      <div class="grid">
-        <div class="field"><label for="lecChapter">الباب / الفصل</label><input id="lecChapter" placeholder="الباب الأول"></div>
-        <div class="field"><label for="lecDesc">وصف مختصر</label><input id="lecDesc" placeholder="محتوى المحاضرة"></div>
-      </div>
-      <div class="field"><label for="videoFile">📁 ملف فيديو من الجهاز (اختياري)</label><input id="videoFile" type="file" accept="video/*"><div class="muted">الفيديوهات الكبيرة قد تتجاوز حد الرفع في التخزين؛ يمكن استخدام رابط فيديو بدلًا منه.</div></div>
-      <div class="field"><label for="lecVideoUrl">أو رابط الفيديو *</label><input id="lecVideoUrl" type="url" placeholder="https://..."></div>
-      <div class="field"><label for="lecDetails">تفاصيل الشرح</label><textarea id="lecDetails" placeholder="تفاصيل المحاضرة"></textarea></div>
-      <div class="field"><label for="lecPdfUrl">رابط مذكرة PDF (اختياري)</label><input id="lecPdfUrl" type="url" placeholder="https://..."></div>
-      <div class="field"><label for="lecHomeworkUrl">رابط الواجب / الامتحان (اختياري)</label><input id="lecHomeworkUrl" type="url" placeholder="https://..."></div>
-      <div class="actions"><button id="addLectureBtn" onclick="addLecture()">حفظ المحاضرة 🚀</button><button class="secondary" onclick="clearLectureForm()">تفريغ الحقول</button></div>
-      <div id="lecStatus" class="status" role="status"></div>
-    </div>
-    <div class="card"><h2>🗂️ إدارة المحاضرات</h2><div id="lecturesList"><p class="empty">جاري التحميل...</p></div></div>
-  </section>
+<section id="notes" class="page-section hidden">
+<div class="card">
+<h2>📚 إضافة مذكرة PDF</h2>
+<label for="noteTitle">اسم المذكرة</label>
+<input id="noteTitle" placeholder="اسم المذكرة">
+<label for="noteChapter">الباب أو الفصل</label>
+<input id="noteChapter" placeholder="الباب أو الفصل">
+<label for="noteDescription">وصف المذكرة</label>
+<textarea id="noteDescription" placeholder="وصف مختصر للمذكرة"></textarea>
+<label for="notePdf">اختيار ملف PDF</label>
+<input id="notePdf" type="file" accept="application/pdf,.pdf">
+<label for="notePdfUrl">أو رابط PDF مباشر</label>
+<input id="notePdfUrl" type="url" placeholder="https://...">
+<button onclick="addNote()">حفظ المذكرة</button>
+</div>
+<div class="card">
+<h2>المذكرات المضافة</h2>
+<div id="notesList">جارٍ التحميل...</div>
+</div>
+</section>
 
-  <section id="notes" class="section">
-    <div class="card">
-      <h2>📚 إضافة مذكرة PDF إلى قسم المذكرات</h2>
-      <div class="field"><label for="noteTitle">اسم المذكرة *</label><input id="noteTitle" placeholder="مثال: مذكرة الدعامة والحركة"></div>
-      <div class="field"><label for="noteChapter">الباب / الفصل</label><input id="noteChapter" placeholder="الباب الأول"></div>
-      <div class="field"><label for="noteDescription">وصف المذكرة</label><textarea id="noteDescription" placeholder="نبذة قصيرة عن محتوى المذكرة"></textarea></div>
-      <div class="field"><label for="noteFile">اختيار ملف PDF من الجهاز *</label><input id="noteFile" type="file" accept="application/pdf,.pdf"></div>
-      <div class="field"><label for="noteExternalUrl">أو رابط PDF خارجي</label><input id="noteExternalUrl" type="url" placeholder="https://..."></div>
-      <div class="actions"><button onclick="addNote()">رفع المذكرة وحفظها 📄</button></div>
-      <div id="noteStatus" class="status" role="status"></div>
-      <p class="muted">يُحفظ الملف في Storage ثم بياناته في جدول notes. تأكد أن صفحة المذكرات تعرض أعمدة title وfile_path.</p>
-    </div>
-    <div class="card"><h2>🗂️ إدارة المذكرات</h2><div id="notesList"><p class="empty">جاري التحميل...</p></div></div>
-  </section>
+<section id="champions" class="page-section hidden">
+<div class="card">
+<h2>🏆 إضافة طالب إلى بطل الفصل</h2>
+<label for="championName">اسم الطالب</label>
+<input id="championName" placeholder="اسم الطالب">
+<label for="championScore">الدرجة أو النقاط</label>
+<input id="championScore" type="number" min="0" placeholder="0">
+<label for="championRank">ترتيب الطالب</label>
+<input id="championRank" type="number" min="1" placeholder="1">
+<button onclick="addChampion()">إضافة الطالب</button>
+</div>
+<div class="card">
+<h2>ترتيب الطلاب</h2>
+<div id="championsList">جارٍ التحميل...</div>
+</div>
+</section>
 
-  <section id="champions" class="section">
-    <div class="card">
-      <h2>🏆 إضافة / تعديل مركز الطالب</h2>
-      <input type="hidden" id="champId">
-      <div class="grid">
-        <div class="field"><label for="champName">اسم الطالب *</label><input id="champName" placeholder="اسم الطالب"></div>
-        <div class="field"><label for="champScore">الدرجة / النقاط</label><input id="champScore" placeholder="مثال: 50/50"></div>
-      </div>
-      <div class="field"><label for="champRank">المركز في الفصل</label><input id="champRank" type="number" min="1" step="1" placeholder="1 للمركز الأول"></div>
-      <div class="actions"><button onclick="saveChampion()">حفظ بيانات البطل 🌟</button><button class="secondary" onclick="clearChampionForm()">إلغاء التعديل</button></div>
-      <div id="champStatus" class="status" role="status"></div>
-    </div>
-    <div class="card"><h2>🥇 ترتيب أبطال الفصل وإدارة بياناتهم</h2><p class="muted">استخدم «تعديل» لتغيير الدرجة أو المركز، أو «حذف» لإزالة الطالب من قائمة الأبطال.</p><div id="championsList"><p class="empty">جاري التحميل...</p></div></div>
-  </section>
+<section id="forum" class="page-section hidden">
+<div class="card">
+<h2>💬 مشاركات الطلاب والردود</h2>
+<p class="small">يمكنك عرض المشاركات والرد عليها كتابيًا أو برفع ملف صوتي.</p>
+<div id="forumList">جارٍ تحميل المشاركات...</div>
+</div>
+</section>
 
-  <section id="forum" class="section">
-    <div class="card"><h2>💬 أسئلة ومشاركات الطلاب</h2><p class="muted">يمكنك الرد كتابةً أو تسجيل رد صوتي من المتصفح. يحتاج التسجيل إلى إذن استخدام الميكروفون، ويجب أن يكون الموقع عبر HTTPS.</p><div id="forumList"><p class="empty">جاري تحميل المنتدى...</p></div><div id="forumStatus" class="status" role="status"></div></div>
-  </section>
+</main>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-'use strict';
-const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
-const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const $ = id => document.getElementById(id);
+const SUPABASE_URL = 'https://fpfbmjtpzamzlyzitmsd.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d';
+
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let currentUser = null;
-let mediaRecorder = null, audioChunks = [], activeAudioPostId = null;
 
-document.querySelectorAll('[data-tab]').forEach(btn => btn.addEventListener('click', () => {
-  document.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('active', b === btn));
-  document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === btn.dataset.tab));
-}));
-
-function setStatus(id, message, ok=false) {
-  const el=$(id); el.textContent=message; el.style.color=ok?'#026857':'#c0392b';
-}
-function escapeHtml(value) {
-  return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-function safeUrl(url) {
-  try { const u = new URL(url); return ['https:','http:'].includes(u.protocol) ? u.href : ''; } catch { return ''; }
-}
-async function requireAdmin(session) {
-  if (!session?.user) return false;
-  const {data,error}=await db.from('profiles').select('role').eq('id',session.user.id).maybeSingle();
-  if(error) throw error;
-  return data?.role === 'admin';
-}
-async function initialize() {
-  $('loginView').hidden=true; $('appView').hidden=false;
-  await Promise.allSettled([loadStats(),loadLectures(),loadNotes(),loadChampions(),loadForum()]);
-}
-async function checkSession() {
-  try {
-    const {data,error}=await db.auth.getSession(); if(error) throw error;
-    if(!data.session){$('loginView').hidden=false;$('appView').hidden=true;return;}
-    const allowed=await requireAdmin(data.session);
-    if(!allowed){await db.auth.signOut();$('loginView').hidden=false;$('appView').hidden=true;setStatus('loginStatus','هذا الحساب ليس لديه صلاحية الإدارة.');return;}
-    currentUser=data.session.user; await initialize();
-  } catch(e) { $('loginView').hidden=false;$('appView').hidden=true;setStatus('loginStatus','تعذر التحقق من صلاحية الإدارة: '+e.message); }
-}
-async function signIn() {
-  const email=$('loginEmail').value.trim(), password=$('loginPassword').value;
-  if(!email||!password){setStatus('loginStatus','اكتب البريد الإلكتروني وكلمة المرور.');return;}
-  $('loginBtn').disabled=true;setStatus('loginStatus','جارٍ تسجيل الدخول...',true);
-  try{
-    const {data,error}=await db.auth.signInWithPassword({email,password}); if(error) throw error;
-    const allowed=await requireAdmin(data.session);
-    if(!allowed){await db.auth.signOut();throw new Error('الحساب ليس مسجلًا بدور admin في profiles.');}
-    currentUser=data.user;setStatus('loginStatus','تم الدخول بنجاح.',true);await initialize();
-  }catch(e){setStatus('loginStatus','فشل الدخول: '+e.message);}
-  finally{$('loginBtn').disabled=false;}
-}
-async function signOut(){await db.auth.signOut();location.reload();}
-
-async function loadStats(){
-  const items=[['profiles','الطلاب'],['videos','المحاضرات'],['notes','المذكرات'],['champions','أبطال الفصل']];
-  const results=await Promise.all(items.map(async ([table,label])=>{
-    const {count,error}=await db.from(table).select('*',{count:'exact',head:true});
-    return error?{label,value:'—',error:error.message}:{label,value:count??0};
-  }));
-  $('stats').innerHTML=results.map(r=>`<div class="item"><div class="muted">${escapeHtml(r.label)}</div><strong style="font-size:26px">${escapeHtml(r.value)}</strong>${r.error?`<div class="muted">${escapeHtml(r.error)}</div>`:''}</div>`).join('');
+function showLoginMessage(message,type='error'){
+    const box=document.getElementById('loginMessage');
+    box.className='notice '+(type==='ok'?'ok':'error');
+    box.textContent=message;
 }
 
-async function uploadToStorage(file, folder='uploads'){
-  if(!file) throw new Error('لم يتم اختيار ملف.');
-  const cleanName=file.name.replace(/[^\w.\-\u0600-\u06FF]/g,'_');
-  const path=`${folder}/${Date.now()}_${crypto.randomUUID()}_${cleanName}`;
-  const {error}=await db.storage.from('uploads').upload(path,file,{upsert:false,contentType:file.type||'application/octet-stream'});
-  if(error) throw error;
-  const {data}=db.storage.from('uploads').getPublicUrl(path);
-  return {url:data.publicUrl,path};
-}
-function clearLectureForm(){['lecTitle','lecChapter','lecDesc','lecVideoUrl','lecDetails','lecPdfUrl','lecHomeworkUrl'].forEach(id=>$(id).value='');$('videoFile').value='';}
-async function addLecture(){
-  const title=$('lecTitle').value.trim(),chapter=$('lecChapter').value.trim(),description=$('lecDesc').value.trim(),details=$('lecDetails').value.trim(),homework_url=$('lecHomeworkUrl').value.trim();
-  let video_url=safeUrl($('lecVideoUrl').value.trim()),pdf_url=safeUrl($('lecPdfUrl').value.trim());
-  const file=$('videoFile').files[0];
-  if(!title){setStatus('lecStatus','اكتب عنوان المحاضرة.');return;}
-  if(!file&&!video_url){setStatus('lecStatus','اختر ملف فيديو أو أدخل رابطًا صحيحًا.');return;}
-  try{
-    setStatus('lecStatus','جارٍ تجهيز البيانات...',true);
-    if(file){setStatus('lecStatus','جارٍ رفع الفيديو، انتظر حتى يكتمل...',true);video_url=(await uploadToStorage(file,'videos')).url;}
-    const {error}=await db.from('videos').insert({title,chapter,video_url,details,pdf_url,homework_url,description});
-    if(error)throw error;
-    setStatus('lecStatus','تمت إضافة المحاضرة بنجاح.',true);clearLectureForm();await loadLectures();await loadStats();
-  }catch(e){setStatus('lecStatus','تعذر حفظ المحاضرة: '+e.message);}
-}
-async function loadLectures(){
-  const box=$('lecturesList');box.innerHTML='<p class="empty">جاري التحميل...</p>';
-  try{
-    const {data,error}=await db.from('videos').select('*').order('created_at',{ascending:false});if(error)throw error;
-    if(!data?.length){box.innerHTML='<p class="empty">لا توجد محاضرات حاليًا.</p>';return;}
-    box.innerHTML=data.map(v=>`<div class="item"><div class="item-head"><div><strong>${escapeHtml(v.title)}</strong><div class="muted">${escapeHtml(v.chapter||'بدون باب')} · ${escapeHtml(v.description||'')}</div></div><div class="actions"><a href="${escapeHtml(safeUrl(v.video_url)||'#')}" target="_blank" rel="noopener"><button class="secondary">فتح الفيديو</button></a><button class="danger" onclick="deleteLecture(${JSON.stringify(v.id)})">حذف</button></div></div></div>`).join('');
-  }catch(e){box.innerHTML=`<p class="empty">تعذر تحميل المحاضرات: ${escapeHtml(e.message)}</p>`;}
-}
-async function deleteLecture(id){
-  if(!confirm('هل تريد حذف بيانات هذه المحاضرة؟'))return;
-  try{const {error}=await db.from('videos').delete().eq('id',id);if(error)throw error;await loadLectures();await loadStats();}
-  catch(e){alert('فشل الحذف: '+e.message);}
+function showMessage(message,type='error'){
+    const box=document.getElementById('appMessage');
+    box.className='notice '+(type==='ok'?'ok':'error');
+    box.textContent=message;
+    window.scrollTo({top:0,behavior:'smooth'});
 }
 
-async function addNote(){
-  const title=$('noteTitle').value.trim(),chapter=$('noteChapter').value.trim(),description=$('noteDescription').value.trim(),file=$('noteFile').files[0];
-  let file_path=safeUrl($('noteExternalUrl').value.trim());
-  if(!title){setStatus('noteStatus','اكتب اسم المذكرة.');return;}
-  if(file && file.type!=='application/pdf' && !file.name.toLowerCase().endsWith('.pdf')){setStatus('noteStatus','اختر ملف PDF فقط.');return;}
-  if(!file&&!file_path){setStatus('noteStatus','اختر ملف PDF أو أدخل رابطًا صحيحًا.');return;}
-  try{
-    setStatus('noteStatus','جارٍ رفع المذكرة...',true);
-    if(file) file_path=(await uploadToStorage(file,'pdf')).url;
-    const {error}=await db.from('notes').insert({title,file_path,chapter,description});
-    if(error)throw error;
-    setStatus('noteStatus','تمت إضافة المذكرة. افتح قسم المذكرات للتأكد من ظهورها.',true);
-    ['noteTitle','noteChapter','noteDescription','noteExternalUrl'].forEach(id=>$(id).value='');$('noteFile').value='';
-    await loadNotes();await loadStats();
-  }catch(e){setStatus('noteStatus','تعذر حفظ المذكرة: '+e.message);}
-}
-async function loadNotes(){
-  const box=$('notesList');box.innerHTML='<p class="empty">جاري التحميل...</p>';
-  try{
-    const {data,error}=await db.from('notes').select('*').order('created_at',{ascending:false});if(error)throw error;
-    if(!data?.length){box.innerHTML='<p class="empty">لا توجد مذكرات حاليًا.</p>';return;}
-    box.innerHTML=data.map(n=>`<div class="item"><div class="item-head"><div><strong>${escapeHtml(n.title)}</strong><div class="muted">${escapeHtml(n.chapter||'')} ${escapeHtml(n.description||'')}</div></div><div class="actions"><a target="_blank" rel="noopener" href="${escapeHtml(safeUrl(n.file_path)||'#')}"><button class="secondary">فتح PDF</button></a><button class="danger" onclick="deleteNote(${JSON.stringify(n.id)})">حذف</button></div></div></div>`).join('');
-  }catch(e){box.innerHTML=`<p class="empty">تعذر تحميل المذكرات: ${escapeHtml(e.message)}. تحقق من أعمدة جدول notes.</p>`;}
-}
-async function deleteNote(id){
-  if(!confirm('هل تريد حذف بيانات هذه المذكرة؟'))return;
-  try{const {error}=await db.from('notes').delete().eq('id',id);if(error)throw error;await loadNotes();await loadStats();}
-  catch(e){alert('فشل حذف المذكرة: '+e.message);}
+function clearMessage(){
+    const box=document.getElementById('appMessage');
+    box.className='';
+    box.textContent='';
 }
 
-function clearChampionForm(){['champId','champName','champScore','champRank'].forEach(id=>$(id).value='');}
-async function saveChampion(){
-  const id=$('champId').value,student_name=$('champName').value.trim(),score=$('champScore').value.trim(),rank=Number($('champRank').value)||null;
-  if(!student_name){setStatus('champStatus','اكتب اسم الطالب.');return;}
-  if(rank!==null&&rank<1){setStatus('champStatus','المركز يجب أن يكون 1 أو أكبر.');return;}
-  try{
-    const payload={student_name,score,rank};
-    const result=id?await db.from('champions').update(payload).eq('id',id):await db.from('champions').insert(payload);
-    if(result.error)throw result.error;
-    setStatus('champStatus',id?'تم تحديث بيانات الطالب ومركزه.':'تمت إضافة البطل.',true);clearChampionForm();await loadChampions();await loadStats();
-  }catch(e){setStatus('champStatus','تعذر الحفظ: '+e.message+' — تأكد من وجود عمود rank في جدول champions.');}
-}
-async function editChampion(id){
-  try{const {data,error}=await db.from('champions').select('*').eq('id',id).single();if(error)throw error;
-    $('champId').value=data.id;$('champName').value=data.student_name||'';$('champScore').value=data.score||'';$('champRank').value=data.rank||'';
-    setStatus('champStatus','عدّل البيانات ثم اضغط «حفظ بيانات البطل».',true);window.scrollTo({top:0,behavior:'smooth'});
-  }catch(e){setStatus('champStatus','تعذر تحميل بيانات الطالب: '+e.message);}
-}
-async function loadChampions(){
-  const box=$('championsList');box.innerHTML='<p class="empty">جاري التحميل...</p>';
-  try{
-    const {data,error}=await db.from('champions').select('*').order('rank',{ascending:true,nullsFirst:false});if(error)throw error;
-    if(!data?.length){box.innerHTML='<p class="empty">لم تتم إضافة أبطال حتى الآن.</p>';return;}
-    box.innerHTML=data.map((c,i)=>`<div class="item"><div class="item-head"><div><span class="badge">المركز ${escapeHtml(c.rank||i+1)}</span> <strong>${escapeHtml(c.student_name)}</strong><div class="muted">الدرجة / النقاط: ${escapeHtml(c.score||'غير محددة')}</div></div><div class="actions"><button onclick="editChampion(${JSON.stringify(c.id)})">تعديل المركز ✏️</button><button class="danger" onclick="deleteChampion(${JSON.stringify(c.id)})">حذف 🗑️</button></div></div></div>`).join('');
-  }catch(e){box.innerHTML=`<p class="empty">تعذر تحميل الأبطال: ${escapeHtml(e.message)}. قد يحتاج جدول champions إلى عمود rank.</p>`;}
-}
-async function deleteChampion(id){
-  if(!confirm('هل تريد حذف الطالب من قائمة أبطال الفصل؟'))return;
-  try{const {error}=await db.from('champions').delete().eq('id',id);if(error)throw error;await loadChampions();await loadStats();}
-  catch(e){alert('فشل الحذف: '+e.message);}
+function escapeHTML(value){
+    return String(value??'').replace(/[&<>"']/g,char=>({
+        '&':'&amp;',
+        '<':'&lt;',
+        '>':'&gt;',
+        '"':'&quot;',
+        "'":'&#39;'
+    })[char]);
 }
 
-async function loadForum(){
-  const box=$('forumList');box.innerHTML='<p class="empty">جاري تحميل المشاركات...</p>';
-  try{
-    const {data,error}=await db.from('forum_posts').select('*').order('created_at',{ascending:false});if(error)throw error;
-    if(!data?.length){box.innerHTML='<p class="empty">لا توجد مشاركات في المنتدى أو أن جدول forum_posts غير موجود.</p>';return;}
-    box.innerHTML=data.map(p=>`<article class="item"><div><strong>${escapeHtml(p.title||'مشاركة طالب')}</strong><div style="white-space:pre-wrap;margin-top:7px">${escapeHtml(p.content||p.body||'')}</div><div class="muted">تاريخ النشر: ${escapeHtml(p.created_at||'')}</div></div><div class="reply-box"><div class="field"><label for="reply-${escapeHtml(p.id)}">رد الإدارة كتابةً</label><textarea id="reply-${escapeHtml(p.id)}" placeholder="اكتب ردك للطالب..."></textarea></div><div class="actions"><button onclick="sendTextReply(${JSON.stringify(p.id)})">إرسال الرد</button><button class="secondary" onclick="startAudioReply(${JSON.stringify(p.id)})">🎙️ تسجيل رد صوتي</button><button class="danger" onclick="stopAudioReply()">إيقاف التسجيل</button></div><div id="audio-status-${escapeHtml(p.id)}" class="status"></div><div id="replies-${escapeHtml(p.id)}"></div></div></article>`).join('');
-    await Promise.all(data.map(p=>loadReplies(p.id)));
-  }catch(e){box.innerHTML=`<p class="empty">تعذر تحميل المنتدى: ${escapeHtml(e.message)}. عدّل اسم الجدول/الأعمدة حسب قاعدة بيانات المنتدى الحالية.</p>`;}
+function isValidHttpUrl(value){
+    if(!value)return true;
+    try{
+        const url=new URL(value);
+        return url.protocol==='https:'||url.protocol==='http:';
+    }catch{
+        return false;
+    }
 }
-async function loadReplies(postId){
-  const box=$('replies-'+postId);if(!box)return;
-  try{
-    const {data,error}=await db.from('forum_replies').select('*').eq('post_id',postId).order('created_at',{ascending:true});if(error)throw error;
-    box.innerHTML=(data||[]).map(r=>`<div class="item" style="background:#fff"><strong>${r.admin_id?'رد الإدارة':'رد'}</strong>${r.body?`<div style="white-space:pre-wrap">${escapeHtml(r.body)}</div>`:''}${r.audio_url?`<audio class="audio-preview" controls preload="none" src="${escapeHtml(safeUrl(r.audio_url))}"></audio>`:''}<div class="muted">${escapeHtml(r.created_at||'')}</div></div>`).join('');
-  }catch(e){box.innerHTML=`<div class="muted">تعذر جلب الردود: ${escapeHtml(e.message)}</div>`;}
+
+function safeLink(url,label){
+    if(!url||!isValidHttpUrl(url))return '';
+    return `<a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(label)}</a>`;
 }
-async function sendTextReply(postId){
-  const body=$('reply-'+postId).value.trim();if(!body){setStatus('forumStatus','اكتب الرد أولًا.');return;}
-  try{
-    const {error}=await db.from('forum_replies').insert({post_id:postId,admin_id:currentUser.id,body,audio_url:null});if(error)throw error;
-    $('reply-'+postId).value='';setStatus('forumStatus','تم إرسال الرد.',true);await loadReplies(postId);
-  }catch(e){setStatus('forumStatus','تعذر إرسال الرد: '+e.message);}
-}
-async function startAudioReply(postId){
-  if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){setStatus('forumStatus','تسجيل الصوت غير مدعوم في هذا المتصفح. استخدم متصفحًا حديثًا عبر HTTPS.');return;}
-  if(mediaRecorder&&mediaRecorder.state==='recording'){setStatus('forumStatus','أوقف التسجيل الحالي أولًا.');return;}
-  try{
-    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-    activeAudioPostId=postId;audioChunks=[];
-    const mimeType=MediaRecorder.isTypeSupported('audio/webm')?'audio/webm':'';
-    mediaRecorder=new MediaRecorder(stream,mimeType?{mimeType}:undefined);
-    mediaRecorder.ondataavailable=e=>{if(e.data.size)audioChunks.push(e.data);};
-    mediaRecorder.onerror=e=>setStatus('forumStatus','حدث خطأ في تسجيل الصوت.');
-    mediaRecorder.onstop=async()=>{
-      stream.getTracks().forEach(t=>t.stop());
-      const target=activeAudioPostId;const blob=new Blob(audioChunks,{type:mediaRecorder.mimeType||'audio/webm'});
-      if(!blob.size){setStatus('forumStatus','لم يتم تسجيل صوت.');return;}
-      try{
-        setStatus('forumStatus','جارٍ رفع الرد الصوتي...',true);
-        const file=new File([blob],`reply_${Date.now()}.webm`,{type:blob.type});
-        const {url}=await uploadToStorage(file,'forum-audio');
-        const {error}=await db.from('forum_replies').insert({post_id:target,admin_id:currentUser.id,body:null,audio_url:url});
+
+async function login(){
+    const email=document.getElementById('email').value.trim();
+    const password=document.getElementById('password').value;
+    const button=document.getElementById('loginBtn');
+
+    if(!email||!password){
+        showLoginMessage('من فضلك أدخل البريد الإلكتروني وكلمة المرور.');
+        return;
+    }
+
+    button.disabled=true;
+    button.textContent='جارٍ تسجيل الدخول...';
+
+    try{
+        const {data,error}=await db.auth.signInWithPassword({email,password});
         if(error)throw error;
-        setStatus('forumStatus','تم رفع الرد الصوتي وإرساله.',true);await loadReplies(target);
-      }catch(e){setStatus('forumStatus','تعذر حفظ الرد الصوتي: '+e.message);}
-    };
-    mediaRecorder.start();
-    setStatus('audio-status-'+postId,'🔴 التسجيل جارٍ... اضغط «إيقاف التسجيل» عند الانتهاء.',true);
-    setStatus('forumStatus','التسجيل جارٍ. اضغط «إيقاف التسجيل» لإرسال المقطع.');
-  }catch(e){setStatus('forumStatus','لم يمكن استخدام الميكروفون: '+e.message);}
-}
-function stopAudioReply(){
-  if(mediaRecorder&&mediaRecorder.state==='recording'){mediaRecorder.stop();if(activeAudioPostId)setStatus('audio-status-'+activeAudioPostId,'تم إيقاف التسجيل، جارٍ حفظه...',true);}
-  else setStatus('forumStatus','لا يوجد تسجيل صوتي نشط.');
+
+        currentUser=data.user;
+
+        const {data:profile,error:profileError}=await db
+            .from('profiles')
+            .select('role')
+            .eq('id',currentUser.id)
+            .maybeSingle();
+
+        if(profileError){
+            throw new Error('تعذر التحقق من صلاحيات الحساب: '+profileError.message);
+        }
+
+        if(!profile||profile.role!=='admin'){
+            await db.auth.signOut();
+            currentUser=null;
+            throw new Error('هذا الحساب ليس مسؤولًا. يجب أن تكون قيمة role في جدول profiles هي admin.');
+        }
+
+        document.getElementById('loginScreen').style.display='none';
+        document.getElementById('app').style.display='block';
+        document.getElementById('adminStatus').textContent='تم تسجيل الدخول بنجاح';
+
+        await refreshAll();
+        showMessage('أهلًا بك في لوحة التحكم.','ok');
+
+    }catch(error){
+        showLoginMessage(error.message||'تعذر تسجيل الدخول.');
+    }finally{
+        button.disabled=false;
+        button.textContent='تسجيل الدخول';
+    }
 }
 
-checkSession();
+document.getElementById('password').addEventListener('keydown',event=>{
+    if(event.key==='Enter')login();
+});
+
+async function logout(){
+    await db.auth.signOut();
+    currentUser=null;
+    location.reload();
+}
+
+async function checkExistingSession(){
+    try{
+        const {data,error}=await db.auth.getSession();
+        if(error)throw error;
+        if(!data.session)return;
+
+        const user=data.session.user;
+        const {data:profile,error:profileError}=await db
+            .from('profiles')
+            .select('role')
+            .eq('id',user.id)
+            .maybeSingle();
+
+        if(profileError||!profile||profile.role!=='admin'){
+            await db.auth.signOut();
+            return;
+        }
+
+        currentUser=user;
+        document.getElementById('loginScreen').style.display='none';
+        document.getElementById('app').style.display='block';
+        document.getElementById('adminStatus').textContent='تم تسجيل الدخول بنجاح';
+
+        await refreshAll();
+    }catch(error){
+        console.error('Session error:',error);
+    }
+}
+
+async function refreshAll(){
+    await loadDashboard();
+    await loadLectures();
+    await loadNotes();
+    await loadChampions();
+    await loadForum();
+}
+
+function showSection(sectionId,button){
+    document.querySelectorAll('.page-section').forEach(section=>section.classList.add('hidden'));
+    const selected=document.getElementById(sectionId);
+    if(selected)selected.classList.remove('hidden');
+
+    document.querySelectorAll('.nav-btn').forEach(nav=>nav.classList.remove('active'));
+    if(button)button.classList.add('active');
+
+    const titles={
+        dashboard:'لوحة التحكم',
+        lectures:'إدارة المحاضرات',
+        notes:'إدارة المذكرات',
+        champions:'بطل الفصل',
+        forum:'المنتدى والردود'
+    };
+
+    document.getElementById('pageTitle').textContent=titles[sectionId]||'لوحة التحكم';
+    clearMessage();
+}
+
+/* رفع الملفات باسم آمن لتجنب Invalid key */
+async function uploadToStorage(file,folder='uploads'){
+    if(!file)throw new Error('لم يتم اختيار ملف.');
+
+    const extension=file.name.includes('.')
+        ?file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g,'')
+        :'bin';
+
+    const randomPart=(window.crypto&&typeof crypto.randomUUID==='function')
+        ?crypto.randomUUID().replace(/-/g,'')
+        :Math.random().toString(36).slice(2)+Date.now().toString(36);
+
+    const safeFolder=String(folder||'uploads').replace(/[^a-zA-Z0-9_-]/g,'')||'uploads';
+    const path=`${safeFolder}/${Date.now()}_${randomPart}.${extension||'bin'}`;
+
+    const {data,error}=await db.storage
+        .from('uploads')
+        .upload(path,file,{
+            upsert:false,
+            contentType:file.type||'application/octet-stream'
+        });
+
+    if(error)throw error;
+
+    const {data:publicData}=db.storage.from('uploads').getPublicUrl(data.path);
+    return {url:publicData.publicUrl,path:data.path};
+}
+
+async function loadDashboard(){
+    const tasks=[['profiles','usersCount'],['videos','lecturesCount'],['notes','notesCount']];
+
+    for(const [table,elementId] of tasks){
+        const element=document.getElementById(elementId);
+        try{
+            const {count,error}=await db.from(table).select('*',{count:'exact',head:true});
+            if(error)throw error;
+            element.textContent=count??0;
+        }catch(error){
+            element.textContent='—';
+            console.error(`تعذر عد ${table}:`,error);
+        }
+    }
+}
+
+/* المحاضرات */
+async function addLecture(){
+    clearMessage();
+
+    const title=document.getElementById('lectureTitle').value.trim();
+    const chapter=document.getElementById('lectureChapter').value.trim();
+    const description=document.getElementById('lectureDescription').value.trim();
+    const videoFile=document.getElementById('lectureVideo').files[0];
+    const pdfFile=document.getElementById('lecturePdf').files[0];
+
+    let videoUrl=document.getElementById('lectureVideoUrl').value.trim();
+    let pdfUrl=document.getElementById('lecturePdfUrl').value.trim();
+    const homeworkUrl=document.getElementById('lectureHomework').value.trim();
+
+    if(!title)return showMessage('اكتب عنوان المحاضرة أولًا.');
+    if(!videoFile&&!videoUrl)return showMessage('اختر ملف فيديو أو اكتب رابط الفيديو.');
+
+    if(!isValidHttpUrl(videoUrl)||!isValidHttpUrl(pdfUrl)||!isValidHttpUrl(homeworkUrl)){
+        return showMessage('تأكد من صحة الروابط؛ يجب أن تبدأ بـ http:// أو https://');
+    }
+
+    const button=document.querySelector('#lectures .card button');
+    button.disabled=true;
+    button.textContent='جارٍ حفظ المحاضرة...';
+
+    try{
+        if(videoFile){
+            const uploaded=await uploadToStorage(videoFile,'videos');
+            videoUrl=uploaded.url;
+        }
+
+        if(pdfFile){
+            if(pdfFile.type&&pdfFile.type!=='application/pdf'){
+                throw new Error('ملف المحاضرة المرفوع يجب أن يكون PDF.');
+            }
+            const uploaded=await uploadToStorage(pdfFile,'pdf');
+            pdfUrl=uploaded.url;
+        }
+
+        const {error}=await db.from('videos').insert({
+            title,
+            chapter:chapter||null,
+            video_url:videoUrl||null,
+            details:description||null,
+            description:description||null,
+            pdf_url:pdfUrl||null,
+            homework_url:homeworkUrl||null
+        });
+
+        if(error)throw error;
+
+        ['lectureTitle','lectureChapter','lectureDescription','lectureVideo','lectureVideoUrl','lecturePdf','lecturePdfUrl','lectureHomework']
+            .forEach(id=>document.getElementById(id).value='');
+
+        showMessage('تم حفظ المحاضرة بنجاح.','ok');
+        await loadLectures();
+        await loadDashboard();
+
+    }catch(error){
+        showMessage('تعذر حفظ المحاضرة: '+error.message);
+        console.error(error);
+    }finally{
+        button.disabled=false;
+        button.textContent='حفظ المحاضرة';
+    }
+}
+
+async function loadLectures(){
+    const list=document.getElementById('lecturesList');
+    list.textContent='جارٍ تحميل المحاضرات...';
+
+    try{
+        const {data,error}=await db.from('videos').select('*').order('id',{ascending:false});
+        if(error)throw error;
+
+        if(!data||data.length===0){
+            list.textContent='لا توجد محاضرات مضافة حتى الآن.';
+            return;
+        }
+
+        list.innerHTML=data.map(item=>`
+            <div class="item">
+                <h3>${escapeHTML(item.title)}</h3>
+                <p>الفصل: ${escapeHTML(item.chapter||'غير محدد')}</p>
+                <p>${escapeHTML(item.description||item.details||'')}</p>
+                <p>${safeLink(item.video_url,'فتح الفيديو')}</p>
+                <p>${safeLink(item.pdf_url,'فتح ملف PDF')}</p>
+                <p>${safeLink(item.homework_url,'فتح الواجب')}</p>
+                <div class="item-actions">
+                    <button class="danger" onclick="deleteLecture('${escapeHTML(item.id)}')">حذف المحاضرة</button>
+                </div>
+            </div>
+        `).join('');
+    }catch(error){
+        list.textContent='تعذر تحميل المحاضرات: '+error.message;
+    }
+}
+
+async function deleteLecture(id){
+    if(!confirm('هل تريد حذف هذه المحاضرة؟'))return;
+
+    try{
+        const {error}=await db.from('videos').delete().eq('id',id);
+        if(error)throw error;
+        showMessage('تم حذف المحاضرة.','ok');
+        await loadLectures();
+        await loadDashboard();
+    }catch(error){
+        showMessage('تعذر حذف المحاضرة: '+error.message);
+    }
+}
+
+/* المذكرات */
+async function addNote(){
+    clearMessage();
+
+    const title=document.getElementById('noteTitle').value.trim();
+    const chapter=document.getElementById('noteChapter').value.trim();
+    const description=document.getElementById('noteDescription').value.trim();
+    const file=document.getElementById('notePdf').files[0];
+    let fileUrl=document.getElementById('notePdfUrl').value.trim();
+
+    if(!title)return showMessage('اكتب اسم المذكرة أولًا.');
+    if(!file&&!fileUrl)return showMessage('اختر ملف PDF أو اكتب رابط الملف.');
+    if(!isValidHttpUrl(fileUrl))return showMessage('رابط المذكرة غير صحيح.');
+
+    const button=document.querySelector('#notes .card button');
+    button.disabled=true;
+    button.textContent='جارٍ حفظ المذكرة...';
+
+    try{
+        if(file){
+            if(file.type&&file.type!=='application/pdf'){
+                throw new Error('الملف المختار ليس ملف PDF.');
+            }
+            const uploaded=await uploadToStorage(file,'pdf');
+            fileUrl=uploaded.url;
+        }
+
+        const {error}=await db.from('notes').insert({
+            title,
+            chapter:chapter||null,
+            description:description||null,
+            file_path:fileUrl
+        });
+
+        if(error)throw error;
+
+        ['noteTitle','noteChapter','noteDescription','notePdf','notePdfUrl']
+            .forEach(id=>document.getElementById(id).value='');
+
+        showMessage('تمت إضافة المذكرة بنجاح.','ok');
+        await loadNotes();
+        await loadDashboard();
+
+    }catch(error){
+        showMessage('تعذر حفظ المذكرة: '+error.message);
+        console.error(error);
+    }finally{
+        button.disabled=false;
+        button.textContent='حفظ المذكرة';
+    }
+}
+
+async function loadNotes(){
+    const list=document.getElementById('notesList');
+    list.textContent='جارٍ تحميل المذكرات...';
+
+    try{
+        const {data,error}=await db.from('notes').select('*').order('id',{ascending:false});
+        if(error)throw error;
+
+        if(!data||data.length===0){
+            list.textContent='لا توجد مذكرات مضافة حتى الآن.';
+            return;
+        }
+
+        list.innerHTML=data.map(note=>`
+            <div class="item">
+                <h3>${escapeHTML(note.title)}</h3>
+                <p>الفصل: ${escapeHTML(note.chapter||'غير محدد')}</p>
+                <p>${escapeHTML(note.description||'')}</p>
+                <p>${safeLink(note.file_path,'فتح المذكرة PDF')}</p>
+                <div class="item-actions">
+                    <button class="danger" onclick="deleteNote('${escapeHTML(note.id)}')">حذف المذكرة</button>
+                </div>
+            </div>
+        `).join('');
+    }catch(error){
+        list.textContent='تعذر تحميل المذكرات: '+error.message;
+    }
+}
+
+async function deleteNote(id){
+    if(!confirm('هل تريد حذف هذه المذكرة؟'))return;
+
+    try{
+        const {error}=await db.from('notes').delete().eq('id',id);
+        if(error)throw error;
+        showMessage('تم حذف المذكرة.','ok');
+        await loadNotes();
+        await loadDashboard();
+    }catch(error){
+        showMessage('تعذر حذف المذكرة: '+error.message);
+    }
+}
+
+/* بطل الفصل */
+async function addChampion(){
+    const name=document.getElementById('championName').value.trim();
+    const scoreText=document.getElementById('championScore').value.trim();
+    const rankText=document.getElementById('championRank').value.trim();
+
+    if(!name)return showMessage('اكتب اسم الطالب.');
+
+    const score=scoreText===''?0:Number(scoreText);
+    const rank=rankText===''?null:Number(rankText);
+
+    if(!Number.isFinite(score)||score<0)return showMessage('أدخل درجة صحيحة.');
+    if(rank!==null&&(!Number.isInteger(rank)||rank<1)){
+        return showMessage('الترتيب يجب أن يكون رقمًا صحيحًا يبدأ من 1.');
+    }
+
+    try{
+        const row={student_name:name,score:score};
+        if(rank!==null)row.rank=rank;
+
+        const {error}=await db.from('champions').insert(row);
+        if(error)throw error;
+
+        ['championName','championScore','championRank']
+            .forEach(id=>document.getElementById(id).value='');
+
+        showMessage('تمت إضافة الطالب إلى بطل الفصل.','ok');
+        await loadChampions();
+    }catch(error){
+        showMessage('تعذرت إضافة الطالب: '+error.message);
+    }
+}
+
+async function loadChampions(){
+    const list=document.getElementById('championsList');
+    list.textContent='جارٍ تحميل الطلاب...';
+
+    try{
+        const {data,error}=await db.from('champions').select('*').order('rank',{ascending:true,nullsFirst:false});
+        if(error)throw error;
+
+        if(!data||data.length===0){
+            list.textContent='لا يوجد طلاب في القائمة حتى الآن.';
+            return;
+        }
+
+        list.innerHTML=data.map(student=>`
+            <div class="item">
+                <h3>${escapeHTML(student.student_name)}</h3>
+                <p>النقاط: ${escapeHTML(student.score??0)}</p>
+                <p>الترتيب الحالي: ${escapeHTML(student.rank??'غير محدد')}</p>
+                <label for="rank_${escapeHTML(student.id)}">تعديل ترتيب الطالب</label>
+                <input id="rank_${escapeHTML(student.id)}" type="number" min="1" value="${escapeHTML(student.rank??'')}" placeholder="أدخل الترتيب الجديد">
+                <div class="item-actions">
+                    <button onclick="updateChampionRank('${escapeHTML(student.id)}')">حفظ الترتيب</button>
+                    <button class="danger" onclick="deleteChampion('${escapeHTML(student.id)}')">حذف الطالب</button>
+                </div>
+            </div>
+        `).join('');
+    }catch(error){
+        list.textContent='تعذر تحميل الطلاب: '+error.message;
+    }
+}
+
+async function updateChampionRank(id){
+    const input=document.getElementById('rank_'+id);
+    const rank=Number(input.value);
+
+    if(!Number.isInteger(rank)||rank<1)return showMessage('أدخل ترتيبًا صحيحًا يبدأ من 1.');
+
+    try{
+        const {error}=await db.from('champions').update({rank}).eq('id',id);
+        if(error)throw error;
+        showMessage('تم تحديث ترتيب الطالب.','ok');
+        await loadChampions();
+    }catch(error){
+        showMessage('تعذر تحديث الترتيب: '+error.message);
+    }
+}
+
+async function deleteChampion(id){
+    if(!confirm('هل تريد حذف هذا الطالب من بطل الفصل؟'))return;
+
+    try{
+        const {error}=await db.from('champions').delete().eq('id',id);
+        if(error)throw error;
+        showMessage('تم حذف الطالب.','ok');
+        await loadChampions();
+    }catch(error){
+        showMessage('تعذر حذف الطالب: '+error.message);
+    }
+}
+
+/* المنتدى */
+async function loadForum(){
+    const list=document.getElementById('forumList');
+    list.textContent='جارٍ تحميل المشاركات...';
+
+    try{
+        const {data,error}=await db.from('forum_posts').select('*').order('created_at',{ascending:false});
+        if(error)throw error;
+
+        if(!data||data.length===0){
+            list.textContent='لا توجد مشاركات حتى الآن.';
+            return;
+        }
+
+        list.innerHTML=data.map(post=>{
+            const postId=String(post.id);
+            const title=post.title||'مشاركة طالب';
+            const content=post.content||post.body||'';
+
+            return `
+                <div class="item">
+                    <h3>${escapeHTML(title)}</h3>
+                    <p>${escapeHTML(content)}</p>
+                    <p class="small">تاريخ المشاركة: ${escapeHTML(post.created_at||'غير متوفر')}</p>
+                    <label for="reply_${escapeHTML(postId)}">الرد على الطالب</label>
+                    <textarea id="reply_${escapeHTML(postId)}" placeholder="اكتب ردك هنا..."></textarea>
+                    <label for="audio_${escapeHTML(postId)}">أو اختيار تسجيل صوتي</label>
+                    <input id="audio_${escapeHTML(postId)}" type="file" accept="audio/*">
+                    <div class="item-actions">
+                        <button onclick="sendTextReply('${escapeHTML(postId)}')">إرسال الرد النصي</button>
+                        <button class="secondary" onclick="sendAudioReply('${escapeHTML(postId)}')">إرسال الرد الصوتي</button>
+                        <button class="secondary" onclick="loadPostReplies('${escapeHTML(postId)}')">عرض الردود</button>
+                    </div>
+                    <div id="replies_${escapeHTML(postId)}"></div>
+                </div>
+            `;
+        }).join('');
+    }catch(error){
+        list.textContent='تعذر تحميل المنتدى: '+error.message+' — تأكد من أسماء جدول المنتدى وأعمدته.';
+    }
+}
+
+async function sendTextReply(postId){
+    const input=document.getElementById('reply_'+postId);
+    const content=input.value.trim();
+
+    if(!content)return showMessage('اكتب الرد أولًا.');
+    if(!currentUser)return showMessage('يجب تسجيل الدخول أولًا.');
+
+    try{
+        const {error}=await db.from('forum_replies').insert({
+            post_id:postId,
+            user_id:currentUser.id,
+            content:content,
+            reply_type:'text'
+        });
+
+        if(error)throw error;
+
+        input.value='';
+        showMessage('تم إرسال الرد النصي بنجاح.','ok');
+        await loadPostReplies(postId);
+    }catch(error){
+        showMessage('تعذر إرسال الرد: '+error.message);
+    }
+}
+
+async function sendAudioReply(postId){
+    const input=document.getElementById('audio_'+postId);
+    const file=input.files[0];
+
+    if(!file)return showMessage('اختر ملفًا صوتيًا أولًا.');
+    if(!file.type.startsWith('audio/'))return showMessage('الملف المختار ليس ملفًا صوتيًا.');
+    if(!currentUser)return showMessage('يجب تسجيل الدخول أولًا.');
+
+    try{
+        showMessage('جارٍ رفع الملف الصوتي...','ok');
+        const uploaded=await uploadToStorage(file,'forum-audio');
+
+        const {error}=await db.from('forum_replies').insert({
+            post_id:postId,
+            user_id:currentUser.id,
+            content:uploaded.url,
+            reply_type:'audio'
+        });
+
+        if(error)throw error;
+
+        input.value='';
+        showMessage('تم إرسال الرد الصوتي بنجاح.','ok');
+        await loadPostReplies(postId);
+    }catch(error){
+        showMessage('تعذر إرسال الرد الصوتي: '+error.message);
+    }
+}
+
+async function loadPostReplies(postId){
+    const box=document.getElementById('replies_'+postId);
+    if(!box)return;
+
+    box.textContent='جارٍ تحميل الردود...';
+
+    try{
+        const {data,error}=await db.from('forum_replies')
+            .select('*')
+            .eq('post_id',postId)
+            .order('created_at',{ascending:true});
+
+        if(error)throw error;
+
+        if(!data||data.length===0){
+            box.textContent='لا توجد ردود على هذه المشاركة.';
+            return;
+        }
+
+        box.innerHTML='<h4>الردود</h4>'+data.map(reply=>{
+            const content=reply.content||'';
+
+            if(reply.reply_type==='audio'&&isValidHttpUrl(content)){
+                return `
+                    <div class="item">
+                        <p>رد صوتي</p>
+                        <audio controls preload="none" style="width:100%">
+                            <source src="${escapeHTML(content)}">
+                            متصفحك لا يدعم تشغيل الصوت.
+                        </audio>
+                    </div>
+                `;
+            }
+
+            return `<div class="item"><p>${escapeHTML(content)}</p></div>`;
+        }).join('');
+    }catch(error){
+        box.textContent='تعذر تحميل الردود: '+error.message;
+    }
+}
+
+db.auth.onAuthStateChange((event,session)=>{
+    if(event==='SIGNED_OUT'){
+        currentUser=null;
+        document.getElementById('app').style.display='none';
+        document.getElementById('loginScreen').style.display='flex';
+    }
+});
+
+checkExistingSession();
 </script>
+
 </body>
 </html>
