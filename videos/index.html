@@ -83,7 +83,8 @@
       gap: 14px;
     }
 
-    .menu a:hover, .menu a.active {
+    .menu a:hover,
+    .menu a.active {
       background: rgba(255, 255, 255, 0.2);
       color: #fff;
     }
@@ -109,7 +110,6 @@
       font-weight: 700;
     }
 
-    /* تصميم المحاضرات المنسدل */
     .lecture-card {
       background: white;
       border-radius: 14px;
@@ -155,13 +155,14 @@
 
     .lecture-body.open {
       padding: 20px 25px;
-      max-height: 1200px;
+      max-height: 5000px;
+      overflow: visible;
     }
 
     .video-container {
       position: relative;
       width: 100%;
-      padding-bottom: 56.25%; /* نسبة عرض لارتفاع 16:9 */
+      padding-bottom: 56.25%;
       height: 0;
       background: #000;
       border-radius: 10px;
@@ -225,16 +226,26 @@
       background: #014d40;
     }
 
-    .loading, .empty {
+    .loading,
+    .empty {
       text-align: center;
       padding: 30px;
       color: #64748b;
       font-weight: 600;
+      background: white;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
     }
 
     @media (max-width: 768px) {
-      .sidebar { display: none; }
-      .main { margin-right: 0; padding: 15px; }
+      .sidebar {
+        display: none;
+      }
+
+      .main {
+        margin-right: 0;
+        padding: 15px;
+      }
     }
   </style>
 </head>
@@ -250,6 +261,7 @@
           <p style="font-size: 12px; opacity: 0.85;">ثالثة ثانوي</p>
         </div>
       </div>
+
       <nav class="menu">
         <a href="../index.html">🏠 الرئيسية</a>
         <a href="index.html" class="active">🎥 المحاضرات</a>
@@ -271,133 +283,331 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script>
     const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
     const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // دالة لتحويل رابط يوتيوب العادي إلى رابط مضمن صحيح (Embed)
-    function getYoutubeEmbedUrl(url) {
-      if (!url) return "";
-      let videoId = "";
-      if (url.includes("youtu.be/")) {
-        videoId = url.split("youtu.be/")[1]?.split("?")[0];
-      } else if (url.includes("watch?v=")) {
-        videoId = url.split("watch?v=")[1]?.split("&")[0];
-      } else if (url.includes("embed/")) {
-        return url;
-      }
-      return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+    const supabaseClient = supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    function escapeHtml(value) {
+      if (value === null || value === undefined) return "";
+
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
 
-    async function loadLectures() {
-      const listDiv = document.getElementById("lecturesList");
+    function getYoutubeEmbedUrl(url) {
+      if (!url) return "";
+
       try {
-        const { data, error } = await supabaseClient
-          .from("videos")
-          .select("*")
-          .order("created_at", { ascending: true });
+        const parsed = new URL(url);
+        let videoId = "";
 
-        if (error) throw error;
+        if (parsed.hostname.includes("youtu.be")) {
+          videoId = parsed.pathname.split("/").filter(Boolean)[0] || "";
+        } else if (
+          parsed.hostname.includes("youtube.com") ||
+          parsed.hostname.includes("youtube-nocookie.com")
+        ) {
+          if (parsed.pathname === "/watch") {
+            videoId = parsed.searchParams.get("v") || "";
+          } else {
+            const parts = parsed.pathname.split("/").filter(Boolean);
 
-        if (!data || data.length === 0) {
-          listDiv.innerHTML = `<div class="empty">لا توجد محاضرات مرفوعة حالياً.</div>`;
-          return;
+            if (["embed", "shorts", "live"].includes(parts[0])) {
+              videoId = parts[1] || "";
+            }
+          }
         }
 
-        listDiv.innerHTML = "";
-        data.forEach((lec, index) => {
-          const card = document.createElement("div");
-          card.className = "lecture-card";
-          
-          let videoPlayerHtml = "";
-          const rawUrl = lec.video_url || "";
-          
-          if (rawUrl.includes("youtube.com") || rawUrl.includes("youtu.be")) {
-            const embedUrl = getYoutubeEmbedUrl(rawUrl);
-            videoPlayerHtml = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
-          } else {
-            videoPlayerHtml = `<video controls><source src="${rawUrl}" type="video/mp4">متصفحك لا يدعم عرض الفيديو.</video>`;
-          }
+        if (videoId) {
+          return "https://www.youtube.com/embed/" +
+            encodeURIComponent(videoId);
+        }
 
-          card.innerHTML = `
-            <div class="lecture-header" onclick="toggleLecture(${index})">
-              <div class="lecture-title">
-                <h3>${escapeHtml(lec.title)}</h3>
-                <p>${escapeHtml(lec.chapter || "الباب التعليمي")}</p>
-              </div>
-              <div class="arrow-icon" id="arrow-${index}">▼</div>
-            </div>
-            <div class="lecture-body" id="body-${index}">
-              <div class="video-container">
-                ${videoPlayerHtml}
-              </div>
-              <p style="margin-bottom: 15px; color: #475569; font-size: 14px;">${escapeHtml(lec.description || "")}</p>
-
-              <!-- الشرح -->
-              <div class="dropdown-section">
-                <div class="dropdown-header" onclick="toggleSub(this)">
-                  <span>📖 الشرح التفصيلي</span>
-                  <span>▼</span>
-                </div>
-                <div class="dropdown-content">
-                  <p>${escapeHtml(lec.details || "لا توجد تفاصيل نصية إضافية.")}</p>
-                </div>
-              </div>
-
-              <!-- المذكرة (PDF) -->
-              <div class="dropdown-section">
-                <div class="dropdown-header" onclick="toggleSub(this)">
-                  <span>📚 مذكرة المحاضرة (PDF)</span>
-                  <span>▼</span>
-                </div>
-                <div class="dropdown-content">
-                  ${lec.pdf_url ? `<a href="\${lec.pdf_url}" target="_blank" class="btn-link">تحميل أو استعراض المذكرة 📄</a>` : '<p style="color:#64748b;">المذكرة غير متوفرة لهذه المحاضرة حالياً.</p>'}
-                </div>
-              </div>
-
-              <!-- الواجب -->
-              <div class="dropdown-section">
-                <div class="dropdown-header" onclick="toggleSub(this)">
-                  <span>✏️ واجب المحاضرة</span>
-                  <span>▼</span>
-                </div>
-                <div class="dropdown-content">
-                  ${lec.homework_url ? `<a href="\${lec.homework_url}" target="_blank" class="btn-link">فتح الواجب / الامتحان 📝</a>` : '<p style="color:#64748b;">الواجب غير متوفر حالياً.</p>'}
-                </div>
-              </div>
-
-            </div>
-          `;
-          listDiv.appendChild(card);
-        });
-
-      } catch (err) {
-        console.error(err);
-        listDiv.innerHTML = `<div class="empty" style="color:#e74c3c;">تعذر تحميل المحاضرات: ${err.message}</div>`;
+        return url;
+      } catch {
+        return url;
       }
+    }
+
+    function isYoutubeUrl(url) {
+      return /youtube\.com|youtu\.be|youtube-nocookie\.com/i.test(url || "");
+    }
+
+    function isDirectVideoUrl(url) {
+      return /\.(mp4|webm|ogg|m4v)(?:$|[?#])/i.test(url || "");
+    }
+
+    async function resolveVideoUrl(rawUrl) {
+      if (!rawUrl) return "";
+
+      const url = String(rawUrl).trim();
+
+      if (
+        /^https?:\/\//i.test(url) ||
+        url.startsWith("blob:")
+      ) {
+        return url;
+      }
+
+      /*
+        لوحة الأدمن السابقة تحفظ الفيديو في Storage bucket
+        اسمه lectures، وغالبًا يكون المسار videos/اسم-الملف.mp4
+      */
+
+      const possiblePaths = [
+        url.replace(/^\/+/, ""),
+        url.replace(/^videos\//, "")
+      ];
+
+      for (const path of possiblePaths) {
+        const { data } = supabaseClient.storage
+          .from("lectures")
+          .getPublicUrl(path);
+
+        if (data && data.publicUrl) {
+          return data.publicUrl;
+        }
+      }
+
+      return url;
+    }
+
+    function createVideoPlayer(url) {
+      if (!url) {
+        return `
+          <div class="empty">
+            لم يتم تحديد رابط الفيديو لهذه المحاضرة.
+          </div>
+        `;
+      }
+
+      if (isYoutubeUrl(url)) {
+        const embedUrl = getYoutubeEmbedUrl(url);
+
+        return `
+          <iframe
+            src="${escapeHtml(embedUrl)}"
+            title="فيديو المحاضرة"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen>
+          </iframe>
+        `;
+      }
+
+      if (isDirectVideoUrl(url) || url.includes("/storage/v1/object/")) {
+        return `
+          <video controls playsinline preload="metadata">
+            <source src="${escapeHtml(url)}">
+            متصفحك لا يدعم عرض الفيديو.
+          </video>
+        `;
+      }
+
+      return `
+        <div style="background:white;padding:20px;text-align:center;">
+          <p style="margin-bottom:10px;">افتح رابط المحاضرة لمشاهدة الفيديو.</p>
+          <a class="btn-link"
+             href="${escapeHtml(url)}"
+             target="_blank"
+             rel="noopener noreferrer">
+            ▶️ مشاهدة المحاضرة
+          </a>
+        </div>
+      `;
     }
 
     function toggleLecture(index) {
       const body = document.getElementById(`body-${index}`);
       const arrow = document.getElementById(`arrow-${index}`);
+
+      if (!body || !arrow) return;
+
       body.classList.toggle("open");
-      arrow.style.transform = body.classList.contains("open") ? "rotate(180deg)" : "rotate(0deg)";
+
+      arrow.style.transform = body.classList.contains("open")
+        ? "rotate(180deg)"
+        : "rotate(0deg)";
     }
 
     function toggleSub(headerElement) {
       const content = headerElement.nextElementSibling;
-      content.classList.toggle("open");
+
+      if (content) {
+        content.classList.toggle("open");
+      }
     }
 
-    function escapeHtml(str) {
-      if (!str) return "";
-      return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    function createOptionalSection(title, content) {
+      return `
+        <div class="dropdown-section">
+          <div class="dropdown-header" onclick="toggleSub(this)">
+            <span>${title}</span>
+            <span>▼</span>
+          </div>
+          <div class="dropdown-content">
+            ${content}
+          </div>
+        </div>
+      `;
+    }
+
+    async function loadLectures() {
+      const listDiv = document.getElementById("lecturesList");
+
+      listDiv.innerHTML = `
+        <div class="loading">جاري تحميل المحاضرات...</div>
+      `;
+
+      try {
+        /*
+          المصدر الصحيح حسب لوحة الأدمن:
+          جدول lectures وليس جدول videos.
+        */
+
+        const { data, error } = await supabaseClient
+          .from("lectures")
+          .select("*")
+          .order("created_at", { ascending: true });
+
+        if (error) {
+          throw error;
+        }
+
+        if (!data || data.length === 0) {
+          listDiv.innerHTML = `
+            <div class="empty">
+              لا توجد محاضرات ظاهرة حالياً.
+            </div>
+          `;
+          return;
+        }
+
+        listDiv.innerHTML = "";
+
+        for (let index = 0; index < data.length; index++) {
+          const lec = data[index];
+
+          /*
+            دعم أسماء الحقول الشائعة، مع الحفاظ على الحقول
+            الأساسية التي تستخدمها لوحة الأدمن.
+          */
+
+          const title = lec.title || "محاضرة أحياء";
+          const description = lec.description || "";
+          const rawVideoUrl =
+            lec.video_url ||
+            lec.videoUrl ||
+            lec.url ||
+            "";
+
+          const videoUrl = await resolveVideoUrl(rawVideoUrl);
+
+          const chapter =
+            lec.chapter ||
+            lec.lesson ||
+            "الباب التعليمي";
+
+          const details =
+            lec.details ||
+            lec.content ||
+            "لا توجد تفاصيل نصية إضافية.";
+
+          const pdfUrl =
+            lec.pdf_url ||
+            lec.pdfUrl ||
+            "";
+
+          const homeworkUrl =
+            lec.homework_url ||
+            lec.homeworkUrl ||
+            "";
+
+          const card = document.createElement("div");
+          card.className = "lecture-card";
+
+          const videoHtml = createVideoPlayer(videoUrl);
+
+          const detailsHtml = createOptionalSection(
+            "📖 الشرح التفصيلي",
+            `<p>${escapeHtml(details)}</p>`
+          );
+
+          const pdfHtml = createOptionalSection(
+            "📚 مذكرة المحاضرة (PDF)",
+            pdfUrl
+              ? `<a href="${escapeHtml(pdfUrl)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn-link">تحميل أو استعراض المذكرة 📄</a>`
+              : `<p style="color:#64748b;">المذكرة غير متوفرة لهذه المحاضرة حالياً.</p>`
+          );
+
+          const homeworkHtml = createOptionalSection(
+            "✏️ واجب المحاضرة",
+            homeworkUrl
+              ? `<a href="${escapeHtml(homeworkUrl)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn-link">فتح الواجب / الامتحان 📝</a>`
+              : `<p style="color:#64748b;">الواجب غير متوفر حالياً.</p>`
+          );
+
+          card.innerHTML = `
+            <div class="lecture-header" onclick="toggleLecture(${index})">
+              <div class="lecture-title">
+                <h3>${escapeHtml(title)}</h3>
+                <p>${escapeHtml(chapter)}</p>
+              </div>
+              <div class="arrow-icon" id="arrow-${index}">▼</div>
+            </div>
+
+            <div class="lecture-body" id="body-${index}">
+              <div class="video-container">
+                ${videoHtml}
+              </div>
+
+              <p style="margin-bottom:15px;color:#475569;font-size:14px;">
+                ${escapeHtml(description)}
+              </p>
+
+              ${detailsHtml}
+              ${pdfHtml}
+              ${homeworkHtml}
+            </div>
+          `;
+
+          listDiv.appendChild(card);
+        }
+
+      } catch (err) {
+        console.error("خطأ تحميل المحاضرات:", err);
+
+        listDiv.innerHTML = `
+          <div class="empty" style="color:#e74c3c;">
+            تعذر تحميل المحاضرات من قاعدة البيانات.
+            <br>
+            <span style="font-size:13px;font-weight:400;">
+              ${escapeHtml(err.message || "حدث خطأ غير معروف")}
+            </span>
+          </div>
+        `;
+      }
     }
 
     loadLectures();
   </script>
 
 </body>
-
 </html>
