@@ -4,28 +4,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>المحاضرات | منصة أرض الأحياء</title>
+
+  <meta name="description"
+    content="محاضرات الأحياء للصف الثالث الثانوي في منصة أرض الأحياء.">
+
   <link rel="icon" href="../favicon.png">
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap"
+    rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Cairo', sans-serif !important;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    :root {
+      --green: #026857;
+      --green-dark: #014d40;
+      --blue: #1e3a8a;
+      --blue-light: #2563eb;
+      --bg: #f0f4f8;
+      --border: #e2e8f0;
+      --text: #2c3e50;
+      --muted: #64748b;
     }
 
     body {
-      background: #f0f4f8;
-      color: #2c3e50;
+      background: var(--bg);
+      color: var(--text);
       display: flex;
       min-height: 100vh;
     }
 
+    /* الشريط الجانبي */
+
     .sidebar {
       width: 270px;
-      background: linear-gradient(180deg, #026857 0%, #1e3a8a 100%);
+      background: linear-gradient(
+        180deg,
+        #026857 0%,
+        #075e54 48%,
+        #1e3a8a 100%
+      );
       color: white;
       position: fixed;
       right: 0;
@@ -35,127 +62,338 @@
       flex-direction: column;
       justify-content: space-between;
       z-index: 1000;
+      overflow-y: auto;
     }
 
     .sidebar-top {
-      padding: 30px 20px;
+      padding: 28px 18px;
     }
 
     .logo-box {
       display: flex;
       align-items: center;
-      gap: 14px;
-      margin-bottom: 35px;
-      padding-bottom: 15px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      gap: 13px;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,.16);
     }
 
     .logo-box img {
-      width: 50px;
-      height: 50px;
+      width: 49px;
+      height: 49px;
       object-fit: contain;
-      border-radius: 50%;
-      background: #fff;
+      border-radius: 13px;
+      background: white;
       padding: 3px;
+      flex-shrink: 0;
     }
 
     .logo-box h2 {
-      font-size: 19px;
-      color: #fff;
+      font-size: 17px;
+      color: white;
+      font-weight: 900;
+    }
+
+    .logo-box p {
+      font-size: 11px;
+      opacity: .8;
+      margin-top: 4px;
+    }
+
+    .menu-title {
+      color: rgba(255,255,255,.62);
+      font-size: 10px;
       font-weight: 700;
+      padding: 0 12px;
+      margin-bottom: 10px;
     }
 
     .menu {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 7px;
     }
 
     .menu a {
       text-decoration: none;
       color: #e2f1ee;
-      padding: 12px 16px;
-      border-radius: 12px;
-      font-size: 15px;
+      padding: 12px 13px;
+      border-radius: 11px;
+      font-size: 13px;
       font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
+      transition: background .2s, transform .2s;
     }
 
     .menu a:hover,
     .menu a.active {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255,255,255,.17);
       color: #fff;
     }
+
+    .menu a:hover {
+      transform: translateX(-2px);
+    }
+
+    .menu-icon {
+      width: 21px;
+      height: 21px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .menu-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .sidebar-bottom {
+      margin: 0 18px 20px;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.1);
+      font-size: 11px;
+      line-height: 2;
+      color: rgba(255,255,255,.9);
+    }
+
+    /* المحتوى الرئيسي */
 
     .main {
       margin-right: 270px;
       flex: 1;
-      padding: 30px 40px;
+      min-width: 0;
+      padding: 30px 35px;
     }
 
     .top-bar {
       background: white;
-      padding: 22px 30px;
+      padding: 22px 25px;
       border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(30, 58, 138, 0.04);
-      margin-bottom: 30px;
-      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 20px rgba(30,58,138,.04);
+      margin-bottom: 25px;
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
     }
 
     .top-bar h1 {
-      color: #1e3a8a;
+      color: var(--blue);
       font-size: 22px;
-      font-weight: 700;
+      font-weight: 900;
     }
+
+    .top-bar p {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 6px;
+      line-height: 1.8;
+    }
+
+    .top-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: #e8f5e9;
+      color: var(--green);
+      flex-shrink: 0;
+    }
+
+    .top-icon svg {
+      width: 25px;
+      height: 25px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* أقسام الشهور */
+
+    .months-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 13px;
+      margin-bottom: 25px;
+    }
+
+    .month-button {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 15px;
+      text-align: right;
+      cursor: pointer;
+      transition: .2s;
+      color: var(--text);
+      min-width: 0;
+    }
+
+    .month-button:hover {
+      border-color: var(--green);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(2,104,87,.07);
+    }
+
+    .month-button.active {
+      color: white;
+      background: linear-gradient(135deg, var(--green), var(--blue));
+      border-color: transparent;
+    }
+
+    .month-button-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+
+    .month-button strong {
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .month-button small {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .month-button.active small {
+      color: rgba(255,255,255,.8);
+    }
+
+    .month-number {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      background: #e8f5e9;
+      color: var(--green);
+      font-weight: 900;
+      font-size: 12px;
+    }
+
+    .month-button.active .month-number {
+      background: rgba(255,255,255,.18);
+      color: white;
+    }
+
+    /* عنوان الشهر */
+
+    .month-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 5px 0 17px;
+      padding: 17px 20px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+    }
+
+    .month-heading h2 {
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--blue);
+    }
+
+    .month-heading p {
+      margin-top: 5px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .month-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 11px;
+      border-radius: 8px;
+      background: #e8f5e9;
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* بطاقة المحاضرة - الحفاظ على التصميم الأصلي */
 
     .lecture-card {
       background: white;
       border-radius: 14px;
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--border);
       margin-bottom: 20px;
       overflow: hidden;
-      box-shadow: 0 4px 15px rgba(30,58,138,0.03);
+      box-shadow: 0 4px 15px rgba(30,58,138,.03);
     }
 
     .lecture-header {
-      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+      background: linear-gradient(
+        135deg,
+        #1e3a8a 0%,
+        #2563eb 100%
+      );
       color: white;
       padding: 18px 25px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
       cursor: pointer;
     }
 
+    .lecture-title {
+      min-width: 0;
+    }
+
     .lecture-title h3 {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
       margin-bottom: 4px;
+      overflow-wrap: anywhere;
     }
 
     .lecture-title p {
-      font-size: 13px;
-      opacity: 0.9;
+      font-size: 12px;
+      opacity: .9;
+      line-height: 1.8;
+      overflow-wrap: anywhere;
     }
 
     .arrow-icon {
       font-size: 18px;
-      transition: transform 0.3s;
+      transition: transform .3s;
+      flex-shrink: 0;
     }
 
     .lecture-body {
       padding: 0;
       max-height: 0;
       overflow: hidden;
-      transition: max-height 0.3s ease-out, padding 0.3s;
+      transition: max-height .3s ease-out, padding .3s;
       background: #fafafa;
     }
 
     .lecture-body.open {
       padding: 20px 25px;
-      max-height: 5000px;
+      max-height: 10000px;
       overflow: visible;
     }
 
@@ -195,8 +433,10 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 10px;
       cursor: pointer;
       background: #f1f8e9;
+      font-size: 13px;
     }
 
     .dropdown-content {
@@ -204,6 +444,9 @@
       background: white;
       border-top: 1px solid #c8e6c9;
       display: none;
+      font-size: 13px;
+      line-height: 2;
+      overflow-wrap: anywhere;
     }
 
     .dropdown-content.open {
@@ -218,7 +461,7 @@
       border-radius: 8px;
       text-decoration: none;
       font-weight: 600;
-      font-size: 14px;
+      font-size: 13px;
       margin-top: 8px;
     }
 
@@ -234,10 +477,45 @@
       font-weight: 600;
       background: white;
       border-radius: 14px;
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--border);
+      font-size: 13px;
+      line-height: 2;
     }
 
-    @media (max-width: 768px) {
+    .empty-icon {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 27px;
+    }
+
+    .notice {
+      color: #92400e;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 12px;
+      padding: 15px;
+      font-size: 12px;
+      line-height: 2;
+      margin-bottom: 20px;
+    }
+
+    /* الهاتف */
+
+    .mobile-bottom {
+      display: none;
+    }
+
+    @media(max-width:1100px) {
+      .months-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .main {
+        padding: 25px;
+      }
+    }
+
+    @media(max-width:768px) {
       .sidebar {
         display: none;
       }
@@ -245,6 +523,106 @@
       .main {
         margin-right: 0;
         padding: 15px;
+        padding-bottom: 85px;
+      }
+
+      .top-bar {
+        padding: 17px;
+        margin-bottom: 18px;
+      }
+
+      .top-bar h1 {
+        font-size: 18px;
+      }
+
+      .top-bar p {
+        font-size: 11px;
+      }
+
+      .top-icon {
+        width: 41px;
+        height: 41px;
+      }
+
+      .months-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+      }
+
+      .month-button {
+        padding: 12px;
+      }
+
+      .month-button strong {
+        font-size: 12px;
+      }
+
+      .month-heading {
+        padding: 14px;
+      }
+
+      .month-heading h2 {
+        font-size: 15px;
+      }
+
+      .lecture-header {
+        padding: 15px;
+      }
+
+      .lecture-title h3 {
+        font-size: 15px;
+      }
+
+      .lecture-title p {
+        font-size: 11px;
+      }
+
+      .lecture-body.open {
+        padding: 13px;
+      }
+
+      .mobile-bottom {
+        display: flex;
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1500;
+        background: white;
+        box-shadow: 0 -3px 18px rgba(0,0,0,.08);
+        justify-content: space-around;
+        padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+      }
+
+      .mobile-bottom a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        color: #64748b;
+        font-size: 10px;
+        flex: 1;
+      }
+
+      .mobile-bottom a.active {
+        color: var(--green);
+        font-weight: 900;
+      }
+
+      .mobile-bottom svg {
+        width: 21px;
+        height: 21px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+    }
+
+    @media(max-width:360px) {
+      .months-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -253,45 +631,193 @@
 <body>
 
   <aside class="sidebar">
+
     <div class="sidebar-top">
+
       <div class="logo-box">
-        <img src="../logo.png" alt="شعار">
+        <img src="../logo.png" alt="شعار أرض الأحياء"
+             onerror="this.style.display='none'">
+
         <div>
           <h2>أرض الأحياء</h2>
-          <p style="font-size: 12px; opacity: 0.85;">ثالثة ثانوي</p>
+          <p>الصف الثالث الثانوي</p>
         </div>
       </div>
 
+      <div class="menu-title">القائمة الرئيسية</div>
+
       <nav class="menu">
-        <a href="../index.html">🏠 الرئيسية</a>
-        <a href="index.html" class="active">🎥 المحاضرات</a>
-        <a href="../champion/index.html">🏆 بطل الفصل</a>
-        <a href="../forum/index.html">💬 المنتدى</a>
-        <a href="../account/index.html">👤 حساب الطالب</a>
+
+        <a href="../index.html">
+          <span class="menu-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="m3 10 9-7 9 7"></path>
+              <path d="M5 9v11h14V9"></path>
+              <path d="M9 20v-7h6v7"></path>
+            </svg>
+          </span>
+          الرئيسية
+        </a>
+
+        <a href="index.html" class="active">
+          <span class="menu-icon">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="5" width="18" height="14" rx="3"></rect>
+              <path d="m10 9 5 3-5 3z"></path>
+            </svg>
+          </span>
+          المحاضرات
+        </a>
+
+        <a href="../notes/index.html">
+          <span class="menu-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M5 3h11l3 3v15H5z"></path>
+              <path d="M16 3v4h4"></path>
+              <path d="M8 12h8M8 16h8"></path>
+            </svg>
+          </span>
+          المذكرات
+        </a>
+
+        <a href="../champion/index.html">
+          <span class="menu-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="m8 4 4-2 4 2 4 1v5c0 5-4 8-8 12-4-4-8-7-8-12V5z"></path>
+              <path d="m9 11 2 2 4-5"></path>
+            </svg>
+          </span>
+          بطل الفصل
+        </a>
+
+        <a href="../forum/index.html">
+          <span class="menu-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.3A8.5 8.5 0 1 1 21 11.5Z"></path>
+              <path d="M8 10h8M8 14h5"></path>
+            </svg>
+          </span>
+          المنتدى
+        </a>
+
+        <a href="../account/index.html">
+          <span class="menu-icon">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="8" r="4"></circle>
+              <path d="M4 21a8 8 0 0 1 16 0"></path>
+            </svg>
+          </span>
+          حساب الطالب
+        </a>
+
       </nav>
     </div>
+
+    <div class="sidebar-bottom">
+      <strong>أرض الأحياء</strong>
+      <br>
+      رحلتك نحو التفوق تبدأ من هنا.
+    </div>
+
   </aside>
 
   <main class="main">
-    <div class="top-bar">
-      <h1>🎥 محاضرات منهج الأحياء</h1>
+
+    <header class="top-bar">
+      <div>
+        <h1>محاضرات منهج الأحياء</h1>
+        <p>اختر الشهر الذي تريد مذاكرته، ثم افتح المحاضرة المناسبة.</p>
+      </div>
+
+      <div class="top-icon">
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="5" width="18" height="14" rx="3"></rect>
+          <path d="m10 9 5 3-5 3z"></path>
+        </svg>
+      </div>
+    </header>
+
+    <div id="pageNotice" class="notice" style="display:none"></div>
+
+    <div id="monthsGrid" class="months-grid" style="display:none"></div>
+
+    <div id="monthHeading" class="month-heading" style="display:none">
+      <div>
+        <h2 id="selectedMonthTitle"></h2>
+        <p id="selectedMonthDescription"></p>
+      </div>
+
+      <span class="month-badge" id="lectureCountBadge"></span>
     </div>
 
     <div id="lecturesList">
-      <div class="loading">جاري تحميل المحاضرات...</div>
+      <div class="loading">جارٍ تحميل المحاضرات...</div>
     </div>
+
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- قائمة الهاتف -->
+  <nav class="mobile-bottom">
+
+    <a href="../index.html">
+      <svg viewBox="0 0 24 24">
+        <path d="m3 10 9-7 9 7"></path>
+        <path d="M5 9v11h14V9"></path>
+      </svg>
+      الرئيسية
+    </a>
+
+    <a href="index.html" class="active">
+      <svg viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="14" rx="3"></rect>
+        <path d="m10 9 5 3-5 3z"></path>
+      </svg>
+      المحاضرات
+    </a>
+
+    <a href="../notes/index.html">
+      <svg viewBox="0 0 24 24">
+        <path d="M5 3h11l3 3v15H5z"></path>
+        <path d="M16 3v4h4M8 12h8M8 16h8"></path>
+      </svg>
+      المذكرات
+    </a>
+
+    <a href="../forum/index.html">
+      <svg viewBox="0 0 24 24">
+        <path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.3A8.5 8.5 0 1 1 21 11.5Z"></path>
+      </svg>
+      المنتدى
+    </a>
+
+    <a href="../account/index.html">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="4"></circle>
+        <path d="M4 21a8 8 0 0 1 16 0"></path>
+      </svg>
+      حسابي
+    </a>
+
+  </nav>
 
   <script>
-    const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+    const SUPABASE_URL =
+      "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 
-    const supabaseClient = supabase.createClient(
+    const SUPABASE_KEY =
+      "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+
+    const supabaseClient = window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_KEY
     );
+
+    const MONTHS_TABLE = "lecture_months";
+    const LECTURES_TABLE = "lectures";
+
+    let allLectures = [];
+    let visibleMonths = [];
+    let selectedMonth = null;
 
     function escapeHtml(value) {
       if (value === null || value === undefined) return "";
@@ -302,6 +828,16 @@
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+    }
+
+    function showNotice(text) {
+      const notice = document.getElementById("pageNotice");
+      notice.textContent = text;
+      notice.style.display = "block";
+    }
+
+    function hideNotice() {
+      document.getElementById("pageNotice").style.display = "none";
     }
 
     function getYoutubeEmbedUrl(url) {
@@ -334,6 +870,7 @@
         }
 
         return url;
+
       } catch {
         return url;
       }
@@ -352,34 +889,17 @@
 
       const url = String(rawUrl).trim();
 
-      if (
-        /^https?:\/\//i.test(url) ||
-        url.startsWith("blob:")
-      ) {
+      if (/^https?:\/\//i.test(url) || url.startsWith("blob:")) {
         return url;
       }
 
-      /*
-        لوحة الأدمن السابقة تحفظ الفيديو في Storage bucket
-        اسمه lectures، وغالبًا يكون المسار videos/اسم-الملف.mp4
-      */
+      const path = url.replace(/^\/+/, "");
 
-      const possiblePaths = [
-        url.replace(/^\/+/, ""),
-        url.replace(/^videos\//, "")
-      ];
+      const { data } = supabaseClient.storage
+        .from("lectures")
+        .getPublicUrl(path);
 
-      for (const path of possiblePaths) {
-        const { data } = supabaseClient.storage
-          .from("lectures")
-          .getPublicUrl(path);
-
-        if (data && data.publicUrl) {
-          return data.publicUrl;
-        }
-      }
-
-      return url;
+      return data?.publicUrl || "";
     }
 
     function createVideoPlayer(url) {
@@ -392,11 +912,9 @@
       }
 
       if (isYoutubeUrl(url)) {
-        const embedUrl = getYoutubeEmbedUrl(url);
-
         return `
           <iframe
-            src="${escapeHtml(embedUrl)}"
+            src="${escapeHtml(getYoutubeEmbedUrl(url))}"
             title="فيديو المحاضرة"
             loading="lazy"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -406,7 +924,10 @@
         `;
       }
 
-      if (isDirectVideoUrl(url) || url.includes("/storage/v1/object/")) {
+      if (
+        isDirectVideoUrl(url) ||
+        url.includes("/storage/v1/object/")
+      ) {
         return `
           <video controls playsinline preload="metadata">
             <source src="${escapeHtml(url)}">
@@ -417,45 +938,48 @@
 
       return `
         <div style="background:white;padding:20px;text-align:center;">
-          <p style="margin-bottom:10px;">افتح رابط المحاضرة لمشاهدة الفيديو.</p>
+          <p style="margin-bottom:10px;">
+            افتح رابط المحاضرة لمشاهدة الفيديو.
+          </p>
+
           <a class="btn-link"
              href="${escapeHtml(url)}"
              target="_blank"
              rel="noopener noreferrer">
-            ▶️ مشاهدة المحاضرة
+            مشاهدة المحاضرة
           </a>
         </div>
       `;
     }
 
     function toggleLecture(index) {
-      const body = document.getElementById(`body-${index}`);
-      const arrow = document.getElementById(`arrow-${index}`);
+      const body = document.getElementById("body-" + index);
+      const arrow = document.getElementById("arrow-" + index);
 
       if (!body || !arrow) return;
 
-      body.classList.toggle("open");
+      const willOpen = !body.classList.contains("open");
 
-      arrow.style.transform = body.classList.contains("open")
+      body.classList.toggle("open", willOpen);
+
+      arrow.style.transform = willOpen
         ? "rotate(180deg)"
         : "rotate(0deg)";
     }
 
-    function toggleSub(headerElement) {
-      const content = headerElement.nextElementSibling;
-
-      if (content) {
-        content.classList.toggle("open");
-      }
+    function toggleSub(header) {
+      const content = header.nextElementSibling;
+      if (content) content.classList.toggle("open");
     }
 
-    function createOptionalSection(title, content) {
+    function optionalSection(title, content) {
       return `
         <div class="dropdown-section">
           <div class="dropdown-header" onclick="toggleSub(this)">
             <span>${title}</span>
             <span>▼</span>
           </div>
+
           <div class="dropdown-content">
             ${content}
           </div>
@@ -463,146 +987,326 @@
       `;
     }
 
-    async function loadLectures() {
-      const listDiv = document.getElementById("lecturesList");
+    function getMonthNumber(lecture) {
+      const number = Number(lecture.month_number);
 
-      listDiv.innerHTML = `
-        <div class="loading">جاري تحميل المحاضرات...</div>
+      if (
+        Number.isInteger(number) &&
+        number >= 1 &&
+        number <= 12
+      ) {
+        return number;
+      }
+
+      return null;
+    }
+
+    function selectMonth(monthNumber) {
+      selectedMonth = monthNumber;
+
+      document.querySelectorAll(".month-button").forEach(button => {
+        button.classList.toggle(
+          "active",
+          Number(button.dataset.month) === monthNumber
+        );
+      });
+
+      renderSelectedMonth();
+    }
+
+    function renderMonths() {
+      const grid = document.getElementById("monthsGrid");
+      grid.replaceChildren();
+
+      if (!visibleMonths.length) {
+        grid.style.display = "none";
+        return;
+      }
+
+      grid.style.display = "grid";
+
+      visibleMonths.forEach(month => {
+        const number = Number(month.month_number);
+
+        const count = allLectures.filter(lecture =>
+          getMonthNumber(lecture) === number
+        ).length;
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "month-button";
+        button.dataset.month = String(number);
+
+        button.innerHTML = `
+          <div class="month-button-top">
+            <strong>${escapeHtml(month.title)}</strong>
+            <span class="month-number">${number}</span>
+          </div>
+
+          <small>${count} محاضرة</small>
+        `;
+
+        button.addEventListener("click", () => {
+          selectMonth(number);
+        });
+
+        grid.appendChild(button);
+      });
+    }
+
+    function renderSelectedMonth() {
+      const month = visibleMonths.find(item =>
+        Number(item.month_number) === selectedMonth
+      );
+
+      const heading = document.getElementById("monthHeading");
+      const list = document.getElementById("lecturesList");
+
+      if (!month) {
+        heading.style.display = "none";
+
+        list.innerHTML = `
+          <div class="empty">
+            <span class="empty-icon">📚</span>
+            اختر شهرًا لعرض محاضراته.
+          </div>
+        `;
+
+        return;
+      }
+
+      const lectures = allLectures.filter(lecture =>
+        getMonthNumber(lecture) === selectedMonth
+      );
+
+      heading.style.display = "flex";
+
+      document.getElementById("selectedMonthTitle").textContent =
+        month.title;
+
+      document.getElementById("selectedMonthDescription").textContent =
+        "محاضرات الأحياء الخاصة بهذا الشهر.";
+
+      document.getElementById("lectureCountBadge").textContent =
+        lectures.length + " محاضرة";
+
+      if (!lectures.length) {
+        list.innerHTML = `
+          <div class="empty">
+            <span class="empty-icon">📚</span>
+            لا توجد محاضرات مضافة لهذا الشهر حتى الآن.
+          </div>
+        `;
+
+        return;
+      }
+
+      renderLectures(lectures);
+    }
+
+    async function renderLectures(lectures) {
+      const list = document.getElementById("lecturesList");
+
+      list.innerHTML = `
+        <div class="loading">جارٍ تجهيز المحاضرات...</div>
+      `;
+
+      const prepared = await Promise.all(
+        lectures.map(async lecture => ({
+          lecture,
+          videoUrl: await resolveVideoUrl(
+            lecture.video_url || lecture.videoUrl || lecture.url || ""
+          )
+        }))
+      );
+
+      list.replaceChildren();
+
+      prepared.forEach(({ lecture, videoUrl }, index) => {
+        const title = lecture.title || "محاضرة أحياء";
+
+        const description = lecture.description || "";
+
+        const details =
+          lecture.details ||
+          lecture.content ||
+          "لا توجد تفاصيل نصية إضافية.";
+
+        const pdfUrl =
+          lecture.pdf_url ||
+          lecture.pdfUrl ||
+          "";
+
+        const homeworkUrl =
+          lecture.homework_url ||
+          lecture.homeworkUrl ||
+          "";
+
+        const chapter =
+          lecture.chapter ||
+          lecture.lesson ||
+          "";
+
+        const card = document.createElement("div");
+        card.className = "lecture-card";
+
+        card.innerHTML = `
+          <div class="lecture-header"
+               onclick="toggleLecture(${index})">
+
+            <div class="lecture-title">
+              <h3>${escapeHtml(title)}</h3>
+              <p>${escapeHtml(chapter || description)}</p>
+            </div>
+
+            <div class="arrow-icon" id="arrow-${index}">▼</div>
+          </div>
+
+          <div class="lecture-body" id="body-${index}">
+
+            <div class="video-container">
+              ${createVideoPlayer(videoUrl)}
+            </div>
+
+            <p style="
+              margin-bottom:15px;
+              color:#475569;
+              font-size:14px;
+              line-height:2;
+            ">
+              ${escapeHtml(description)}
+            </p>
+
+            ${optionalSection(
+              "📖 الشرح التفصيلي",
+              `<p>${escapeHtml(details)}</p>`
+            )}
+
+            ${optionalSection(
+              "📚 مذكرة المحاضرة (PDF)",
+              pdfUrl
+                ? `<a href="${escapeHtml(pdfUrl)}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="btn-link">
+                     تحميل أو استعراض المذكرة
+                   </a>`
+                : `<p style="color:#64748b">
+                     المذكرة غير متوفرة لهذه المحاضرة حاليًا.
+                   </p>`
+            )}
+
+            ${optionalSection(
+              "✏️ واجب المحاضرة",
+              homeworkUrl
+                ? `<a href="${escapeHtml(homeworkUrl)}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="btn-link">
+                     فتح الواجب أو الامتحان
+                   </a>`
+                : `<p style="color:#64748b">
+                     الواجب غير متوفر حاليًا.
+                   </p>`
+            )}
+
+          </div>
+        `;
+
+        list.appendChild(card);
+      });
+    }
+
+    async function loadLectures() {
+      const list = document.getElementById("lecturesList");
+
+      list.innerHTML = `
+        <div class="loading">جارٍ تحميل المحاضرات...</div>
       `;
 
       try {
-        /*
-          المصدر الصحيح حسب لوحة الأدمن:
-          جدول lectures وليس جدول videos.
-        */
+        // قراءة الشهور المفعلة فقط
+        const { data: months, error: monthsError } =
+          await supabaseClient
+            .from(MONTHS_TABLE)
+            .select("month_number,title,is_visible,sort_order")
+            .eq("is_visible", true)
+            .order("sort_order", { ascending: true });
 
-        const { data, error } = await supabaseClient
-          .from("lectures")
-          .select("*")
-          .order("created_at", { ascending: true });
-
-        if (error) {
-          throw error;
+        if (monthsError) {
+          throw new Error(
+            "تعذر قراءة جدول الشهور. أنشئ جدول lecture_months باستخدام كود SQL أعلاه. " +
+            monthsError.message
+          );
         }
 
-        if (!data || data.length === 0) {
-          listDiv.innerHTML = `
+        // قراءة المحاضرات
+        const { data: lectures, error: lecturesError } =
+          await supabaseClient
+            .from(LECTURES_TABLE)
+            .select("*")
+            .order("created_at", { ascending: true });
+
+        if (lecturesError) {
+          throw new Error(
+            "تعذر تحميل المحاضرات. تحقق من صلاحيات القراءة في جدول lectures. " +
+            lecturesError.message
+          );
+        }
+
+        allLectures = lectures || [];
+        visibleMonths = months || [];
+
+        // لا تعرض الشهر إلا إذا كان مفعّلًا في لوحة التحكم/قاعدة البيانات
+        const visibleNumbers = new Set(
+          visibleMonths.map(month => Number(month.month_number))
+        );
+
+        allLectures = allLectures.filter(lecture =>
+          visibleNumbers.has(getMonthNumber(lecture))
+        );
+
+        renderMonths();
+
+        if (!visibleMonths.length) {
+          list.innerHTML = `
             <div class="empty">
-              لا توجد محاضرات ظاهرة حالياً.
+              <span class="empty-icon">📅</span>
+              لا توجد شهور متاحة حاليًا.
+              <br>
+              ستظهر الشهور هنا عندما يفعّلها المسؤول من لوحة التحكم.
             </div>
           `;
+
+          document.getElementById("monthHeading").style.display = "none";
           return;
         }
 
-        listDiv.innerHTML = "";
+        // افتح أول شهر مفعّل تلقائيًا
+        selectMonth(Number(visibleMonths[0].month_number));
 
-        for (let index = 0; index < data.length; index++) {
-          const lec = data[index];
+      } catch (error) {
+        console.error("خطأ تحميل المحاضرات:", error);
 
-          /*
-            دعم أسماء الحقول الشائعة، مع الحفاظ على الحقول
-            الأساسية التي تستخدمها لوحة الأدمن.
-          */
+        list.innerHTML = "";
 
-          const title = lec.title || "محاضرة أحياء";
-          const description = lec.description || "";
-          const rawVideoUrl =
-            lec.video_url ||
-            lec.videoUrl ||
-            lec.url ||
-            "";
+        const box = document.createElement("div");
+        box.className = "empty";
 
-          const videoUrl = await resolveVideoUrl(rawVideoUrl);
+        const icon = document.createElement("span");
+        icon.className = "empty-icon";
+        icon.textContent = "⚠️";
 
-          const chapter =
-            lec.chapter ||
-            lec.lesson ||
-            "الباب التعليمي";
+        const title = document.createElement("strong");
+        title.textContent = "تعذر تحميل أقسام المحاضرات";
 
-          const details =
-            lec.details ||
-            lec.content ||
-            "لا توجد تفاصيل نصية إضافية.";
+        const detail = document.createElement("p");
+        detail.style.marginTop = "8px";
+        detail.style.fontWeight = "400";
+        detail.textContent = error.message || "حدث خطأ غير معروف.";
 
-          const pdfUrl =
-            lec.pdf_url ||
-            lec.pdfUrl ||
-            "";
-
-          const homeworkUrl =
-            lec.homework_url ||
-            lec.homeworkUrl ||
-            "";
-
-          const card = document.createElement("div");
-          card.className = "lecture-card";
-
-          const videoHtml = createVideoPlayer(videoUrl);
-
-          const detailsHtml = createOptionalSection(
-            "📖 الشرح التفصيلي",
-            `<p>${escapeHtml(details)}</p>`
-          );
-
-          const pdfHtml = createOptionalSection(
-            "📚 مذكرة المحاضرة (PDF)",
-            pdfUrl
-              ? `<a href="${escapeHtml(pdfUrl)}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="btn-link">تحميل أو استعراض المذكرة 📄</a>`
-              : `<p style="color:#64748b;">المذكرة غير متوفرة لهذه المحاضرة حالياً.</p>`
-          );
-
-          const homeworkHtml = createOptionalSection(
-            "✏️ واجب المحاضرة",
-            homeworkUrl
-              ? `<a href="${escapeHtml(homeworkUrl)}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="btn-link">فتح الواجب / الامتحان 📝</a>`
-              : `<p style="color:#64748b;">الواجب غير متوفر حالياً.</p>`
-          );
-
-          card.innerHTML = `
-            <div class="lecture-header" onclick="toggleLecture(${index})">
-              <div class="lecture-title">
-                <h3>${escapeHtml(title)}</h3>
-                <p>${escapeHtml(chapter)}</p>
-              </div>
-              <div class="arrow-icon" id="arrow-${index}">▼</div>
-            </div>
-
-            <div class="lecture-body" id="body-${index}">
-              <div class="video-container">
-                ${videoHtml}
-              </div>
-
-              <p style="margin-bottom:15px;color:#475569;font-size:14px;">
-                ${escapeHtml(description)}
-              </p>
-
-              ${detailsHtml}
-              ${pdfHtml}
-              ${homeworkHtml}
-            </div>
-          `;
-
-          listDiv.appendChild(card);
-        }
-
-      } catch (err) {
-        console.error("خطأ تحميل المحاضرات:", err);
-
-        listDiv.innerHTML = `
-          <div class="empty" style="color:#e74c3c;">
-            تعذر تحميل المحاضرات من قاعدة البيانات.
-            <br>
-            <span style="font-size:13px;font-weight:400;">
-              ${escapeHtml(err.message || "حدث خطأ غير معروف")}
-            </span>
-          </div>
-        `;
+        box.append(icon, title, detail);
+        list.appendChild(box);
       }
     }
 
