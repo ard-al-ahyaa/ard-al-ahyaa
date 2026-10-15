@@ -25,13 +25,28 @@
       font-family: Arial, Tahoma, sans-serif;
     }
 
+    :root {
+      --green: #075e4d;
+      --green-light: #0b806a;
+      --page-bg: #f5f7f7;
+      --text: #222;
+      --muted: #6b7280;
+      --border: #e5e9e8;
+    }
+
     body {
-      background: #f5f7f7;
-      color: #222;
+      background: var(--page-bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    button,
+    input {
+      font: inherit;
     }
 
     /* ===============================
-       الشريط الجانبي
+       الشريط الجانبي - التصميم الأصلي
        =============================== */
 
     .sidebar {
@@ -40,10 +55,11 @@
       top: 0;
       width: 250px;
       height: 100vh;
-      background: #075e4d;
+      background: var(--green);
       color: white;
       padding: 25px 15px;
       z-index: 1000;
+      overflow-y: auto;
     }
 
     .logo-box {
@@ -82,6 +98,9 @@
       border-radius: 10px;
       transition: 0.2s;
       font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .menu a:hover,
@@ -90,7 +109,7 @@
     }
 
     /* ===============================
-       المحتوى
+       المحتوى الرئيسي
        =============================== */
 
     .main {
@@ -102,24 +121,50 @@
     .topbar {
       background: white;
       border-radius: 15px;
-      padding: 20px 25px;
+      padding: 25px;
       margin-bottom: 25px;
       box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .topbar::before {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 5px;
+      height: 100%;
+      background: var(--green);
     }
 
     .topbar h1 {
-      color: #075e4d;
+      color: var(--green);
       font-size: 28px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      line-height: 1.5;
     }
 
     .topbar p {
-      color: #666;
+      color: var(--muted);
       font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .topbar-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #eaf6f1;
+      color: var(--green);
+      padding: 7px 12px;
+      border-radius: 30px;
+      font-size: 12px;
+      margin-bottom: 12px;
     }
 
     /* ===============================
-       المذكرات
+       منطقة المذكرات
        =============================== */
 
     .notes-container {
@@ -129,82 +174,259 @@
       box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
     }
 
-    .section-title {
-      color: #075e4d;
-      font-size: 22px;
-      margin-bottom: 20px;
-    }
-
-    .notes-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-    }
-
-    .note-card {
-      border: 1px solid #e5e5e5;
-      border-radius: 14px;
-      background: white;
-      overflow: hidden;
-      transition: 0.2s;
-    }
-
-    .note-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
-    }
-
-    .note-header {
-      height: 150px;
-      background: linear-gradient(
-        135deg,
-        #075e4d,
-        #0b806a
-      );
-
+    .section-heading {
       display: flex;
       align-items: center;
-      justify-content: center;
-
-      color: white;
-      font-size: 55px;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
     }
 
-    .note-content {
-      padding: 18px;
+    .section-title {
+      color: var(--green);
+      font-size: 22px;
+      margin-bottom: 7px;
     }
 
-    .note-content h3 {
-      color: #075e4d;
-      font-size: 19px;
-      margin-bottom: 10px;
-      line-height: 1.5;
-    }
-
-    .note-content p {
-      color: #666;
+    .section-subtitle {
+      color: var(--muted);
       font-size: 13px;
       line-height: 1.7;
     }
 
+    .notes-count {
+      background: #eaf6f1;
+      color: var(--green);
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    /* ===============================
+       البحث
+       =============================== */
+
+    .search-box {
+      position: relative;
+      margin-bottom: 25px;
+    }
+
+    .search-box input {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: #fbfcfc;
+      border-radius: 12px;
+      padding: 15px 45px 15px 15px;
+      outline: none;
+      font-size: 14px;
+      color: var(--text);
+      transition: 0.2s;
+    }
+
+    .search-box input:focus {
+      border-color: var(--green-light);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(11, 128, 106, 0.08);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 19px;
+      pointer-events: none;
+    }
+
+    /* ===============================
+       شبكة المذكرات
+       =============================== */
+
+    .notes-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    /* ===============================
+       بطاقة المذكرة
+       =============================== */
+
+    .note-card {
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: white;
+      overflow: hidden;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .note-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.09);
+      border-color: #b9d9ce;
+    }
+
+    /* ===============================
+       غلاف المذكرة
+       =============================== */
+
+    .note-cover {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      background: linear-gradient(135deg, #075e4d, #0b806a);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .note-cover::before {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border: 1px solid rgba(255, 255, 255, 0.17);
+      border-radius: 50%;
+      top: -70px;
+      left: -40px;
+    }
+
+    .note-cover::after {
+      content: "";
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      bottom: -65px;
+      right: -25px;
+    }
+
+    .note-cover img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 2;
+      display: none;
+    }
+
+    .note-cover.has-image img {
+      display: block;
+    }
+
+    .cover-placeholder {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      padding: 20px;
+      color: white;
+      text-align: center;
+    }
+
+    .cover-icon {
+      font-size: 52px;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.15));
+    }
+
+    .cover-brand {
+      font-size: 12px;
+      opacity: 0.85;
+      margin-bottom: 10px;
+    }
+
+    .cover-title {
+      font-size: 19px;
+      font-weight: bold;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .cover-bottom {
+      position: absolute;
+      z-index: 1;
+      bottom: 12px;
+      right: 15px;
+      left: 15px;
+      text-align: center;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .note-cover.has-image .cover-placeholder,
+    .note-cover.has-image .cover-bottom {
+      display: none;
+    }
+
+    /* ===============================
+       بيانات المذكرة
+       =============================== */
+
+    .note-content {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .note-type {
+      display: inline-flex;
+      align-self: flex-start;
+      background: #eaf6f1;
+      color: var(--green);
+      border-radius: 6px;
+      padding: 6px 9px;
+      font-size: 11px;
+      margin-bottom: 12px;
+    }
+
+    .note-content h3 {
+      color: var(--green);
+      font-size: 18px;
+      margin-bottom: 10px;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .note-content p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+      margin-bottom: 15px;
+    }
+
     .note-buttons {
       display: flex;
-      gap: 10px;
+      gap: 9px;
       flex-wrap: wrap;
-      margin-top: 15px;
+      margin-top: auto;
     }
 
     .note-btn {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
       text-decoration: none;
-      background: #075e4d;
+      background: var(--green);
       color: white;
-      padding: 10px 15px;
+      padding: 11px 13px;
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 13px;
       transition: 0.2s;
       border: none;
       cursor: pointer;
+      flex: 1;
+      min-width: 100px;
+      text-align: center;
     }
 
     .note-btn:hover {
@@ -212,21 +434,49 @@
     }
 
     .note-btn.download {
-      background: #555;
+      background: #f0f2f2;
+      color: #374151;
+      border: 1px solid #e2e5e5;
     }
 
     .note-btn.download:hover {
-      background: #333;
+      background: #e4e9e7;
     }
+
+    /* ===============================
+       حالات التحميل والرسائل
+       =============================== */
 
     .loading,
     .empty,
     .error {
       text-align: center;
-      padding: 40px 15px;
-      color: #777;
-      font-size: 16px;
+      padding: 45px 15px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 2;
       grid-column: 1 / -1;
+    }
+
+    .loading-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+      animation: pulse 1.2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.45;
+      }
+    }
+
+    .empty-icon {
+      font-size: 42px;
+      margin-bottom: 10px;
     }
 
     .error {
@@ -235,33 +485,74 @@
 
     .security-message {
       text-align: center;
-      padding: 25px;
+      padding: 30px 20px;
       border-radius: 12px;
       background: #fff8e1;
       color: #795548;
       border: 1px solid #ffe082;
       grid-column: 1 / -1;
+      line-height: 2;
     }
 
     .login-btn {
       display: inline-block;
       margin-top: 15px;
-      padding: 10px 18px;
-      background: #075e4d;
+      padding: 11px 20px;
+      background: var(--green);
       color: white;
       text-decoration: none;
       border-radius: 8px;
     }
 
+    .retry-btn {
+      margin-top: 15px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      background: var(--green);
+      color: white;
+      cursor: pointer;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 25px 10px;
+      color: #8a9290;
+      font-size: 12px;
+    }
+
     /* ===============================
-       الموبايل
+       الاستجابة للشاشات
        =============================== */
 
-    @media (max-width: 700px) {
+    @media (max-width: 1200px) {
+      .notes-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
 
+    @media (max-width: 850px) {
+      .main {
+        padding: 20px;
+      }
+
+      .notes-container {
+        padding: 20px;
+      }
+
+      .note-cover {
+        height: 200px;
+      }
+    }
+
+    @media (max-width: 700px) {
       .sidebar {
         width: 75px;
         padding: 20px 8px;
+      }
+
+      .logo-box {
+        margin-bottom: 28px;
       }
 
       .logo-box h2,
@@ -274,31 +565,93 @@
         height: 55px;
       }
 
+      .menu {
+        gap: 10px;
+      }
+
       .menu a {
+        justify-content: center;
         text-align: center;
         font-size: 0;
         padding: 14px 5px;
       }
 
-      .menu a::first-letter {
-        font-size: 20px;
+      .menu a .menu-icon {
+        font-size: 21px;
       }
 
       .main {
         margin-right: 75px;
-        padding: 15px;
+        padding: 13px;
+      }
+
+      .topbar {
+        padding: 20px 17px;
+        margin-bottom: 15px;
       }
 
       .topbar h1 {
         font-size: 22px;
       }
 
-      .notes-list {
-        grid-template-columns: 1fr;
+      .topbar p {
+        font-size: 13px;
       }
 
-      .note-header {
-        height: 170px;
+      .notes-container {
+        padding: 15px;
+      }
+
+      .section-title {
+        font-size: 20px;
+      }
+
+      .section-heading {
+        align-items: flex-start;
+      }
+
+      .notes-list {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+      .note-cover {
+        height: 230px;
+      }
+
+      .note-content {
+        padding: 16px;
+      }
+
+      .note-content h3 {
+        font-size: 17px;
+      }
+
+      .search-box input {
+        padding-top: 13px;
+        padding-bottom: 13px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .main {
+        padding: 9px;
+      }
+
+      .notes-container {
+        padding: 11px;
+      }
+
+      .note-cover {
+        height: 190px;
+      }
+
+      .note-buttons {
+        flex-direction: column;
+      }
+
+      .note-btn {
+        width: 100%;
       }
     }
   </style>
@@ -307,7 +660,7 @@
 <body>
 
   <!-- ===============================
-       الشريط الجانبي
+       الشريط الجانبي الأصلي
        =============================== -->
 
   <aside class="sidebar">
@@ -327,19 +680,23 @@
     <nav class="menu">
 
       <a href="../index.html">
-        🏠 الرئيسية
+        <span class="menu-icon">🏠</span>
+        <span>الرئيسية</span>
       </a>
 
       <a href="../videos/index.html">
-        🎥 المحاضرات
+        <span class="menu-icon">🎥</span>
+        <span>المحاضرات</span>
       </a>
 
       <a href="../forum/index.html">
-        💬 المنتدى
+        <span class="menu-icon">💬</span>
+        <span>المنتدى</span>
       </a>
 
       <a href="index.html" class="active">
-        📚 المذكرات
+        <span class="menu-icon">📚</span>
+        <span>المذكرات</span>
       </a>
 
     </nav>
@@ -348,39 +705,80 @@
 
 
   <!-- ===============================
-       المحتوى
+       المحتوى الرئيسي
        =============================== -->
 
   <main class="main">
 
-    <div class="topbar">
+    <header class="topbar">
 
-      <h1>📚 المذكرات</h1>
+      <div class="topbar-label">
+        🌿 مكتبة أرض الأحياء
+      </div>
+
+      <h1>📚 المذكرات التعليمية</h1>
 
       <p>
-        مذكرات أحياء الصف الثالث الثانوي
+        كل مذكرات الأحياء للصف الثالث الثانوي في مكان واحد.
+        اختر المذكرة التي تحتاجها وافتحها بسهولة.
       </p>
 
-    </div>
+    </header>
 
 
     <section class="notes-container">
 
-      <h2 class="section-title">
-        مذكرات الأحياء
-      </h2>
+      <div class="section-heading">
 
-      <div
-        id="notesList"
-        class="notes-list">
+        <div>
+          <h2 class="section-title">
+            مذكرات الأحياء
+          </h2>
+
+          <p class="section-subtitle">
+            تصفح المذكرات وابحث عن المذكرة التي تريدها.
+          </p>
+        </div>
+
+        <div class="notes-count" id="notesCount">
+          جاري التحميل...
+        </div>
+
+      </div>
+
+
+      <!-- البحث -->
+
+      <div class="search-box">
+
+        <span class="search-icon">🔍</span>
+
+        <input
+          type="search"
+          id="searchInput"
+          placeholder="ابحث باسم المذكرة..."
+          aria-label="البحث عن مذكرة">
+
+      </div>
+
+
+      <!-- المذكرات -->
+
+      <div id="notesList" class="notes-list">
 
         <div class="loading">
+          <div class="loading-icon">📚</div>
           جاري تحميل المذكرات...
         </div>
 
       </div>
 
     </section>
+
+
+    <footer class="footer">
+      منصة أرض الأحياء © 2026 — الصف الثالث الثانوي
+    </footer>
 
   </main>
 
@@ -393,9 +791,9 @@
 
   <script>
 
-    /* =====================================================
-       إعداد Supabase - المشروع الحالي
-       ===================================================== */
+    /* ==========================================
+       إعدادات Supabase
+       ========================================== */
 
     const SUPABASE_URL =
       "https://fpfbmjtpzamzlyzitmsd.supabase.co";
@@ -403,122 +801,129 @@
     const SUPABASE_KEY =
       "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
 
-    const BUCKET =
-      "lectures";
+    const BUCKET = "lectures";
+
+    const SIGNED_URL_TIME = 30 * 60;
 
 
-    /*
-      مدة Signed URL: 30 دقيقة
-    */
-
-    const SIGNED_URL_TIME =
-      30 * 60;
+    const supabaseClient = supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
 
 
-    const supabaseClient =
-      supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-      );
+    const notesList = document.getElementById("notesList");
+    const notesCount = document.getElementById("notesCount");
+    const searchInput = document.getElementById("searchInput");
+
+    let allNotes = [];
+    let loadingNotes = false;
+    let currentLoadId = 0;
 
 
-    /* =====================================================
-       رسالة تسجيل الدخول
-       ===================================================== */
+    /* ==========================================
+       رسائل الصفحة
+       ========================================== */
+
+    function showLoading() {
+
+      notesList.innerHTML = `
+        <div class="loading">
+          <div class="loading-icon">📚</div>
+          جاري تحميل المذكرات...
+        </div>
+      `;
+
+      notesCount.textContent = "جاري التحميل...";
+    }
+
 
     function showLoginMessage() {
 
-      const notesList =
-        document.getElementById(
-          "notesList"
-        );
+      allNotes = [];
+
+      notesCount.textContent = "المحتوى محمي";
+
+      notesList.innerHTML = `
+        <div class="security-message">
+
+          <div style="font-size:38px;margin-bottom:10px;">
+            🔐
+          </div>
+
+          <strong>المذكرات متاحة للطلاب المسجلين فقط</strong>
+
+          <br>
+
+          سجل الدخول إلى منصة أرض الأحياء لمشاهدة المذكرات.
+
+          <br>
+
+          <a
+            class="login-btn"
+            href="../login/index.html">
+            🔑 تسجيل الدخول
+          </a>
+
+        </div>
+      `;
+    }
+
+
+    function showError(message) {
 
       notesList.innerHTML = "";
 
+      const box = document.createElement("div");
 
-      const box =
-        document.createElement("div");
+      box.className = "error";
 
+      box.textContent = message;
 
-      box.className =
-        "security-message";
+      const retry = document.createElement("button");
 
+      retry.className = "retry-btn";
 
-      box.innerHTML = `
+      retry.textContent = "إعادة المحاولة";
 
-        <strong>
-          🔐 المحتوى محمي
-        </strong>
+      retry.addEventListener("click", loadNotes);
 
-        <br>
+      box.appendChild(document.createElement("br"));
+      box.appendChild(retry);
 
-        يجب تسجيل الدخول إلى منصة
-        أرض الأحياء لمشاهدة المذكرات.
+      notesList.appendChild(box);
 
-        <br>
-
-        <a
-          class="login-btn"
-          href="../login/index.html">
-
-          🔑 تسجيل الدخول
-
-        </a>
-
-      `;
-
-
-      notesList.appendChild(
-        box
-      );
-
+      notesCount.textContent = "تعذر التحميل";
     }
 
 
-    /* =====================================================
-       التحقق من نوع الرابط
-       ===================================================== */
+    /* ==========================================
+       التحقق من الرابط
+       ========================================== */
 
     function isExternalUrl(value) {
 
-      if (!value) {
+      if (!value || typeof value !== "string") {
         return false;
       }
 
-
-      return (
-        value.startsWith("http://") ||
-        value.startsWith("https://")
-      );
-
+      return /^https?:\/\//i.test(value);
     }
 
 
-    /* =====================================================
-       إنشاء Signed URL للمذكرة
-       ===================================================== */
+    /* ==========================================
+       إنشاء رابط آمن من Supabase Storage
+       ========================================== */
 
-    async function getSecureNoteUrl(
-      filePath
-    ) {
+    async function getSecureFileUrl(filePath) {
 
       if (!filePath) {
-
-        throw new Error(
-          "مسار المذكرة غير موجود"
-        );
-
+        return null;
       }
 
-
-      if (
-        isExternalUrl(filePath)
-      ) {
-
+      if (isExternalUrl(filePath)) {
         return filePath;
-
       }
-
 
       const {
         data,
@@ -531,433 +936,455 @@
           SIGNED_URL_TIME
         );
 
-
       if (error) {
-
-        console.error(
-          "Signed URL Error:",
-          error
-        );
-
+        console.error("Storage URL Error:", error);
         throw error;
-
       }
 
-
-      if (
-        !data ||
-        !data.signedUrl
-      ) {
-
-        throw new Error(
-          "تعذر إنشاء الرابط الآمن للمذكرة"
-        );
-
+      if (!data || !data.signedUrl) {
+        throw new Error("لم يتم إنشاء رابط الملف");
       }
-
 
       return data.signedUrl;
-
     }
 
 
-    /* =====================================================
-       إضافة مذكرة
-       ===================================================== */
+    /* ==========================================
+       غلاف احتياطي للمذكرة
+       ========================================== */
 
-    async function createNoteCard(
-      note
-    ) {
+    function createCover(note) {
 
-      const card =
-        document.createElement("div");
+      const cover = document.createElement("div");
+
+      cover.className = "note-cover";
+
+      const placeholder = document.createElement("div");
+
+      placeholder.className = "cover-placeholder";
+
+      const icon = document.createElement("div");
+
+      icon.className = "cover-icon";
+      icon.textContent = "📘";
+
+      const brand = document.createElement("div");
+
+      brand.className = "cover-brand";
+      brand.textContent = "منصة أرض الأحياء";
+
+      const title = document.createElement("div");
+
+      title.className = "cover-title";
+      title.textContent = note.title || "مذكرة الأحياء";
+
+      const bottom = document.createElement("div");
+
+      bottom.className = "cover-bottom";
+      bottom.textContent = "الصف الثالث الثانوي";
+
+      placeholder.appendChild(icon);
+      placeholder.appendChild(brand);
+      placeholder.appendChild(title);
+
+      cover.appendChild(placeholder);
+      cover.appendChild(bottom);
+
+      return cover;
+    }
 
 
-      card.className =
-        "note-card";
+    /* ==========================================
+       إنشاء بطاقة مذكرة
+       ========================================== */
+
+    async function createNoteCard(note) {
+
+      const card = document.createElement("article");
+
+      card.className = "note-card";
 
 
-      const header =
-        document.createElement("div");
+      /* الغلاف */
+
+      const cover = createCover(note);
+
+      card.appendChild(cover);
 
 
-      header.className =
-        "note-header";
+      /* تحميل صورة الغلاف إن وجدت */
+
+      if (note.cover_path) {
+
+        try {
+
+          const coverUrl = await getSecureFileUrl(
+            note.cover_path
+          );
+
+          if (coverUrl) {
+
+            const coverImage = document.createElement("img");
+
+            coverImage.alt = "غلاف " + (
+              note.title || "مذكرة الأحياء"
+            );
+
+            coverImage.loading = "lazy";
+
+            coverImage.onload = function () {
+              cover.classList.add("has-image");
+            };
+
+            coverImage.onerror = function () {
+              cover.classList.remove("has-image");
+              coverImage.remove();
+            };
+
+            coverImage.src = coverUrl;
+
+            cover.appendChild(coverImage);
+
+          }
+
+        } catch (error) {
+
+          console.warn(
+            "تعذر تحميل غلاف المذكرة:",
+            note.title,
+            error
+          );
+
+          /* يظل الغلاف الاحتياطي ظاهرًا */
+
+        }
+      }
 
 
-      header.textContent =
-        "📖";
+      /* محتوى البطاقة */
+
+      const content = document.createElement("div");
+
+      content.className = "note-content";
 
 
-      const content =
-        document.createElement("div");
+      const type = document.createElement("span");
+
+      type.className = "note-type";
+      type.textContent = "📚 مذكرة أحياء";
 
 
-      content.className =
-        "note-content";
+      const title = document.createElement("h3");
+
+      title.textContent = note.title || "مذكرة بدون عنوان";
 
 
-      const title =
-        document.createElement("h3");
-
-
-      title.textContent =
-        note.title ||
-        "مذكرة بدون عنوان";
-
-
-      const description =
-        document.createElement("p");
-
+      const description = document.createElement("p");
 
       description.textContent =
-        "مذكرة أحياء للصف الثالث الثانوي";
+        "مذكرة تعليمية للصف الثالث الثانوي، متاحة للقراءة والتحميل.";
 
 
-      const buttons =
-        document.createElement("div");
+      const buttons = document.createElement("div");
+
+      buttons.className = "note-buttons";
 
 
-      buttons.className =
-        "note-buttons";
+      const openButton = document.createElement("a");
+
+      openButton.className = "note-btn";
+      openButton.textContent = "📖 فتح المذكرة";
 
 
-      const openButton =
-        document.createElement("a");
+      const downloadButton = document.createElement("a");
+
+      downloadButton.className = "note-btn download";
+      downloadButton.textContent = "⬇️ تحميل";
 
 
-      openButton.className =
-        "note-btn";
-
-
-      openButton.textContent =
-        "📖 فتح المذكرة";
-
-
-      const downloadButton =
-        document.createElement("a");
-
-
-      downloadButton.className =
-        "note-btn download";
-
-
-      downloadButton.textContent =
-        "⬇️ تحميل";
-
+      /* إنشاء روابط المذكرة */
 
       try {
 
-        const secureUrl =
-          await getSecureNoteUrl(
-            note.file_path
-          );
+        const secureUrl = await getSecureFileUrl(note.file_path);
+
+        if (!secureUrl) {
+          throw new Error("مسار ملف المذكرة غير موجود");
+        }
+
+        openButton.href = secureUrl;
+        openButton.target = "_blank";
+        openButton.rel = "noopener noreferrer";
 
 
-        openButton.href =
-          secureUrl;
+        downloadButton.href = secureUrl;
+        downloadButton.target = "_blank";
+        downloadButton.rel = "noopener noreferrer";
 
+        /*
+          ملاحظة:
+          بعض المتصفحات تتعامل مع روابط التخزين
+          بفتح الملف بدل تنزيله مباشرة.
+        */
 
-        openButton.target =
-          "_blank";
+        downloadButton.setAttribute("download", "");
 
-
-        openButton.rel =
-          "noopener noreferrer";
-
-
-        downloadButton.href =
-          secureUrl;
-
-
-        downloadButton.target =
-          "_blank";
-
-
-        downloadButton.rel =
-          "noopener noreferrer";
-
-
-        downloadButton.setAttribute(
-          "download",
-          ""
-        );
-
-      }
-
-      catch (error) {
+      } catch (error) {
 
         console.error(
-          "Note URL Error:",
+          "تعذر إنشاء رابط المذكرة:",
+          note.title,
           error
         );
 
+        openButton.href = "#";
+        downloadButton.href = "#";
 
-        openButton.href =
-          "#";
+        openButton.addEventListener("click", function (event) {
 
+          event.preventDefault();
 
-        downloadButton.href =
-          "#";
+          alert(
+            "تعذر فتح المذكرة حاليًا. تحقق من مسار الملف وصلاحيات التخزين."
+          );
 
+        });
 
-        openButton.addEventListener(
-          "click",
-          function(event) {
+        downloadButton.addEventListener("click", function (event) {
 
-            event.preventDefault();
+          event.preventDefault();
 
-            alert(
-              "تعذر فتح المذكرة حاليًا. حاول تحديث الصفحة."
-            );
+          alert(
+            "تعذر تحميل المذكرة حاليًا. حاول مرة أخرى."
+          );
 
-          }
-        );
-
-
-        downloadButton.addEventListener(
-          "click",
-          function(event) {
-
-            event.preventDefault();
-
-            alert(
-              "تعذر تحميل المذكرة حاليًا. حاول تحديث الصفحة."
-            );
-
-          }
-        );
+        });
 
       }
 
 
-      buttons.appendChild(
-        openButton
-      );
+      buttons.appendChild(openButton);
+      buttons.appendChild(downloadButton);
 
+      content.appendChild(type);
+      content.appendChild(title);
+      content.appendChild(description);
+      content.appendChild(buttons);
 
-      buttons.appendChild(
-        downloadButton
-      );
-
-
-      content.appendChild(
-        title
-      );
-
-
-      content.appendChild(
-        description
-      );
-
-
-      content.appendChild(
-        buttons
-      );
-
-
-      card.appendChild(
-        header
-      );
-
-
-      card.appendChild(
-        content
-      );
-
+      card.appendChild(content);
 
       return card;
+    }
+
+
+    /* ==========================================
+       عرض المذكرات والبحث
+       ========================================== */
+
+    async function renderNotes(notes) {
+
+      notesList.innerHTML = "";
+
+      if (!notes || notes.length === 0) {
+
+        const empty = document.createElement("div");
+
+        empty.className = "empty";
+
+        empty.innerHTML = `
+          <div class="empty-icon">📭</div>
+          <strong>لا توجد مذكرات مطابقة</strong>
+          <br>
+          جرّب البحث باسم آخر.
+        `;
+
+        notesList.appendChild(empty);
+
+        return;
+      }
+
+      /*
+        إنشاء البطاقات مع الحفاظ على ترتيب المذكرات.
+      */
+
+      const cards = await Promise.all(
+        notes.map(note => createNoteCard(note))
+      );
+
+      cards.forEach(card => {
+        notesList.appendChild(card);
+      });
 
     }
 
 
-    /* =====================================================
-       تحميل المذكرات
-       ===================================================== */
+    function filterNotes() {
+
+      const searchTerm = searchInput.value
+        .trim()
+        .toLocaleLowerCase("ar");
+
+      const filteredNotes = allNotes.filter(note => {
+
+        const title = (note.title || "")
+          .toLocaleLowerCase("ar");
+
+        return title.includes(searchTerm);
+
+      });
+
+      notesCount.textContent =
+        `عدد المذكرات: ${filteredNotes.length}`;
+
+      renderNotes(filteredNotes);
+    }
+
+
+    searchInput.addEventListener("input", filterNotes);
+
+
+    /* ==========================================
+       تحميل المذكرات من قاعدة البيانات
+       ========================================== */
 
     async function loadNotes() {
 
-      const notesList =
-        document.getElementById(
-          "notesList"
-        );
+      if (loadingNotes) {
+        return;
+      }
 
+      loadingNotes = true;
+
+      const loadId = ++currentLoadId;
+
+      showLoading();
 
       try {
+
+        /* التحقق من تسجيل الدخول */
 
         const {
           data: sessionData,
           error: sessionError
-        } = await supabaseClient
-          .auth
-          .getSession();
-
+        } = await supabaseClient.auth.getSession();
 
         if (sessionError) {
-
           throw sessionError;
-
         }
 
-
-        const session =
-          sessionData.session;
-
+        const session = sessionData.session;
 
         if (!session) {
 
           showLoginMessage();
 
           return;
-
         }
 
+
+        /* جلب المذكرات */
 
         const {
           data,
           error
         } = await supabaseClient
-
           .from("notes")
-
-          .select(
-            "id,title,file_path,created_at"
-          )
-
-          .order(
-            "created_at",
-            {
-              ascending: false
-            }
-          );
+          .select("id,title,file_path,cover_path,created_at")
+          .order("created_at", {
+            ascending: false
+          });
 
 
         if (error) {
-
           throw error;
-
         }
 
+        if (loadId !== currentLoadId) {
+          return;
+        }
 
-        notesList.innerHTML = "";
+        allNotes = data || [];
 
+        if (allNotes.length === 0) {
 
-        if (
-          !data ||
-          data.length === 0
-        ) {
+          notesCount.textContent = "عدد المذكرات: 0";
 
-          const empty =
-            document.createElement("div");
-
-
-          empty.className =
-            "empty";
-
-
-          empty.textContent =
-            "لا توجد مذكرات مضافة حاليًا.";
-
-
-          notesList.appendChild(
-            empty
-          );
-
+          notesList.innerHTML = `
+            <div class="empty">
+              <div class="empty-icon">📚</div>
+              <strong>لا توجد مذكرات مضافة حاليًا</strong>
+              <br>
+              ستظهر المذكرات هنا بمجرد إضافتها من لوحة الإدارة.
+            </div>
+          `;
 
           return;
-
         }
 
+        await filterNotes();
 
-        for (
-          const note of data
-        ) {
+      } catch (error) {
 
-          const card =
-            await createNoteCard(
-              note
-            );
+        console.error("Supabase Error:", error);
 
-
-          notesList.appendChild(
-            card
-          );
-
-        }
-
-      }
-
-      catch (error) {
-
-        console.error(
-          "Supabase Error:",
-          error
+        showError(
+          "تعذر تحميل المذكرات. تحقق من الاتصال بالإنترنت وإعدادات قاعدة البيانات."
         );
 
+      } finally {
 
-        notesList.innerHTML = "";
-
-
-        const errorMessage =
-          document.createElement("div");
-
-
-        errorMessage.className =
-          "error";
-
-
-        errorMessage.textContent =
-          "تعذر تحميل المذكرات حاليًا. حاول تحديث الصفحة.";
-
-
-        notesList.appendChild(
-          errorMessage
-        );
+        loadingNotes = false;
 
       }
-
     }
 
 
-    /* =====================================================
+    /* ==========================================
        مراقبة تسجيل الدخول والخروج
-       ===================================================== */
+       ========================================== */
 
-    supabaseClient
-      .auth
-      .onAuthStateChange(
-        function(event, session) {
+    supabaseClient.auth.onAuthStateChange(
+      function (event, session) {
 
-          if (!session) {
+        if (!session) {
 
-            showLoginMessage();
+          allNotes = [];
 
-          }
-          else {
+          showLoginMessage();
 
-            loadNotes();
+        } else if (
+          event === "SIGNED_IN" ||
+          event === "TOKEN_REFRESHED"
+        ) {
 
-          }
+          loadNotes();
 
         }
-      );
+      }
+    );
 
 
-    /* =====================================================
+    /* ==========================================
        تشغيل الصفحة
-       ===================================================== */
+       ========================================== */
 
     loadNotes();
 
 
-    setInterval(
-      loadNotes,
-      25 * 60 * 1000
-    );
+    /*
+      تجديد روابط العرض كل 25 دقيقة،
+      لأن الروابط الموقعة صالحة لمدة 30 دقيقة.
+    */
+
+    setInterval(function () {
+
+      if (document.visibilityState === "visible") {
+        loadNotes();
+      }
+
+    }, 25 * 60 * 1000);
 
   </script>
 
 </body>
-
 </html>
- 
