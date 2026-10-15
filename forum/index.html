@@ -6,533 +6,782 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>المنتدى | منصة أرض الأحياء</title>
-  <meta name="description" content="منتدى طلاب منصة أرض الأحياء للصف الثالث الثانوي، لطرح الأسئلة ومناقشة دروس الأحياء.">
+
+  <meta name="description"
+    content="منتدى طلاب منصة أرض الأحياء للصف الثالث الثانوي لمشاركة الأسئلة والمناقشات والصور التعليمية.">
 
   <link rel="icon" href="../favicon.png">
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
       --green: #026857;
-      --green-dark: #014d40;
+      --green-dark: #075e54;
+      --green-light: #e8f5f1;
       --blue: #1e3a8a;
-      --blue-light: #2563eb;
-      --bg: #f0f4f8;
+      --background: #f4f7f8;
       --white: #ffffff;
-      --text: #2c3e50;
-      --muted: #64748b;
-      --border: #e2e8f0;
-      --danger: #dc2626;
+      --text: #24313f;
+      --muted: #73808c;
+      --border: #e5ebee;
+      --danger: #dc3545;
+      --shadow: 0 5px 22px rgba(15, 48, 55, .07);
     }
 
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Cairo', sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
-      background: var(--bg);
+      margin: 0;
+      background: var(--background);
       color: var(--text);
+      font-family: "Cairo", sans-serif;
       min-height: 100vh;
     }
 
-    /* الشريط الجانبي */
+    button,
+    textarea,
+    input {
+      font-family: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
     .sidebar {
-      width: 270px;
-      background: linear-gradient(180deg, #026857 0%, #075e54 45%, #1e3a8a 100%);
-      color: white;
       position: fixed;
-      right: 0;
       top: 0;
+      right: 0;
+      width: 270px;
       height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      z-index: 1000;
       overflow-y: auto;
-    }
-
-    .sidebar-top {
-      padding: 30px 20px;
-    }
-
-    .logo-box {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 35px;
-      padding-bottom: 18px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    }
-
-    .logo-box img {
-      width: 50px;
-      height: 50px;
-      object-fit: contain;
-      border-radius: 50%;
-      background: white;
-      padding: 3px;
-      flex-shrink: 0;
-    }
-
-    .logo-box h2 {
-      font-size: 19px;
+      padding: 25px 16px;
       color: white;
-      font-weight: 900;
+      background: linear-gradient(165deg, #026857, #075e54 48%, #1e3a8a);
+      z-index: 1000;
+      box-shadow: -4px 0 18px rgba(0, 0, 0, .08);
     }
 
-    .logo-box p {
-      font-size: 12px;
-      opacity: 0.85;
-    }
-
-    .menu {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .menu a {
-      text-decoration: none;
-      color: #e2f1ee;
-      padding: 12px 16px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 700;
+    .brand {
       display: flex;
       align-items: center;
       gap: 12px;
-      transition: 0.2s;
+      padding: 7px 9px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, .18);
+      margin-bottom: 23px;
     }
 
-    .menu a:hover,
-    .menu a.active {
-      background: rgba(255, 255, 255, 0.2);
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, .16);
+      border-radius: 15px;
+      font-size: 25px;
+    }
+
+    .brand h2 {
+      font-size: 16px;
+      line-height: 1.7;
+      margin: 0;
+      font-weight: 800;
+    }
+
+    .brand small {
+      display: block;
+      font-size: 11px;
+      opacity: .8;
+      font-weight: 500;
+    }
+
+    .nav-title {
+      font-size: 11px;
+      opacity: .68;
+      padding: 0 13px;
+      margin: 18px 0 10px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      margin: 5px 0;
+      border-radius: 11px;
+      color: rgba(255, 255, 255, .9);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: .2s;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      background: rgba(255, 255, 255, .17);
       color: white;
       transform: translateX(-3px);
     }
 
-    .sidebar-footer {
+    .nav-icon {
+      width: 24px;
       text-align: center;
-      padding: 15px;
-      font-size: 12px;
-      opacity: 0.8;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-      line-height: 1.8;
+      font-size: 18px;
     }
 
-    /* المحتوى الرئيسي */
+    .sidebar-bottom {
+      margin-top: 25px;
+      padding: 15px 10px;
+      border-top: 1px solid rgba(255, 255, 255, .16);
+      font-size: 11px;
+      line-height: 2;
+      opacity: .8;
+      text-align: center;
+    }
+
     .main {
       margin-right: 270px;
-      padding: 30px 35px;
       min-height: 100vh;
+      padding: 25px 30px 50px;
     }
 
-    .top-bar {
-      background: white;
-      padding: 22px 25px;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(30, 58, 138, 0.04);
-      margin-bottom: 25px;
-      border: 1px solid var(--border);
+    .topbar {
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
       gap: 15px;
-    }
-
-    .top-bar h1 {
-      color: var(--blue);
-      font-size: 23px;
-      font-weight: 900;
-    }
-
-    .top-bar p {
-      color: var(--muted);
-      font-size: 13px;
-      margin-top: 5px;
-    }
-
-    .welcome-badge {
-      background: #ecfdf5;
-      color: var(--green);
-      padding: 9px 14px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    /* البطاقات */
-    .card {
-      background: white;
-      border-radius: 18px;
-      padding: 25px;
-      box-shadow: 0 8px 25px rgba(30, 58, 138, 0.04);
-      border: 1px solid var(--border);
       margin-bottom: 25px;
     }
 
-    .card h3 {
-      color: var(--blue);
-      font-size: 18px;
-      font-weight: 900;
-      margin-bottom: 8px;
+    .page-heading h1 {
+      margin: 0 0 4px;
+      font-size: 25px;
+      font-weight: 800;
+      color: var(--green-dark);
     }
 
-    .card-description {
-      color: var(--muted);
+    .page-heading p {
+      margin: 0;
       font-size: 13px;
-      line-height: 1.8;
-      margin-bottom: 18px;
+      color: var(--muted);
     }
 
-    /* نموذج المنشور */
-    .student-info {
+    .student-badge {
       display: flex;
       align-items: center;
-      gap: 12px;
-      background: #f8fafc;
+      gap: 9px;
+      background: white;
       border: 1px solid var(--border);
-      padding: 13px;
-      border-radius: 12px;
-      margin-bottom: 15px;
+      border-radius: 13px;
+      padding: 9px 13px;
+      box-shadow: var(--shadow);
+      max-width: 230px;
     }
 
-    .avatar {
-      width: 43px;
-      height: 43px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--green), var(--blue));
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      font-weight: 900;
+    .student-avatar {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
       flex-shrink: 0;
+      border-radius: 12px;
+      background: var(--green-light);
+      font-size: 20px;
+    }
+
+    .student-info {
+      min-width: 0;
     }
 
     .student-info strong {
       display: block;
-      color: var(--blue);
-      font-size: 14px;
+      font-size: 12px;
+      overflow-wrap: anywhere;
     }
 
     .student-info small {
       color: var(--muted);
+      font-size: 10px;
+    }
+
+    .welcome-card {
+      position: relative;
+      overflow: hidden;
+      padding: 23px 25px;
+      border-radius: 17px;
+      margin-bottom: 23px;
+      color: white;
+      background: linear-gradient(115deg, #026857, #0b806f 58%, #1e3a8a);
+      box-shadow: 0 8px 25px rgba(2, 104, 87, .14);
+    }
+
+    .welcome-card h2 {
+      margin: 0 0 8px;
+      font-size: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .welcome-card p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 2;
+      opacity: .92;
+      max-width: 650px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .welcome-decoration {
+      position: absolute;
+      left: 25px;
+      top: -28px;
+      font-size: 115px;
+      opacity: .12;
+      transform: rotate(-15deg);
+      pointer-events: none;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 26px 0 15px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .section-title span {
+      color: var(--muted);
       font-size: 12px;
     }
 
-    textarea {
-      width: 100%;
-      min-height: 130px;
-      padding: 15px;
-      border: 1px solid #cbd5e1;
+    .composer,
+    .post-card,
+    .empty-state,
+    .loading-state {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .composer {
+      padding: 20px;
+    }
+
+    .composer-header {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin-bottom: 15px;
+    }
+
+    .composer-avatar {
+      width: 43px;
+      height: 43px;
+      display: grid;
+      place-items: center;
       border-radius: 13px;
+      background: var(--green-light);
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .composer-header strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .composer-header small {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .composer textarea {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      outline: none;
+      background: #fbfcfc;
+      color: var(--text);
       font-size: 14px;
       line-height: 1.9;
-      outline: none;
-      resize: vertical;
-      background: #fff;
-      color: var(--text);
-      transition: 0.2s;
+      transition: .2s;
     }
 
-    textarea:focus {
-      border-color: var(--green);
-      box-shadow: 0 0 0 3px rgba(2, 104, 87, 0.08);
+    .composer textarea:focus {
+      border-color: #0b806f;
+      box-shadow: 0 0 0 3px rgba(11, 128, 111, .08);
+      background: white;
     }
 
-    textarea:disabled {
-      background: #f8fafc;
-      cursor: not-allowed;
+    .composer textarea::placeholder {
+      color: #9ba6ad;
     }
 
-    .form-footer {
-      display: flex;
-      justify-content: space-between;
+    .image-preview-wrap {
+      display: none;
+      position: relative;
+      margin-top: 14px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: #fbfcfc;
+    }
+
+    .image-preview-wrap.show {
+      display: block;
+    }
+
+    .image-preview {
+      display: block;
+      max-width: 100%;
+      max-height: 300px;
+      margin: auto;
+      border-radius: 10px;
+      object-fit: contain;
+    }
+
+    .remove-image {
+      display: inline-flex;
       align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      border: 0;
+      border-radius: 8px;
+      padding: 7px 11px;
+      color: var(--danger);
+      background: #fff0f1;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .composer-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
       gap: 12px;
       margin-top: 15px;
+    }
+
+    .composer-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
-    .char-counter {
+    .tool-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid #dce9e5;
+      border-radius: 10px;
+      padding: 10px 13px;
+      background: #f5faf8;
+      color: var(--green-dark);
       font-size: 12px;
-      color: var(--muted);
+      font-weight: 700;
+      transition: .2s;
     }
 
-    .primary-btn {
-      background: linear-gradient(135deg, var(--green), var(--blue));
+    .tool-button:hover {
+      background: var(--green-light);
+      border-color: #a9d5c9;
+    }
+
+    .publish-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 125px;
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 19px;
       color: white;
-      border: none;
-      padding: 12px 23px;
-      border-radius: 11px;
-      font-size: 14px;
-      font-weight: 900;
-      cursor: pointer;
-      transition: 0.2s;
+      background: linear-gradient(120deg, #026857, #0b806f);
+      font-size: 13px;
+      font-weight: 800;
+      box-shadow: 0 4px 12px rgba(2, 104, 87, .15);
+      transition: .2s;
     }
 
-    .primary-btn:hover {
-      opacity: 0.92;
-      transform: translateY(-1px);
+    .publish-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(2, 104, 87, .2);
     }
 
-    .primary-btn:disabled {
-      opacity: 0.6;
+    .publish-button:disabled {
+      opacity: .65;
       cursor: not-allowed;
       transform: none;
     }
 
-    .status-msg {
-      margin-top: 12px;
-      font-size: 13px;
-      font-weight: 700;
-      line-height: 1.8;
-      overflow-wrap: anywhere;
+    .character-count {
+      margin-top: 8px;
+      text-align: left;
+      color: var(--muted);
+      font-size: 11px;
     }
 
-    .status-error {
-      color: var(--danger);
-    }
-
-    .status-success {
-      color: var(--green);
-    }
-
-    .status-info {
-      color: var(--blue);
-    }
-
-    /* قائمة المنشورات */
-    .discussion-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-    }
-
-    .discussion-header h3 {
-      margin: 0;
-    }
-
-    .refresh-btn {
-      background: #eff6ff;
-      color: var(--blue);
-      border: 1px solid #dbeafe;
+    .message {
+      display: none;
+      padding: 12px 14px;
       border-radius: 10px;
-      padding: 8px 13px;
+      margin-top: 13px;
       font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
+      line-height: 1.8;
     }
 
-    .refresh-btn:hover {
-      background: #dbeafe;
+    .message.show {
+      display: block;
     }
 
-    .post-box {
-      background: #fbfdff;
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      padding: 19px;
-      margin-top: 14px;
-      transition: 0.2s;
-      overflow-wrap: anywhere;
+    .message.error {
+      color: #a7212f;
+      background: #fff0f1;
+      border: 1px solid #ffd5d9;
     }
 
-    .post-box:hover {
-      border-color: #b7d8d0;
-      box-shadow: 0 5px 18px rgba(2, 104, 87, 0.05);
+    .message.success {
+      color: #076b4d;
+      background: #eaf8f1;
+      border: 1px solid #cceede;
     }
 
-    .post-top {
+    .message.info {
+      color: #1e3a8a;
+      background: #eff5ff;
+      border: 1px solid #d6e5ff;
+    }
+
+    .posts-list {
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .post-card {
+      padding: 19px;
+      transition: .2s;
+      min-width: 0;
+    }
+
+    .post-card:hover {
+      border-bottom: 3px solid #0b806f;
+    }
+
+    .post-header {
+      display: flex;
+      align-items: flex-start;
       gap: 11px;
-      margin-bottom: 13px;
     }
 
     .post-avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: #e0f2fe;
-      color: var(--blue);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      font-weight: 900;
+      width: 43px;
+      height: 43px;
       flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #e8f5f1, #eaf0ff);
+      border-radius: 13px;
+      font-size: 21px;
     }
 
     .post-author {
-      color: var(--green);
-      font-size: 14px;
-      font-weight: 900;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .post-author strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 800;
+      overflow-wrap: anywhere;
     }
 
     .post-date {
       color: var(--muted);
       font-size: 11px;
+      display: block;
       margin-top: 3px;
     }
 
     .post-content {
-      color: #334155;
       font-size: 14px;
       line-height: 2;
       white-space: pre-wrap;
       overflow-wrap: anywhere;
+      margin: 15px 0 0;
     }
 
-    .loading,
-    .empty {
+    .post-image-link {
+      display: block;
+      margin-top: 13px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #f4f7f8;
       text-align: center;
-      padding: 35px 15px;
+    }
+
+    .post-image {
+      display: block;
+      width: auto;
+      max-width: 100%;
+      max-height: 520px;
+      object-fit: contain;
+      margin: auto;
+      border-radius: 12px;
+    }
+
+    .post-footer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-top: 1px solid #f0f2f3;
+      margin-top: 16px;
+      padding-top: 12px;
       color: var(--muted);
-      font-size: 14px;
+      font-size: 11px;
+    }
+
+    .post-footer span {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .empty-state,
+    .loading-state {
+      text-align: center;
+      padding: 35px 18px;
+      color: var(--muted);
+      font-size: 13px;
       line-height: 2;
     }
 
     .empty-icon {
+      font-size: 43px;
       display: block;
-      font-size: 35px;
       margin-bottom: 10px;
     }
 
-    .error-box {
-      background: #fef2f2;
-      color: #b91c1c;
-      padding: 15px;
-      border-radius: 12px;
-      font-size: 13px;
-      line-height: 1.9;
-      overflow-wrap: anywhere;
+    .empty-state strong {
+      color: var(--text);
+      display: block;
+      font-size: 15px;
+      margin-bottom: 5px;
     }
 
-    .login-notice {
-      background: #eff6ff;
-      border: 1px solid #dbeafe;
-      color: var(--blue);
-      padding: 16px;
-      border-radius: 12px;
-      line-height: 1.9;
-      font-size: 13px;
+    .reload-button {
+      border: 1px solid var(--border);
+      background: white;
+      border-radius: 9px;
+      padding: 8px 14px;
+      margin-top: 10px;
+      color: var(--green-dark);
+      font-weight: 700;
     }
 
-    .login-notice a {
-      color: var(--green);
-      font-weight: 900;
+    .footer {
+      text-align: center;
+      padding: 25px 10px 5px;
+      color: #89949d;
+      font-size: 11px;
     }
 
-    /* شريط الموبايل */
     .mobile-nav {
       display: none;
     }
 
     @media (max-width: 1000px) {
-      .main {
-        padding: 25px;
+      .sidebar {
+        width: 235px;
       }
 
-      .top-bar h1 {
-        font-size: 20px;
+      .main {
+        margin-right: 235px;
+        padding: 22px;
       }
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 760px) {
       .sidebar {
         display: none;
       }
 
       .main {
         margin-right: 0;
-        padding: 15px 13px 90px;
+        padding: 17px 13px 95px;
       }
 
-      .top-bar {
-        padding: 18px;
-        margin-bottom: 17px;
+      .topbar {
         align-items: flex-start;
-        flex-direction: column;
+        margin-bottom: 18px;
       }
 
-      .top-bar h1 {
-        font-size: 19px;
+      .page-heading h1 {
+        font-size: 21px;
       }
 
-      .welcome-badge {
-        white-space: normal;
+      .page-heading p {
+        font-size: 11px;
       }
 
-      .card {
-        padding: 18px;
-        border-radius: 15px;
-        margin-bottom: 17px;
+      .student-badge {
+        padding: 6px 8px;
+        gap: 6px;
+        max-width: 145px;
       }
 
-      .card h3 {
-        font-size: 16px;
+      .student-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 17px;
       }
 
-      .form-footer {
+      .student-info strong {
+        font-size: 10px;
+      }
+
+      .student-info small {
+        font-size: 9px;
+      }
+
+      .welcome-card {
+        padding: 20px 17px;
+      }
+
+      .welcome-card h2 {
+        font-size: 17px;
+      }
+
+      .welcome-card p {
+        font-size: 12px;
+      }
+
+      .welcome-decoration {
+        left: 7px;
+        font-size: 90px;
+      }
+
+      .composer {
+        padding: 14px;
+      }
+
+      .composer textarea {
+        min-height: 105px;
+        font-size: 13px;
+      }
+
+      .composer-footer {
         align-items: stretch;
-        flex-direction: column;
       }
 
-      .primary-btn {
+      .composer-tools {
         width: 100%;
+      }
+
+      .tool-button {
+        flex: 1;
+      }
+
+      .publish-button {
+        width: 100%;
+      }
+
+      .post-card {
+        padding: 14px;
+      }
+
+      .post-content {
+        font-size: 13px;
       }
 
       .mobile-nav {
         display: flex;
         position: fixed;
+        z-index: 1100;
         bottom: 0;
-        left: 0;
         right: 0;
-        height: 68px;
-        background: white;
-        border-top: 1px solid var(--border);
-        z-index: 2000;
+        left: 0;
         justify-content: space-around;
-        align-items: center;
-        padding: 5px 3px calc(5px + env(safe-area-inset-bottom));
-        box-shadow: 0 -5px 20px rgba(30, 58, 138, 0.07);
+        gap: 3px;
+        padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+        background: rgba(255, 255, 255, .97);
+        border-top: 1px solid var(--border);
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, .05);
       }
 
       .mobile-nav a {
-        text-decoration: none;
-        color: var(--muted);
         display: flex;
+        flex: 1;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 3px;
-        font-size: 10px;
-        font-weight: 700;
-        flex: 1;
         min-width: 0;
+        padding: 4px 1px;
+        color: #73808c;
+        text-decoration: none;
+        font-size: 9px;
+        font-weight: 700;
       }
 
-      .mobile-nav a span {
-        font-size: 20px;
-        line-height: 1.2;
+      .mobile-nav a span:first-child {
+        font-size: 19px;
       }
 
       .mobile-nav a.active {
         color: var(--green);
       }
 
-      .post-box {
-        padding: 15px;
+      .section-title h2 {
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .student-badge {
+        max-width: 120px;
+      }
+
+      .page-heading h1 {
+        font-size: 18px;
+      }
+
+      .composer-tools {
+        flex-direction: column;
+      }
+
+      .tool-button {
+        width: 100%;
       }
     }
   </style>
@@ -540,200 +789,546 @@
 
 <body>
 
-  <!-- الشريط الجانبي للكمبيوتر -->
   <aside class="sidebar">
-    <div class="sidebar-top">
-
-      <div class="logo-box">
-        <img src="../logo.png" alt="شعار أرض الأحياء">
-        <div>
-          <h2>أرض الأحياء</h2>
-          <p>رحلتك نحو التفوق تبدأ من هنا</p>
-        </div>
+    <div class="brand">
+      <div class="brand-icon">🌱</div>
+      <div>
+        <h2>منصة أرض الأحياء</h2>
+        <small>الصف الثالث الثانوي</small>
       </div>
-
-      <nav class="menu">
-        <a href="../index.html">🏠 الرئيسية</a>
-        <a href="../videos/index.html">🎥 المحاضرات</a>
-        <a href="../notes/index.html">📚 المذكرات</a>
-        <a href="../champion/index.html">🏆 بطل الفصل</a>
-        <a href="index.html" class="active">💬 المنتدى</a>
-        <a href="../account/index.html">👤 حساب الطالب</a>
-      </nav>
-
     </div>
 
-    <div class="sidebar-footer">
-      🌱 منصة أرض الأحياء<br>
-      ثالثة ثانوي
+    <div class="nav-title">القائمة الرئيسية</div>
+
+    <nav>
+      <a class="nav-link" href="../index.html">
+        <span class="nav-icon">🏠</span>
+        <span>الرئيسية</span>
+      </a>
+
+      <a class="nav-link" href="../videos/index.html">
+        <span class="nav-icon">🎥</span>
+        <span>المحاضرات</span>
+      </a>
+
+      <a class="nav-link" href="../notes/index.html">
+        <span class="nav-icon">📚</span>
+        <span>المذكرات</span>
+      </a>
+
+      <a class="nav-link" href="../champion/index.html">
+        <span class="nav-icon">🏆</span>
+        <span>بطل الفصل</span>
+      </a>
+
+      <a class="nav-link active" href="./index.html">
+        <span class="nav-icon">💬</span>
+        <span>المنتدى</span>
+      </a>
+
+      <a class="nav-link" href="../account/index.html">
+        <span class="nav-icon">👤</span>
+        <span>حساب الطالب</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      🌿 معًا نحو التفوق في الأحياء
+      <br>
+      منصة أرض الأحياء © 2026
     </div>
   </aside>
 
-  <!-- المحتوى الرئيسي -->
   <main class="main">
 
-    <header class="top-bar">
-      <div>
-        <h1>💬 منتدى النقاش والأسئلة</h1>
-        <p>اسأل، ناقش، وتبادل المعرفة مع زملائك في الأحياء.</p>
+    <header class="topbar">
+      <div class="page-heading">
+        <h1>💬 المنتدى الطلابي</h1>
+        <p>مساحتك لمشاركة الأسئلة والأفكار التعليمية</p>
       </div>
 
-      <div class="welcome-badge" id="welcomeBadge">
-        👋 أهلًا بك في المنتدى
+      <div class="student-badge">
+        <div class="student-avatar">👨‍🎓</div>
+        <div class="student-info">
+          <strong id="studentName">جارٍ التحقق...</strong>
+          <small>طالب بالمنصة</small>
+        </div>
       </div>
     </header>
 
-    <!-- صندوق إضافة منشور -->
-    <section class="card">
-
-      <h3>✍️ شارك سؤالك مع زملائك</h3>
-
-      <p class="card-description">
-        اكتب سؤالك أو استفسارك عن درس في الأحياء، وساعد زملاءك على التعلم.
+    <section class="welcome-card">
+      <div class="welcome-decoration">🌱</div>
+      <h2>أهلًا بك في مجتمع أرض الأحياء!</h2>
+      <p>
+        اطرح سؤالك، شارك زملاءك المعلومة، وارفع صورة للسؤال أو المعلومة
+        التي تريد مناقشتها. بالتعاون نحقق التفوق.
       </p>
-
-      <div id="postForm">
-
-        <div class="student-info">
-          <div class="avatar" id="studentAvatar">👤</div>
-          <div>
-            <strong id="studentName">جاري التحقق من الحساب...</strong>
-            <small>طالب في منصة أرض الأحياء</small>
-          </div>
-        </div>
-
-        <textarea
-          id="postContent"
-          maxlength="3000"
-          placeholder="اكتب سؤالك أو استفسارك هنا..."
-          disabled
-        ></textarea>
-
-        <div class="form-footer">
-          <span class="char-counter" id="charCounter">0 / 3000 حرف</span>
-          <button type="button" class="primary-btn" id="publishBtn" disabled>
-            🚀 نشر المنشور
-          </button>
-        </div>
-
-        <div id="statusMsg" class="status-msg" role="status" aria-live="polite"></div>
-
-      </div>
-
-      <div id="loginNotice" class="login-notice" hidden>
-        🔐 يجب تسجيل الدخول إلى حسابك حتى تتمكن من نشر الأسئلة.
-        <br>
-        <a href="../index.html">الانتقال إلى صفحة تسجيل الدخول</a>
-      </div>
-
     </section>
 
-    <!-- قائمة المناقشات -->
-    <section class="card">
+    <div class="section-title">
+      <h2>✍️ اكتب منشورًا جديدًا</h2>
+      <span>شارك بأدب واحترام</span>
+    </div>
 
-      <div class="discussion-header">
+    <section class="composer">
+      <div class="composer-header">
+        <div class="composer-avatar">👨‍🎓</div>
         <div>
-          <h3>📚 المناقشات الأخيرة</h3>
-          <p class="card-description" style="margin: 5px 0 0;">
-            تابع أسئلة زملائك وشارك في المناقشات.
-          </p>
+          <strong id="composerName">طالب بالمنصة</strong>
+          <small>شارك سؤالك أو أضف صورة تعليمية</small>
         </div>
+      </div>
 
-        <button type="button" class="refresh-btn" id="refreshBtn">
-          🔄 تحديث
+      <textarea
+        id="postContent"
+        maxlength="3000"
+        placeholder="ما الذي تريد مشاركته مع زملائك؟ اكتب سؤالك هنا..."
+        aria-label="محتوى المنشور"></textarea>
+
+      <div class="character-count">
+        <span id="charCount">0</span> / 3000 حرف
+      </div>
+
+      <div class="image-preview-wrap" id="imagePreviewWrap">
+        <img id="imagePreview" class="image-preview" alt="معاينة الصورة المختارة">
+        <button type="button" class="remove-image" id="removeImage">
+          🗑️ إزالة الصورة
         </button>
       </div>
 
-      <div id="postsList">
-        <div class="loading">⏳ جاري تحميل المناقشات...</div>
+      <div class="composer-footer">
+        <div class="composer-tools">
+          <button type="button" class="tool-button" id="chooseImageBtn">
+            🖼️ إضافة صورة
+          </button>
+
+          <input
+            type="file"
+            id="imageInput"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            hidden>
+        </div>
+
+        <button type="button" class="publish-button" id="publishBtn">
+          <span>📤</span>
+          <span id="publishText">نشر المنشور</span>
+        </button>
       </div>
 
+      <div id="composerMessage" class="message" role="status" aria-live="polite"></div>
     </section>
+
+    <div class="section-title">
+      <h2>🌿 منشورات الطلاب</h2>
+      <span id="postsCount">أحدث المشاركات</span>
+    </div>
+
+    <section id="postsList" class="posts-list" aria-live="polite">
+      <div class="loading-state">
+        ⏳ جارٍ تحميل المنشورات...
+      </div>
+    </section>
+
+    <div class="footer">
+      جميع الحقوق محفوظة © 2026 منصة أرض الأحياء
+    </div>
 
   </main>
 
-  <!-- شريط التنقل السفلي للموبايل -->
   <nav class="mobile-nav" aria-label="التنقل الرئيسي">
     <a href="../index.html">
       <span>🏠</span>
-      الرئيسية
+      <span>الرئيسية</span>
     </a>
 
     <a href="../videos/index.html">
       <span>🎥</span>
-      المحاضرات
+      <span>المحاضرات</span>
     </a>
 
     <a href="../notes/index.html">
       <span>📚</span>
-      المذكرات
+      <span>المذكرات</span>
     </a>
 
-    <a href="index.html" class="active">
+    <a href="./index.html" class="active">
       <span>💬</span>
-      المنتدى
+      <span>المنتدى</span>
     </a>
 
     <a href="../account/index.html">
       <span>👤</span>
-      حسابي
+      <span>حسابي</span>
     </a>
   </nav>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
     "use strict";
 
+    // ==========================================
+    // إعدادات Supabase الخاصة بمنصة أرض الأحياء
+    // ==========================================
+
     const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+
     const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
 
-    const supabaseClient = supabase.createClient(
+    const STORAGE_BUCKET = "forum-images";
+
+    const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+
+    const ALLOWED_IMAGE_TYPES = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/gif"
+    ];
+
+    const supabaseClient = window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_KEY
     );
 
+    // ==========================================
+    // عناصر الصفحة
+    // ==========================================
+
     const postContent = document.getElementById("postContent");
+    const imageInput = document.getElementById("imageInput");
+    const imagePreview = document.getElementById("imagePreview");
+    const imagePreviewWrap = document.getElementById("imagePreviewWrap");
+    const chooseImageBtn = document.getElementById("chooseImageBtn");
+    const removeImageBtn = document.getElementById("removeImage");
     const publishBtn = document.getElementById("publishBtn");
-    const statusMsg = document.getElementById("statusMsg");
+    const publishText = document.getElementById("publishText");
+    const composerMessage = document.getElementById("composerMessage");
     const postsList = document.getElementById("postsList");
-    const studentName = document.getElementById("studentName");
-    const studentAvatar = document.getElementById("studentAvatar");
-    const welcomeBadge = document.getElementById("welcomeBadge");
-    const loginNotice = document.getElementById("loginNotice");
-    const charCounter = document.getElementById("charCounter");
+    const studentNameElement = document.getElementById("studentName");
+    const composerNameElement = document.getElementById("composerName");
+    const charCount = document.getElementById("charCount");
+    const postsCount = document.getElementById("postsCount");
 
     let currentUser = null;
-    let currentStudentName = "طالب";
+    let currentStudentName = "طالب بالمنصة";
+    let selectedImage = null;
+    let previewObjectUrl = null;
     let isPublishing = false;
 
-    /* إظهار الرسائل */
-    function showStatus(message, type) {
-      statusMsg.textContent = message;
-      statusMsg.className = "status-msg";
+    // ==========================================
+    // رسائل الصفحة
+    // ==========================================
 
-      if (type === "error") {
-        statusMsg.classList.add("status-error");
-      } else if (type === "success") {
-        statusMsg.classList.add("status-success");
-      } else {
-        statusMsg.classList.add("status-info");
+    function showMessage(message, type = "info") {
+      composerMessage.textContent = message;
+      composerMessage.className = "message show " + type;
+    }
+
+    function hideMessage() {
+      composerMessage.textContent = "";
+      composerMessage.className = "message";
+    }
+
+    function setPublishingState(isBusy, text = "نشر المنشور") {
+      isPublishing = isBusy;
+      publishBtn.disabled = isBusy;
+      publishText.textContent = text;
+    }
+
+    // ==========================================
+    // تجهيز اسم الطالب
+    // ==========================================
+
+    async function loadCurrentStudent() {
+      const { data, error } = await supabaseClient.auth.getUser();
+
+      if (error || !data || !data.user) {
+        currentUser = null;
+        currentStudentName = "طالب بالمنصة";
+
+        studentNameElement.textContent = "غير مسجل الدخول";
+        composerNameElement.textContent = "طالب بالمنصة";
+
+        showMessage(
+          "يجب تسجيل الدخول إلى حسابك قبل نشر منشور أو رفع صورة.",
+          "info"
+        );
+
+        return false;
+      }
+
+      currentUser = data.user;
+
+      let studentName =
+        currentUser.user_metadata?.full_name ||
+        currentUser.user_metadata?.name ||
+        currentUser.user_metadata?.fullName ||
+        "";
+
+      // محاولة الحصول على الاسم من جدول profiles.
+      try {
+        const { data: profile, error: profileError } =
+          await supabaseClient
+            .from("profiles")
+            .select("full_name")
+            .eq("id", currentUser.id)
+            .maybeSingle();
+
+        if (!profileError && profile && profile.full_name) {
+          studentName = profile.full_name;
+        }
+      } catch (error) {
+        console.warn("تعذر قراءة اسم الطالب من profiles:", error);
+      }
+
+      currentStudentName =
+        String(studentName || "").trim() || "طالب بالمنصة";
+
+      studentNameElement.textContent = currentStudentName;
+      composerNameElement.textContent = currentStudentName;
+
+      hideMessage();
+
+      return true;
+    }
+
+    // ==========================================
+    // اختيار صورة ومعاينتها
+    // ==========================================
+
+    chooseImageBtn.addEventListener("click", function () {
+      imageInput.click();
+    });
+
+    imageInput.addEventListener("change", function () {
+      hideMessage();
+
+      const file = imageInput.files && imageInput.files[0];
+
+      if (!file) {
+        return;
+      }
+
+      if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+        showMessage(
+          "نوع الصورة غير مدعوم. اختر صورة بصيغة JPG أو PNG أو WEBP أو GIF.",
+          "error"
+        );
+
+        clearSelectedImage();
+        return;
+      }
+
+      if (file.size > MAX_IMAGE_SIZE) {
+        showMessage(
+          "حجم الصورة أكبر من 5 ميجابايت. اختر صورة أصغر.",
+          "error"
+        );
+
+        clearSelectedImage();
+        return;
+      }
+
+      clearPreviewUrl();
+
+      selectedImage = file;
+      previewObjectUrl = URL.createObjectURL(file);
+
+      imagePreview.src = previewObjectUrl;
+      imagePreviewWrap.classList.add("show");
+
+      showMessage("تم اختيار الصورة. يمكنك نشرها مع المنشور.", "success");
+    });
+
+    function clearPreviewUrl() {
+      if (previewObjectUrl) {
+        URL.revokeObjectURL(previewObjectUrl);
+        previewObjectUrl = null;
       }
     }
 
-    /* تحديد الحرف الأول من الاسم */
-    function getInitial(name) {
-      const cleaned = String(name || "").trim();
-      return cleaned ? cleaned.charAt(0) : "👤";
+    function clearSelectedImage() {
+      selectedImage = null;
+      imageInput.value = "";
+      imagePreview.removeAttribute("src");
+      imagePreviewWrap.classList.remove("show");
+      clearPreviewUrl();
     }
 
-    /* تنسيق التاريخ */
+    removeImageBtn.addEventListener("click", function () {
+      clearSelectedImage();
+      hideMessage();
+    });
+
+    // ==========================================
+    // عداد الأحرف
+    // ==========================================
+
+    postContent.addEventListener("input", function () {
+      charCount.textContent = postContent.value.length;
+    });
+
+    // ==========================================
+    // رفع الصورة إلى Supabase Storage
+    // ==========================================
+
+    async function uploadForumImage(file) {
+      if (!currentUser) {
+        throw new Error("يجب تسجيل الدخول أولًا.");
+      }
+
+      const extensionMap = {
+        "image/jpeg": "jpg",
+        "image/png": "png",
+        "image/webp": "webp",
+        "image/gif": "gif"
+      };
+
+      const extension = extensionMap[file.type];
+
+      if (!extension) {
+        throw new Error("نوع الصورة غير مسموح به.");
+      }
+
+      const filePath =
+        currentUser.id +
+        "/" +
+        Date.now() +
+        "_" +
+        crypto.randomUUID() +
+        "." +
+        extension;
+
+      const { error: uploadError } = await supabaseClient
+        .storage
+        .from(STORAGE_BUCKET)
+        .upload(filePath, file, {
+          cacheControl: "3600",
+          contentType: file.type,
+          upsert: false
+        });
+
+      if (uploadError) {
+        console.error("خطأ رفع الصورة:", uploadError);
+
+        throw new Error(
+          "تعذر رفع الصورة. تأكد من إنشاء Bucket باسم forum-images وضبط صلاحيات الرفع."
+        );
+      }
+
+      const { data } = supabaseClient
+        .storage
+        .from(STORAGE_BUCKET)
+        .getPublicUrl(filePath);
+
+      if (!data || !data.publicUrl) {
+        throw new Error("تم رفع الصورة لكن تعذر الحصول على رابطها.");
+      }
+
+      return data.publicUrl;
+    }
+
+    // ==========================================
+    // نشر منشور نصي أو صورة مع نص
+    // ==========================================
+
+    publishBtn.addEventListener("click", publishPost);
+
+    async function publishPost() {
+      if (isPublishing) {
+        return;
+      }
+
+      hideMessage();
+
+      const content = postContent.value.trim();
+
+      if (!content && !selectedImage) {
+        showMessage(
+          "اكتب محتوى المنشور أو اختر صورة قبل النشر.",
+          "error"
+        );
+        return;
+      }
+
+      if (content.length > 3000) {
+        showMessage("المنشور أطول من الحد المسموح.", "error");
+        return;
+      }
+
+      setPublishingState(true, "جارٍ النشر...");
+
+      let uploadedImageUrl = null;
+
+      try {
+        const loggedIn = await loadCurrentStudent();
+
+        if (!loggedIn) {
+          throw new Error(
+            "يجب تسجيل الدخول إلى المنصة قبل نشر المنشورات."
+          );
+        }
+
+        // رفع الصورة أولًا، إذا اختار الطالب صورة.
+        if (selectedImage) {
+          setPublishingState(true, "جارٍ رفع الصورة...");
+          uploadedImageUrl = await uploadForumImage(selectedImage);
+        }
+
+        setPublishingState(true, "جارٍ حفظ المنشور...");
+
+        // إدراج المنشور في جدول forum.
+        const { error: insertError } = await supabaseClient
+          .from("forum")
+          .insert({
+            user_id: currentUser.id,
+            author_name: currentStudentName,
+            content: content,
+            image_url: uploadedImageUrl
+          });
+
+        if (insertError) {
+          console.error("خطأ حفظ المنشور:", insertError);
+
+          throw new Error(
+            "تعذر حفظ المنشور في قاعدة البيانات. راجع إعدادات جدول forum وسياسات INSERT."
+          );
+        }
+
+        postContent.value = "";
+        charCount.textContent = "0";
+        clearSelectedImage();
+
+        showMessage("تم نشر منشورك بنجاح 🌱", "success");
+
+        await loadPosts();
+
+      } catch (error) {
+        console.error(error);
+
+        showMessage(
+          error.message || "حدث خطأ أثناء النشر. حاول مرة أخرى.",
+          "error"
+        );
+
+      } finally {
+        setPublishingState(false);
+      }
+    }
+
+    // ==========================================
+    // تنسيق التاريخ
+    // ==========================================
+
     function formatDate(dateValue) {
-      if (!dateValue) return "";
+      if (!dateValue) {
+        return "";
+      }
 
       const date = new Date(dateValue);
 
-      if (Number.isNaN(date.getTime())) return "";
+      if (Number.isNaN(date.getTime())) {
+        return "";
+      }
 
       return date.toLocaleString("ar-EG", {
         year: "numeric",
@@ -744,287 +1339,213 @@
       });
     }
 
-    /* إنشاء عنصر نصي آمن */
-    function makeTextElement(tag, className, value) {
-      const element = document.createElement(tag);
+    // ==========================================
+    // إنشاء عناصر المنشور بطريقة آمنة
+    // ==========================================
 
-      if (className) {
-        element.className = className;
+    function createPostElement(post) {
+      const article = document.createElement("article");
+      article.className = "post-card";
+
+      const header = document.createElement("div");
+      header.className = "post-header";
+
+      const avatar = document.createElement("div");
+      avatar.className = "post-avatar";
+      avatar.textContent = "👨‍🎓";
+
+      const authorBox = document.createElement("div");
+      authorBox.className = "post-author";
+
+      const authorName = document.createElement("strong");
+      authorName.textContent = post.author_name || "طالب بالمنصة";
+
+      const date = document.createElement("span");
+      date.className = "post-date";
+      date.textContent = formatDate(post.created_at);
+
+      authorBox.appendChild(authorName);
+      authorBox.appendChild(date);
+
+      header.appendChild(avatar);
+      header.appendChild(authorBox);
+
+      article.appendChild(header);
+
+      const content = String(post.content || "").trim();
+
+      if (content) {
+        const paragraph = document.createElement("p");
+        paragraph.className = "post-content";
+        paragraph.textContent = content;
+        article.appendChild(paragraph);
       }
 
-      element.textContent = value || "";
-
-      return element;
-    }
-
-    /* التحقق من الحساب وجلب اسم الطالب */
-    async function initializePage() {
-      try {
-        const {
-          data: { user },
-          error
-        } = await supabaseClient.auth.getUser();
-
-        if (error) throw error;
-
-        if (!user) {
-          currentUser = null;
-
-          studentName.textContent = "يجب تسجيل الدخول للنشر";
-          studentAvatar.textContent = "🔒";
-          postContent.disabled = true;
-          publishBtn.disabled = true;
-          loginNotice.hidden = false;
-
-          welcomeBadge.textContent = "🔐 تسجيل الدخول مطلوب للنشر";
-
-          await loadPosts();
-          return;
-        }
-
-        currentUser = user;
-        loginNotice.hidden = true;
-
-        let profileName = "";
-
-        /*
-          نحاول جلب الاسم من profiles.full_name.
-          لو لم يوجد سجل أو تعذر جلب الاسم، نستخدم بيانات الحساب.
-        */
+      // عرض الصورة عند وجود رابط صالح.
+      if (post.image_url) {
         try {
-          const { data: profile, error: profileError } =
-            await supabaseClient
-              .from("profiles")
-              .select("full_name")
-              .eq("id", user.id)
-              .maybeSingle();
+          const imageUrl = new URL(post.image_url);
 
-          if (!profileError && profile && profile.full_name) {
-            profileName = String(profile.full_name).trim();
+          const allowedHost =
+            imageUrl.hostname === "fpfbmjtpzamzlyzitmsd.supabase.co";
+
+          if (
+            imageUrl.protocol === "https:" &&
+            allowedHost &&
+            imageUrl.pathname.includes("/storage/v1/object/public/forum-images/")
+          ) {
+            const imageLink = document.createElement("a");
+            imageLink.className = "post-image-link";
+            imageLink.href = imageUrl.href;
+            imageLink.target = "_blank";
+            imageLink.rel = "noopener noreferrer";
+            imageLink.setAttribute("aria-label", "عرض الصورة بالحجم الكامل");
+
+            const img = document.createElement("img");
+            img.className = "post-image";
+            img.src = imageUrl.href;
+            img.alt = "صورة مرفقة بالمنشور";
+            img.loading = "lazy";
+            img.decoding = "async";
+
+            img.addEventListener("error", function () {
+              imageLink.remove();
+            });
+
+            imageLink.appendChild(img);
+            article.appendChild(imageLink);
           }
-        } catch (profileError) {
-          console.warn("تعذر جلب اسم الطالب من profiles:", profileError);
+        } catch (error) {
+          console.warn("رابط الصورة غير صالح.");
         }
-
-        if (!profileName) {
-          profileName =
-            user.user_metadata?.full_name ||
-            user.user_metadata?.name ||
-            user.email?.split("@")[0] ||
-            "طالب";
-        }
-
-        currentStudentName = profileName;
-
-        studentName.textContent = currentStudentName;
-        studentAvatar.textContent = getInitial(currentStudentName);
-        welcomeBadge.textContent = "👋 أهلًا، " + currentStudentName;
-
-        postContent.disabled = false;
-        publishBtn.disabled = false;
-
-        await loadPosts();
-
-      } catch (error) {
-        console.error("خطأ التحقق من الحساب:", error);
-
-        studentName.textContent = "تعذر التحقق من الحساب";
-        studentAvatar.textContent = "⚠️";
-
-        showStatus(
-          "تعذر التحقق من تسجيل الدخول. أعد تحميل الصفحة وحاول مرة أخرى.",
-          "error"
-        );
-
-        await loadPosts();
       }
+
+      const footer = document.createElement("div");
+      footer.className = "post-footer";
+
+      const label = document.createElement("span");
+      label.textContent = "🌱 منشور في منتدى أرض الأحياء";
+
+      footer.appendChild(label);
+      article.appendChild(footer);
+
+      return article;
     }
 
-    /* تحديث عداد الأحرف */
-    postContent.addEventListener("input", function () {
-      charCounter.textContent =
-        postContent.value.length + " / 3000 حرف";
-    });
+    // ==========================================
+    // تحميل المنشورات من قاعدة البيانات
+    // ==========================================
 
-    /* نشر منشور */
-    async function addPost() {
-      if (isPublishing) return;
-
-      const content = postContent.value.trim();
-
-      if (!currentUser) {
-        showStatus("يجب تسجيل الدخول أولًا حتى تتمكن من النشر.", "error");
-        return;
-      }
-
-      if (!content) {
-        showStatus("يرجى كتابة محتوى المنشور أولًا.", "error");
-        postContent.focus();
-        return;
-      }
-
-      if (content.length > 3000) {
-        showStatus("الحد الأقصى للمنشور هو 3000 حرف.", "error");
-        return;
-      }
-
-      isPublishing = true;
-      publishBtn.disabled = true;
-      publishBtn.textContent = "⏳ جارٍ النشر...";
-
-      showStatus("جارٍ نشر منشورك...", "info");
-
-      try {
-        /*
-          نحفظ اسم الطالب ومعرّف حسابه.
-          يتطلب ذلك أن يسمح مخطط جدول forum بالأعمدة المستخدمة.
-        */
-        const { error } = await supabaseClient
-          .from("forum")
-          .insert({
-            content: content,
-            author_name: currentStudentName,
-            user_id: currentUser.id
-          });
-
-        if (error) throw error;
-
-        postContent.value = "";
-        charCounter.textContent = "0 / 3000 حرف";
-
-        showStatus("تم نشر منشورك بنجاح! ✅", "success");
-
-        await loadPosts();
-
-      } catch (error) {
-        console.error("خطأ نشر المنشور:", error);
-
-        let message = "تعذر نشر المنشور.";
-
-        if (error.code === "42501" || error.code === "403") {
-          message =
-            "ليس لديك إذن بالنشر. راجع سياسات RLS وصلاحيات جدول forum في Supabase.";
-        } else if (error.code === "23503") {
-          message =
-            "تعذر ربط المنشور بالحساب. تحقق من نوع العمود user_id في جدول forum.";
-        } else if (error.code === "42703" || error.code === "PGRST204") {
-          message =
-            "هناك عمود مطلوب غير موجود في جدول forum. راجع أسماء الأعمدة الموضحة أسفل الكود.";
-        } else {
-          message += " " + (error.message || "حاول مرة أخرى.");
-        }
-
-        showStatus(message, "error");
-
-      } finally {
-        isPublishing = false;
-        publishBtn.disabled = !currentUser;
-        publishBtn.textContent = "🚀 نشر المنشور";
-      }
-    }
-
-    publishBtn.addEventListener("click", addPost);
-
-    /* تحميل المناقشات */
     async function loadPosts() {
-      postsList.replaceChildren();
+      postsList.innerHTML = "";
 
-      const loading = makeTextElement(
-        "div",
-        "loading",
-        "⏳ جاري تحميل المناقشات..."
-      );
-
+      const loading = document.createElement("div");
+      loading.className = "loading-state";
+      loading.textContent = "⏳ جارٍ تحميل المنشورات...";
       postsList.appendChild(loading);
 
       try {
         const { data, error } = await supabaseClient
           .from("forum")
-          .select("*")
+          .select("id, content, author_name, image_url, created_at")
           .order("created_at", { ascending: false })
           .limit(100);
 
-        if (error) throw error;
+        if (error) {
+          console.error("خطأ تحميل المنشورات:", error);
 
-        postsList.replaceChildren();
+          postsList.innerHTML = "";
 
-        if (!data || data.length === 0) {
-          const empty = document.createElement("div");
-          empty.className = "empty";
+          const errorBox = document.createElement("div");
+          errorBox.className = "empty-state";
 
-          const icon = makeTextElement("span", "empty-icon", "💬");
-          const message = makeTextElement(
-            "div",
-            "",
-            "لا توجد مناقشات حتى الآن. كن أول من يشارك سؤاله!"
-          );
+          const icon = document.createElement("span");
+          icon.className = "empty-icon";
+          icon.textContent = "⚠️";
 
-          empty.append(icon, message);
-          postsList.appendChild(empty);
+          const title = document.createElement("strong");
+          title.textContent = "تعذر تحميل المنشورات";
+
+          const details = document.createElement("p");
+          details.textContent =
+            "تأكد من إعداد جدول forum وصلاحيات قراءة المنشورات في Supabase.";
+
+          const retry = document.createElement("button");
+          retry.className = "reload-button";
+          retry.textContent = "إعادة المحاولة";
+          retry.addEventListener("click", loadPosts);
+
+          errorBox.appendChild(icon);
+          errorBox.appendChild(title);
+          errorBox.appendChild(details);
+          errorBox.appendChild(retry);
+
+          postsList.appendChild(errorBox);
+
+          postsCount.textContent = "تعذر التحميل";
 
           return;
         }
 
-        data.forEach(function (post) {
-          const box = document.createElement("article");
-          box.className = "post-box";
+        postsList.innerHTML = "";
 
-          const top = document.createElement("div");
-          top.className = "post-top";
+        const posts = Array.isArray(data) ? data : [];
 
-          const avatar = makeTextElement(
-            "div",
-            "post-avatar",
-            getInitial(post.author_name || "طالب")
-          );
+        postsCount.textContent =
+          posts.length + " منشور";
 
-          const authorInfo = document.createElement("div");
+        if (posts.length === 0) {
+          const empty = document.createElement("div");
+          empty.className = "empty-state";
 
-          const author = makeTextElement(
-            "div",
-            "post-author",
-            post.author_name || "طالب"
-          );
+          const icon = document.createElement("span");
+          icon.className = "empty-icon";
+          icon.textContent = "🌿";
 
-          const date = makeTextElement(
-            "div",
-            "post-date",
-            formatDate(post.created_at)
-          );
+          const title = document.createElement("strong");
+          title.textContent = "لا توجد منشورات حتى الآن";
 
-          authorInfo.append(author, date);
-          top.append(avatar, authorInfo);
+          const description = document.createElement("div");
+          description.textContent =
+            "كن أول من يشارك سؤالًا أو صورة تعليمية مع زملائه!";
 
-          const content = makeTextElement(
-            "div",
-            "post-content",
-            post.content || ""
-          );
+          empty.appendChild(icon);
+          empty.appendChild(title);
+          empty.appendChild(description);
 
-          box.append(top, content);
-          postsList.appendChild(box);
+          postsList.appendChild(empty);
+          return;
+        }
+
+        posts.forEach(function (post) {
+          postsList.appendChild(createPostElement(post));
         });
 
       } catch (error) {
-        console.error("خطأ تحميل المنتدى:", error);
+        console.error(error);
 
-        postsList.replaceChildren();
+        postsList.innerHTML = "";
 
         const errorBox = document.createElement("div");
-        errorBox.className = "error-box";
-
+        errorBox.className = "empty-state";
         errorBox.textContent =
-          "تعذر تحميل المناقشات. تأكد من وجود جدول forum وصلاحية قراءة المنشورات في إعدادات Supabase. التفاصيل: " +
-          (error.message || "خطأ غير معروف");
+          "حدث خطأ أثناء الاتصال بالمنتدى. حاول تحديث الصفحة.";
 
         postsList.appendChild(errorBox);
       }
     }
 
-    document.getElementById("refreshBtn").addEventListener("click", loadPosts);
+    // ==========================================
+    // بدء تشغيل المنتدى
+    // ==========================================
 
-    /* تشغيل الصفحة */
-    initializePage();
+    async function initForum() {
+      await loadCurrentStudent();
+      await loadPosts();
+    }
+
+    initForum();
+
   </script>
 
 </body>
