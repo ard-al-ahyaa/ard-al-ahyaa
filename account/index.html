@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>حساب الطالب | منصة أرض الأحياء</title>
-
-  <meta name="description"
-    content="حساب الطالب في منصة أرض الأحياء لمتابعة البيانات الشخصية والدرجات والواجبات ومشاركات المنتدى.">
+  <meta name="description" content="حساب الطالب في منصة أرض الأحياء للصف الثالث الثانوي.">
 
   <link rel="icon" href="../favicon.png">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Aref+Ruqaa:wght@400;700&display=swap"
-    rel="stylesheet">
+        rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -26,11 +23,11 @@
       --green-light: #e8f5ef;
       --blue: #1e3a8a;
       --bg: #f4f7fb;
-      --white: #ffffff;
+      --white: #fff;
       --text: #1f2937;
       --muted: #6b7280;
       --border: #e5e7eb;
-      --shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+      --shadow: 0 5px 20px rgba(0,0,0,.05);
       --radius: 16px;
     }
 
@@ -45,13 +42,12 @@
       font-family: "Cairo", sans-serif;
     }
 
-    button,
-    input {
+    button, input {
       font: inherit;
     }
 
-    button {
-      cursor: pointer;
+    button, a {
+      -webkit-tap-highlight-color: transparent;
     }
 
     a {
@@ -59,28 +55,22 @@
       text-decoration: none;
     }
 
-    .layout {
-      min-height: 100vh;
-    }
-
-    /* الشريط الجانبي بنفس هوية المنصة */
-
     .sidebar {
       position: fixed;
-      right: 0;
       top: 0;
+      right: 0;
       width: 250px;
       height: 100vh;
       padding: 22px 15px;
+      color: white;
+      overflow-y: auto;
+      z-index: 100;
       background: linear-gradient(
         165deg,
         #087f5b,
         #075e54 50%,
         #1e3a8a
       );
-      color: white;
-      overflow-y: auto;
-      z-index: 100;
     }
 
     .brand {
@@ -88,8 +78,8 @@
       align-items: center;
       gap: 10px;
       padding: 5px 7px 23px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
       margin-bottom: 22px;
+      border-bottom: 1px solid rgba(255,255,255,.18);
     }
 
     .brand img {
@@ -102,24 +92,23 @@
     }
 
     .brand h2 {
-      font-size: 16px;
-      line-height: 1.7;
       margin: 0;
+      font-size: 16px;
       font-weight: 800;
     }
 
     .brand small {
       display: block;
+      margin-top: 5px;
       font-size: 11px;
-      opacity: 0.8;
-      font-weight: 400;
+      opacity: .8;
     }
 
     .nav-title {
       padding: 0 12px;
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.65);
       margin-bottom: 10px;
+      font-size: 11px;
+      color: rgba(255,255,255,.65);
     }
 
     .nav-link {
@@ -127,16 +116,16 @@
       align-items: center;
       gap: 11px;
       padding: 12px 13px;
-      border-radius: 11px;
       margin-bottom: 5px;
+      border-radius: 11px;
       font-size: 13px;
       font-weight: 600;
-      transition: 0.2s;
+      transition: .2s;
     }
 
     .nav-link:hover,
     .nav-link.active {
-      background: rgba(255, 255, 255, 0.17);
+      background: rgba(255,255,255,.17);
       transform: translateX(-2px);
     }
 
@@ -150,12 +139,10 @@
       margin-top: 28px;
       padding: 14px;
       border-radius: 13px;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,.1);
       font-size: 12px;
       line-height: 1.9;
     }
-
-    /* المحتوى الرئيسي */
 
     .main {
       margin-right: 250px;
@@ -164,15 +151,15 @@
     }
 
     .topbar {
-      background: var(--white);
-      border-radius: var(--radius);
-      padding: 16px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 15px;
-      box-shadow: var(--shadow);
+      padding: 16px 20px;
       margin-bottom: 22px;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
     }
 
     .topbar h1 {
@@ -195,21 +182,21 @@
     }
 
     .avatar {
-      width: 43px;
-      height: 43px;
       display: grid;
       place-items: center;
+      width: 43px;
+      height: 43px;
+      flex-shrink: 0;
       border-radius: 50%;
       background: var(--green-light);
-      color: var(--green-dark);
       font-size: 21px;
-      flex-shrink: 0;
     }
 
     .student-chip strong {
       display: block;
-      font-size: 13px;
+      max-width: 220px;
       overflow-wrap: anywhere;
+      font-size: 13px;
     }
 
     .student-chip small {
@@ -218,14 +205,23 @@
       font-size: 11px;
     }
 
+    /* خط الرقعة للاسم */
+
+    .ruqaa {
+      font-family: "Aref Ruqaa", serif !important;
+      font-size: 23px !important;
+      font-weight: 700;
+      line-height: 1.8;
+    }
+
     .welcome {
       position: relative;
       overflow: hidden;
-      border-radius: 18px;
       padding: 25px;
       margin-bottom: 22px;
       color: white;
-      background: linear-gradient(120deg, #087f5b, #075e54 58%, #1e3a8a);
+      border-radius: 18px;
+      background: linear-gradient(120deg,#087f5b,#075e54 58%,#1e3a8a);
     }
 
     .welcome h2 {
@@ -235,29 +231,29 @@
     }
 
     .welcome p {
-      margin: 0;
       max-width: 650px;
+      margin: 0;
       font-size: 13px;
       line-height: 2;
-      color: rgba(255, 255, 255, 0.9);
+      color: rgba(255,255,255,.9);
     }
 
-    .welcome .welcome-icon {
+    .welcome-icon {
       position: absolute;
       left: 22px;
       top: 50%;
       transform: translateY(-50%);
       font-size: 58px;
-      opacity: 0.2;
+      opacity: .2;
     }
 
     .section {
-      background: var(--white);
+      min-width: 0;
       padding: 21px;
+      margin-bottom: 22px;
+      background: white;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      margin-bottom: 22px;
-      min-width: 0;
     }
 
     .section-heading {
@@ -278,22 +274,23 @@
       margin: 5px 0 0;
       color: var(--muted);
       font-size: 12px;
+      line-height: 1.8;
     }
 
     .section-icon {
-      width: 40px;
-      height: 40px;
       display: grid;
       place-items: center;
-      background: var(--green-light);
-      border-radius: 12px;
-      font-size: 20px;
+      width: 40px;
+      height: 40px;
       flex-shrink: 0;
+      border-radius: 12px;
+      background: var(--green-light);
+      font-size: 20px;
     }
 
     .profile-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(2,minmax(0,1fr));
       gap: 16px;
     }
 
@@ -304,37 +301,35 @@
     .field label {
       display: block;
       margin-bottom: 7px;
-      font-size: 12px;
       color: #4b5563;
+      font-size: 12px;
       font-weight: 700;
     }
 
     .field input {
       width: 100%;
       min-width: 0;
+      padding: 12px;
+      color: var(--text);
+      background: #f9fafb;
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 12px;
-      background: #f9fafb;
       outline: none;
-      color: var(--text);
       font-size: 13px;
-      transition: 0.2s;
+      transition: .2s;
     }
 
     .field input:focus {
       border-color: var(--green);
       background: white;
-      box-shadow: 0 0 0 3px rgba(8, 127, 91, 0.08);
+      box-shadow: 0 0 0 3px rgba(8,127,91,.08);
     }
 
-    .field input[readonly] {
-      color: #6b7280;
-      cursor: default;
-    }
-
+    .field input[readonly],
     .field input:disabled {
-      opacity: 0.8;
+      color: #6b7280;
+      cursor: not-allowed;
+      opacity: .9;
     }
 
     .actions {
@@ -345,17 +340,21 @@
     }
 
     .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 18px;
       border: 0;
       border-radius: 10px;
-      padding: 10px 18px;
       font-size: 13px;
       font-weight: 700;
-      transition: 0.2s;
+      transition: .2s;
+      cursor: pointer;
     }
 
     .btn-primary {
-      background: var(--green);
       color: white;
+      background: var(--green);
     }
 
     .btn-primary:hover {
@@ -364,8 +363,8 @@
     }
 
     .btn-light {
-      background: #f3f4f6;
       color: #374151;
+      background: #f3f4f6;
     }
 
     .btn-light:hover {
@@ -373,58 +372,59 @@
     }
 
     .btn-danger {
-      background: #fee2e2;
       color: #991b1b;
+      background: #fee2e2;
     }
 
     .btn:disabled {
-      opacity: 0.6;
       cursor: not-allowed;
+      opacity: .55;
       transform: none;
     }
 
     .message {
       display: none;
-      margin-top: 14px;
       padding: 11px 13px;
+      margin-top: 14px;
       border-radius: 10px;
       font-size: 12px;
-      line-height: 1.8;
+      line-height: 1.9;
+      overflow-wrap: anywhere;
     }
 
     .message.success {
       display: block;
-      background: #dcfce7;
       color: #166534;
+      background: #dcfce7;
     }
 
     .message.error {
       display: block;
-      background: #fee2e2;
       color: #991b1b;
+      background: #fee2e2;
     }
 
     .message.info {
       display: block;
-      background: #eff6ff;
       color: #1d4ed8;
+      background: #eff6ff;
     }
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(3,minmax(0,1fr));
       gap: 15px;
       margin-bottom: 22px;
     }
 
     .stat-card {
+      min-width: 0;
+      padding: 18px;
       background: white;
       border-radius: var(--radius);
-      padding: 18px;
       box-shadow: var(--shadow);
       border-bottom: 3px solid var(--green);
-      min-width: 0;
-      transition: 0.2s;
+      transition: .2s;
     }
 
     .stat-card:hover {
@@ -441,31 +441,30 @@
     }
 
     .stat-icon {
+      display: grid;
+      place-items: center;
       width: 39px;
       height: 39px;
       border-radius: 11px;
-      display: grid;
-      place-items: center;
       background: var(--green-light);
       font-size: 19px;
     }
 
     .stat-label {
-      font-size: 12px;
       color: var(--muted);
+      font-size: 12px;
     }
 
     .stat-value {
       font-size: 24px;
       font-weight: 800;
-      line-height: 1.5;
       overflow-wrap: anywhere;
     }
 
     .stat-note {
+      margin-top: 3px;
       color: var(--muted);
       font-size: 11px;
-      margin-top: 3px;
     }
 
     .list {
@@ -495,66 +494,61 @@
 
     .list-item small {
       display: block;
+      margin-top: 4px;
       color: var(--muted);
       font-size: 11px;
-      margin-top: 4px;
       overflow-wrap: anywhere;
     }
 
     .tag {
       display: inline-block;
       padding: 5px 9px;
-      border-radius: 8px;
-      background: var(--green-light);
       color: var(--green-dark);
+      background: var(--green-light);
+      border-radius: 8px;
       font-size: 11px;
       font-weight: 700;
       white-space: nowrap;
     }
 
     .empty {
-      text-align: center;
       padding: 25px 12px;
       color: var(--muted);
       background: #f9fafb;
       border-radius: 12px;
       font-size: 13px;
       line-height: 2;
+      text-align: center;
     }
 
     .empty span {
       display: block;
-      font-size: 27px;
       margin-bottom: 6px;
-    }
-
-    .ruqaa {
-      font-family: "Aref Ruqaa", serif;
-      font-size: 19px;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 30px;
-      color: var(--muted);
-      font-size: 13px;
+      font-size: 27px;
     }
 
     .notice {
-      font-size: 11px;
-      color: var(--muted);
-      line-height: 1.9;
       margin-top: 13px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.9;
+    }
+
+    .loading {
+      padding: 30px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 13px;
     }
 
     .login-box {
       max-width: 500px;
-      margin: 70px auto;
       padding: 28px;
-      border-radius: 18px;
+      margin: 70px auto;
       background: white;
-      text-align: center;
+      border-radius: 18px;
       box-shadow: var(--shadow);
+      text-align: center;
     }
 
     .login-box h2 {
@@ -562,30 +556,23 @@
     }
 
     .login-box p {
+      color: var(--muted);
       font-size: 13px;
       line-height: 2;
-      color: var(--muted);
-    }
-
-    .login-box .btn {
-      display: inline-block;
-      margin-top: 12px;
     }
 
     footer {
-      text-align: center;
       padding: 20px 10px 35px;
       color: var(--muted);
+      text-align: center;
       font-size: 11px;
     }
-
-    /* شريط الهاتف */
 
     .mobile-nav {
       display: none;
     }
 
-    @media (max-width: 900px) {
+    @media(max-width:900px) {
       .sidebar {
         width: 220px;
       }
@@ -596,11 +583,11 @@
       }
 
       .stats-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(2,minmax(0,1fr));
       }
     }
 
-    @media (max-width: 650px) {
+    @media(max-width:650px) {
       .sidebar {
         display: none;
       }
@@ -625,7 +612,7 @@
       }
 
       .student-chip {
-        max-width: 45%;
+        max-width: 48%;
       }
 
       .student-chip strong {
@@ -642,6 +629,10 @@
         font-size: 18px;
       }
 
+      .ruqaa {
+        font-size: 20px !important;
+      }
+
       .welcome {
         padding: 20px 17px;
         margin-bottom: 15px;
@@ -655,7 +646,7 @@
         font-size: 12px;
       }
 
-      .welcome .welcome-icon {
+      .welcome-icon {
         display: none;
       }
 
@@ -702,29 +693,29 @@
       }
 
       .mobile-nav {
-        display: flex;
         position: fixed;
         right: 0;
-        left: 0;
         bottom: 0;
+        left: 0;
         z-index: 200;
+        display: flex;
         justify-content: space-around;
         gap: 3px;
         padding: 9px 4px calc(9px + env(safe-area-inset-bottom));
         background: white;
-        box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 -4px 18px rgba(0,0,0,.08);
       }
 
       .mobile-nav a {
-        flex: 1;
         display: flex;
+        flex: 1;
         flex-direction: column;
         align-items: center;
         gap: 3px;
         padding: 5px 2px;
         border-radius: 9px;
-        font-size: 10px;
         color: var(--muted);
+        font-size: 10px;
       }
 
       .mobile-nav a span {
@@ -746,333 +737,259 @@
 
 <body>
 
-  <div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../logo.png" alt="شعار أرض الأحياء"
+           onerror="this.style.display='none'">
+      <div>
+        <h2>منصة أرض الأحياء</h2>
+        <small>رحلتك نحو التفوق في الأحياء</small>
+      </div>
+    </div>
 
-    <!-- الشريط الجانبي -->
-    <aside class="sidebar">
+    <div class="nav-title">القائمة الرئيسية</div>
 
-      <div class="brand">
-        <img src="../logo.png" alt="شعار أرض الأحياء"
-          onerror="this.style.display='none'">
+    <nav>
+      <a class="nav-link" href="../index.html">
+        <span class="nav-icon">🏠</span> الرئيسية
+      </a>
 
+      <a class="nav-link" href="../videos/index.html">
+        <span class="nav-icon">🎥</span> المحاضرات
+      </a>
+
+      <a class="nav-link" href="../notes/index.html">
+        <span class="nav-icon">📚</span> المذكرات
+      </a>
+
+      <a class="nav-link" href="../forum/index.html">
+        <span class="nav-icon">💬</span> المنتدى
+      </a>
+
+      <a class="nav-link" href="../champion/index.html">
+        <span class="nav-icon">🏆</span> بطل الفصل
+      </a>
+
+      <a class="nav-link active" href="index.html">
+        <span class="nav-icon">👤</span> حساب الطالب
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      🌱 <strong>أرض الأحياء</strong>
+      <br>معًا نحو التفوق والنجاح.
+      <br><span style="opacity:.8">الصف الثالث الثانوي</span>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <div>
+        <h1>حساب الطالب</h1>
+        <p>بياناتك الشخصية ومتابعة تقدمك</p>
+      </div>
+
+      <div class="student-chip">
+        <div class="avatar">👨‍🎓</div>
         <div>
-          <h2>منصة أرض الأحياء</h2>
-          <small>رحلتك نحو التفوق في الأحياء</small>
+          <strong id="topStudentName" class="ruqaa">جارٍ التحميل...</strong>
+          <small>طالب أرض الأحياء</small>
+        </div>
+      </div>
+    </header>
+
+    <div id="pageLoading" class="section loading">
+      جارٍ تحميل بيانات حسابك...
+    </div>
+
+    <div id="loginRequired" style="display:none">
+      <div class="login-box">
+        <div style="font-size:45px">🔐</div>
+        <h2>سجّل الدخول أولًا</h2>
+        <p>يجب تسجيل الدخول إلى المنصة لعرض بيانات حسابك.</p>
+        <a class="btn btn-primary" href="../index.html">
+          الذهاب إلى المنصة
+        </a>
+      </div>
+    </div>
+
+    <div id="accountContent" style="display:none">
+
+      <section class="welcome">
+        <h2>
+          أهلًا بك يا
+          <span id="welcomeName" class="ruqaa">طالبنا المتميز</span>
+          🌱
+        </h2>
+        <p>
+          تابع بياناتك التعليمية ودرجاتك، وحافظ على تحديث بيانات
+          التواصل الخاصة بك.
+        </p>
+        <div class="welcome-icon">🎓</div>
+      </section>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">المحاضرات المتاحة</span>
+            <div class="stat-icon">🎥</div>
+          </div>
+          <div class="stat-value" id="totalLectures">—</div>
+          <div class="stat-note">إجمالي المحاضرات بالمنصة</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">نتائج الامتحانات</span>
+            <div class="stat-icon">📝</div>
+          </div>
+          <div class="stat-value" id="examCount">—</div>
+          <div class="stat-note">النتائج المسجلة لحسابك</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">الواجبات</span>
+            <div class="stat-icon">📋</div>
+          </div>
+          <div class="stat-value" id="homeworkCount">—</div>
+          <div class="stat-note">الواجبات المسجلة لحسابك</div>
         </div>
       </div>
 
-      <div class="nav-title">القائمة الرئيسية</div>
+      <!-- البيانات الشخصية -->
+      <section class="section">
 
-      <nav>
-        <a class="nav-link" href="../index.html">
-          <span class="nav-icon">🏠</span>
-          الرئيسية
-        </a>
-
-        <a class="nav-link" href="../videos/index.html">
-          <span class="nav-icon">🎥</span>
-          المحاضرات
-        </a>
-
-        <a class="nav-link" href="../notes/index.html">
-          <span class="nav-icon">📚</span>
-          المذكرات
-        </a>
-
-        <a class="nav-link" href="../forum/index.html">
-          <span class="nav-icon">💬</span>
-          المنتدى
-        </a>
-
-        <a class="nav-link" href="../champion/index.html">
-          <span class="nav-icon">🏆</span>
-          بطل الفصل
-        </a>
-
-        <a class="nav-link active" href="index.html">
-          <span class="nav-icon">👤</span>
-          حساب الطالب
-        </a>
-      </nav>
-
-      <div class="sidebar-bottom">
-        🌱 <strong>أرض الأحياء</strong>
-        <br>
-        معًا نحو التفوق والنجاح.
-        <br>
-        <span style="opacity:.8">الصف الثالث الثانوي</span>
-      </div>
-
-    </aside>
-
-    <!-- المحتوى -->
-    <main class="main" id="mainContent">
-
-      <header class="topbar">
-        <div>
-          <h1>حساب الطالب</h1>
-          <p>بياناتك التعليمية ومتابعة تقدمك</p>
-        </div>
-
-        <div class="student-chip">
-          <div class="avatar">👨‍🎓</div>
+        <div class="section-heading">
           <div>
-            <strong id="topStudentName">جارٍ التحميل...</strong>
-            <small>طالب أرض الأحياء</small>
+            <h3>👤 البيانات الشخصية</h3>
+            <p>اسمك ثابت، ويمكنك تعديل رقم الهاتف أو البريد الإلكتروني وفقًا للمهلة.</p>
           </div>
-        </div>
-      </header>
-
-      <div id="pageLoading" class="section loading">
-        جارٍ تحميل بيانات حسابك...
-      </div>
-
-      <div id="loginRequired" style="display:none">
-        <div class="login-box">
-          <div style="font-size:45px">🔐</div>
-          <h2>سجّل الدخول أولًا</h2>
-          <p>
-            يجب تسجيل الدخول إلى منصة أرض الأحياء حتى تتمكن من مشاهدة
-            بيانات حسابك ودرجاتك.
-          </p>
-          <a class="btn btn-primary" href="../index.html">
-            الذهاب إلى المنصة
-          </a>
-        </div>
-      </div>
-
-      <div id="accountContent" style="display:none">
-
-        <!-- الترحيب -->
-        <section class="welcome">
-          <h2>
-            أهلًا بك يا
-            <span id="welcomeName">طالبنا المتميز</span>
-            🌱
-          </h2>
-
-          <p>
-            من هنا يمكنك متابعة بياناتك الشخصية، ومعرفة درجاتك
-            ومراجعة مشاركاتك التعليمية.
-          </p>
-
-          <div class="welcome-icon">🎓</div>
-        </section>
-
-        <!-- الإحصائيات -->
-        <div class="stats-grid">
-
-          <div class="stat-card">
-            <div class="stat-top">
-              <span class="stat-label">المحاضرات المتاحة</span>
-              <div class="stat-icon">🎥</div>
-            </div>
-            <div class="stat-value" id="totalLectures">—</div>
-            <div class="stat-note">إجمالي المحاضرات بالمنصة</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-top">
-              <span class="stat-label">الامتحانات</span>
-              <div class="stat-icon">📝</div>
-            </div>
-            <div class="stat-value" id="examCount">—</div>
-            <div class="stat-note">النتائج المسجلة لحسابك</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-top">
-              <span class="stat-label">الواجبات</span>
-              <div class="stat-icon">📋</div>
-            </div>
-            <div class="stat-value" id="homeworkCount">—</div>
-            <div class="stat-note">الواجبات المسجلة لحسابك</div>
-          </div>
-
+          <div class="section-icon">🪪</div>
         </div>
 
-        <!-- البيانات الشخصية -->
-        <section class="section">
+        <form id="profileForm">
+          <div class="profile-grid">
 
-          <div class="section-heading">
-            <div>
-              <h3>👤 البيانات الشخصية</h3>
-              <p>راجع بياناتك وعدّل المعلومات التي تحتاج إلى تحديثها.</p>
+            <div class="field">
+              <label for="fullName">اسم الطالب — غير قابل للتعديل</label>
+              <input type="text" id="fullName" class="ruqaa"
+                     readonly disabled>
             </div>
 
-            <div class="section-icon">🪪</div>
-          </div>
-
-          <form id="profileForm">
-
-            <div class="profile-grid">
-
-              <div class="field">
-                <label for="fullName">اسم الطالب</label>
-                <input type="text" id="fullName" autocomplete="name"
-                  placeholder="اسم الطالب">
-              </div>
-
-              <div class="field">
-                <label for="email">البريد الإلكتروني</label>
-                <input type="email" id="email" readonly
-                  autocomplete="email">
-              </div>
-
-              <div class="field">
-                <label for="phone">رقم الهاتف</label>
-                <input type="tel" id="phone" autocomplete="tel"
-                  placeholder="أدخل رقم الهاتف">
-              </div>
-
-              <div class="field">
-                <label for="city">المحافظة أو المدينة</label>
-                <input type="text" id="city" autocomplete="address-level2"
-                  placeholder="المحافظة أو المدينة">
-              </div>
-
-              <div class="field" style="grid-column:1/-1">
-                <label for="address">العنوان (اختياري)</label>
-                <input type="text" id="address"
-                  autocomplete="street-address"
-                  placeholder="يمكنك ترك هذا الحقل فارغًا">
-              </div>
-
+            <div class="field">
+              <label for="email">البريد الإلكتروني</label>
+              <input type="email" id="email" readonly disabled
+                     autocomplete="email">
             </div>
 
-            <div class="actions">
-              <button type="submit" class="btn btn-primary" id="saveBtn">
-                💾 حفظ التعديلات
-              </button>
-
-              <button type="button" class="btn btn-light"
-                id="cancelBtn">
-                إلغاء التعديل
-              </button>
-
-              <button type="button" class="btn btn-danger"
-                id="logoutBtn">
-                تسجيل الخروج
-              </button>
+            <div class="field">
+              <label for="phone">رقم الهاتف</label>
+              <input type="tel" id="phone" readonly disabled
+                     autocomplete="tel" placeholder="غير مسجل">
             </div>
 
-            <div id="profileMessage" class="message"></div>
-
-            <div class="notice">
-              ملاحظة: لن يطلب الموقع موقعك الجغرافي تلقائيًا.
-              بيانات المدينة والعنوان اختيارية، ويجب أن تكون أعمدة
-              هذه البيانات موجودة في جدول profiles حتى يمكن حفظها.
-            </div>
-
-          </form>
-
-        </section>
-
-        <!-- نتائج الامتحانات -->
-        <section class="section">
-
-          <div class="section-heading">
-            <div>
-              <h3>📝 درجات الامتحانات</h3>
-              <p>النتائج التي تم تسجيلها لحسابك في قاعدة البيانات.</p>
-            </div>
-
-            <div class="section-icon">📊</div>
-          </div>
-
-          <div id="examResults" class="list">
-            <div class="loading">جارٍ تحميل النتائج...</div>
-          </div>
-
-        </section>
-
-        <!-- الواجبات -->
-        <section class="section">
-
-          <div class="section-heading">
-            <div>
-              <h3>📋 درجات الواجبات</h3>
-              <p>متابعة درجات الواجبات المسجلة لك.</p>
-            </div>
-
-            <div class="section-icon">✍️</div>
-          </div>
-
-          <div id="homeworkResults" class="list">
-            <div class="loading">جارٍ تحميل الواجبات...</div>
-          </div>
-
-        </section>
-
-        <!-- مشاركات المنتدى -->
-        <section class="section">
-
-          <div class="section-heading">
-            <div>
-              <h3>💬 مشاركات المنتدى</h3>
-              <p>المشاركات التي نشرتها باستخدام حسابك.</p>
-            </div>
-
-            <div class="section-icon">🌱</div>
-          </div>
-
-          <div id="forumPosts" class="list">
-            <div class="loading">جارٍ تحميل المشاركات...</div>
           </div>
 
           <div class="actions">
-            <a href="../forum/index.html" class="btn btn-primary">
-              الانتقال إلى المنتدى
-            </a>
+            <button type="button" class="btn btn-primary" id="editPhoneBtn">
+              ✏️ تعديل رقم الهاتف
+            </button>
+
+            <button type="button" class="btn btn-primary" id="editEmailBtn">
+              ✉️ تعديل البريد الإلكتروني
+            </button>
+
+            <button type="button" class="btn btn-primary"
+                    id="saveBtn" style="display:none">
+              💾 حفظ التعديل
+            </button>
+
+            <button type="button" class="btn btn-light"
+                    id="cancelBtn" style="display:none">
+              إلغاء
+            </button>
+
+            <button type="button" class="btn btn-danger" id="logoutBtn">
+              تسجيل الخروج
+            </button>
           </div>
 
-        </section>
+          <div id="profileMessage" class="message"></div>
 
-      </div>
+          <div class="notice" id="cooldownNotice">
+            يمكنك تغيير رقم الهاتف أو البريد الإلكتروني مرة واحدة كل 30 يومًا.
+            الاسم غير قابل للتعديل من صفحة حساب الطالب.
+          </div>
+        </form>
+      </section>
 
-      <footer>
-        © 2026 منصة أرض الأحياء — جميع الحقوق محفوظة
-      </footer>
+      <!-- الامتحانات -->
+      <section class="section">
+        <div class="section-heading">
+          <div>
+            <h3>📝 درجات الامتحانات</h3>
+            <p>النتائج المسجلة في قاعدة البيانات لحسابك.</p>
+          </div>
+          <div class="section-icon">📊</div>
+        </div>
 
-    </main>
+        <div id="examResults" class="list">
+          <div class="loading">جارٍ تحميل النتائج...</div>
+        </div>
+      </section>
 
-  </div>
+      <!-- الواجبات -->
+      <section class="section">
+        <div class="section-heading">
+          <div>
+            <h3>📋 درجات الواجبات</h3>
+            <p>متابعة الواجبات المسجلة لك.</p>
+          </div>
+          <div class="section-icon">✍️</div>
+        </div>
 
-  <!-- قائمة الهاتف -->
+        <div id="homeworkResults" class="list">
+          <div class="loading">جارٍ تحميل الواجبات...</div>
+        </div>
+      </section>
+
+      <!-- المنتدى -->
+      <section class="section">
+        <div class="section-heading">
+          <div>
+            <h3>💬 مشاركات المنتدى</h3>
+            <p>المشاركات المسجلة لحسابك.</p>
+          </div>
+          <div class="section-icon">🌱</div>
+        </div>
+
+        <div id="forumPosts" class="list">
+          <div class="loading">جارٍ تحميل المشاركات...</div>
+        </div>
+
+        <div class="actions">
+          <a href="../forum/index.html" class="btn btn-primary">
+            الانتقال إلى المنتدى
+          </a>
+        </div>
+      </section>
+
+    </div>
+
+    <footer>© 2026 منصة أرض الأحياء — جميع الحقوق محفوظة</footer>
+  </main>
+
   <nav class="mobile-nav">
-
-    <a href="../index.html">
-      <span>🏠</span>
-      الرئيسية
-    </a>
-
-    <a href="../videos/index.html">
-      <span>🎥</span>
-      المحاضرات
-    </a>
-
-    <a href="../notes/index.html">
-      <span>📚</span>
-      المذكرات
-    </a>
-
-    <a href="../forum/index.html">
-      <span>💬</span>
-      المنتدى
-    </a>
-
-    <a href="index.html" class="active">
-      <span>👤</span>
-      حسابي
-    </a>
-
+    <a href="../index.html"><span>🏠</span>الرئيسية</a>
+    <a href="../videos/index.html"><span>🎥</span>المحاضرات</a>
+    <a href="../notes/index.html"><span>📚</span>المذكرات</a>
+    <a href="../forum/index.html"><span>💬</span>المنتدى</a>
+    <a href="index.html" class="active"><span>👤</span>حسابي</a>
   </nav>
 
   <script>
-    // ==========================================
-    // إعدادات Supabase الخاصة بمنصة أرض الأحياء
-    // ==========================================
-
     const SUPABASE_URL =
       "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 
@@ -1084,375 +1001,363 @@
       SUPABASE_KEY
     );
 
-    let currentUser = null;
-    let originalProfile = {};
-    let profileColumns = [];
-
-    // أسماء الجداول المحتملة.
-    // يجب مطابقتها مع الجداول الموجودة فعلًا في مشروعك.
     const TABLES = {
       exams: "exam_results",
       homework: "homework_results",
       forum: "forum_posts"
     };
 
-    // ==========================================
-    // أدوات مساعدة
-    // ==========================================
+    const COOLDOWN_MS = 30 * 24 * 60 * 60 * 1000;
 
-    function byId(id) {
-      return document.getElementById(id);
+    let currentUser = null;
+    let profile = {};
+    let editMode = null;
+    let savedPhone = "";
+    let savedEmail = "";
+
+    const $ = id => document.getElementById(id);
+
+    function message(text, type = "info") {
+      $("profileMessage").textContent = text;
+      $("profileMessage").className = "message " + type;
     }
 
-    function showMessage(elementId, text, type = "info") {
-      const element = byId(elementId);
-      element.textContent = text;
-      element.className = "message " + type;
+    function clearMessage() {
+      $("profileMessage").textContent = "";
+      $("profileMessage").className = "message";
     }
 
-    function hideMessage(elementId) {
-      const element = byId(elementId);
-      element.textContent = "";
-      element.className = "message";
+    function displayEmpty(id, text, icon = "📭") {
+      const container = $(id);
+      container.replaceChildren();
+
+      const box = document.createElement("div");
+      box.className = "empty";
+
+      const iconEl = document.createElement("span");
+      iconEl.textContent = icon;
+
+      const textEl = document.createElement("div");
+      textEl.textContent = text;
+
+      box.append(iconEl, textEl);
+      container.appendChild(box);
     }
 
-    function safeText(value) {
-      if (value === null || value === undefined || value === "") {
-        return "غير مسجل";
-      }
-
-      return String(value);
-    }
-
-    function formatDate(value) {
-      if (!value) return "";
-
-      const date = new Date(value);
-
-      if (Number.isNaN(date.getTime())) {
-        return "";
-      }
-
-      return date.toLocaleDateString("ar-EG");
-    }
-
-    function displayEmpty(containerId, message, icon = "📭") {
-      byId(containerId).innerHTML = "";
-
-      const empty = document.createElement("div");
-      empty.className = "empty";
-
-      const iconElement = document.createElement("span");
-      iconElement.textContent = icon;
-
-      const textElement = document.createElement("div");
-      textElement.textContent = message;
-
-      empty.append(iconElement, textElement);
-      byId(containerId).appendChild(empty);
-    }
-
-    function addListItem(containerId, title, subtitle, badge) {
-      const container = byId(containerId);
-
+    function addItem(id, title, subtitle, badge) {
       const item = document.createElement("div");
       item.className = "list-item";
 
       const main = document.createElement("div");
       main.className = "list-item-main";
 
-      const titleElement = document.createElement("strong");
-      titleElement.textContent = safeText(title);
+      const titleEl = document.createElement("strong");
+      titleEl.textContent = title || "بدون عنوان";
 
-      const subtitleElement = document.createElement("small");
-      subtitleElement.textContent = safeText(subtitle);
+      const subEl = document.createElement("small");
+      subEl.textContent = subtitle || "";
 
-      main.append(titleElement, subtitleElement);
+      main.append(titleEl, subEl);
       item.appendChild(main);
 
-      if (badge !== undefined && badge !== null && badge !== "") {
+      if (badge) {
         const tag = document.createElement("span");
         tag.className = "tag";
-        tag.textContent = String(badge);
+        tag.textContent = badge;
         item.appendChild(tag);
       }
 
-      container.appendChild(item);
+      $(id).appendChild(item);
     }
 
-    function setCount(id, count) {
-      byId(id).textContent = String(count);
+    function fmtDate(value) {
+      if (!value) return "";
+
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return "";
+
+      return d.toLocaleDateString("ar-EG");
     }
 
-    // ==========================================
-    // بدء الصفحة
-    // ==========================================
+    function remainingDays() {
+      if (!profile.contact_updated_at) return 0;
 
-    async function initAccount() {
-      try {
-        const {
-          data: { session },
-          error
-        } = await db.auth.getSession();
+      const last = new Date(profile.contact_updated_at).getTime();
+      if (!Number.isFinite(last)) return 0;
 
-        if (error) throw error;
+      return Math.max(
+        0,
+        Math.ceil((last + COOLDOWN_MS - Date.now()) / 86400000)
+      );
+    }
 
-        if (!session || !session.user) {
-          byId("pageLoading").style.display = "none";
-          byId("loginRequired").style.display = "block";
-          return;
-        }
+    function updateCooldownUI() {
+      const days = remainingDays();
+      const locked = days > 0;
 
-        currentUser = session.user;
+      $("editPhoneBtn").disabled = locked;
+      $("editEmailBtn").disabled = locked;
 
-        byId("email").value =
-          currentUser.email || "";
-
-        await loadProfile();
-        await loadLectureCount();
-
-        byId("pageLoading").style.display = "none";
-        byId("accountContent").style.display = "block";
-
-        // تحميل الأقسام بشكل منفصل.
-        await Promise.allSettled([
-          loadResults(
-            TABLES.exams,
-            "examResults",
-            "examCount",
-            "الامتحانات"
-          ),
-
-          loadResults(
-            TABLES.homework,
-            "homeworkResults",
-            "homeworkCount",
-            "الواجبات"
-          ),
-
-          loadForumPosts()
-        ]);
-
-      } catch (error) {
-        console.error("Account initialization error:", error);
-
-        byId("pageLoading").textContent =
-          "تعذر تحميل الحساب. تأكد من إعدادات Supabase وصلاحيات قاعدة البيانات.";
+      if (locked) {
+        $("cooldownNotice").textContent =
+          "تم تعديل بيانات التواصل مؤخرًا. يمكنك تعديل رقم الهاتف أو البريد الإلكتروني بعد " +
+          days + " يومًا تقريبًا.";
+      } else {
+        $("cooldownNotice").textContent =
+          "يمكنك تعديل رقم الهاتف أو البريد الإلكتروني مرة واحدة كل 30 يومًا. " +
+          "الاسم غير قابل للتعديل من صفحة حساب الطالب.";
       }
     }
 
-    // ==========================================
-    // تحميل بيانات الطالب
-    // ==========================================
+    function resetForm() {
+      editMode = null;
 
-    async function loadProfile() {
-      const { data, error } = await db
-        .from("profiles")
-        .select("*")
-        .eq("id", currentUser.id)
-        .maybeSingle();
+      $("fullName").value = profile.full_name || "";
+      $("email").value = currentUser.email || profile.email || "";
+      $("phone").value = profile.phone || "";
 
-      if (error) {
-        console.error("Profile loading error:", error);
+      $("fullName").readOnly = true;
+      $("fullName").disabled = true;
 
-        showMessage(
-          "profileMessage",
-          "تعذر قراءة بيانات الطالب. راجع صلاحيات RLS لجدول profiles.",
+      $("email").readOnly = true;
+      $("email").disabled = true;
+
+      $("phone").readOnly = true;
+      $("phone").disabled = true;
+
+      $("editPhoneBtn").style.display = "";
+      $("editEmailBtn").style.display = "";
+      $("saveBtn").style.display = "none";
+      $("cancelBtn").style.display = "none";
+
+      updateCooldownUI();
+    }
+
+    function beginEdit(mode) {
+      clearMessage();
+
+      if (remainingDays() > 0) {
+        message(
+          "لا يمكنك تعديل بيانات التواصل الآن. انتظر حتى تنتهي مهلة الـ30 يومًا.",
           "error"
         );
-
         return;
       }
 
-      const profile = data || {};
+      editMode = mode;
 
-      originalProfile = { ...profile };
-      profileColumns = Object.keys(profile);
+      $("editPhoneBtn").style.display = "none";
+      $("editEmailBtn").style.display = "none";
+      $("saveBtn").style.display = "";
+      $("cancelBtn").style.display = "";
 
-      const name =
-        profile.full_name ||
-        currentUser.user_metadata?.full_name ||
-        currentUser.user_metadata?.name ||
-        "طالب أرض الأحياء";
+      $("phone").disabled = mode !== "phone";
+      $("phone").readOnly = mode !== "phone";
 
-      byId("fullName").value = profile.full_name || "";
-      byId("email").value = currentUser.email || profile.email || "";
-      byId("phone").value = profile.phone || "";
+      $("email").disabled = mode !== "email";
+      $("email").readOnly = mode !== "email";
 
-      // لا تظهر المدينة أو العنوان إلا إذا كانت أعمدتهما موجودة.
-      const cityField = byId("city").closest(".field");
-      const addressField = byId("address").closest(".field");
+      // الاسم لا يصبح قابلًا للتعديل مطلقًا.
+      $("fullName").disabled = true;
+      $("fullName").readOnly = true;
 
-      const hasCity = Object.prototype.hasOwnProperty.call(
-        profile, "city"
-      ) || Object.prototype.hasOwnProperty.call(
-        profile, "governorate"
-      );
-
-      const hasAddress = Object.prototype.hasOwnProperty.call(
-        profile, "address"
-      );
-
-      cityField.style.display = hasCity ? "" : "none";
-      addressField.style.display = hasAddress ? "" : "none";
-
-      byId("city").value =
-        profile.city || profile.governorate || "";
-
-      byId("address").value =
-        profile.address || "";
-
-      byId("topStudentName").textContent = name;
-      byId("welcomeName").textContent = name;
+      if (mode === "phone") {
+        $("phone").focus();
+        message(
+          "عدّل رقم الهاتف فقط، ثم اضغط حفظ. لن تستطيع تعديل بيانات التواصل مرة أخرى لمدة 30 يومًا.",
+          "info"
+        );
+      } else {
+        $("email").focus();
+        message(
+          "عدّل البريد الإلكتروني فقط. قد يرسل Supabase رسالة لتأكيد البريد الجديد.",
+          "info"
+        );
+      }
     }
 
-    // ==========================================
-    // حفظ تعديلات البيانات الشخصية
-    // ==========================================
-
-    byId("profileForm").addEventListener("submit", async function (event) {
-      event.preventDefault();
-
-      if (!currentUser) return;
-
-      hideMessage("profileMessage");
-
-      const saveBtn = byId("saveBtn");
-      saveBtn.disabled = true;
-      saveBtn.textContent = "جارٍ الحفظ...";
-
+    async function init() {
       try {
-        const updates = {};
+        const { data, error } = await db.auth.getSession();
+        if (error) throw error;
 
-        // تحديث الحقول التي يدعمها جدول profiles فقط.
-        if (profileColumns.includes("full_name")) {
-          updates.full_name = byId("fullName").value.trim();
-        }
-
-        if (profileColumns.includes("phone")) {
-          updates.phone = byId("phone").value.trim();
-        }
-
-        if (profileColumns.includes("city")) {
-          updates.city = byId("city").value.trim();
-        } else if (profileColumns.includes("governorate")) {
-          updates.governorate = byId("city").value.trim();
-        }
-
-        if (profileColumns.includes("address")) {
-          updates.address = byId("address").value.trim();
-        }
-
-        if (Object.keys(updates).length === 0) {
-          showMessage(
-            "profileMessage",
-            "لم يتم العثور على أعمدة قابلة للتعديل في سجل الطالب بجدول profiles.",
-            "error"
-          );
+        if (!data.session) {
+          $("pageLoading").style.display = "none";
+          $("loginRequired").style.display = "block";
           return;
         }
 
-        const { data, error } = await db
+        currentUser = data.session.user;
+
+        const { data: row, error: profileError } = await db
           .from("profiles")
-          .update(updates)
+          .select("*")
           .eq("id", currentUser.id)
-          .select()
           .maybeSingle();
 
-        if (error) throw error;
+        if (profileError) throw profileError;
 
-        if (!data) {
-          throw new Error(
-            "لم يتم تحديث أي سجل. تأكد من سياسة UPDATE في RLS لجدول profiles."
+        profile = row || {};
+
+        // الاسم للعرض فقط، وليس حقلًا قابلًا للتعديل.
+        const name =
+          profile.full_name ||
+          currentUser.user_metadata?.full_name ||
+          "طالب أرض الأحياء";
+
+        $("fullName").value = name;
+        $("topStudentName").textContent = name;
+        $("welcomeName").textContent = name;
+
+        $("email").value = currentUser.email || profile.email || "";
+        $("phone").value = profile.phone || "";
+
+        savedPhone = profile.phone || "";
+        savedEmail = currentUser.email || profile.email || "";
+
+        resetForm();
+
+        $("pageLoading").style.display = "none";
+        $("accountContent").style.display = "block";
+
+        await Promise.allSettled([
+          loadLectureCount(),
+          loadResults(TABLES.exams, "examResults", "examCount", "الامتحانات"),
+          loadResults(TABLES.homework, "homeworkResults", "homeworkCount", "الواجبات"),
+          loadForumPosts()
+        ]);
+
+      } catch (err) {
+        console.error(err);
+        $("pageLoading").textContent =
+          "تعذر تحميل بيانات الحساب. تحقق من اتصال Supabase وصلاحيات جدول profiles.";
+      }
+    }
+
+    $("editPhoneBtn").addEventListener("click", () => beginEdit("phone"));
+    $("editEmailBtn").addEventListener("click", () => beginEdit("email"));
+
+    $("cancelBtn").addEventListener("click", () => {
+      clearMessage();
+      resetForm();
+    });
+
+    $("saveBtn").addEventListener("click", async () => {
+      if (!currentUser || !editMode) return;
+
+      clearMessage();
+
+      if (remainingDays() > 0) {
+        message(
+          "انتهت إمكانية التعديل لهذه الفترة. انتظر انتهاء مهلة الـ30 يومًا.",
+          "error"
+        );
+        resetForm();
+        return;
+      }
+
+      const btn = $("saveBtn");
+      btn.disabled = true;
+      btn.textContent = "جارٍ الحفظ...";
+
+      try {
+        if (editMode === "phone") {
+          const newPhone = $("phone").value.trim();
+
+          if (!newPhone) {
+            throw new Error("اكتب رقم الهاتف أولًا.");
+          }
+
+          if (newPhone === savedPhone) {
+            throw new Error("لم تغيّر رقم الهاتف.");
+          }
+
+          // لا نرسل الاسم ولا البريد عند تحديث الهاتف.
+          const { data, error } = await db
+            .from("profiles")
+            .update({
+              phone: newPhone
+            })
+            .eq("id", currentUser.id)
+            .select("id,full_name,phone,email,contact_updated_at")
+            .maybeSingle();
+
+          if (error) throw error;
+
+          if (!data) {
+            throw new Error(
+              "لم يتم حفظ الرقم. تحقق من صلاحيات UPDATE في جدول profiles."
+            );
+          }
+
+          profile = { ...profile, ...data };
+          savedPhone = newPhone;
+
+          resetForm();
+          message(
+            "تم تحديث رقم الهاتف. لن تتمكن من تعديل بيانات التواصل مرة أخرى لمدة 30 يومًا.",
+            "success"
+          );
+
+        } else if (editMode === "email") {
+          const newEmail = $("email").value.trim();
+
+          if (!newEmail) {
+            throw new Error("اكتب البريد الإلكتروني الجديد.");
+          }
+
+          if (newEmail.toLowerCase() === savedEmail.toLowerCase()) {
+            throw new Error("البريد الإلكتروني لم يتغير.");
+          }
+
+          // تغيير البريد من Supabase Auth وليس تعديل عمود profiles وحده.
+          const { error } = await db.auth.updateUser({
+            email: newEmail
+          });
+
+          if (error) throw error;
+
+          resetForm();
+
+          message(
+            "تم إرسال طلب تغيير البريد الإلكتروني. إذا طلب Supabase التأكيد، افتح رسالة البريد واتبع التعليمات. يبدأ احتساب المهلة بعد اعتماد التغيير فعليًا.",
+            "success"
           );
         }
 
-        originalProfile = { ...data };
-        profileColumns = Object.keys(data);
+      } catch (err) {
+        console.error(err);
 
-        const updatedName =
-          data.full_name || "طالب أرض الأحياء";
+        const text = err.message || "حدث خطأ أثناء الحفظ.";
 
-        byId("topStudentName").textContent = updatedName;
-        byId("welcomeName").textContent = updatedName;
-
-        showMessage(
-          "profileMessage",
-          "تم حفظ التعديلات بنجاح ✅",
-          "success"
-        );
-
-      } catch (error) {
-        console.error("Profile update error:", error);
-
-        showMessage(
-          "profileMessage",
-          "تعذر حفظ البيانات: " + (error.message || "خطأ غير معروف"),
-          "error"
-        );
+        message(text, "error");
 
       } finally {
-        saveBtn.disabled = false;
-        saveBtn.textContent = "💾 حفظ التعديلات";
+        btn.disabled = false;
+        btn.textContent = "💾 حفظ التعديل";
       }
     });
-
-    // ==========================================
-    // إلغاء التعديلات
-    // ==========================================
-
-    byId("cancelBtn").addEventListener("click", function () {
-      byId("fullName").value =
-        originalProfile.full_name || "";
-
-      byId("phone").value =
-        originalProfile.phone || "";
-
-      byId("city").value =
-        originalProfile.city ||
-        originalProfile.governorate ||
-        "";
-
-      byId("address").value =
-        originalProfile.address || "";
-
-      hideMessage("profileMessage");
-    });
-
-    // ==========================================
-    // عدد المحاضرات
-    // ==========================================
 
     async function loadLectureCount() {
       try {
         const { count, error } = await db
           .from("lectures")
-          .select("id", {
-            count: "exact",
-            head: true
-          });
+          .select("id", { count: "exact", head: true });
 
         if (error) throw error;
 
-        setCount("totalLectures", count ?? 0);
+        $("totalLectures").textContent = count ?? 0;
 
-      } catch (error) {
-        console.error("Lecture count error:", error);
-        byId("totalLectures").textContent = "—";
+      } catch (err) {
+        console.error("Lecture count:", err);
+        $("totalLectures").textContent = "—";
       }
     }
 
-    // ==========================================
-    // تحميل درجات الامتحانات والواجبات
-    // ==========================================
-
-    async function loadResults(tableName, containerId, countId, label) {
-      const container = byId(containerId);
-
+    async function loadResults(table, containerId, countId, label) {
       try {
-        // يفترض هذا الجزء أن جدول النتائج يحتوي على user_id.
         const { data, error } = await db
-          .from(tableName)
+          .from(table)
           .select("*")
           .eq("user_id", currentUser.id)
           .order("created_at", { ascending: false })
@@ -1461,39 +1366,28 @@
         if (error) throw error;
 
         const rows = data || [];
+        $(countId).textContent = rows.length;
+        $(containerId).replaceChildren();
 
-        setCount(countId, rows.length);
-        container.innerHTML = "";
-
-        if (rows.length === 0) {
+        if (!rows.length) {
           displayEmpty(
             containerId,
-            "لا توجد " + label +
-            " مسجلة لحسابك حتى الآن.",
-            "📭"
+            "لا توجد " + label + " مسجلة لحسابك حتى الآن."
           );
           return;
         }
 
-        rows.forEach(function (row) {
+        rows.forEach(row => {
           const title =
-            row.title ||
-            row.exam_title ||
-            row.homework_title ||
-            row.name ||
-            label;
+            row.title || row.exam_title || row.homework_title ||
+            row.name || label;
 
           const score =
-            row.score ??
-            row.grade ??
-            row.mark ??
-            row.student_score;
+            row.score ?? row.grade ?? row.mark ?? row.student_score;
 
           const total =
-            row.total_marks ??
-            row.max_score ??
-            row.total_score ??
-            row.out_of;
+            row.total_marks ?? row.max_score ??
+            row.total_score ?? row.out_of;
 
           let scoreText = "لم تُرصد الدرجة بعد";
 
@@ -1505,45 +1399,33 @@
             }
           }
 
-          const date = formatDate(
+          const date = fmtDate(
             row.created_at || row.date || row.submitted_at
           );
 
-          addListItem(
+          addItem(
             containerId,
-            title,
+            String(title),
             date ? scoreText + " • " + date : scoreText,
-            score !== null && score !== undefined
-              ? "تم الرصد"
-              : "قيد التصحيح"
+            score !== null && score !== undefined ? "تم الرصد" : "قيد التصحيح"
           );
         });
 
-      } catch (error) {
-        console.warn("Could not load table:", tableName, error);
+      } catch (err) {
+        console.warn("Results table:", table, err);
 
-        setCount(countId, "—");
+        $(countId).textContent = "—";
 
         displayEmpty(
           containerId,
-          "تعذر تحميل البيانات. قد يكون اسم جدول " +
-          label +
-          " مختلفًا أو يحتاج إلى ضبط صلاحيات قاعدة البيانات.",
+          "تعذر تحميل البيانات. قد يحتاج اسم الجدول أو عمود ربط الطالب إلى تعديل.",
           "ℹ️"
         );
       }
     }
 
-    // ==========================================
-    // تحميل مشاركات المنتدى
-    // ==========================================
-
     async function loadForumPosts() {
-      const containerId = "forumPosts";
-
       try {
-        // يفترض هذا الجزء وجود جدول forum_posts
-        // وعمود user_id لربط المشاركة بصاحبها.
         const { data, error } = await db
           .from(TABLES.forum)
           .select("*")
@@ -1554,80 +1436,62 @@
         if (error) throw error;
 
         const posts = data || [];
+        $("forumPosts").replaceChildren();
 
-        byId(containerId).innerHTML = "";
-
-        if (posts.length === 0) {
+        if (!posts.length) {
           displayEmpty(
-            containerId,
+            "forumPosts",
             "لا توجد مشاركات مسجلة لك في المنتدى حتى الآن.",
             "💬"
           );
           return;
         }
 
-        posts.forEach(function (post) {
+        posts.forEach(post => {
           const title =
-            post.title ||
-            post.subject ||
-            post.content ||
-            post.body ||
-            "مشاركة في المنتدى";
+            post.title || post.subject || post.content ||
+            post.body || "مشاركة في المنتدى";
 
-          const date = formatDate(post.created_at);
+          const date = fmtDate(post.created_at);
 
-          addListItem(
-            containerId,
-            title,
+          addItem(
+            "forumPosts",
+            String(title),
             date ? "تاريخ المشاركة: " + date : "مشاركة بالمنتدى",
             "مشاركة"
           );
         });
 
-      } catch (error) {
-        console.warn("Forum loading error:", error);
+      } catch (err) {
+        console.warn("Forum loading:", err);
 
         displayEmpty(
-          containerId,
-          "تعذر تحميل المشاركات. تأكد من اسم جدول المنتدى وعمود ربط المشاركة بحساب الطالب.",
+          "forumPosts",
+          "تعذر تحميل المشاركات. قد يحتاج اسم جدول المنتدى أو عمود ربط الطالب إلى تعديل.",
           "ℹ️"
         );
       }
     }
 
-    // ==========================================
-    // تسجيل الخروج
-    // ==========================================
-
-    byId("logoutBtn").addEventListener("click", async function () {
-      const button = byId("logoutBtn");
-
-      button.disabled = true;
-      button.textContent = "جارٍ تسجيل الخروج...";
+    $("logoutBtn").addEventListener("click", async () => {
+      const btn = $("logoutBtn");
+      btn.disabled = true;
 
       try {
         const { error } = await db.auth.signOut();
-
         if (error) throw error;
 
         window.location.href = "../index.html";
 
-      } catch (error) {
-        console.error("Logout error:", error);
+      } catch (err) {
+        console.error(err);
 
-        showMessage(
-          "profileMessage",
-          "تعذر تسجيل الخروج. حاول مرة أخرى.",
-          "error"
-        );
-
-        button.disabled = false;
-        button.textContent = "تسجيل الخروج";
+        message("تعذر تسجيل الخروج. حاول مرة أخرى.", "error");
+        btn.disabled = false;
       }
     });
 
-    // تشغيل الصفحة
-    initAccount();
+    init();
   </script>
 
 </body>
