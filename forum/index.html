@@ -61,6 +61,37 @@
       cursor: pointer;
     }
 
+    /* الأيقونات */
+    .icon {
+      width: 22px;
+      height: 22px;
+      display: block;
+      flex-shrink: 0;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .brand-icon .icon {
+      width: 29px;
+      height: 29px;
+    }
+
+    .nav-icon {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .nav-icon .icon {
+      width: 22px;
+      height: 22px;
+    }
+
     .sidebar {
       position: fixed;
       top: 0;
@@ -92,7 +123,6 @@
       place-items: center;
       background: rgba(255, 255, 255, .16);
       border-radius: 15px;
-      font-size: 25px;
     }
 
     .brand h2 {
@@ -135,12 +165,6 @@
       background: rgba(255, 255, 255, .17);
       color: white;
       transform: translateX(-3px);
-    }
-
-    .nav-icon {
-      width: 24px;
-      text-align: center;
-      font-size: 18px;
     }
 
     .sidebar-bottom {
@@ -200,7 +224,7 @@
       flex-shrink: 0;
       border-radius: 12px;
       background: var(--green-light);
-      font-size: 20px;
+      color: var(--green);
     }
 
     .student-info {
@@ -250,10 +274,15 @@
       position: absolute;
       left: 25px;
       top: -28px;
-      font-size: 115px;
       opacity: .12;
       transform: rotate(-15deg);
       pointer-events: none;
+    }
+
+    .welcome-decoration .icon {
+      width: 145px;
+      height: 145px;
+      stroke-width: 1.1;
     }
 
     .section-title {
@@ -303,7 +332,7 @@
       place-items: center;
       border-radius: 13px;
       background: var(--green-light);
-      font-size: 22px;
+      color: var(--green);
       flex-shrink: 0;
     }
 
@@ -379,6 +408,11 @@
       font-weight: 700;
     }
 
+    .remove-image .icon {
+      width: 17px;
+      height: 17px;
+    }
+
     .composer-footer {
       display: flex;
       align-items: center;
@@ -408,6 +442,12 @@
       font-size: 12px;
       font-weight: 700;
       transition: .2s;
+    }
+
+    .tool-button .icon,
+    .publish-button .icon {
+      width: 19px;
+      height: 19px;
     }
 
     .tool-button:hover {
@@ -510,8 +550,13 @@
       display: grid;
       place-items: center;
       background: linear-gradient(135deg, #e8f5f1, #eaf0ff);
+      color: var(--green);
       border-radius: 13px;
-      font-size: 21px;
+    }
+
+    .post-avatar .icon {
+      width: 23px;
+      height: 23px;
     }
 
     .post-author {
@@ -577,6 +622,12 @@
       gap: 5px;
     }
 
+    .post-footer .icon {
+      width: 16px;
+      height: 16px;
+      color: var(--green);
+    }
+
     .empty-state,
     .loading-state {
       text-align: center;
@@ -587,9 +638,15 @@
     }
 
     .empty-icon {
-      font-size: 43px;
-      display: block;
+      display: grid;
+      place-items: center;
       margin-bottom: 10px;
+      color: var(--green);
+    }
+
+    .empty-icon .icon {
+      width: 43px;
+      height: 43px;
     }
 
     .empty-state strong {
@@ -663,7 +720,11 @@
       .student-avatar {
         width: 32px;
         height: 32px;
-        font-size: 17px;
+      }
+
+      .student-avatar .icon {
+        width: 19px;
+        height: 19px;
       }
 
       .student-info strong {
@@ -688,7 +749,11 @@
 
       .welcome-decoration {
         left: 7px;
-        font-size: 90px;
+      }
+
+      .welcome-decoration .icon {
+        width: 105px;
+        height: 105px;
       }
 
       .composer {
@@ -752,10 +817,12 @@
         text-decoration: none;
         font-size: 9px;
         font-weight: 700;
+        transition: color .2s;
       }
 
-      .mobile-nav a span:first-child {
-        font-size: 19px;
+      .mobile-nav a .icon {
+        width: 21px;
+        height: 21px;
       }
 
       .mobile-nav a.active {
@@ -789,9 +856,86 @@
 
 <body>
 
+  <!-- رموز SVG موحدة -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <symbol id="icon-plant" viewBox="0 0 24 24">
+      <path d="M12 21v-9"></path>
+      <path d="M12 14C5 14 3 9 3 4c6 0 9 3 9 10"></path>
+      <path d="M12 17c0-6 3-10 9-11 0 6-2 10-9 11"></path>
+      <path d="M7 21h10"></path>
+    </symbol>
+
+    <symbol id="icon-home" viewBox="0 0 24 24">
+      <path d="m3 10 9-7 9 7"></path>
+      <path d="M5 9v12h14V9"></path>
+      <path d="M9 21v-7h6v7"></path>
+    </symbol>
+
+    <symbol id="icon-video" viewBox="0 0 24 24">
+      <rect x="3" y="5" width="13" height="14" rx="2"></rect>
+      <path d="m16 10 5-3v10l-5-3"></path>
+      <path d="m8 9 4 3-4 3z" fill="currentColor" stroke="none"></path>
+    </symbol>
+
+    <symbol id="icon-notes" viewBox="0 0 24 24">
+      <path d="M6 3h9l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path>
+      <path d="M14 3v5h5"></path>
+      <path d="M8 12h8M8 16h8"></path>
+    </symbol>
+
+    <symbol id="icon-trophy" viewBox="0 0 24 24">
+      <path d="M8 21h8M12 17v4"></path>
+      <path d="M7 4h10v6a5 5 0 0 1-10 0z"></path>
+      <path d="M7 6H3v2a5 5 0 0 0 5 5"></path>
+      <path d="M17 6h4v2a5 5 0 0 1-5 5"></path>
+      <path d="m12 6 .8 2 2.2.2-1.7 1.4.5 2.1-1.8-1.2-1.8 1.2.5-2.1L9 8.2l2.2-.2z"
+        fill="currentColor" stroke="none"></path>
+    </symbol>
+
+    <symbol id="icon-forum" viewBox="0 0 24 24">
+      <path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l-2 2v-7.5A7.5 7.5 0 0 1 10.5 6H12"></path>
+      <path d="M16 3v7M12.5 6.5h7"></path>
+      <path d="M7 12h6M7 15h4"></path>
+    </symbol>
+
+    <symbol id="icon-user" viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="4"></circle>
+      <path d="M4 21v-2a8 8 0 0 1 16 0v2z"></path>
+    </symbol>
+
+    <symbol id="icon-image" viewBox="0 0 24 24">
+      <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+      <circle cx="8.5" cy="8.5" r="1.5"></circle>
+      <path d="m21 15-5-5L5 21"></path>
+    </symbol>
+
+    <symbol id="icon-send" viewBox="0 0 24 24">
+      <path d="m22 2-7 20-4-9-9-4z"></path>
+      <path d="M22 2 11 13"></path>
+    </symbol>
+
+    <symbol id="icon-trash" viewBox="0 0 24 24">
+      <path d="M3 6h18M8 6V4h8v2"></path>
+      <path d="m19 6-1 14H6L5 6"></path>
+      <path d="M10 10v6M14 10v6"></path>
+    </symbol>
+
+    <symbol id="icon-alert" viewBox="0 0 24 24">
+      <path d="M10.3 3.9 2.2 18a2 2 0 0 0 1.7 3h16.2a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path>
+      <path d="M12 9v4M12 17h.01"></path>
+    </symbol>
+
+    <symbol id="icon-clock" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9"></circle>
+      <path d="M12 7v5l3 2"></path>
+    </symbol>
+  </svg>
+
   <aside class="sidebar">
     <div class="brand">
-      <div class="brand-icon">🌱</div>
+      <div class="brand-icon">
+        <svg class="icon"><use href="#icon-plant"></use></svg>
+      </div>
       <div>
         <h2>منصة أرض الأحياء</h2>
         <small>الصف الثالث الثانوي</small>
@@ -802,38 +946,53 @@
 
     <nav>
       <a class="nav-link" href="../index.html">
-        <span class="nav-icon">🏠</span>
+        <span class="nav-icon">
+          <svg class="icon"><use href="#icon-home"></use></svg>
+        </span>
         <span>الرئيسية</span>
       </a>
 
       <a class="nav-link" href="../videos/index.html">
-        <span class="nav-icon">🎥</span>
+        <span class="nav-icon">
+          <svg class="icon"><use href="#icon-video"></use></svg>
+        </span>
         <span>المحاضرات</span>
       </a>
 
       <a class="nav-link" href="../notes/index.html">
-        <span class="nav-icon">📚</span>
+        <span class="nav-icon">
+          <svg class="icon"><use href="#icon-notes"></use></svg>
+        </span>
         <span>المذكرات</span>
       </a>
 
       <a class="nav-link" href="../champion/index.html">
-        <span class="nav-icon">🏆</span>
+        <span class="nav-icon">
+          <svg class="icon"><use href="#icon-trophy"></use></svg>
+        </span>
         <span>بطل الفصل</span>
       </a>
 
-      <a class="nav-link active" href="./index.html">
-        <span class="nav-icon">💬</span>
+      <a class="nav-link active" href="./index.html" aria-current="page">
+        <span class="nav-icon">
+          <svg class="icon"><use href="#icon-forum"></use></svg>
+        </span>
         <span>المنتدى</span>
       </a>
 
       <a class="nav-link" href="../account/index.html">
-        <span class="nav-icon">👤</span>
+        <span class="nav-icon">
+          <svg class="icon"><use href="#icon-user"></use></svg>
+        </span>
         <span>حساب الطالب</span>
       </a>
     </nav>
 
     <div class="sidebar-bottom">
-      🌿 معًا نحو التفوق في الأحياء
+      <svg class="icon" style="margin:0 auto 5px;width:20px;height:20px">
+        <use href="#icon-plant"></use>
+      </svg>
+      معًا نحو التفوق في الأحياء
       <br>
       منصة أرض الأحياء © 2026
     </div>
@@ -843,12 +1002,14 @@
 
     <header class="topbar">
       <div class="page-heading">
-        <h1>💬 المنتدى الطلابي</h1>
+        <h1>المنتدى الطلابي</h1>
         <p>مساحتك لمشاركة الأسئلة والأفكار التعليمية</p>
       </div>
 
       <div class="student-badge">
-        <div class="student-avatar">👨‍🎓</div>
+        <div class="student-avatar">
+          <svg class="icon"><use href="#icon-user"></use></svg>
+        </div>
         <div class="student-info">
           <strong id="studentName">جارٍ التحقق...</strong>
           <small>طالب بالمنصة</small>
@@ -857,7 +1018,9 @@
     </header>
 
     <section class="welcome-card">
-      <div class="welcome-decoration">🌱</div>
+      <div class="welcome-decoration">
+        <svg class="icon"><use href="#icon-plant"></use></svg>
+      </div>
       <h2>أهلًا بك في مجتمع أرض الأحياء!</h2>
       <p>
         اطرح سؤالك، شارك زملاءك المعلومة، وارفع صورة للسؤال أو المعلومة
@@ -866,13 +1029,15 @@
     </section>
 
     <div class="section-title">
-      <h2>✍️ اكتب منشورًا جديدًا</h2>
+      <h2>اكتب منشورًا جديدًا</h2>
       <span>شارك بأدب واحترام</span>
     </div>
 
     <section class="composer">
       <div class="composer-header">
-        <div class="composer-avatar">👨‍🎓</div>
+        <div class="composer-avatar">
+          <svg class="icon"><use href="#icon-user"></use></svg>
+        </div>
         <div>
           <strong id="composerName">طالب بالمنصة</strong>
           <small>شارك سؤالك أو أضف صورة تعليمية</small>
@@ -892,14 +1057,16 @@
       <div class="image-preview-wrap" id="imagePreviewWrap">
         <img id="imagePreview" class="image-preview" alt="معاينة الصورة المختارة">
         <button type="button" class="remove-image" id="removeImage">
-          🗑️ إزالة الصورة
+          <svg class="icon"><use href="#icon-trash"></use></svg>
+          إزالة الصورة
         </button>
       </div>
 
       <div class="composer-footer">
         <div class="composer-tools">
           <button type="button" class="tool-button" id="chooseImageBtn">
-            🖼️ إضافة صورة
+            <svg class="icon"><use href="#icon-image"></use></svg>
+            إضافة صورة
           </button>
 
           <input
@@ -910,7 +1077,7 @@
         </div>
 
         <button type="button" class="publish-button" id="publishBtn">
-          <span>📤</span>
+          <svg class="icon"><use href="#icon-send"></use></svg>
           <span id="publishText">نشر المنشور</span>
         </button>
       </div>
@@ -919,14 +1086,12 @@
     </section>
 
     <div class="section-title">
-      <h2>🌿 منشورات الطلاب</h2>
+      <h2>منشورات الطلاب</h2>
       <span id="postsCount">أحدث المشاركات</span>
     </div>
 
     <section id="postsList" class="posts-list" aria-live="polite">
-      <div class="loading-state">
-        ⏳ جارٍ تحميل المنشورات...
-      </div>
+      <div class="loading-state">جارٍ تحميل المنشورات...</div>
     </section>
 
     <div class="footer">
@@ -937,27 +1102,27 @@
 
   <nav class="mobile-nav" aria-label="التنقل الرئيسي">
     <a href="../index.html">
-      <span>🏠</span>
+      <svg class="icon"><use href="#icon-home"></use></svg>
       <span>الرئيسية</span>
     </a>
 
     <a href="../videos/index.html">
-      <span>🎥</span>
+      <svg class="icon"><use href="#icon-video"></use></svg>
       <span>المحاضرات</span>
     </a>
 
     <a href="../notes/index.html">
-      <span>📚</span>
+      <svg class="icon"><use href="#icon-notes"></use></svg>
       <span>المذكرات</span>
     </a>
 
-    <a href="./index.html" class="active">
-      <span>💬</span>
+    <a href="./index.html" class="active" aria-current="page">
+      <svg class="icon"><use href="#icon-forum"></use></svg>
       <span>المنتدى</span>
     </a>
 
     <a href="../account/index.html">
-      <span>👤</span>
+      <svg class="icon"><use href="#icon-user"></use></svg>
       <span>حسابي</span>
     </a>
   </nav>
@@ -965,16 +1130,10 @@
   <script>
     "use strict";
 
-    // ==========================================
-    // إعدادات Supabase الخاصة بمنصة أرض الأحياء
-    // ==========================================
-
+    // إعدادات Supabase
     const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
-
     const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
-
     const STORAGE_BUCKET = "forum-images";
-
     const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 
     const ALLOWED_IMAGE_TYPES = [
@@ -989,10 +1148,7 @@
       SUPABASE_KEY
     );
 
-    // ==========================================
     // عناصر الصفحة
-    // ==========================================
-
     const postContent = document.getElementById("postContent");
     const imageInput = document.getElementById("imageInput");
     const imagePreview = document.getElementById("imagePreview");
@@ -1014,10 +1170,7 @@
     let previewObjectUrl = null;
     let isPublishing = false;
 
-    // ==========================================
-    // رسائل الصفحة
-    // ==========================================
-
+    // الرسائل
     function showMessage(message, type = "info") {
       composerMessage.textContent = message;
       composerMessage.className = "message show " + type;
@@ -1034,10 +1187,7 @@
       publishText.textContent = text;
     }
 
-    // ==========================================
-    // تجهيز اسم الطالب
-    // ==========================================
-
+    // تحميل بيانات الطالب
     async function loadCurrentStudent() {
       const { data, error } = await supabaseClient.auth.getUser();
 
@@ -1064,7 +1214,6 @@
         currentUser.user_metadata?.fullName ||
         "";
 
-      // محاولة الحصول على الاسم من جدول profiles.
       try {
         const { data: profile, error: profileError } =
           await supabaseClient
@@ -1091,10 +1240,7 @@
       return true;
     }
 
-    // ==========================================
-    // اختيار صورة ومعاينتها
-    // ==========================================
-
+    // اختيار الصورة
     chooseImageBtn.addEventListener("click", function () {
       imageInput.click();
     });
@@ -1159,18 +1305,12 @@
       hideMessage();
     });
 
-    // ==========================================
     // عداد الأحرف
-    // ==========================================
-
     postContent.addEventListener("input", function () {
       charCount.textContent = postContent.value.length;
     });
 
-    // ==========================================
-    // رفع الصورة إلى Supabase Storage
-    // ==========================================
-
+    // رفع الصور إلى Supabase Storage
     async function uploadForumImage(file) {
       if (!currentUser) {
         throw new Error("يجب تسجيل الدخول أولًا.");
@@ -1227,10 +1367,7 @@
       return data.publicUrl;
     }
 
-    // ==========================================
-    // نشر منشور نصي أو صورة مع نص
-    // ==========================================
-
+    // نشر المنشور
     publishBtn.addEventListener("click", publishPost);
 
     async function publishPost() {
@@ -1268,7 +1405,6 @@
           );
         }
 
-        // رفع الصورة أولًا، إذا اختار الطالب صورة.
         if (selectedImage) {
           setPublishingState(true, "جارٍ رفع الصورة...");
           uploadedImageUrl = await uploadForumImage(selectedImage);
@@ -1276,7 +1412,6 @@
 
         setPublishingState(true, "جارٍ حفظ المنشور...");
 
-        // إدراج المنشور في جدول forum.
         const { error: insertError } = await supabaseClient
           .from("forum")
           .insert({
@@ -1298,7 +1433,7 @@
         charCount.textContent = "0";
         clearSelectedImage();
 
-        showMessage("تم نشر منشورك بنجاح 🌱", "success");
+        showMessage("تم نشر منشورك بنجاح.", "success");
 
         await loadPosts();
 
@@ -1315,10 +1450,7 @@
       }
     }
 
-    // ==========================================
     // تنسيق التاريخ
-    // ==========================================
-
     function formatDate(dateValue) {
       if (!dateValue) {
         return "";
@@ -1339,10 +1471,28 @@
       });
     }
 
-    // ==========================================
-    // إنشاء عناصر المنشور بطريقة آمنة
-    // ==========================================
+    // إنشاء أيقونة SVG داخل عنصر
+    function createIcon(symbolId, className = "icon") {
+      const svg = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "svg"
+      );
 
+      svg.setAttribute("class", className);
+      svg.setAttribute("aria-hidden", "true");
+
+      const use = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "use"
+      );
+
+      use.setAttribute("href", "#" + symbolId);
+      svg.appendChild(use);
+
+      return svg;
+    }
+
+    // إنشاء المنشور بطريقة آمنة
     function createPostElement(post) {
       const article = document.createElement("article");
       article.className = "post-card";
@@ -1352,7 +1502,7 @@
 
       const avatar = document.createElement("div");
       avatar.className = "post-avatar";
-      avatar.textContent = "👨‍🎓";
+      avatar.appendChild(createIcon("icon-user"));
 
       const authorBox = document.createElement("div");
       authorBox.className = "post-author";
@@ -1369,7 +1519,6 @@
 
       header.appendChild(avatar);
       header.appendChild(authorBox);
-
       article.appendChild(header);
 
       const content = String(post.content || "").trim();
@@ -1381,7 +1530,7 @@
         article.appendChild(paragraph);
       }
 
-      // عرض الصورة عند وجود رابط صالح.
+      // عرض الصورة المرفقة
       if (post.image_url) {
         try {
           const imageUrl = new URL(post.image_url);
@@ -1392,14 +1541,19 @@
           if (
             imageUrl.protocol === "https:" &&
             allowedHost &&
-            imageUrl.pathname.includes("/storage/v1/object/public/forum-images/")
+            imageUrl.pathname.includes(
+              "/storage/v1/object/public/forum-images/"
+            )
           ) {
             const imageLink = document.createElement("a");
             imageLink.className = "post-image-link";
             imageLink.href = imageUrl.href;
             imageLink.target = "_blank";
             imageLink.rel = "noopener noreferrer";
-            imageLink.setAttribute("aria-label", "عرض الصورة بالحجم الكامل");
+            imageLink.setAttribute(
+              "aria-label",
+              "عرض الصورة بالحجم الكامل"
+            );
 
             const img = document.createElement("img");
             img.className = "post-image";
@@ -1424,7 +1578,8 @@
       footer.className = "post-footer";
 
       const label = document.createElement("span");
-      label.textContent = "🌱 منشور في منتدى أرض الأحياء";
+      label.appendChild(createIcon("icon-plant"));
+      label.appendChild(document.createTextNode("منشور في منتدى أرض الأحياء"));
 
       footer.appendChild(label);
       article.appendChild(footer);
@@ -1432,16 +1587,13 @@
       return article;
     }
 
-    // ==========================================
-    // تحميل المنشورات من قاعدة البيانات
-    // ==========================================
-
+    // تحميل المنشورات
     async function loadPosts() {
       postsList.innerHTML = "";
 
       const loading = document.createElement("div");
       loading.className = "loading-state";
-      loading.textContent = "⏳ جارٍ تحميل المنشورات...";
+      loading.textContent = "جارٍ تحميل المنشورات...";
       postsList.appendChild(loading);
 
       try {
@@ -1461,7 +1613,7 @@
 
           const icon = document.createElement("span");
           icon.className = "empty-icon";
-          icon.textContent = "⚠️";
+          icon.appendChild(createIcon("icon-alert"));
 
           const title = document.createElement("strong");
           title.textContent = "تعذر تحميل المنشورات";
@@ -1481,7 +1633,6 @@
           errorBox.appendChild(retry);
 
           postsList.appendChild(errorBox);
-
           postsCount.textContent = "تعذر التحميل";
 
           return;
@@ -1490,9 +1641,7 @@
         postsList.innerHTML = "";
 
         const posts = Array.isArray(data) ? data : [];
-
-        postsCount.textContent =
-          posts.length + " منشور";
+        postsCount.textContent = posts.length + " منشور";
 
         if (posts.length === 0) {
           const empty = document.createElement("div");
@@ -1500,7 +1649,7 @@
 
           const icon = document.createElement("span");
           icon.className = "empty-icon";
-          icon.textContent = "🌿";
+          icon.appendChild(createIcon("icon-plant"));
 
           const title = document.createElement("strong");
           title.textContent = "لا توجد منشورات حتى الآن";
@@ -1535,17 +1684,13 @@
       }
     }
 
-    // ==========================================
-    // بدء تشغيل المنتدى
-    // ==========================================
-
+    // تشغيل المنتدى
     async function initForum() {
       await loadCurrentStudent();
       await loadPosts();
     }
 
     initForum();
-
   </script>
 
 </body>
