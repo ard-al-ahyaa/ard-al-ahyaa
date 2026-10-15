@@ -4,28 +4,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>المنتدى | منصة أرض الأحياء</title>
+  <meta name="description" content="منتدى طلاب منصة أرض الأحياء للصف الثالث الثانوي، لطرح الأسئلة ومناقشة دروس الأحياء.">
+
   <link rel="icon" href="../favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 
   <style>
+    :root {
+      --green: #026857;
+      --green-dark: #014d40;
+      --blue: #1e3a8a;
+      --blue-light: #2563eb;
+      --bg: #f0f4f8;
+      --white: #ffffff;
+      --text: #2c3e50;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --danger: #dc2626;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Cairo', sans-serif !important;
+      font-family: 'Cairo', sans-serif;
     }
 
     body {
-      background: #f0f4f8;
-      color: #2c3e50;
-      display: flex;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
     }
 
+    /* الشريط الجانبي */
     .sidebar {
       width: 270px;
-      background: linear-gradient(180deg, #026857 0%, #1e3a8a 100%);
+      background: linear-gradient(180deg, #026857 0%, #075e54 45%, #1e3a8a 100%);
       color: white;
       position: fixed;
       right: 0;
@@ -35,6 +51,7 @@
       flex-direction: column;
       justify-content: space-between;
       z-index: 1000;
+      overflow-y: auto;
     }
 
     .sidebar-top {
@@ -46,7 +63,7 @@
       align-items: center;
       gap: 14px;
       margin-bottom: 35px;
-      padding-bottom: 15px;
+      padding-bottom: 18px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     }
 
@@ -55,14 +72,20 @@
       height: 50px;
       object-fit: contain;
       border-radius: 50%;
-      background: #fff;
+      background: white;
       padding: 3px;
+      flex-shrink: 0;
     }
 
     .logo-box h2 {
       font-size: 19px;
-      color: #fff;
-      font-weight: 700;
+      color: white;
+      font-weight: 900;
+    }
+
+    .logo-box p {
+      font-size: 12px;
+      opacity: 0.85;
     }
 
     .menu {
@@ -76,134 +99,459 @@
       color: #e2f1ee;
       padding: 12px 16px;
       border-radius: 12px;
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
+      transition: 0.2s;
     }
 
-    .menu a:hover, .menu a.active {
+    .menu a:hover,
+    .menu a.active {
       background: rgba(255, 255, 255, 0.2);
-      color: #fff;
+      color: white;
+      transform: translateX(-3px);
     }
 
+    .sidebar-footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 12px;
+      opacity: 0.8;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      line-height: 1.8;
+    }
+
+    /* المحتوى الرئيسي */
     .main {
       margin-right: 270px;
-      flex: 1;
-      padding: 30px 40px;
+      padding: 30px 35px;
+      min-height: 100vh;
     }
 
     .top-bar {
       background: white;
-      padding: 22px 30px;
+      padding: 22px 25px;
       border-radius: 16px;
       box-shadow: 0 4px 20px rgba(30, 58, 138, 0.04);
-      margin-bottom: 30px;
-      border: 1px solid #e2e8f0;
+      margin-bottom: 25px;
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
     }
 
     .top-bar h1 {
-      color: #1e3a8a;
-      font-size: 22px;
-      font-weight: 700;
+      color: var(--blue);
+      font-size: 23px;
+      font-weight: 900;
     }
 
+    .top-bar p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .welcome-badge {
+      background: #ecfdf5;
+      color: var(--green);
+      padding: 9px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* البطاقات */
     .card {
       background: white;
       border-radius: 18px;
-      padding: 30px;
-      box-shadow: 0 8px 25px rgba(30, 58, 138, 0.05);
-      border: 1px solid #e2e8f0;
+      padding: 25px;
+      box-shadow: 0 8px 25px rgba(30, 58, 138, 0.04);
+      border: 1px solid var(--border);
       margin-bottom: 25px;
     }
 
     .card h3 {
-      color: #1e3a8a;
+      color: var(--blue);
       font-size: 18px;
-      font-weight: 700;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .card-description {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+      margin-bottom: 18px;
+    }
+
+    /* نموذج المنشور */
+    .student-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      padding: 13px;
+      border-radius: 12px;
       margin-bottom: 15px;
+    }
+
+    .avatar {
+      width: 43px;
+      height: 43px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--green), var(--blue));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    .student-info strong {
+      display: block;
+      color: var(--blue);
+      font-size: 14px;
+    }
+
+    .student-info small {
+      color: var(--muted);
+      font-size: 12px;
     }
 
     textarea {
       width: 100%;
-      padding: 14px;
+      min-height: 130px;
+      padding: 15px;
       border: 1px solid #cbd5e1;
-      border-radius: 12px;
-      font-size: 15px;
+      border-radius: 13px;
+      font-size: 14px;
+      line-height: 1.9;
       outline: none;
       resize: vertical;
-      min-height: 100px;
-      margin-bottom: 12px;
+      background: #fff;
+      color: var(--text);
+      transition: 0.2s;
     }
 
     textarea:focus {
-      border-color: #1e3a8a;
-      box-shadow: 0 0 0 3px rgba(30,58,138,0.1);
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(2, 104, 87, 0.08);
     }
 
-    button {
-      background: #1e3a8a;
+    textarea:disabled {
+      background: #f8fafc;
+      cursor: not-allowed;
+    }
+
+    .form-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    .char-counter {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, var(--green), var(--blue));
       color: white;
       border: none;
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: 700;
+      padding: 12px 23px;
+      border-radius: 11px;
+      font-size: 14px;
+      font-weight: 900;
       cursor: pointer;
       transition: 0.2s;
     }
 
-    button:hover {
-      background: #1e40af;
+    .primary-btn:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    .primary-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status-msg {
+      margin-top: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+    }
+
+    .status-error {
+      color: var(--danger);
+    }
+
+    .status-success {
+      color: var(--green);
+    }
+
+    .status-info {
+      color: var(--blue);
+    }
+
+    /* قائمة المنشورات */
+    .discussion-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .discussion-header h3 {
+      margin: 0;
+    }
+
+    .refresh-btn {
+      background: #eff6ff;
+      color: var(--blue);
+      border: 1px solid #dbeafe;
+      border-radius: 10px;
+      padding: 8px 13px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .refresh-btn:hover {
+      background: #dbeafe;
     }
 
     .post-box {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      padding: 20px;
-      margin-top: 15px;
+      background: #fbfdff;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 19px;
+      margin-top: 14px;
+      transition: 0.2s;
+      overflow-wrap: anywhere;
+    }
+
+    .post-box:hover {
+      border-color: #b7d8d0;
+      box-shadow: 0 5px 18px rgba(2, 104, 87, 0.05);
+    }
+
+    .post-top {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin-bottom: 13px;
+    }
+
+    .post-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #e0f2fe;
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 900;
+      flex-shrink: 0;
     }
 
     .post-author {
-      font-weight: 700;
-      color: #026857;
-      margin-bottom: 6px;
-      font-size: 15px;
+      color: var(--green);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .post-date {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 3px;
     }
 
     .post-content {
       color: #334155;
       font-size: 14px;
-      line-height: 1.7;
+      line-height: 2;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
     }
 
-    .loading, .empty {
+    .loading,
+    .empty {
       text-align: center;
-      padding: 25px;
-      color: #64748b;
-      font-weight: 600;
+      padding: 35px 15px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 2;
+    }
+
+    .empty-icon {
+      display: block;
+      font-size: 35px;
+      margin-bottom: 10px;
+    }
+
+    .error-box {
+      background: #fef2f2;
+      color: #b91c1c;
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.9;
+      overflow-wrap: anywhere;
+    }
+
+    .login-notice {
+      background: #eff6ff;
+      border: 1px solid #dbeafe;
+      color: var(--blue);
+      padding: 16px;
+      border-radius: 12px;
+      line-height: 1.9;
+      font-size: 13px;
+    }
+
+    .login-notice a {
+      color: var(--green);
+      font-weight: 900;
+    }
+
+    /* شريط الموبايل */
+    .mobile-nav {
+      display: none;
+    }
+
+    @media (max-width: 1000px) {
+      .main {
+        padding: 25px;
+      }
+
+      .top-bar h1 {
+        font-size: 20px;
+      }
     }
 
     @media (max-width: 768px) {
-      .sidebar { display: none; }
-      .main { margin-right: 0; padding: 15px; }
+      .sidebar {
+        display: none;
+      }
+
+      .main {
+        margin-right: 0;
+        padding: 15px 13px 90px;
+      }
+
+      .top-bar {
+        padding: 18px;
+        margin-bottom: 17px;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .top-bar h1 {
+        font-size: 19px;
+      }
+
+      .welcome-badge {
+        white-space: normal;
+      }
+
+      .card {
+        padding: 18px;
+        border-radius: 15px;
+        margin-bottom: 17px;
+      }
+
+      .card h3 {
+        font-size: 16px;
+      }
+
+      .form-footer {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .primary-btn {
+        width: 100%;
+      }
+
+      .mobile-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 68px;
+        background: white;
+        border-top: 1px solid var(--border);
+        z-index: 2000;
+        justify-content: space-around;
+        align-items: center;
+        padding: 5px 3px calc(5px + env(safe-area-inset-bottom));
+        box-shadow: 0 -5px 20px rgba(30, 58, 138, 0.07);
+      }
+
+      .mobile-nav a {
+        text-decoration: none;
+        color: var(--muted);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        font-size: 10px;
+        font-weight: 700;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .mobile-nav a span {
+        font-size: 20px;
+        line-height: 1.2;
+      }
+
+      .mobile-nav a.active {
+        color: var(--green);
+      }
+
+      .post-box {
+        padding: 15px;
+      }
     }
   </style>
 </head>
 
 <body>
 
+  <!-- الشريط الجانبي للكمبيوتر -->
   <aside class="sidebar">
     <div class="sidebar-top">
+
       <div class="logo-box">
-        <img src="../logo.png" alt="شعار">
+        <img src="../logo.png" alt="شعار أرض الأحياء">
         <div>
           <h2>أرض الأحياء</h2>
-          <p style="font-size: 12px; opacity: 0.85;">ثالثة ثانوي</p>
+          <p>رحلتك نحو التفوق تبدأ من هنا</p>
         </div>
       </div>
+
       <nav class="menu">
         <a href="../index.html">🏠 الرئيسية</a>
         <a href="../videos/index.html">🎥 المحاضرات</a>
@@ -212,111 +560,472 @@
         <a href="index.html" class="active">💬 المنتدى</a>
         <a href="../account/index.html">👤 حساب الطالب</a>
       </nav>
+
+    </div>
+
+    <div class="sidebar-footer">
+      🌱 منصة أرض الأحياء<br>
+      ثالثة ثانوي
     </div>
   </aside>
 
+  <!-- المحتوى الرئيسي -->
   <main class="main">
-    <div class="top-bar">
-      <h1>💬 منتدى النقاش والأسئلة</h1>
-    </div>
 
-    <!-- صندوق إضافة منشور جديد -->
-    <div class="card">
-      <h3>اكتب سؤالك أو استفسارك لزملائك وأستاذ المادة:</h3>
-      <textarea id="postContent" placeholder="شارك فكرة، اسأل عن جزئية في الأحياء..."></textarea>
-      <button onclick="addPost()">نشر المنشور 🚀</button>
-      <div id="statusMsg" style="margin-top: 10px; font-weight: bold; font-size: 14px;"></div>
-    </div>
-
-    <!-- قائمة المنشورات -->
-    <div class="card">
-      <h3>المناقشات الأخيرة</h3>
-      <div id="postsList">
-        <div class="loading">جاري تحميل المناقشات...</div>
+    <header class="top-bar">
+      <div>
+        <h1>💬 منتدى النقاش والأسئلة</h1>
+        <p>اسأل، ناقش، وتبادل المعرفة مع زملائك في الأحياء.</p>
       </div>
-    </div>
+
+      <div class="welcome-badge" id="welcomeBadge">
+        👋 أهلًا بك في المنتدى
+      </div>
+    </header>
+
+    <!-- صندوق إضافة منشور -->
+    <section class="card">
+
+      <h3>✍️ شارك سؤالك مع زملائك</h3>
+
+      <p class="card-description">
+        اكتب سؤالك أو استفسارك عن درس في الأحياء، وساعد زملاءك على التعلم.
+      </p>
+
+      <div id="postForm">
+
+        <div class="student-info">
+          <div class="avatar" id="studentAvatar">👤</div>
+          <div>
+            <strong id="studentName">جاري التحقق من الحساب...</strong>
+            <small>طالب في منصة أرض الأحياء</small>
+          </div>
+        </div>
+
+        <textarea
+          id="postContent"
+          maxlength="3000"
+          placeholder="اكتب سؤالك أو استفسارك هنا..."
+          disabled
+        ></textarea>
+
+        <div class="form-footer">
+          <span class="char-counter" id="charCounter">0 / 3000 حرف</span>
+          <button type="button" class="primary-btn" id="publishBtn" disabled>
+            🚀 نشر المنشور
+          </button>
+        </div>
+
+        <div id="statusMsg" class="status-msg" role="status" aria-live="polite"></div>
+
+      </div>
+
+      <div id="loginNotice" class="login-notice" hidden>
+        🔐 يجب تسجيل الدخول إلى حسابك حتى تتمكن من نشر الأسئلة.
+        <br>
+        <a href="../index.html">الانتقال إلى صفحة تسجيل الدخول</a>
+      </div>
+
+    </section>
+
+    <!-- قائمة المناقشات -->
+    <section class="card">
+
+      <div class="discussion-header">
+        <div>
+          <h3>📚 المناقشات الأخيرة</h3>
+          <p class="card-description" style="margin: 5px 0 0;">
+            تابع أسئلة زملائك وشارك في المناقشات.
+          </p>
+        </div>
+
+        <button type="button" class="refresh-btn" id="refreshBtn">
+          🔄 تحديث
+        </button>
+      </div>
+
+      <div id="postsList">
+        <div class="loading">⏳ جاري تحميل المناقشات...</div>
+      </div>
+
+    </section>
+
   </main>
 
+  <!-- شريط التنقل السفلي للموبايل -->
+  <nav class="mobile-nav" aria-label="التنقل الرئيسي">
+    <a href="../index.html">
+      <span>🏠</span>
+      الرئيسية
+    </a>
+
+    <a href="../videos/index.html">
+      <span>🎥</span>
+      المحاضرات
+    </a>
+
+    <a href="../notes/index.html">
+      <span>📚</span>
+      المذكرات
+    </a>
+
+    <a href="index.html" class="active">
+      <span>💬</span>
+      المنتدى
+    </a>
+
+    <a href="../account/index.html">
+      <span>👤</span>
+      حسابي
+    </a>
+  </nav>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script>
+    "use strict";
+
     const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
     const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    async function addPost() {
-      const content = document.getElementById("postContent").value.trim();
-      const status = document.getElementById("statusMsg");
+    const supabaseClient = supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
 
-      if (!content) {
-        status.style.color = "#e74c3c";
-        status.textContent = "❌ يرجى كتابة محتوى المنشور أولاً.";
-        return;
-      }
+    const postContent = document.getElementById("postContent");
+    const publishBtn = document.getElementById("publishBtn");
+    const statusMsg = document.getElementById("statusMsg");
+    const postsList = document.getElementById("postsList");
+    const studentName = document.getElementById("studentName");
+    const studentAvatar = document.getElementById("studentAvatar");
+    const welcomeBadge = document.getElementById("welcomeBadge");
+    const loginNotice = document.getElementById("loginNotice");
+    const charCounter = document.getElementById("charCounter");
 
-      status.style.color = "#1e3a8a";
-      status.textContent = "⏳ جاري النشر...";
+    let currentUser = null;
+    let currentStudentName = "طالب";
+    let isPublishing = false;
 
-      try {
-        const { error } = await supabaseClient
-          .from("forum")
-          .insert({ content: content, author_name: "طالب بالمنصة" });
+    /* إظهار الرسائل */
+    function showStatus(message, type) {
+      statusMsg.textContent = message;
+      statusMsg.className = "status-msg";
 
-        if (error) throw error;
-
-        status.style.color = "#026857";
-        status.textContent = "✅ تم النشر بنجاح!";
-        document.getElementById("postContent").value = "";
-        loadPosts();
-
-        setTimeout(() => { status.textContent = ""; }, 3000);
-
-      } catch (err) {
-        console.error(err);
-        status.style.color = "#e74c3c";
-        status.textContent = "❌ تعذر النشر: " + (err.message || "خطأ غير معروف");
+      if (type === "error") {
+        statusMsg.classList.add("status-error");
+      } else if (type === "success") {
+        statusMsg.classList.add("status-success");
+      } else {
+        statusMsg.classList.add("status-info");
       }
     }
 
+    /* تحديد الحرف الأول من الاسم */
+    function getInitial(name) {
+      const cleaned = String(name || "").trim();
+      return cleaned ? cleaned.charAt(0) : "👤";
+    }
+
+    /* تنسيق التاريخ */
+    function formatDate(dateValue) {
+      if (!dateValue) return "";
+
+      const date = new Date(dateValue);
+
+      if (Number.isNaN(date.getTime())) return "";
+
+      return date.toLocaleString("ar-EG", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    /* إنشاء عنصر نصي آمن */
+    function makeTextElement(tag, className, value) {
+      const element = document.createElement(tag);
+
+      if (className) {
+        element.className = className;
+      }
+
+      element.textContent = value || "";
+
+      return element;
+    }
+
+    /* التحقق من الحساب وجلب اسم الطالب */
+    async function initializePage() {
+      try {
+        const {
+          data: { user },
+          error
+        } = await supabaseClient.auth.getUser();
+
+        if (error) throw error;
+
+        if (!user) {
+          currentUser = null;
+
+          studentName.textContent = "يجب تسجيل الدخول للنشر";
+          studentAvatar.textContent = "🔒";
+          postContent.disabled = true;
+          publishBtn.disabled = true;
+          loginNotice.hidden = false;
+
+          welcomeBadge.textContent = "🔐 تسجيل الدخول مطلوب للنشر";
+
+          await loadPosts();
+          return;
+        }
+
+        currentUser = user;
+        loginNotice.hidden = true;
+
+        let profileName = "";
+
+        /*
+          نحاول جلب الاسم من profiles.full_name.
+          لو لم يوجد سجل أو تعذر جلب الاسم، نستخدم بيانات الحساب.
+        */
+        try {
+          const { data: profile, error: profileError } =
+            await supabaseClient
+              .from("profiles")
+              .select("full_name")
+              .eq("id", user.id)
+              .maybeSingle();
+
+          if (!profileError && profile && profile.full_name) {
+            profileName = String(profile.full_name).trim();
+          }
+        } catch (profileError) {
+          console.warn("تعذر جلب اسم الطالب من profiles:", profileError);
+        }
+
+        if (!profileName) {
+          profileName =
+            user.user_metadata?.full_name ||
+            user.user_metadata?.name ||
+            user.email?.split("@")[0] ||
+            "طالب";
+        }
+
+        currentStudentName = profileName;
+
+        studentName.textContent = currentStudentName;
+        studentAvatar.textContent = getInitial(currentStudentName);
+        welcomeBadge.textContent = "👋 أهلًا، " + currentStudentName;
+
+        postContent.disabled = false;
+        publishBtn.disabled = false;
+
+        await loadPosts();
+
+      } catch (error) {
+        console.error("خطأ التحقق من الحساب:", error);
+
+        studentName.textContent = "تعذر التحقق من الحساب";
+        studentAvatar.textContent = "⚠️";
+
+        showStatus(
+          "تعذر التحقق من تسجيل الدخول. أعد تحميل الصفحة وحاول مرة أخرى.",
+          "error"
+        );
+
+        await loadPosts();
+      }
+    }
+
+    /* تحديث عداد الأحرف */
+    postContent.addEventListener("input", function () {
+      charCounter.textContent =
+        postContent.value.length + " / 3000 حرف";
+    });
+
+    /* نشر منشور */
+    async function addPost() {
+      if (isPublishing) return;
+
+      const content = postContent.value.trim();
+
+      if (!currentUser) {
+        showStatus("يجب تسجيل الدخول أولًا حتى تتمكن من النشر.", "error");
+        return;
+      }
+
+      if (!content) {
+        showStatus("يرجى كتابة محتوى المنشور أولًا.", "error");
+        postContent.focus();
+        return;
+      }
+
+      if (content.length > 3000) {
+        showStatus("الحد الأقصى للمنشور هو 3000 حرف.", "error");
+        return;
+      }
+
+      isPublishing = true;
+      publishBtn.disabled = true;
+      publishBtn.textContent = "⏳ جارٍ النشر...";
+
+      showStatus("جارٍ نشر منشورك...", "info");
+
+      try {
+        /*
+          نحفظ اسم الطالب ومعرّف حسابه.
+          يتطلب ذلك أن يسمح مخطط جدول forum بالأعمدة المستخدمة.
+        */
+        const { error } = await supabaseClient
+          .from("forum")
+          .insert({
+            content: content,
+            author_name: currentStudentName,
+            user_id: currentUser.id
+          });
+
+        if (error) throw error;
+
+        postContent.value = "";
+        charCounter.textContent = "0 / 3000 حرف";
+
+        showStatus("تم نشر منشورك بنجاح! ✅", "success");
+
+        await loadPosts();
+
+      } catch (error) {
+        console.error("خطأ نشر المنشور:", error);
+
+        let message = "تعذر نشر المنشور.";
+
+        if (error.code === "42501" || error.code === "403") {
+          message =
+            "ليس لديك إذن بالنشر. راجع سياسات RLS وصلاحيات جدول forum في Supabase.";
+        } else if (error.code === "23503") {
+          message =
+            "تعذر ربط المنشور بالحساب. تحقق من نوع العمود user_id في جدول forum.";
+        } else if (error.code === "42703" || error.code === "PGRST204") {
+          message =
+            "هناك عمود مطلوب غير موجود في جدول forum. راجع أسماء الأعمدة الموضحة أسفل الكود.";
+        } else {
+          message += " " + (error.message || "حاول مرة أخرى.");
+        }
+
+        showStatus(message, "error");
+
+      } finally {
+        isPublishing = false;
+        publishBtn.disabled = !currentUser;
+        publishBtn.textContent = "🚀 نشر المنشور";
+      }
+    }
+
+    publishBtn.addEventListener("click", addPost);
+
+    /* تحميل المناقشات */
     async function loadPosts() {
-      const listDiv = document.getElementById("postsList");
+      postsList.replaceChildren();
+
+      const loading = makeTextElement(
+        "div",
+        "loading",
+        "⏳ جاري تحميل المناقشات..."
+      );
+
+      postsList.appendChild(loading);
+
       try {
         const { data, error } = await supabaseClient
           .from("forum")
           .select("*")
-          .order("created_at", { ascending: false });
+          .order("created_at", { ascending: false })
+          .limit(100);
 
         if (error) throw error;
 
+        postsList.replaceChildren();
+
         if (!data || data.length === 0) {
-          listDiv.innerHTML = `<div class="empty">لا توجد مناقشات حتى الآن. كن أول من يشارك!</div>`;
+          const empty = document.createElement("div");
+          empty.className = "empty";
+
+          const icon = makeTextElement("span", "empty-icon", "💬");
+          const message = makeTextElement(
+            "div",
+            "",
+            "لا توجد مناقشات حتى الآن. كن أول من يشارك سؤاله!"
+          );
+
+          empty.append(icon, message);
+          postsList.appendChild(empty);
+
           return;
         }
 
-        listDiv.innerHTML = "";
-        data.forEach(post => {
-          const box = document.createElement("div");
+        data.forEach(function (post) {
+          const box = document.createElement("article");
           box.className = "post-box";
-          box.innerHTML = `
-            <div class="post-author">👤 ${escapeHtml(post.author_name || "طالب")}</div>
-            <div class="post-content">${escapeHtml(post.content)}</div>
-          `;
-          listDiv.appendChild(box);
+
+          const top = document.createElement("div");
+          top.className = "post-top";
+
+          const avatar = makeTextElement(
+            "div",
+            "post-avatar",
+            getInitial(post.author_name || "طالب")
+          );
+
+          const authorInfo = document.createElement("div");
+
+          const author = makeTextElement(
+            "div",
+            "post-author",
+            post.author_name || "طالب"
+          );
+
+          const date = makeTextElement(
+            "div",
+            "post-date",
+            formatDate(post.created_at)
+          );
+
+          authorInfo.append(author, date);
+          top.append(avatar, authorInfo);
+
+          const content = makeTextElement(
+            "div",
+            "post-content",
+            post.content || ""
+          );
+
+          box.append(top, content);
+          postsList.appendChild(box);
         });
 
-      } catch (err) {
-        console.error(err);
-        listDiv.innerHTML = `<div class="empty" style="color:#e74c3c;">تعذر تحميل المنتدى: ${err.message || "تأكد من الجدول"}</div>`;
+      } catch (error) {
+        console.error("خطأ تحميل المنتدى:", error);
+
+        postsList.replaceChildren();
+
+        const errorBox = document.createElement("div");
+        errorBox.className = "error-box";
+
+        errorBox.textContent =
+          "تعذر تحميل المناقشات. تأكد من وجود جدول forum وصلاحية قراءة المنشورات في إعدادات Supabase. التفاصيل: " +
+          (error.message || "خطأ غير معروف");
+
+        postsList.appendChild(errorBox);
       }
     }
 
-    function escapeHtml(str) {
-      if (!str) return "";
-      return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-    }
+    document.getElementById("refreshBtn").addEventListener("click", loadPosts);
 
-    loadPosts();
+    /* تشغيل الصفحة */
+    initializePage();
   </script>
 
 </body>
-
 </html>
