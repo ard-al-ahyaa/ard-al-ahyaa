@@ -9,15 +9,9 @@
 
 <style>
 :root{
- --green:#087f5b;
- --dark:#066747;
- --bg:#f3f6f5;
- --white:#fff;
- --text:#1e293b;
- --muted:#64748b;
- --border:#e2e8f0;
- --red:#dc2626;
- --blue:#2563eb;
+ --green:#087f5b;--dark:#066747;--bg:#f3f6f5;
+ --white:#fff;--text:#1e293b;--muted:#64748b;
+ --border:#e2e8f0;--red:#dc2626;--blue:#2563eb;
  --shadow:0 5px 20px rgba(0,0,0,.06)
 }
 *{box-sizing:border-box}
@@ -30,7 +24,10 @@ button:disabled{opacity:.6;cursor:not-allowed}
 .secondary{background:#e2e8f0;color:#334155}
 .danger{background:#fee2e2;color:#b91c1c}
 .blue{background:#dbeafe;color:#1d4ed8}
-input,textarea,select{width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;background:#fff;outline:none;margin-top:6px}
+input,textarea,select{
+ width:100%;padding:12px;border:1px solid var(--border);
+ border-radius:8px;background:#fff;outline:none;margin-top:6px
+}
 input:focus,textarea:focus,select:focus{border-color:var(--green)}
 textarea{resize:vertical;min-height:85px}
 label{display:block;font-weight:bold;margin-top:14px;font-size:14px}
@@ -78,6 +75,9 @@ td{overflow-wrap:anywhere}
 .progress div{width:0;height:100%;background:var(--green);transition:width .2s}
 .hint{font-size:12px;color:var(--muted);line-height:1.8;margin-top:8px}
 .user-email{font-size:12px;color:#bbf7d0;overflow-wrap:anywhere;padding:8px}
+.forum-image{width:90px;height:75px;object-fit:cover;border-radius:8px;border:1px solid var(--border)}
+.post-content{white-space:pre-wrap;min-width:180px;max-width:360px;line-height:1.8}
+.reply-box{background:#f8fafc;border:1px solid var(--border);padding:18px;border-radius:12px;margin-top:20px}
 @media(max-width:1000px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){
  .layout{display:block}
@@ -97,6 +97,7 @@ td{overflow-wrap:anywhere}
 }
 </style>
 </head>
+
 <body>
 
 <section id="loginScreen">
@@ -234,10 +235,17 @@ td{overflow-wrap:anywhere}
    </div>
   </section>
 
+  <!-- حسابات الطلاب -->
   <section id="panel-students" class="panel">
    <div class="box">
-    <h2>حسابات الطلاب</h2>
-    <div class="table-wrap"><table><thead><tr><th>الاسم</th><th>البريد الإلكتروني</th><th>الصلاحية</th><th>معرّف الحساب</th></tr></thead><tbody id="studentsTable"></tbody></table></div>
+    <h2>👨‍🎓 حسابات الطلاب</h2>
+    <p class="hint">بيانات الحسابات المسجلة في جدول profiles.</p>
+    <div class="table-wrap">
+     <table>
+      <thead><tr><th>الاسم</th><th>رقم الهاتف</th><th>البريد الإلكتروني</th><th>الصلاحية</th><th>معرّف الحساب</th></tr></thead>
+      <tbody id="studentsTable"></tbody>
+     </table>
+    </div>
    </div>
   </section>
 
@@ -245,28 +253,59 @@ td{overflow-wrap:anywhere}
   <section id="panel-forum" class="panel">
    <div class="box">
     <h2>💬 إدارة المنتدى</h2>
-    <p style="color:#64748b;line-height:1.8">عرض منشورات الطلاب وإدارة الردود والمحتوى.</p>
-    <div class="actions"><button class="primary" id="refreshForum">🔄 تحديث المنشورات</button></div>
+    <p style="color:#64748b;line-height:1.8">
+     شاهد منشورات الطلاب وصورهم، واختر المنشور الذي تريد الرد عليه.
+    </p>
+    <div class="actions">
+     <button class="primary" id="refreshForum">🔄 تحديث المنشورات</button>
+    </div>
    </div>
 
    <div class="box">
-    <h2>منشورات الطلاب</h2>
+    <h2>📨 منشورات الطلاب</h2>
     <div class="table-wrap">
      <table>
-      <thead><tr><th>المنشور</th><th>صاحب المنشور</th><th>التاريخ</th><th>الإجراءات</th></tr></thead>
-      <tbody id="forumPostsTable"><tr><td colspan="4" class="empty">اضغط تحديث المنشورات.</td></tr></tbody>
+      <thead>
+       <tr><th>المنشور</th><th>الصورة</th><th>صاحب المنشور</th><th>التاريخ</th><th>الإجراءات</th></tr>
+      </thead>
+      <tbody id="forumPostsTable">
+       <tr><td colspan="5" class="empty">اضغط تحديث المنشورات.</td></tr>
+      </tbody>
      </table>
     </div>
    </div>
 
    <div class="box">
-    <h2>الردود على المنشورات</h2>
-    <label for="forumPostSelect">اختر المنشور</label>
-    <select id="forumPostSelect"><option value="">اختر منشورًا</option></select>
-    <div class="table-wrap" style="margin-top:18px">
+    <h2>✍️ الرد على الطالب</h2>
+    <label for="forumPostSelect">اختر المنشور الذي تريد الرد عليه</label>
+    <select id="forumPostSelect">
+     <option value="">اختر منشورًا</option>
+    </select>
+
+    <div id="selectedPostPreview" class="reply-box hidden">
+     <strong>المنشور المحدد:</strong>
+     <p id="selectedPostText" class="post-content"></p>
+    </div>
+
+    <form id="adminReplyForm">
+     <label for="adminReplyText">اكتب ردك</label>
+     <textarea id="adminReplyText" placeholder="اكتب ردك على الطالب هنا..." required></textarea>
+     <div class="actions">
+      <button class="primary" id="sendAdminReply" type="submit">📩 إرسال الرد</button>
+      <button class="secondary" type="button" id="clearReply">مسح النص</button>
+     </div>
+     <p class="hint">اختر منشورًا أولًا ثم اكتب الرد واضغط إرسال.</p>
+    </form>
+   </div>
+
+   <div class="box">
+    <h2>💬 الردود على المنشور المحدد</h2>
+    <div class="table-wrap">
      <table>
       <thead><tr><th>الرد</th><th>صاحب الرد</th><th>التاريخ</th><th>الإجراءات</th></tr></thead>
-      <tbody id="forumRepliesTable"><tr><td colspan="4" class="empty">اختر منشورًا لعرض الردود.</td></tr></tbody>
+      <tbody id="forumRepliesTable">
+       <tr><td colspan="4" class="empty">اختر منشورًا لعرض الردود.</td></tr>
+      </tbody>
      </table>
     </div>
    </div>
@@ -293,6 +332,12 @@ let profilesCache = [];
 let forumPostsCache = [];
 let forumRepliesCache = [];
 
+/* اسم جدول المنشورات الذي نجح في الاتصال */
+let forumPostsTableName = null;
+
+/* أسماء الجداول المحتملة للردود */
+let forumRepliesTableName = "forum_replies";
+
 const $ = id => document.getElementById(id);
 
 function escapeHTML(value){
@@ -302,8 +347,8 @@ function escapeHTML(value){
 }
 
 function ensureClient(){
- if(db) return db;
- if(!window.supabase?.createClient) throw new Error("تعذر تحميل مكتبة Supabase.");
+ if(db)return db;
+ if(!window.supabase?.createClient)throw new Error("تعذر تحميل مكتبة Supabase.");
  db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{
   auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
  });
@@ -312,12 +357,12 @@ function ensureClient(){
 
 function friendlyError(error){
  const m=error?.message||String(error||"خطأ غير معروف");
- if(/Invalid login credentials/i.test(m)) return "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
- if(/Email not confirmed/i.test(m)) return "يجب تأكيد البريد الإلكتروني أولًا.";
- if(/Bucket not found/i.test(m)) return "مساحة التخزين lectures غير موجودة.";
- if(/Invalid key/i.test(m)) return "اسم الملف غير مقبول. جرّب اختيار الملف مرة أخرى.";
- if(/row-level security|permission denied|not allowed/i.test(m)) return "العملية مرفوضة بسبب صلاحيات قاعدة البيانات أو Storage.";
- if(/does not exist|Could not find the table/i.test(m)) return "أحد الجداول أو الأعمدة غير موجود. تحقق من أسماء الجداول في Supabase.";
+ if(/Invalid login credentials/i.test(m))return "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+ if(/Email not confirmed/i.test(m))return "يجب تأكيد البريد الإلكتروني أولًا.";
+ if(/Bucket not found/i.test(m))return "مساحة التخزين lectures غير موجودة.";
+ if(/Invalid key/i.test(m))return "اسم الملف غير مقبول. جرّب اختيار الملف مرة أخرى.";
+ if(/row-level security|permission denied|not allowed/i.test(m))return "العملية مرفوضة بسبب صلاحيات قاعدة البيانات أو Storage.";
+ if(/does not exist|Could not find the table|schema cache/i.test(m))return "الجدول أو العمود غير موجود. تحقق من أسماء الجداول والأعمدة في Supabase.";
  return m;
 }
 
@@ -327,13 +372,15 @@ function showStatus(message,type="info"){
  box.textContent=message;
  box.classList.remove("hidden");
  window.scrollTo({top:0,behavior:"smooth"});
- if(type!=="error") setTimeout(()=>box.classList.add("hidden"),6000);
+ if(type!=="error")setTimeout(()=>box.classList.add("hidden"),6000);
 }
 
-function showLoginMessage(message){$("loginMessage").textContent=message}
+function showLoginMessage(message){
+ $("loginMessage").textContent=message;
+}
 
 function setLoading(button,on,label){
- if(!button.dataset.originalText) button.dataset.originalText=button.textContent;
+ if(!button.dataset.originalText)button.dataset.originalText=button.textContent;
  button.disabled=on;
  button.textContent=on?(label||"جارٍ التنفيذ..."):button.dataset.originalText;
 }
@@ -364,19 +411,19 @@ async function uploadFile(file,folder){
  const {data,error}=await ensureClient().storage.from(STORAGE_BUCKET).upload(path,file,{
   cacheControl:"3600",upsert:false,contentType:file.type||undefined
  });
- if(error) throw error;
+ if(error)throw error;
  return data.path;
 }
 
 async function fetchRows(table){
  const {data,error}=await ensureClient().from(table).select("*").order("created_at",{ascending:false});
- if(error) throw error;
+ if(error)throw error;
  return data||[];
 }
 
 async function isAdmin(user){
- if(!user) return false;
- if(user.id===ADMIN_UID) return true;
+ if(!user)return false;
+ if(user.id===ADMIN_UID)return true;
  const {data,error}=await ensureClient().from("profiles").select("role").eq("id",user.id).maybeSingle();
  if(error){console.error(error);return false}
  return String(data?.role||"").toLowerCase()==="admin";
@@ -408,30 +455,41 @@ $("loginForm").addEventListener("submit",async e=>{
   const {data,error}=await ensureClient().auth.signInWithPassword({
    email:$("email").value.trim(),password:$("password").value
   });
-  if(error) throw error;
-  if(!data?.user) throw new Error("تعذر العثور على الحساب.");
+  if(error)throw error;
+  if(!data?.user)throw new Error("تعذر العثور على الحساب.");
   await enterAdmin(data.user);
  }catch(error){
   console.error(error);
   showLoginMessage(friendlyError(error));
- }finally{setLoading(button,false)}
+ }finally{
+  setLoading(button,false);
+ }
 });
 
 $("logoutButton").addEventListener("click",async()=>{
  try{
-  if(db){const {error}=await db.auth.signOut();if(error)throw error}
+  if(db){
+   const {error}=await db.auth.signOut();
+   if(error)throw error;
+  }
   currentUser=null;
   $("adminApp").classList.add("hidden");
   $("loginScreen").classList.remove("hidden");
   $("password").value="";
   showLoginMessage("تم تسجيل الخروج.");
- }catch(e){showStatus(friendlyError(e),"error")}
+ }catch(e){
+  showStatus(friendlyError(e),"error");
+ }
 });
 
 const titles={
- dashboard:"الرئيسية",lectures:"إدارة المحاضرات",notes:"إدارة المذكرات",
- exams:"إدارة الاختبارات",questions:"أسئلة الاختبارات",
- students:"حسابات الطلاب",forum:"إدارة المنتدى"
+ dashboard:"الرئيسية",
+ lectures:"إدارة المحاضرات",
+ notes:"إدارة المذكرات",
+ exams:"إدارة الاختبارات",
+ questions:"أسئلة الاختبارات",
+ students:"حسابات الطلاب",
+ forum:"إدارة المنتدى"
 };
 
 document.querySelectorAll(".nav-btn[data-panel]").forEach(button=>{
@@ -441,40 +499,49 @@ document.querySelectorAll(".nav-btn[data-panel]").forEach(button=>{
   document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
   $("panel-"+name).classList.add("active");
   $("pageTitle").textContent=titles[name]||"لوحة التحكم";
-  if(name==="forum") loadForum().catch(e=>showStatus("تعذر تحميل المنتدى: "+friendlyError(e),"error"));
+  if(name==="forum")loadForum();
  });
 });
 
 async function deleteRow(table,id){
- if(!confirm("هل أنت متأكد من حذف هذا العنصر؟")) return;
+ if(!confirm("هل أنت متأكد من حذف هذا العنصر؟"))return;
  const {error}=await ensureClient().from(table).delete().eq("id",id);
- if(error) throw error;
+ if(error)throw error;
  showStatus("تم الحذف بنجاح.","success");
  await loadAllData();
 }
 
-/* المحاضرات */
+/* ================= المحاضرات ================= */
+
 async function loadLectures(){
  lecturesCache=await fetchRows("lectures");
  const body=$("lecturesTable");
  if(!lecturesCache.length)return renderEmpty(body,4);
+
  body.innerHTML=lecturesCache.map(r=>`<tr>
-  <td>${escapeHTML(r.title)}</td><td>${escapeHTML(r.description||"—")}</td>
+  <td>${escapeHTML(r.title)}</td>
+  <td>${escapeHTML(r.description||"—")}</td>
   <td>${escapeHTML(r.video_url||"—")}</td>
-  <td><div class="actions">${actionButton("تعديل","edit-lecture",r.id,"blue")}${actionButton("حذف","delete-lecture",r.id,"danger")}</div></td>
+  <td><div class="actions">
+   ${actionButton("تعديل","edit-lecture",r.id,"blue")}
+   ${actionButton("حذف","delete-lecture",r.id,"danger")}
+  </div></td>
  </tr>`).join("");
 }
 
 $("lectureForm").addEventListener("submit",async e=>{
  e.preventDefault();
- const button=$("saveLecture");setLoading(button,true,"جارٍ الحفظ...");
+ const button=$("saveLecture");
+ setLoading(button,true,"جارٍ الحفظ...");
  $("videoProgress").classList.remove("hidden");
+
  try{
   const id=$("lectureId").value;
   const title=$("lectureTitle").value.trim();
   const description=$("lectureDescription").value.trim();
   let video_url=$("lectureUrl").value.trim();
   const file=$("videoFile").files[0];
+
   if(file){
    $("videoProgressBar").style.width="30%";
    video_url=await uploadFile(file,"videos");
@@ -482,146 +549,252 @@ $("lectureForm").addEventListener("submit",async e=>{
   }else if(id&&!video_url){
    video_url=lecturesCache.find(r=>String(r.id)===String(id))?.video_url||"";
   }
+
   const payload={title,description,video_url};
   const result=id
    ?await ensureClient().from("lectures").update(payload).eq("id",id)
    :await ensureClient().from("lectures").insert(payload);
+
   if(result.error)throw result.error;
   $("videoProgressBar").style.width="100%";
-  resetLectureForm();showStatus("تم حفظ المحاضرة بنجاح.","success");await loadAllData();
- }catch(e){console.error(e);showStatus("تعذر حفظ المحاضرة: "+friendlyError(e),"error")}
- finally{setLoading(button,false);setTimeout(()=>{$("videoProgress").classList.add("hidden");$("videoProgressBar").style.width="0"},700)}
+  resetLectureForm();
+  showStatus("تم حفظ المحاضرة بنجاح.","success");
+  await loadAllData();
+ }catch(e){
+  console.error(e);
+  showStatus("تعذر حفظ المحاضرة: "+friendlyError(e),"error");
+ }finally{
+  setLoading(button,false);
+  setTimeout(()=>{
+   $("videoProgress").classList.add("hidden");
+   $("videoProgressBar").style.width="0";
+  },700);
+ }
 });
 
 function resetLectureForm(){
- $("lectureForm").reset();$("lectureId").value="";
+ $("lectureForm").reset();
+ $("lectureId").value="";
  $("lectureFormTitle").textContent="إضافة محاضرة جديدة";
  $("saveLecture").textContent="حفظ المحاضرة";
 }
 $("cancelLectureEdit").addEventListener("click",resetLectureForm);
 
-/* المذكرات */
+/* ================= المذكرات ================= */
+
 async function loadNotes(){
  notesCache=await fetchRows("notes");
  const body=$("notesTable");
  if(!notesCache.length)return renderEmpty(body,3);
+
  body.innerHTML=notesCache.map(r=>`<tr>
-  <td>${escapeHTML(r.title)}</td><td>${escapeHTML(r.file_path||"—")}</td>
-  <td><div class="actions">${actionButton("تعديل","edit-note",r.id,"blue")}${actionButton("حذف","delete-note",r.id,"danger")}</div></td>
+  <td>${escapeHTML(r.title)}</td>
+  <td>${escapeHTML(r.file_path||"—")}</td>
+  <td><div class="actions">
+   ${actionButton("تعديل","edit-note",r.id,"blue")}
+   ${actionButton("حذف","delete-note",r.id,"danger")}
+  </div></td>
  </tr>`).join("");
 }
 
 $("noteForm").addEventListener("submit",async e=>{
- e.preventDefault();const button=$("saveNote");setLoading(button,true,"جارٍ الحفظ...");
+ e.preventDefault();
+ const button=$("saveNote");
+ setLoading(button,true,"جارٍ الحفظ...");
+
  try{
-  const id=$("noteId").value,title=$("noteTitle").value.trim(),file=$("pdfFile").files[0];
+  const id=$("noteId").value;
+  const title=$("noteTitle").value.trim();
+  const file=$("pdfFile").files[0];
   let file_path="";
+
   if(file){
-   if(file.type!=="application/pdf"&&!file.name.toLowerCase().endsWith(".pdf"))throw new Error("اختر ملف PDF فقط.");
+   if(file.type!=="application/pdf"&&!file.name.toLowerCase().endsWith(".pdf"))
+    throw new Error("اختر ملف PDF فقط.");
    file_path=await uploadFile(file,"pdf");
   }else if(id){
    file_path=notesCache.find(r=>String(r.id)===String(id))?.file_path||"";
-  }else throw new Error("اختر ملف PDF للمذكرة.");
+  }else{
+   throw new Error("اختر ملف PDF للمذكرة.");
+  }
+
   const payload={title,file_path};
-  const result=id?await ensureClient().from("notes").update(payload).eq("id",id):await ensureClient().from("notes").insert(payload);
+  const result=id
+   ?await ensureClient().from("notes").update(payload).eq("id",id)
+   :await ensureClient().from("notes").insert(payload);
+
   if(result.error)throw result.error;
-  resetNoteForm();showStatus("تم حفظ المذكرة بنجاح.","success");await loadAllData();
- }catch(e){showStatus("تعذر حفظ المذكرة: "+friendlyError(e),"error")}
- finally{setLoading(button,false)}
+  resetNoteForm();
+  showStatus("تم حفظ المذكرة بنجاح.","success");
+  await loadAllData();
+ }catch(e){
+  showStatus("تعذر حفظ المذكرة: "+friendlyError(e),"error");
+ }finally{
+  setLoading(button,false);
+ }
 });
 
 function resetNoteForm(){
- $("noteForm").reset();$("noteId").value="";
- $("noteFormTitle").textContent="إضافة مذكرة جديدة";$("saveNote").textContent="حفظ المذكرة";
+ $("noteForm").reset();
+ $("noteId").value="";
+ $("noteFormTitle").textContent="إضافة مذكرة جديدة";
+ $("saveNote").textContent="حفظ المذكرة";
 }
 $("cancelNoteEdit").addEventListener("click",resetNoteForm);
 
-/* الاختبارات */
+/* ================= الاختبارات ================= */
+
 async function loadExams(){
  examsCache=await fetchRows("exams");
  const body=$("examsTable");
+
  if(!examsCache.length)renderEmpty(body,4);
  else body.innerHTML=examsCache.map(r=>`<tr>
-  <td>${escapeHTML(r.title)}</td><td>${escapeHTML(r.description||"—")}</td>
+  <td>${escapeHTML(r.title)}</td>
+  <td>${escapeHTML(r.description||"—")}</td>
   <td>${escapeHTML(r.duration??"—")} دقيقة</td>
-  <td><div class="actions">${actionButton("تعديل","edit-exam",r.id,"blue")}${actionButton("حذف","delete-exam",r.id,"danger")}</div></td>
+  <td><div class="actions">
+   ${actionButton("تعديل","edit-exam",r.id,"blue")}
+   ${actionButton("حذف","delete-exam",r.id,"danger")}
+  </div></td>
  </tr>`).join("");
- const select=$("questionExam"),previous=select.value;
- select.innerHTML='<option value="">اختر الاختبار</option>'+examsCache.map(r=>`<option value="${escapeHTML(r.id)}">${escapeHTML(r.title)}</option>`).join("");
+
+ const select=$("questionExam");
+ const previous=select.value;
+ select.innerHTML='<option value="">اختر الاختبار</option>'+
+  examsCache.map(r=>`<option value="${escapeHTML(r.id)}">${escapeHTML(r.title)}</option>`).join("");
+
  if(examsCache.some(r=>String(r.id)===previous))select.value=previous;
 }
 
 $("examForm").addEventListener("submit",async e=>{
- e.preventDefault();const button=$("saveExam");setLoading(button,true,"جارٍ الحفظ...");
+ e.preventDefault();
+ const button=$("saveExam");
+ setLoading(button,true,"جارٍ الحفظ...");
+
  try{
   const id=$("examId").value;
-  const payload={title:$("examTitle").value.trim(),description:$("examDescription").value.trim(),duration:Number($("examDuration").value)};
+  const payload={
+   title:$("examTitle").value.trim(),
+   description:$("examDescription").value.trim(),
+   duration:Number($("examDuration").value)
+  };
+
   if(!payload.duration||payload.duration<1)throw new Error("أدخل مدة صحيحة للاختبار.");
-  const result=id?await ensureClient().from("exams").update(payload).eq("id",id):await ensureClient().from("exams").insert(payload);
+
+  const result=id
+   ?await ensureClient().from("exams").update(payload).eq("id",id)
+   :await ensureClient().from("exams").insert(payload);
+
   if(result.error)throw result.error;
-  resetExamForm();showStatus("تم حفظ الاختبار بنجاح.","success");await loadAllData();
- }catch(e){showStatus("تعذر حفظ الاختبار: "+friendlyError(e),"error")}
- finally{setLoading(button,false)}
+  resetExamForm();
+  showStatus("تم حفظ الاختبار بنجاح.","success");
+  await loadAllData();
+ }catch(e){
+  showStatus("تعذر حفظ الاختبار: "+friendlyError(e),"error");
+ }finally{
+  setLoading(button,false);
+ }
 });
 
 function resetExamForm(){
- $("examForm").reset();$("examId").value="";$("examDuration").value="30";
- $("examFormTitle").textContent="إضافة اختبار جديد";$("saveExam").textContent="حفظ الاختبار";
+ $("examForm").reset();
+ $("examId").value="";
+ $("examDuration").value="30";
+ $("examFormTitle").textContent="إضافة اختبار جديد";
+ $("saveExam").textContent="حفظ الاختبار";
 }
 $("cancelExamEdit").addEventListener("click",resetExamForm);
 
-/* أسئلة الاختبارات */
+/* ================= أسئلة الاختبارات ================= */
+
 async function loadQuestions(){
  questionsCache=await fetchRows("exam_questions");
  const body=$("questionsTable");
+
  if(!questionsCache.length)return renderEmpty(body,4);
+
  body.innerHTML=questionsCache.map(r=>{
   const exam=examsCache.find(x=>String(x.id)===String(r.exam_id));
-  return `<tr><td>${escapeHTML(r.question)}</td><td>${escapeHTML(exam?.title||r.exam_id||"—")}</td>
+  return `<tr>
+   <td>${escapeHTML(r.question)}</td>
+   <td>${escapeHTML(exam?.title||r.exam_id||"—")}</td>
    <td>${escapeHTML(r.correct_answer||"—")}</td>
-   <td><div class="actions">${actionButton("تعديل","edit-question",r.id,"blue")}${actionButton("حذف","delete-question",r.id,"danger")}</div></td></tr>`;
+   <td><div class="actions">
+    ${actionButton("تعديل","edit-question",r.id,"blue")}
+    ${actionButton("حذف","delete-question",r.id,"danger")}
+   </div></td>
+  </tr>`;
  }).join("");
 }
 
 $("questionForm").addEventListener("submit",async e=>{
- e.preventDefault();const button=$("saveQuestion");setLoading(button,true,"جارٍ الحفظ...");
+ e.preventDefault();
+ const button=$("saveQuestion");
+ setLoading(button,true,"جارٍ الحفظ...");
+
  try{
   const id=$("questionId").value;
   const payload={
-   exam_id:$("questionExam").value,question:$("questionText").value.trim(),
-   option_a:$("optionA").value.trim(),option_b:$("optionB").value.trim(),
-   option_c:$("optionC").value.trim(),option_d:$("optionD").value.trim(),
+   exam_id:$("questionExam").value,
+   question:$("questionText").value.trim(),
+   option_a:$("optionA").value.trim(),
+   option_b:$("optionB").value.trim(),
+   option_c:$("optionC").value.trim(),
+   option_d:$("optionD").value.trim(),
    correct_answer:$("correctAnswer").value
   };
+
   if(!payload.exam_id)throw new Error("اختر الاختبار أولًا.");
-  const result=id?await ensureClient().from("exam_questions").update(payload).eq("id",id):await ensureClient().from("exam_questions").insert(payload);
+
+  const result=id
+   ?await ensureClient().from("exam_questions").update(payload).eq("id",id)
+   :await ensureClient().from("exam_questions").insert(payload);
+
   if(result.error)throw result.error;
-  resetQuestionForm();showStatus("تم حفظ السؤال بنجاح.","success");await loadAllData();
- }catch(e){showStatus("تعذر حفظ السؤال: "+friendlyError(e),"error")}
- finally{setLoading(button,false)}
+  resetQuestionForm();
+  showStatus("تم حفظ السؤال بنجاح.","success");
+  await loadAllData();
+ }catch(e){
+  showStatus("تعذر حفظ السؤال: "+friendlyError(e),"error");
+ }finally{
+  setLoading(button,false);
+ }
 });
 
 function resetQuestionForm(){
- $("questionForm").reset();$("questionId").value="";
- $("questionFormTitle").textContent="إضافة سؤال لاختبار";$("saveQuestion").textContent="حفظ السؤال";
+ $("questionForm").reset();
+ $("questionId").value="";
+ $("questionFormTitle").textContent="إضافة سؤال لاختبار";
+ $("saveQuestion").textContent="حفظ السؤال";
 }
 $("cancelQuestionEdit").addEventListener("click",resetQuestionForm);
 
-/* الطلاب */
+/* ================= حسابات الطلاب ورقم الهاتف ================= */
+
 async function loadProfiles(){
- const {data,error}=await ensureClient().from("profiles").select("id,full_name,email,role").order("full_name",{ascending:true});
+ const {data,error}=await ensureClient()
+  .from("profiles")
+  .select("id,full_name,email,phone,role")
+  .order("full_name",{ascending:true});
+
  if(error)throw error;
+
  profilesCache=data||[];
  const body=$("studentsTable");
- if(!profilesCache.length)return renderEmpty(body,4);
+
+ if(!profilesCache.length)return renderEmpty(body,5);
+
  body.innerHTML=profilesCache.map(r=>`<tr>
-  <td>${escapeHTML(r.full_name||"—")}</td><td>${escapeHTML(r.email||"—")}</td>
-  <td>${escapeHTML(r.role||"student")}</td><td>${escapeHTML(r.id||"—")}</td>
+  <td>${escapeHTML(r.full_name||"—")}</td>
+  <td>${escapeHTML(r.phone||"غير مسجل")}</td>
+  <td>${escapeHTML(r.email||"—")}</td>
+  <td>${escapeHTML(r.role||"student")}</td>
+  <td>${escapeHTML(r.id||"—")}</td>
  </tr>`).join("");
 }
 
-/* المنتدى: الجداول المفترضة forum_posts و forum_replies.
-   يتم اكتشاف أسماء بعض أعمدة النصوص والمؤلف تلقائيًا. */
+/* ================= أدوات المنتدى ================= */
 
 function firstValue(row,keys){
  for(const key of keys){
@@ -633,9 +806,11 @@ function firstValue(row,keys){
 function postText(row){
  return firstValue(row,["content","body","message","text","post_content","title"])||"(منشور بلا نص)";
 }
+
 function authorText(row){
  return firstValue(row,["full_name","username","author_name","user_name","email","user_id","author_id"])||"غير معروف";
 }
+
 function dateText(row){
  const value=firstValue(row,["created_at","inserted_at","date","created_on"]);
  if(!value)return "—";
@@ -643,29 +818,94 @@ function dateText(row){
  return Number.isNaN(d.getTime())?String(value):d.toLocaleString("ar-EG");
 }
 
+function getPostImage(row){
+ return firstValue(row,["image_url","image","photo_url","attachment_url","image_path"]);
+}
+
+/* تحويل رابط الصورة إلى رابط آمن للعرض */
+function imageHTML(row){
+ const raw=getPostImage(row);
+ if(!raw)return "—";
+
+ const url=String(raw).trim();
+ if(!/^https?:\/\//i.test(url)) {
+  return `<span class="hint">مسار الصورة: ${escapeHTML(url)}</span>`;
+ }
+
+ return `<a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer">
+  <img class="forum-image" src="${escapeHTML(url)}" alt="صورة منشور الطالب" loading="lazy">
+ </a>`;
+}
+
+/*
+ * تجربة جدول forum_posts أولًا ثم forum.
+ * الجدول الذي يحتوي على المنشورات هو الذي سيتم استخدامه.
+ */
+async function discoverForumPostsTable(){
+ const candidates=["forum_posts","forum"];
+ let lastError=null;
+
+ for(const table of candidates){
+  try{
+   const {data,error}=await ensureClient()
+    .from(table).select("*").order("created_at",{ascending:false});
+
+   if(error){
+    lastError=error;
+    continue;
+   }
+
+   if(data&&data.length){
+    forumPostsTableName=table;
+    return data;
+   }
+
+   /* الاحتفاظ بالجدول الصالح الفارغ كخيار احتياطي */
+   if(!forumPostsTableName)forumPostsTableName=table;
+  }catch(error){
+   lastError=error;
+  }
+ }
+
+ if(forumPostsTableName){
+  const {data,error}=await ensureClient().from(forumPostsTableName).select("*");
+  if(!error)return data||[];
+  lastError=error;
+ }
+
+ throw lastError||new Error("لم يتم العثور على جدول المنتدى.");
+}
+
 async function loadForum(){
  if(!currentUser)return;
+
  const postsBody=$("forumPostsTable");
  const repliesBody=$("forumRepliesTable");
- renderEmpty(postsBody,4,"جارٍ تحميل المنشورات...");
+
+ renderEmpty(postsBody,5,"جارٍ تحميل المنشورات...");
+
  try{
-  forumPostsCache=await fetchRows("forum_posts");
-  const select=$("forumPostSelect"),previous=select.value;
+  forumPostsCache=await discoverForumPostsTable();
+
+  const select=$("forumPostSelect");
+  const previous=select.value;
 
   if(!forumPostsCache.length){
-   renderEmpty(postsBody,4,"لا توجد منشورات.");
+   renderEmpty(postsBody,5,"لا توجد منشورات في جدول المنتدى.");
    select.innerHTML='<option value="">لا توجد منشورات</option>';
    renderEmpty(repliesBody,4,"لا توجد منشورات لعرض ردودها.");
+   $("selectedPostPreview").classList.add("hidden");
    forumRepliesCache=[];
    return;
   }
 
   postsBody.innerHTML=forumPostsCache.map(r=>`<tr>
-   <td>${escapeHTML(postText(r))}</td>
+   <td><div class="post-content">${escapeHTML(postText(r))}</div></td>
+   <td>${imageHTML(r)}</td>
    <td>${escapeHTML(authorText(r))}</td>
    <td>${escapeHTML(dateText(r))}</td>
    <td><div class="actions">
-    ${actionButton("عرض الردود","show-post-replies",r.id,"blue")}
+    ${actionButton("الرد على المنشور","show-post-replies",r.id,"blue")}
     ${actionButton("حذف المنشور","delete-post",r.id,"danger")}
    </div></td>
   </tr>`).join("");
@@ -675,134 +915,301 @@ async function loadForum(){
 
   if(previous&&forumPostsCache.some(r=>String(r.id)===previous)){
    select.value=previous;
+   showSelectedPost(previous);
    await loadForumReplies(previous);
   }else{
    renderEmpty(repliesBody,4,"اختر منشورًا لعرض الردود.");
+   $("selectedPostPreview").classList.add("hidden");
   }
 
  }catch(error){
   console.error("Forum load error:",error);
-  renderEmpty(postsBody,4,"تعذر تحميل المنشورات: "+friendlyError(error));
-  showStatus("تعذر تحميل المنتدى. تأكد من وجود جدول forum_posts وأسماء أعمدته.","error");
+  renderEmpty(postsBody,5,"تعذر تحميل المنشورات: "+friendlyError(error));
+  showStatus("تعذر تحميل المنتدى. تحقق من وجود جدول forum_posts أو forum وصلاحيات القراءة.","error");
  }
 }
 
+function showSelectedPost(postId){
+ const post=forumPostsCache.find(r=>String(r.id)===String(postId));
+
+ if(!post){
+  $("selectedPostPreview").classList.add("hidden");
+  return;
+ }
+
+ $("selectedPostText").textContent=postText(post);
+ $("selectedPostPreview").classList.remove("hidden");
+}
+
+/* ================= عرض الردود ================= */
+
 async function loadForumReplies(postId){
  const body=$("forumRepliesTable");
+
  if(!postId)return renderEmpty(body,4,"اختر منشورًا لعرض الردود.");
+
  renderEmpty(body,4,"جارٍ تحميل الردود...");
+
  try{
-  /*
-   * يفترض أن forum_replies يحتوي على عمود post_id لربط الرد بالمنشور.
-   */
-  const {data,error}=await ensureClient().from("forum_replies")
-   .select("*").eq("post_id",postId).order("created_at",{ascending:true});
+  const {data,error}=await ensureClient()
+   .from(forumRepliesTableName)
+   .select("*")
+   .eq("post_id",postId)
+   .order("created_at",{ascending:true});
+
   if(error)throw error;
+
   forumRepliesCache=data||[];
 
-  if(!forumRepliesCache.length)return renderEmpty(body,4,"لا توجد ردود على هذا المنشور.");
+  if(!forumRepliesCache.length){
+   return renderEmpty(body,4,"لا توجد ردود على هذا المنشور حتى الآن.");
+  }
 
   body.innerHTML=forumRepliesCache.map(r=>`<tr>
-   <td>${escapeHTML(firstValue(r,["content","body","message","text","reply","reply_content"])||"(رد بلا نص)")}</td>
+   <td><div class="post-content">${escapeHTML(firstValue(r,["content","body","message","text","reply","reply_content"])||"(رد بلا نص)")}</div></td>
    <td>${escapeHTML(authorText(r))}</td>
    <td>${escapeHTML(dateText(r))}</td>
    <td>${actionButton("حذف الرد","delete-reply",r.id,"danger")}</td>
   </tr>`).join("");
+
  }catch(error){
-  console.error(error);
+  console.error("Replies error:",error);
   renderEmpty(body,4,"تعذر تحميل الردود: "+friendlyError(error));
  }
 }
 
-$("refreshForum").addEventListener("click",()=>loadForum());
-$("forumPostSelect").addEventListener("change",e=>loadForumReplies(e.target.value));
+/* ================= إرسال رد الأدمن ================= */
 
-/* أزرار التعديل والحذف */
+$("adminReplyForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+
+ const button=$("sendAdminReply");
+ const postId=$("forumPostSelect").value;
+ const content=$("adminReplyText").value.trim();
+
+ if(!postId){
+  showStatus("اختر منشور الطالب الذي تريد الرد عليه أولًا.","error");
+  return;
+ }
+
+ if(!content){
+  showStatus("اكتب الرد قبل الإرسال.","error");
+  return;
+ }
+
+ if(!currentUser){
+  showStatus("انتهت جلسة الدخول. سجّل الدخول مرة أخرى.","error");
+  return;
+ }
+
+ setLoading(button,true,"جارٍ إرسال الرد...");
+
+ try{
+  /*
+   * يفترض أن forum_replies يحتوي على:
+   * post_id, content, user_id
+   */
+  const payload={
+   post_id:postId,
+   content:content,
+   user_id:currentUser.id
+  };
+
+  const {error}=await ensureClient()
+   .from(forumRepliesTableName)
+   .insert(payload);
+
+  if(error)throw error;
+
+  $("adminReplyText").value="";
+  showStatus("تم إرسال ردك بنجاح.","success");
+  await loadForumReplies(postId);
+
+ }catch(error){
+  console.error("Send reply error:",error);
+  showStatus(
+   "تعذر إرسال الرد: "+friendlyError(error)+
+   " تأكد من وجود جدول forum_replies وأعمدته post_id وcontent وuser_id، ومن صلاحيات الإضافة.",
+   "error"
+  );
+ }finally{
+  setLoading(button,false);
+ }
+});
+
+$("clearReply").addEventListener("click",()=>{
+ $("adminReplyText").value="";
+});
+
+$("forumPostSelect").addEventListener("change",async e=>{
+ const postId=e.target.value;
+ showSelectedPost(postId);
+ await loadForumReplies(postId);
+});
+
+$("refreshForum").addEventListener("click",async()=>{
+ await loadForum();
+});
+
+$("forumPostSelect").addEventListener("change",()=>{
+ $("adminReplyText").value="";
+});
+
+/* ================= أزرار التعديل والحذف ================= */
+
 document.addEventListener("click",async event=>{
  const button=event.target.closest("button[data-action]");
  if(!button)return;
- const action=button.dataset.action,id=button.dataset.id;
+
+ const action=button.dataset.action;
+ const id=button.dataset.id;
+
  try{
   if(action==="edit-lecture"){
-   const r=lecturesCache.find(x=>String(x.id)===String(id));if(!r)return;
-   $("lectureId").value=r.id;$("lectureTitle").value=r.title||"";
+   const r=lecturesCache.find(x=>String(x.id)===String(id));
+   if(!r)return;
+
+   $("lectureId").value=r.id;
+   $("lectureTitle").value=r.title||"";
    $("lectureDescription").value=r.description||"";
    $("lectureUrl").value=r.video_url&&/^https?:\/\//i.test(r.video_url)?r.video_url:"";
-   $("lectureFormTitle").textContent="تعديل المحاضرة";$("saveLecture").textContent="حفظ التعديلات";
+   $("lectureFormTitle").textContent="تعديل المحاضرة";
+   $("saveLecture").textContent="حفظ التعديلات";
    $("panel-lectures").scrollIntoView({behavior:"smooth"});
+
   }else if(action==="delete-lecture"){
    await deleteRow("lectures",id);
+
   }else if(action==="edit-note"){
-   const r=notesCache.find(x=>String(x.id)===String(id));if(!r)return;
-   $("noteId").value=r.id;$("noteTitle").value=r.title||"";
-   $("noteFormTitle").textContent="تعديل المذكرة";$("saveNote").textContent="حفظ التعديلات";
+   const r=notesCache.find(x=>String(x.id)===String(id));
+   if(!r)return;
+
+   $("noteId").value=r.id;
+   $("noteTitle").value=r.title||"";
+   $("noteFormTitle").textContent="تعديل المذكرة";
+   $("saveNote").textContent="حفظ التعديلات";
    $("panel-notes").scrollIntoView({behavior:"smooth"});
+
   }else if(action==="delete-note"){
    await deleteRow("notes",id);
+
   }else if(action==="edit-exam"){
-   const r=examsCache.find(x=>String(x.id)===String(id));if(!r)return;
-   $("examId").value=r.id;$("examTitle").value=r.title||"";
-   $("examDescription").value=r.description||"";$("examDuration").value=r.duration||30;
-   $("examFormTitle").textContent="تعديل الاختبار";$("saveExam").textContent="حفظ التعديلات";
+   const r=examsCache.find(x=>String(x.id)===String(id));
+   if(!r)return;
+
+   $("examId").value=r.id;
+   $("examTitle").value=r.title||"";
+   $("examDescription").value=r.description||"";
+   $("examDuration").value=r.duration||30;
+   $("examFormTitle").textContent="تعديل الاختبار";
+   $("saveExam").textContent="حفظ التعديلات";
    $("panel-exams").scrollIntoView({behavior:"smooth"});
+
   }else if(action==="delete-exam"){
    if(questionsCache.some(r=>String(r.exam_id)===String(id))){
-    showStatus("احذف أسئلة الاختبار أولًا ثم احذف الاختبار.","error");return;
+    showStatus("احذف أسئلة الاختبار أولًا ثم احذف الاختبار.","error");
+    return;
    }
    await deleteRow("exams",id);
+
   }else if(action==="edit-question"){
-   const r=questionsCache.find(x=>String(x.id)===String(id));if(!r)return;
-   $("questionId").value=r.id;$("questionExam").value=r.exam_id||"";
-   $("questionText").value=r.question||"";$("optionA").value=r.option_a||"";
-   $("optionB").value=r.option_b||"";$("optionC").value=r.option_c||"";
-   $("optionD").value=r.option_d||"";$("correctAnswer").value=r.correct_answer||"";
-   $("questionFormTitle").textContent="تعديل السؤال";$("saveQuestion").textContent="حفظ التعديلات";
+   const r=questionsCache.find(x=>String(x.id)===String(id));
+   if(!r)return;
+
+   $("questionId").value=r.id;
+   $("questionExam").value=r.exam_id||"";
+   $("questionText").value=r.question||"";
+   $("optionA").value=r.option_a||"";
+   $("optionB").value=r.option_b||"";
+   $("optionC").value=r.option_c||"";
+   $("optionD").value=r.option_d||"";
+   $("correctAnswer").value=r.correct_answer||"";
+   $("questionFormTitle").textContent="تعديل السؤال";
+   $("saveQuestion").textContent="حفظ التعديلات";
    $("panel-questions").scrollIntoView({behavior:"smooth"});
+
   }else if(action==="delete-question"){
    await deleteRow("exam_questions",id);
+
   }else if(action==="show-post-replies"){
    $("forumPostSelect").value=id;
+   showSelectedPost(id);
    $("panel-forum").scrollIntoView({behavior:"smooth"});
    await loadForumReplies(id);
+   $("adminReplyText").focus();
+
   }else if(action==="delete-post"){
    if(!confirm("هل تريد حذف المنشور؟"))return;
+
    /*
-    * حذف الردود أولًا، ثم المنشور. يتطلب ذلك سماح سياسات RLS
-    * بحذف الردود والمنشورات لحساب الأدمن.
+    * حذف الردود أولًا ثم المنشور.
+    * يجب أن تسمح سياسات RLS للأدمن بالحذف.
     */
-   const repliesResult=await ensureClient().from("forum_replies").delete().eq("post_id",id);
+   const repliesResult=await ensureClient()
+    .from(forumRepliesTableName)
+    .delete()
+    .eq("post_id",id);
+
    if(repliesResult.error)throw repliesResult.error;
-   const postResult=await ensureClient().from("forum_posts").delete().eq("id",id);
+
+   const postResult=await ensureClient()
+    .from(forumPostsTableName)
+    .delete()
+    .eq("id",id);
+
    if(postResult.error)throw postResult.error;
+
    showStatus("تم حذف المنشور وردوده.","success");
    await loadForum();
+
   }else if(action==="delete-reply"){
    if(!confirm("هل تريد حذف هذا الرد؟"))return;
-   const {error}=await ensureClient().from("forum_replies").delete().eq("id",id);
+
+   const {error}=await ensureClient()
+    .from(forumRepliesTableName)
+    .delete()
+    .eq("id",id);
+
    if(error)throw error;
+
    showStatus("تم حذف الرد.","success");
    await loadForumReplies($("forumPostSelect").value);
   }
+
  }catch(error){
   console.error(error);
   showStatus("حدث خطأ: "+friendlyError(error),"error");
  }
 });
 
+/* ================= تحديث جميع البيانات ================= */
+
 async function loadAllData(){
  if(!currentUser)return;
+
  showStatus("جارٍ تحميل بيانات لوحة التحكم...","info");
+
  try{
   await Promise.all([
-   loadLectures(),loadNotes(),loadExams(),loadProfiles()
+   loadLectures(),
+   loadNotes(),
+   loadExams(),
+   loadProfiles()
   ]);
+
   await loadQuestions();
+
   $("countLectures").textContent=lecturesCache.length;
   $("countNotes").textContent=notesCache.length;
   $("countExams").textContent=examsCache.length;
   $("countStudents").textContent=profilesCache.length;
+
   $("globalStatus").classList.add("hidden");
-  if($("panel-forum").classList.contains("active"))await loadForum();
+
+  if($("panel-forum").classList.contains("active")){
+   await loadForum();
+  }
+
  }catch(error){
   console.error(error);
   showStatus("تعذر تحميل بعض البيانات: "+friendlyError(error),"error");
@@ -812,12 +1219,18 @@ async function loadAllData(){
 $("refreshButton").addEventListener("click",loadAllData);
 $("topRefresh").addEventListener("click",loadAllData);
 
+/* ================= تشغيل لوحة الإدارة ================= */
+
 async function startAdminPanel(){
  try{
   ensureClient();
+
   const {data,error}=await db.auth.getSession();
   if(error)throw error;
-  if(data.session?.user)await enterAdmin(data.session.user);
+
+  if(data.session?.user){
+   await enterAdmin(data.session.user);
+  }
 
   db.auth.onAuthStateChange((event,session)=>{
    setTimeout(async()=>{
@@ -825,12 +1238,17 @@ async function startAdminPanel(){
      currentUser=null;
      $("adminApp").classList.add("hidden");
      $("loginScreen").classList.remove("hidden");
+
     }else if(event==="SIGNED_IN"&&session?.user&&!currentUser){
-     try{await enterAdmin(session.user)}
-     catch(e){showLoginMessage(friendlyError(e))}
+     try{
+      await enterAdmin(session.user);
+     }catch(e){
+      showLoginMessage(friendlyError(e));
+     }
     }
    },0);
   });
+
  }catch(error){
   console.error(error);
   $("loginScreen").classList.remove("hidden");
