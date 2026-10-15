@@ -8,315 +8,374 @@
   <title>المذكرات | منصة أرض الأحياء</title>
 
   <meta name="description"
-    content="مذكرات الأحياء للصف الثالث الثانوي على منصة أرض الأحياء.">
+    content="مذكرات الأحياء للصف الثالث الثانوي في منصة أرض الأحياء.">
 
   <link rel="icon" href="../favicon.png">
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap"
+    rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    :root {
-      --green: #075e4d;
-      --green-dark: #064b3e;
-      --green-light: #0b806f;
-      --bg: #f5f7f6;
-      --white: #ffffff;
-      --text: #25332f;
-      --muted: #718079;
-      --border: #e4ebe7;
-      --shadow: 0 4px 18px rgba(16, 56, 43, .07);
-    }
-
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    :root {
+      --green: #026857;
+      --green-dark: #014d40;
+      --blue: #1e3a8a;
+      --blue-light: #2563eb;
+      --bg: #f0f4f8;
+      --border: #e2e8f0;
+      --text: #2c3e50;
+      --muted: #64748b;
     }
 
     body {
-      font-family: Tahoma, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.7;
+      min-height: 100vh;
     }
 
     a {
       text-decoration: none;
-      color: inherit;
     }
 
     button,
     input {
-      font-family: inherit;
+      font: inherit;
     }
 
-    /* القائمة الجانبية */
+    /* =====================================
+       الشريط الجانبي - نفس تصميم المحاضرات
+    ===================================== */
 
     .sidebar {
-      width: 245px;
-      height: 100vh;
+      width: 270px;
+      background: linear-gradient(
+        180deg,
+        #026857 0%,
+        #075e54 48%,
+        #1e3a8a 100%
+      );
+      color: white;
       position: fixed;
       right: 0;
       top: 0;
-      background: var(--green);
-      color: white;
-      padding: 22px 15px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 1000;
       overflow-y: auto;
-      z-index: 100;
     }
 
-    .brand {
+    .sidebar-top {
+      padding: 28px 18px;
+    }
+
+    .logo-box {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 5px 8px 22px;
-      border-bottom: 1px solid rgba(255,255,255,.15);
-      margin-bottom: 22px;
+      gap: 13px;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,.16);
     }
 
-    .brand img {
-      width: 47px;
-      height: 47px;
+    .logo-box img {
+      width: 49px;
+      height: 49px;
       object-fit: contain;
-      border-radius: 10px;
+      border-radius: 13px;
       background: white;
+      padding: 3px;
+      flex-shrink: 0;
     }
 
-    .brand h2 {
-      font-size: 16px;
-      line-height: 1.6;
+    .logo-box h2 {
+      font-size: 17px;
+      color: white;
+      font-weight: 900;
     }
 
-    .brand small {
-      display: block;
+    .logo-box p {
       font-size: 11px;
       opacity: .8;
-      font-weight: normal;
+      margin-top: 4px;
     }
 
     .menu-title {
-      font-size: 11px;
-      color: rgba(255,255,255,.65);
-      margin: 20px 10px 9px;
+      color: rgba(255,255,255,.62);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 0 12px;
+      margin-bottom: 10px;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
     }
 
     .menu a {
+      text-decoration: none;
+      color: #e2f1ee;
+      padding: 12px 13px;
+      border-radius: 11px;
+      font-size: 13px;
+      font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 12px 13px;
-      margin-bottom: 5px;
-      border-radius: 9px;
-      font-size: 14px;
-      transition: .2s;
+      gap: 12px;
+      transition: background .2s, transform .2s;
     }
 
     .menu a:hover,
     .menu a.active {
-      background: rgba(255,255,255,.14);
+      background: rgba(255,255,255,.17);
+      color: #fff;
     }
 
-    .menu a.active {
-      border-right: 3px solid #b9edc9;
-      font-weight: bold;
+    .menu a:hover {
+      transform: translateX(-2px);
     }
 
-    /* المحتوى الرئيسي */
+    .menu-icon {
+      width: 21px;
+      height: 21px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .menu-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .sidebar-bottom {
+      margin: 0 18px 20px;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.1);
+      font-size: 11px;
+      line-height: 2;
+      color: rgba(255,255,255,.9);
+    }
+
+    /* =====================================
+       المحتوى الرئيسي
+    ===================================== */
 
     .main {
-      margin-right: 245px;
+      margin-right: 270px;
       min-height: 100vh;
+      padding: 30px 35px;
     }
 
-    .topbar {
-      height: 70px;
+    .top-bar {
       background: white;
-      border-bottom: 1px solid var(--border);
+      padding: 22px 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(30,58,138,.04);
+      margin-bottom: 25px;
+      border: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 30px;
       gap: 15px;
     }
 
-    .topbar h2 {
-      font-size: 18px;
-      color: var(--green);
+    .top-bar h1 {
+      color: var(--blue);
+      font-size: 22px;
+      font-weight: 900;
     }
 
-    .student-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 13px;
-    }
-
-    .student-avatar {
-      width: 36px;
-      height: 36px;
-      background: #e2f3eb;
-      color: var(--green);
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      font-weight: bold;
-    }
-
-    .logout {
-      border: 1px solid var(--border);
-      color: var(--green);
-      background: white;
-      border-radius: 7px;
-      padding: 7px 11px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-
-    .content {
-      max-width: 1250px;
-      margin: auto;
-      padding: 28px;
-    }
-
-    /* عنوان الصفحة */
-
-    .page-heading {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      padding: 23px 25px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 22px;
-      box-shadow: var(--shadow);
-    }
-
-    .heading-icon {
-      width: 58px;
-      height: 58px;
-      flex-shrink: 0;
-      border-radius: 12px;
-      display: grid;
-      place-items: center;
-      background: #e8f4ed;
-      font-size: 27px;
-    }
-
-    .page-heading h1 {
-      color: var(--green);
-      font-size: 23px;
-      margin-bottom: 4px;
-    }
-
-    .page-heading p {
+    .top-bar p {
       color: var(--muted);
-      font-size: 13px;
+      font-size: 12px;
+      margin-top: 6px;
+      line-height: 1.8;
     }
 
-    /* البحث */
+    .top-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: #e8f5e9;
+      color: var(--green);
+      flex-shrink: 0;
+    }
+
+    .top-icon svg {
+      width: 25px;
+      height: 25px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* =====================================
+       البحث وعدد المذكرات
+    ===================================== */
 
     .tools {
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       gap: 15px;
-      margin-bottom: 20px;
       flex-wrap: wrap;
+      margin-bottom: 22px;
     }
 
     .search-box {
       position: relative;
       flex: 1;
+      max-width: 500px;
       min-width: 220px;
-      max-width: 480px;
+    }
+
+    .search-box svg {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 19px;
+      height: 19px;
+      stroke: #64748b;
+      fill: none;
+      stroke-width: 2;
+      pointer-events: none;
     }
 
     .search-box input {
       width: 100%;
-      height: 45px;
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 0 42px 0 14px;
-      outline: none;
+      height: 47px;
       background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0 43px 0 14px;
+      outline: none;
+      color: var(--text);
       font-size: 13px;
+      transition: border-color .2s, box-shadow .2s;
     }
 
     .search-box input:focus {
-      border-color: var(--green-light);
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(2,104,87,.08);
     }
 
-    .search-icon {
-      position: absolute;
-      right: 14px;
-      top: 10px;
-      font-size: 17px;
+    .search-box input::placeholder {
+      color: #94a3b8;
     }
 
     .notes-count {
       color: var(--muted);
-      font-size: 13px;
+      font-size: 12px;
+      font-weight: 700;
+      background: white;
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      border-radius: 10px;
     }
 
-    /* بطاقات المذكرات */
+    /* =====================================
+       بطاقات المذكرات
+    ===================================== */
 
     .notes-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 20px;
+      gap: 18px;
     }
 
     .note-card {
       background: white;
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 14px;
       overflow: hidden;
-      box-shadow: var(--shadow);
-      transition: transform .2s, border-color .2s, box-shadow .2s;
+      box-shadow: 0 4px 15px rgba(30,58,138,.035);
       display: flex;
       flex-direction: column;
       min-width: 0;
+      transition: transform .2s, box-shadow .2s, border-color .2s;
     }
 
     .note-card:hover {
-      transform: translateY(-4px);
-      border-bottom: 3px solid var(--green-light);
-      box-shadow: 0 9px 24px rgba(16, 56, 43, .11);
+      transform: translateY(-3px);
+      border-color: #b7d8d0;
+      box-shadow: 0 8px 23px rgba(30,58,138,.08);
     }
 
     .note-cover {
-      height: 190px;
+      height: 205px;
       position: relative;
-      background: linear-gradient(135deg, #e7f3ec, #d1e7da);
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      background: linear-gradient(135deg, #e8f5e9, #dbeafe);
       border-bottom: 1px solid var(--border);
     }
 
     .note-cover img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
       display: block;
+      object-fit: cover;
+      transition: transform .3s;
+    }
+
+    .note-card:hover .note-cover img {
+      transform: scale(1.025);
     }
 
     .cover-placeholder {
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: 7px;
       color: var(--green);
     }
 
-    .cover-placeholder span {
-      font-size: 43px;
+    .cover-placeholder svg {
+      width: 43px;
+      height: 43px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .cover-placeholder strong {
+      font-size: 13px;
+      font-weight: 900;
     }
 
     .cover-placeholder small {
-      font-size: 12px;
+      font-size: 11px;
+      color: var(--muted);
     }
 
     .note-body {
@@ -327,27 +386,32 @@
     }
 
     .note-label {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       width: fit-content;
-      background: #e9f5ee;
       color: var(--green);
-      padding: 4px 9px;
-      border-radius: 5px;
-      font-size: 11px;
-      margin-bottom: 10px;
+      background: #e8f5e9;
+      padding: 5px 10px;
+      border-radius: 7px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-bottom: 11px;
     }
 
     .note-title {
-      color: #233a31;
-      font-size: 16px;
-      margin-bottom: 9px;
+      color: var(--blue);
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1.9;
+      margin-bottom: 8px;
       overflow-wrap: anywhere;
     }
 
     .note-date {
       color: var(--muted);
       font-size: 11px;
-      margin-bottom: 15px;
+      margin-bottom: 17px;
     }
 
     .note-actions {
@@ -357,15 +421,24 @@
     }
 
     .btn {
-      border: none;
-      border-radius: 7px;
+      border: 1px solid transparent;
+      border-radius: 9px;
       padding: 10px 8px;
-      font-size: 12px;
-      font-weight: bold;
+      font-size: 11px;
+      font-weight: 700;
       cursor: pointer;
       text-align: center;
       flex: 1;
-      transition: .2s;
+      min-width: 0;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      transition: background .2s, transform .2s;
+    }
+
+    .btn:active {
+      transform: scale(.98);
     }
 
     .btn-open {
@@ -378,161 +451,204 @@
     }
 
     .btn-download {
-      background: #eef4f0;
-      color: var(--green);
-      border: 1px solid #dce9e1;
+      background: #eff6ff;
+      color: var(--blue);
+      border-color: #dbeafe;
     }
 
     .btn-download:hover {
-      background: #dfeee5;
+      background: #dbeafe;
     }
 
-    /* حالات التحميل */
+    .btn svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    /* =====================================
+       التحميل والحالات الفارغة
+    ===================================== */
 
     .state-box {
+      grid-column: 1 / -1;
       background: white;
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 35px 20px;
+      border-radius: 14px;
+      padding: 38px 20px;
       text-align: center;
       color: var(--muted);
-      grid-column: 1 / -1;
+      line-height: 2;
     }
 
-    .state-box .state-icon {
-      font-size: 35px;
-      margin-bottom: 10px;
+    .state-icon {
+      display: block;
+      font-size: 31px;
+      margin-bottom: 8px;
     }
 
     .state-box h3 {
-      color: var(--green);
-      font-size: 17px;
+      color: var(--blue);
+      font-size: 16px;
+      font-weight: 900;
       margin-bottom: 5px;
     }
 
     .state-box p {
-      font-size: 13px;
-    }
-
-    .hidden {
-      display: none !important;
+      font-size: 12px;
+      overflow-wrap: anywhere;
     }
 
     .footer {
-      padding: 25px 10px;
       text-align: center;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11px;
+      padding: 28px 10px 10px;
     }
 
-    /* الشاشات المتوسطة */
+    /* =====================================
+       قائمة الهاتف - نفس تصميم المحاضرات
+    ===================================== */
 
-    @media (max-width: 1100px) {
+    .mobile-bottom {
+      display: none;
+    }
+
+    @media(max-width: 1100px) {
       .notes-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
+
+      .main {
+        padding: 25px;
+      }
     }
 
-    /* الموبايل */
-
-    @media (max-width: 700px) {
+    @media(max-width: 768px) {
       .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-        padding: 12px;
-      }
-
-      .brand {
-        padding: 2px 5px 12px;
-        margin-bottom: 10px;
-      }
-
-      .brand img {
-        width: 39px;
-        height: 39px;
-      }
-
-      .brand h2 {
-        font-size: 14px;
-      }
-
-      .menu-title {
         display: none;
-      }
-
-      .menu {
-        display: flex;
-        gap: 5px;
-        overflow-x: auto;
-        padding-bottom: 3px;
-      }
-
-      .menu a {
-        flex-shrink: 0;
-        margin: 0;
-        padding: 9px 11px;
-        font-size: 12px;
-        white-space: nowrap;
       }
 
       .main {
         margin-right: 0;
+        padding: 15px;
+        padding-bottom: 85px;
       }
 
-      .topbar {
-        height: auto;
-        min-height: 60px;
-        padding: 12px 15px;
+      .top-bar {
+        padding: 17px;
+        margin-bottom: 18px;
       }
 
-      .topbar h2 {
-        font-size: 15px;
+      .top-bar h1 {
+        font-size: 18px;
       }
 
-      .student-info {
-        gap: 7px;
+      .top-bar p {
+        font-size: 11px;
       }
 
-      .student-name {
-        display: none;
+      .top-icon {
+        width: 41px;
+        height: 41px;
       }
 
-      .content {
-        padding: 16px 12px;
-      }
-
-      .page-heading {
-        padding: 16px;
-        gap: 12px;
-      }
-
-      .heading-icon {
-        width: 47px;
-        height: 47px;
-        font-size: 23px;
-      }
-
-      .page-heading h1 {
-        font-size: 19px;
-      }
-
-      .page-heading p {
-        font-size: 12px;
-      }
-
-      .notes-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
-      }
-
-      .note-cover {
-        height: 210px;
+      .tools {
+        align-items: stretch;
+        gap: 10px;
       }
 
       .search-box {
         max-width: none;
         width: 100%;
+      }
+
+      .notes-count {
+        width: fit-content;
+      }
+
+      .notes-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .note-cover {
+        height: 155px;
+      }
+
+      .note-body {
+        padding: 12px;
+      }
+
+      .note-title {
+        font-size: 13px;
+      }
+
+      .note-actions {
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 9px 5px;
+      }
+
+      .mobile-bottom {
+        display: flex;
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1500;
+        background: white;
+        box-shadow: 0 -3px 18px rgba(0,0,0,.08);
+        justify-content: space-around;
+        padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+      }
+
+      .mobile-bottom a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        color: #64748b;
+        font-size: 10px;
+        flex: 1;
+      }
+
+      .mobile-bottom a.active {
+        color: var(--green);
+        font-weight: 900;
+      }
+
+      .mobile-bottom svg {
+        width: 21px;
+        height: 21px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+    }
+
+    @media(max-width: 380px) {
+      .notes-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .note-cover {
+        height: 200px;
+      }
+
+      .note-actions {
+        flex-direction: row;
       }
     }
   </style>
@@ -540,108 +656,217 @@
 
 <body>
 
-  <!-- القائمة الجانبية -->
+  <!-- الشريط الجانبي الأصلي للمنصة -->
+
   <aside class="sidebar">
 
-    <div class="brand">
-      <img src="../logo.png" alt="شعار منصة أرض الأحياء"
-        onerror="this.style.display='none'">
+    <div class="sidebar-top">
 
-      <div>
-        <h2>منصة أرض الأحياء</h2>
-        <small>الصف الثالث الثانوي</small>
+      <div class="logo-box">
+        <img src="../logo.png"
+             alt="شعار أرض الأحياء"
+             onerror="this.style.display='none'">
+
+        <div>
+          <h2>أرض الأحياء</h2>
+          <p>الصف الثالث الثانوي</p>
+        </div>
       </div>
+
+      <div class="menu-title">القائمة الرئيسية</div>
+
+      <nav class="menu">
+
+        <a href="../index.html">
+          <span class="menu-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="m3 10 9-7 9 7"></path>
+              <path d="M5 9v11h14V9"></path>
+              <path d="M9 20v-7h6v7"></path>
+            </svg>
+          </span>
+          الرئيسية
+        </a>
+
+        <a href="../videos/index.html">
+          <span class="menu-icon">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="5" width="18" height="14" rx="3"></rect>
+              <path d="m10 9 5 3-5 3z"></path>
+            </svg>
+          </span>
+          المحاضرات
+        </a>
+
+        <a href="index.html" class="active">
+          <span class="menu-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M5 3h11l3 3v15H5z"></path>
+              <path d="M16 3v4h4"></path>
+              <path d="M8 12h8M8 16h8"></path>
+            </svg>
+          </span>
+          المذكرات
+        </a>
+
+        <a href="../champion/index.html">
+          <span class="menu-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="m8 4 4-2 4 2 4 1v5c0 5-4 8-8 12-4-4-8-7-8-12V5z"></path>
+              <path d="m9 11 2 2 4-5"></path>
+            </svg>
+          </span>
+          بطل الفصل
+        </a>
+
+        <a href="../forum/index.html">
+          <span class="menu-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.3A8.5 8.5 0 1 1 21 11.5Z"></path>
+              <path d="M8 10h8M8 14h5"></path>
+            </svg>
+          </span>
+          المنتدى
+        </a>
+
+        <a href="../account/index.html">
+          <span class="menu-icon">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="8" r="4"></circle>
+              <path d="M4 21a8 8 0 0 1 16 0"></path>
+            </svg>
+          </span>
+          حساب الطالب
+        </a>
+
+      </nav>
     </div>
 
-    <div class="menu-title">القائمة الرئيسية</div>
-
-    <nav class="menu">
-      <a href="../index.html">🏠 الرئيسية</a>
-      <a href="../videos/index.html">🎥 المحاضرات</a>
-      <a href="index.html" class="active">📚 المذكرات</a>
-      <a href="../forum/index.html">💬 المنتدى</a>
-      <a href="../account/index.html">👤 حساب الطالب</a>
-    </nav>
+    <div class="sidebar-bottom">
+      <strong>أرض الأحياء</strong>
+      <br>
+      رحلتك نحو التفوق تبدأ من هنا.
+    </div>
 
   </aside>
 
   <!-- المحتوى الرئيسي -->
+
   <main class="main">
 
-    <header class="topbar">
-      <h2>المذكرات الدراسية</h2>
+    <header class="top-bar">
 
-      <div class="student-info">
-        <div class="student-avatar">👨‍🎓</div>
-
-        <span class="student-name" id="studentName">
-          الطالب
-        </span>
-
-        <button class="logout" id="logoutBtn">
-          تسجيل الخروج
-        </button>
+      <div>
+        <h1>مذكرات منهج الأحياء</h1>
+        <p>
+          جميع مذكرات الصف الثالث الثانوي في مكان واحد.
+          اختر المذكرة التي تريد مذاكرتها.
+        </p>
       </div>
+
+      <div class="top-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M5 3h11l3 3v15H5z"></path>
+          <path d="M16 3v4h4"></path>
+          <path d="M8 12h8M8 16h8"></path>
+        </svg>
+      </div>
+
     </header>
 
-    <section class="content">
+    <!-- البحث -->
 
-      <!-- عنوان القسم -->
-      <div class="page-heading">
+    <section class="tools">
 
-        <div class="heading-icon">📚</div>
+      <div class="search-box">
 
-        <div>
-          <h1>مذكرات الأحياء</h1>
-          <p>
-            مذكرات الصف الثالث الثانوي — افتح المذكرة أو حمّلها للمذاكرة.
-          </p>
-        </div>
+        <svg viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m16 16 4 4"></path>
+        </svg>
 
-      </div>
-
-      <!-- البحث وعدد المذكرات -->
-      <div class="tools">
-
-        <div class="search-box">
-          <span class="search-icon">🔍</span>
-
-          <input
-            type="search"
-            id="searchInput"
-            placeholder="ابحث عن مذكرة..."
-            autocomplete="off">
-        </div>
-
-        <div class="notes-count" id="notesCount">
-          جاري تحميل المذكرات...
-        </div>
+        <input
+          type="search"
+          id="searchInput"
+          placeholder="ابحث عن اسم المذكرة..."
+          autocomplete="off"
+          aria-label="البحث عن مذكرة">
 
       </div>
 
-      <!-- بطاقات المذكرات -->
-      <div class="notes-grid" id="notesGrid">
-
-        <div class="state-box">
-          <div class="state-icon">⏳</div>
-          <h3>جاري تحميل المذكرات</h3>
-          <p>انتظر لحظات من فضلك...</p>
-        </div>
-
+      <div class="notes-count" id="notesCount">
+        جارٍ تحميل المذكرات...
       </div>
-
-      <footer class="footer">
-        © 2026 منصة أرض الأحياء — جميع الحقوق محفوظة
-      </footer>
 
     </section>
 
+    <!-- قائمة المذكرات -->
+
+    <section class="notes-grid" id="notesGrid">
+
+      <div class="state-box">
+        <span class="state-icon">⏳</span>
+        <h3>جارٍ تحميل المذكرات</h3>
+        <p>انتظر لحظات من فضلك.</p>
+      </div>
+
+    </section>
+
+    <footer class="footer">
+      © 2026 منصة أرض الأحياء — جميع الحقوق محفوظة
+    </footer>
+
   </main>
 
+  <!-- شريط الهاتف السفلي -->
+
+  <nav class="mobile-bottom">
+
+    <a href="../index.html">
+      <svg viewBox="0 0 24 24">
+        <path d="m3 10 9-7 9 7"></path>
+        <path d="M5 9v11h14V9"></path>
+      </svg>
+      الرئيسية
+    </a>
+
+    <a href="../videos/index.html">
+      <svg viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="14" rx="3"></rect>
+        <path d="m10 9 5 3-5 3z"></path>
+      </svg>
+      المحاضرات
+    </a>
+
+    <a href="index.html" class="active">
+      <svg viewBox="0 0 24 24">
+        <path d="M5 3h11l3 3v15H5z"></path>
+        <path d="M16 3v4h4M8 12h8M8 16h8"></path>
+      </svg>
+      المذكرات
+    </a>
+
+    <a href="../forum/index.html">
+      <svg viewBox="0 0 24 24">
+        <path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.3A8.5 8.5 0 1 1 21 11.5Z"></path>
+      </svg>
+      المنتدى
+    </a>
+
+    <a href="../account/index.html">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="4"></circle>
+        <path d="M4 21a8 8 0 0 1 16 0"></path>
+      </svg>
+      حسابي
+    </a>
+
+  </nav>
+
   <script>
-    // =========================================
+    // =====================================
     // إعدادات Supabase
-    // =========================================
+    // =====================================
 
     const SUPABASE_URL =
       "https://fpfbmjtpzamzlyzitmsd.supabase.co";
@@ -654,7 +879,6 @@
       SUPABASE_KEY
     );
 
-    // اسم مخزن الملفات المستخدم للمذكرات والأغلفة
     const STORAGE_BUCKET = "lectures";
 
     const notesGrid = document.getElementById("notesGrid");
@@ -663,9 +887,9 @@
 
     let allNotes = [];
 
-    // =========================================
-    // التحقق من تسجيل الدخول
-    // =========================================
+    // =====================================
+    // التحقق من تسجيل دخول الطالب
+    // =====================================
 
     async function checkLogin() {
       const {
@@ -678,39 +902,27 @@
         return null;
       }
 
-      const displayName =
-        user.user_metadata?.full_name ||
-        user.user_metadata?.name ||
-        user.email?.split("@")[0] ||
-        "الطالب";
-
-      document.getElementById("studentName").textContent =
-        displayName;
-
       return user;
     }
 
-    // =========================================
+    // =====================================
     // تسجيل الخروج
-    // =========================================
+    // =====================================
 
-    document.getElementById("logoutBtn").addEventListener(
-      "click",
-      async function () {
-        const { error } = await supabaseClient.auth.signOut();
+    async function logout() {
+      const { error } = await supabaseClient.auth.signOut();
 
-        if (error) {
-          alert("تعذر تسجيل الخروج. حاول مرة أخرى.");
-          return;
-        }
-
-        window.location.href = "../index.html";
+      if (error) {
+        alert("تعذر تسجيل الخروج. حاول مرة أخرى.");
+        return;
       }
-    );
 
-    // =========================================
-    // تجهيز مسار الملف
-    // =========================================
+      window.location.href = "../index.html";
+    }
+
+    // =====================================
+    // تجهيز مسار ملف Supabase
+    // =====================================
 
     function normalizeStoragePath(path) {
       if (!path) return null;
@@ -719,21 +931,55 @@
 
       if (!value) return null;
 
-      // إذا كان الرابط كاملاً، نستخدمه مباشرة
+      // التعامل مع الروابط الكاملة
       if (/^https?:\/\//i.test(value)) {
         return {
           type: "url",
-          value: value
+          value
         };
       }
 
-      // إزالة اسم المخزن من بداية المسار عند وجوده
-      const prefixes = [
-        "lectures/",
-        "/lectures/"
-      ];
+      let cleanPath = value.replace(/^\/+/, "");
 
-      let cleanPath = value;
+      // معالجة روابط Supabase الكاملة المخزنة كنص
+      const storageMarker = "/storage/v1/object/";
+
+      if (cleanPath.includes(storageMarker)) {
+        try {
+          const parsed = new URL(cleanPath);
+          const pathname = parsed.pathname;
+          const markerIndex = pathname.indexOf(storageMarker);
+
+          if (markerIndex !== -1) {
+            let objectPath = pathname.slice(
+              markerIndex + storageMarker.length
+            );
+
+            objectPath = objectPath.replace(
+              /^(public|sign|authenticated)\//,
+              ""
+            );
+
+            const bucketPrefix = STORAGE_BUCKET + "/";
+
+            if (objectPath.startsWith(bucketPrefix)) {
+              objectPath = objectPath.slice(bucketPrefix.length);
+            }
+
+            return {
+              type: "storage",
+              value: decodeURIComponent(objectPath)
+            };
+          }
+        } catch (e) {
+          console.warn("تعذر تحليل مسار الملف:", e);
+        }
+      }
+
+      // حذف اسم المخزن إذا كان جزءًا من المسار
+      const prefixes = [
+        STORAGE_BUCKET + "/"
+      ];
 
       for (const prefix of prefixes) {
         if (cleanPath.startsWith(prefix)) {
@@ -742,17 +988,15 @@
         }
       }
 
-      cleanPath = cleanPath.replace(/^\/+/, "");
-
       return {
         type: "storage",
         value: cleanPath
       };
     }
 
-    // =========================================
-    // إنشاء رابط للملف أو صورة الغلاف
-    // =========================================
+    // =====================================
+    // الحصول على رابط صالح للملف
+    // =====================================
 
     async function getFileUrl(path) {
       const normalized = normalizeStoragePath(path);
@@ -763,10 +1007,10 @@
         return normalized.value;
       }
 
-      const { data, error } =
-        await supabaseClient.storage
-          .from(STORAGE_BUCKET)
-          .createSignedUrl(normalized.value, 3600);
+      const { data, error } = await supabaseClient
+        .storage
+        .from(STORAGE_BUCKET)
+        .createSignedUrl(normalized.value, 3600);
 
       if (error || !data?.signedUrl) {
         console.warn(
@@ -781,18 +1025,26 @@
       return data.signedUrl;
     }
 
-    // =========================================
-    // تحميل المذكرات من قاعدة البيانات
-    // =========================================
+    // =====================================
+    // تحميل بيانات المذكرات
+    // =====================================
 
     async function loadNotes() {
       notesGrid.innerHTML = `
         <div class="state-box">
-          <div class="state-icon">⏳</div>
-          <h3>جاري تحميل المذكرات</h3>
-          <p>انتظر لحظات من فضلك...</p>
+          <span class="state-icon">⏳</span>
+          <h3>جارٍ تحميل المذكرات</h3>
+          <p>انتظر لحظات من فضلك.</p>
         </div>
       `;
+
+      /*
+        يفترض أن يحتوي جدول notes على:
+        id, title, file_path, cover_path, created_at
+
+        إذا لم يكن عمود cover_path موجودًا،
+        نفّذ أمر SQL المذكور بعد الكود.
+      */
 
       const { data, error } = await supabaseClient
         .from("notes")
@@ -806,11 +1058,12 @@
 
         notesGrid.innerHTML = `
           <div class="state-box">
-            <div class="state-icon">⚠️</div>
+            <span class="state-icon">⚠️</span>
             <h3>تعذر تحميل المذكرات</h3>
             <p>
-              تأكد من وجود جدول notes وعمود cover_path
-              ومن إعدادات صلاحيات Supabase.
+              تحقق من جدول notes وصلاحيات القراءة في Supabase.
+              إذا كان الخطأ متعلقًا بـ cover_path،
+              تأكد من إضافة العمود إلى الجدول.
             </p>
           </div>
         `;
@@ -818,11 +1071,10 @@
         return;
       }
 
-      allNotes = data || [];
+      const rows = data || [];
 
-      // تجهيز روابط ملفات المذكرات والأغلفة
       allNotes = await Promise.all(
-        allNotes.map(async function (note) {
+        rows.map(async function (note) {
           const fileUrl = await getFileUrl(note.file_path);
 
           const coverUrl = note.cover_path
@@ -840,15 +1092,11 @@
       renderNotes(allNotes);
     }
 
-    // =========================================
-    // عرض بطاقة المذكرة
-    // =========================================
+    // =====================================
+    // إنشاء صورة الغلاف
+    // =====================================
 
-    function createNoteCard(note) {
-      const card = document.createElement("article");
-      card.className = "note-card";
-
-      // صورة الغلاف
+    function createCover(note) {
       const cover = document.createElement("div");
       cover.className = "note-cover";
 
@@ -856,30 +1104,68 @@
         const img = document.createElement("img");
 
         img.src = note.coverUrl;
-        img.alt = "غلاف " + (note.title || "المذكرة");
+        img.alt = "غلاف " + (note.title || "مذكرة الأحياء");
         img.loading = "lazy";
 
         img.onerror = function () {
-          cover.innerHTML = `
-            <div class="cover-placeholder">
-              <span>📚</span>
-              <small>مذكرة أحياء</small>
-            </div>
-          `;
+          cover.replaceChildren(createCoverPlaceholder());
         };
 
         cover.appendChild(img);
-
       } else {
-        cover.innerHTML = `
-          <div class="cover-placeholder">
-            <span>📚</span>
-            <small>مذكرة أحياء</small>
-          </div>
-        `;
+        cover.appendChild(createCoverPlaceholder());
       }
 
-      card.appendChild(cover);
+      return cover;
+    }
+
+    function createCoverPlaceholder() {
+      const placeholder = document.createElement("div");
+      placeholder.className = "cover-placeholder";
+
+      placeholder.innerHTML = `
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 3h11l3 3v15H5z"></path>
+          <path d="M16 3v4h4"></path>
+          <path d="M8 12h8M8 16h8"></path>
+        </svg>
+        <strong>مذكرة أحياء</strong>
+        <small>الصف الثالث الثانوي</small>
+      `;
+
+      return placeholder;
+    }
+
+    // =====================================
+    // إنشاء زر
+    // =====================================
+
+    function createActionLink(text, url, className, download) {
+      const link = document.createElement("a");
+
+      link.className = "btn " + className;
+      link.href = url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = text;
+
+      if (download) {
+        link.setAttribute("download", "");
+      }
+
+      return link;
+    }
+
+    // =====================================
+    // إنشاء بطاقة المذكرة
+    // =====================================
+
+    function createNoteCard(note) {
+      const card = document.createElement("article");
+      card.className = "note-card";
+
+      // الغلاف
+      card.appendChild(createCover(note));
 
       // محتوى البطاقة
       const body = document.createElement("div");
@@ -903,52 +1189,46 @@
       if (note.created_at) {
         const parsedDate = new Date(note.created_at);
 
-        if (!isNaN(parsedDate.getTime())) {
+        if (!Number.isNaN(parsedDate.getTime())) {
           date.textContent =
-            "📅 تاريخ الإضافة: " +
+            "تاريخ الإضافة: " +
             parsedDate.toLocaleDateString("ar-EG");
         } else {
-          date.textContent = "📚 مذكرات الصف الثالث الثانوي";
+          date.textContent = "مذكرات الصف الثالث الثانوي";
         }
       } else {
-        date.textContent = "📚 مذكرات الصف الثالث الثانوي";
+        date.textContent = "مذكرات الصف الثالث الثانوي";
       }
 
       body.appendChild(date);
 
-      // أزرار فتح وتحميل المذكرة
+      // أزرار المذكرة
       const actions = document.createElement("div");
       actions.className = "note-actions";
 
       if (note.fileUrl) {
-        const openLink = document.createElement("a");
+        actions.appendChild(
+          createActionLink(
+            "📖 فتح المذكرة",
+            note.fileUrl,
+            "btn-open",
+            false
+          )
+        );
 
-        openLink.className = "btn btn-open";
-        openLink.href = note.fileUrl;
-        openLink.target = "_blank";
-        openLink.rel = "noopener noreferrer";
-        openLink.textContent = "📖 فتح المذكرة";
-
-        actions.appendChild(openLink);
-
-        const downloadLink = document.createElement("a");
-
-        downloadLink.className = "btn btn-download";
-        downloadLink.href = note.fileUrl;
-        downloadLink.target = "_blank";
-        downloadLink.rel = "noopener noreferrer";
-        downloadLink.download = "";
-
-        downloadLink.textContent = "⬇️ تحميل";
-
-        actions.appendChild(downloadLink);
-
+        actions.appendChild(
+          createActionLink(
+            "⬇️ تحميل PDF",
+            note.fileUrl,
+            "btn-download",
+            true
+          )
+        );
       } else {
         const unavailable = document.createElement("span");
 
         unavailable.className = "btn btn-download";
         unavailable.textContent = "الملف غير متاح";
-        unavailable.style.flex = "1";
 
         actions.appendChild(unavailable);
       }
@@ -959,27 +1239,29 @@
       return card;
     }
 
-    // =========================================
-    // عرض المذكرات في الصفحة
-    // =========================================
+    // =====================================
+    // عرض المذكرات
+    // =====================================
 
     function renderNotes(notes) {
-      notesGrid.innerHTML = "";
+      notesGrid.replaceChildren();
 
       notesCount.textContent =
         "عدد المذكرات: " + notes.length;
 
       if (!notes.length) {
-        notesGrid.innerHTML = `
-          <div class="state-box">
-            <div class="state-icon">📚</div>
-            <h3>لا توجد مذكرات حتى الآن</h3>
-            <p>
-              ستظهر المذكرات هنا بمجرد إضافتها من لوحة الإدارة.
-            </p>
-          </div>
+        const box = document.createElement("div");
+        box.className = "state-box";
+
+        box.innerHTML = `
+          <span class="state-icon">📚</span>
+          <h3>لا توجد مذكرات حتى الآن</h3>
+          <p>
+            ستظهر المذكرات هنا عند إضافتها من لوحة الإدارة.
+          </p>
         `;
 
+        notesGrid.appendChild(box);
         return;
       }
 
@@ -988,33 +1270,49 @@
       });
     }
 
-    // =========================================
+    // =====================================
     // البحث عن المذكرات
-    // =========================================
+    // =====================================
 
     searchInput.addEventListener("input", function () {
       const query = searchInput.value
         .trim()
         .toLocaleLowerCase("ar");
 
-      const filtered = allNotes.filter(function (note) {
-        const title = (note.title || "").toLocaleLowerCase("ar");
+      const filteredNotes = allNotes.filter(function (note) {
+        const title = (note.title || "")
+          .toLocaleLowerCase("ar");
+
         return title.includes(query);
       });
 
-      renderNotes(filtered);
+      renderNotes(filteredNotes);
     });
 
-    // =========================================
+    // =====================================
     // تشغيل الصفحة
-    // =========================================
+    // =====================================
 
     async function initPage() {
-      const user = await checkLogin();
+      try {
+        const user = await checkLogin();
 
-      if (!user) return;
+        if (!user) return;
 
-      await loadNotes();
+        await loadNotes();
+      } catch (error) {
+        console.error("خطأ تشغيل صفحة المذكرات:", error);
+
+        notesCount.textContent = "";
+
+        notesGrid.innerHTML = `
+          <div class="state-box">
+            <span class="state-icon">⚠️</span>
+            <h3>حدث خطأ أثناء فتح الصفحة</h3>
+            <p>أعد تحميل الصفحة وحاول مرة أخرى.</p>
+          </div>
+        `;
+      }
     }
 
     initPage();
