@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,97 +56,145 @@
       text-decoration: none;
     }
 
+    /* ==============================
+       الشريط الجانبي - تصميم المحاضرات
+    ============================== */
+
     .sidebar {
-      position: fixed;
-      top: 0;
-      right: 0;
-      width: 250px;
-      height: 100vh;
-      padding: 22px 15px;
-      color: white;
-      overflow-y: auto;
-      z-index: 100;
+      width: 270px;
       background: linear-gradient(
-        165deg,
-        #087f5b,
-        #075e54 50%,
-        #1e3a8a
+        180deg,
+        #026857 0%,
+        #075e54 48%,
+        #1e3a8a 100%
       );
+      color: white;
+      position: fixed;
+      right: 0;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 1000;
+      overflow-y: auto;
+      padding: 0;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 5px 7px 23px;
-      margin-bottom: 22px;
-      border-bottom: 1px solid rgba(255,255,255,.18);
+      gap: 13px;
+      margin: 0 0 32px;
+      padding: 0 0 20px;
+      border-bottom: 1px solid rgba(255,255,255,.16);
     }
 
     .brand img {
-      width: 48px;
-      height: 48px;
+      width: 49px;
+      height: 49px;
       object-fit: contain;
-      border-radius: 12px;
+      border-radius: 13px;
       background: white;
       padding: 3px;
+      flex-shrink: 0;
     }
 
     .brand h2 {
       margin: 0;
-      font-size: 16px;
-      font-weight: 800;
+      font-size: 17px;
+      color: white;
+      font-weight: 900;
     }
 
     .brand small {
       display: block;
-      margin-top: 5px;
+      margin-top: 4px;
       font-size: 11px;
       opacity: .8;
     }
 
+    .sidebar > .brand,
+    .sidebar > .nav-title,
+    .sidebar > nav {
+      margin-right: 18px;
+      margin-left: 18px;
+    }
+
+    .sidebar > .brand {
+      margin-top: 28px;
+    }
+
     .nav-title {
+      color: rgba(255,255,255,.62);
+      font-size: 10px;
+      font-weight: 700;
       padding: 0 12px;
+      margin-top: 0;
       margin-bottom: 10px;
-      font-size: 11px;
-      color: rgba(255,255,255,.65);
+    }
+
+    .sidebar nav {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
     }
 
     .nav-link {
-      display: flex;
-      align-items: center;
-      gap: 11px;
+      text-decoration: none;
+      color: #e2f1ee;
       padding: 12px 13px;
-      margin-bottom: 5px;
       border-radius: 11px;
       font-size: 13px;
       font-weight: 600;
-      transition: .2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      margin: 0;
+      border: none;
+      background: transparent;
+      text-align: right;
+      cursor: pointer;
+      transition: background .2s, transform .2s;
     }
 
     .nav-link:hover,
     .nav-link.active {
       background: rgba(255,255,255,.17);
+      color: #fff;
+    }
+
+    .nav-link:hover {
       transform: translateX(-2px);
     }
 
     .nav-icon {
-      width: 23px;
-      text-align: center;
-      font-size: 17px;
+      width: 21px;
+      height: 21px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
     }
 
     .sidebar-bottom {
-      margin-top: 28px;
+      margin: auto 18px 20px;
       padding: 14px;
-      border-radius: 13px;
+      border-radius: 12px;
       background: rgba(255,255,255,.1);
-      font-size: 12px;
-      line-height: 1.9;
+      font-size: 11px;
+      line-height: 2;
+      color: rgba(255,255,255,.9);
     }
 
+    /* ==============================
+       المحتوى الرئيسي - دون تغيير
+    ============================== */
+
     .main {
-      margin-right: 250px;
+      margin-right: 270px;
       min-height: 100vh;
       padding: 24px;
     }
@@ -572,6 +621,14 @@
       display: none;
     }
 
+    /* الأجهزة المتوسطة */
+
+    @media(max-width:1100px) {
+      .main {
+        padding: 25px;
+      }
+    }
+
     @media(max-width:900px) {
       .sidebar {
         width: 220px;
@@ -586,6 +643,8 @@
         grid-template-columns: repeat(2,minmax(0,1fr));
       }
     }
+
+    /* الموبايل - الحفاظ على الشريط السفلي */
 
     @media(max-width:650px) {
       .sidebar {
@@ -737,50 +796,69 @@
 
 <body>
 
+  <!-- الشريط الجانبي -->
+
   <aside class="sidebar">
-    <div class="brand">
-      <img src="../logo.png" alt="شعار أرض الأحياء"
-           onerror="this.style.display='none'">
-      <div>
-        <h2>منصة أرض الأحياء</h2>
-        <small>رحلتك نحو التفوق في الأحياء</small>
+
+    <div class="sidebar-top" style="padding:28px 18px 0">
+
+      <div class="brand">
+        <img src="../logo.png" alt="شعار أرض الأحياء"
+             onerror="this.style.display='none'">
+
+        <div>
+          <h2>منصة أرض الأحياء</h2>
+          <small>رحلتك نحو التفوق في الأحياء</small>
+        </div>
       </div>
+
+      <div class="nav-title">القائمة الرئيسية</div>
+
+      <nav>
+        <a class="nav-link" href="../index.html">
+          <span class="nav-icon">🏠</span>
+          الرئيسية
+        </a>
+
+        <a class="nav-link" href="../videos/index.html">
+          <span class="nav-icon">🎥</span>
+          المحاضرات
+        </a>
+
+        <a class="nav-link" href="../notes/index.html">
+          <span class="nav-icon">📚</span>
+          المذكرات
+        </a>
+
+        <a class="nav-link" href="../forum/index.html">
+          <span class="nav-icon">💬</span>
+          المنتدى
+        </a>
+
+        <a class="nav-link" href="../champion/index.html">
+          <span class="nav-icon">🏆</span>
+          بطل الفصل
+        </a>
+
+        <a class="nav-link active" href="index.html">
+          <span class="nav-icon">👤</span>
+          حساب الطالب
+        </a>
+      </nav>
+
     </div>
-
-    <div class="nav-title">القائمة الرئيسية</div>
-
-    <nav>
-      <a class="nav-link" href="../index.html">
-        <span class="nav-icon">🏠</span> الرئيسية
-      </a>
-
-      <a class="nav-link" href="../videos/index.html">
-        <span class="nav-icon">🎥</span> المحاضرات
-      </a>
-
-      <a class="nav-link" href="../notes/index.html">
-        <span class="nav-icon">📚</span> المذكرات
-      </a>
-
-      <a class="nav-link" href="../forum/index.html">
-        <span class="nav-icon">💬</span> المنتدى
-      </a>
-
-      <a class="nav-link" href="../champion/index.html">
-        <span class="nav-icon">🏆</span> بطل الفصل
-      </a>
-
-      <a class="nav-link active" href="index.html">
-        <span class="nav-icon">👤</span> حساب الطالب
-      </a>
-    </nav>
 
     <div class="sidebar-bottom">
       🌱 <strong>أرض الأحياء</strong>
-      <br>معًا نحو التفوق والنجاح.
-      <br><span style="opacity:.8">الصف الثالث الثانوي</span>
+      <br>
+      معًا نحو التفوق والنجاح.
+      <br>
+      <span style="opacity:.8">الصف الثالث الثانوي</span>
     </div>
+
   </aside>
+
+  <!-- المحتوى الأصلي -->
 
   <main class="main">
 
@@ -792,6 +870,7 @@
 
       <div class="student-chip">
         <div class="avatar">👨‍🎓</div>
+
         <div>
           <strong id="topStudentName" class="ruqaa">جارٍ التحميل...</strong>
           <small>طالب أرض الأحياء</small>
@@ -808,6 +887,7 @@
         <div style="font-size:45px">🔐</div>
         <h2>سجّل الدخول أولًا</h2>
         <p>يجب تسجيل الدخول إلى المنصة لعرض بيانات حسابك.</p>
+
         <a class="btn btn-primary" href="../index.html">
           الذهاب إلى المنصة
         </a>
@@ -822,19 +902,23 @@
           <span id="welcomeName" class="ruqaa">طالبنا المتميز</span>
           🌱
         </h2>
+
         <p>
           تابع بياناتك التعليمية ودرجاتك، وحافظ على تحديث بيانات
           التواصل الخاصة بك.
         </p>
+
         <div class="welcome-icon">🎓</div>
       </section>
 
       <div class="stats-grid">
+
         <div class="stat-card">
           <div class="stat-top">
             <span class="stat-label">المحاضرات المتاحة</span>
             <div class="stat-icon">🎥</div>
           </div>
+
           <div class="stat-value" id="totalLectures">—</div>
           <div class="stat-note">إجمالي المحاضرات بالمنصة</div>
         </div>
@@ -844,6 +928,7 @@
             <span class="stat-label">نتائج الامتحانات</span>
             <div class="stat-icon">📝</div>
           </div>
+
           <div class="stat-value" id="examCount">—</div>
           <div class="stat-note">النتائج المسجلة لحسابك</div>
         </div>
@@ -853,39 +938,49 @@
             <span class="stat-label">الواجبات</span>
             <div class="stat-icon">📋</div>
           </div>
+
           <div class="stat-value" id="homeworkCount">—</div>
           <div class="stat-note">الواجبات المسجلة لحسابك</div>
         </div>
+
       </div>
 
       <!-- البيانات الشخصية -->
+
       <section class="section">
 
         <div class="section-heading">
           <div>
             <h3>👤 البيانات الشخصية</h3>
-            <p>اسمك ثابت، ويمكنك تعديل رقم الهاتف أو البريد الإلكتروني وفقًا للمهلة.</p>
+            <p>
+              اسمك ثابت، ويمكنك تعديل رقم الهاتف أو البريد الإلكتروني وفقًا للمهلة.
+            </p>
           </div>
+
           <div class="section-icon">🪪</div>
         </div>
 
         <form id="profileForm">
+
           <div class="profile-grid">
 
             <div class="field">
               <label for="fullName">اسم الطالب — غير قابل للتعديل</label>
+
               <input type="text" id="fullName" class="ruqaa"
                      readonly disabled>
             </div>
 
             <div class="field">
               <label for="email">البريد الإلكتروني</label>
+
               <input type="email" id="email" readonly disabled
                      autocomplete="email">
             </div>
 
             <div class="field">
               <label for="phone">رقم الهاتف</label>
+
               <input type="tel" id="phone" readonly disabled
                      autocomplete="tel" placeholder="غير مسجل">
             </div>
@@ -893,6 +988,7 @@
           </div>
 
           <div class="actions">
+
             <button type="button" class="btn btn-primary" id="editPhoneBtn">
               ✏️ تعديل رقم الهاتف
             </button>
@@ -914,6 +1010,7 @@
             <button type="button" class="btn btn-danger" id="logoutBtn">
               تسجيل الخروج
             </button>
+
           </div>
 
           <div id="profileMessage" class="message"></div>
@@ -922,46 +1019,58 @@
             يمكنك تغيير رقم الهاتف أو البريد الإلكتروني مرة واحدة كل 30 يومًا.
             الاسم غير قابل للتعديل من صفحة حساب الطالب.
           </div>
+
         </form>
       </section>
 
       <!-- الامتحانات -->
+
       <section class="section">
+
         <div class="section-heading">
           <div>
             <h3>📝 درجات الامتحانات</h3>
             <p>النتائج المسجلة في قاعدة البيانات لحسابك.</p>
           </div>
+
           <div class="section-icon">📊</div>
         </div>
 
         <div id="examResults" class="list">
           <div class="loading">جارٍ تحميل النتائج...</div>
         </div>
+
       </section>
 
       <!-- الواجبات -->
+
       <section class="section">
+
         <div class="section-heading">
           <div>
             <h3>📋 درجات الواجبات</h3>
             <p>متابعة الواجبات المسجلة لك.</p>
           </div>
+
           <div class="section-icon">✍️</div>
         </div>
 
         <div id="homeworkResults" class="list">
           <div class="loading">جارٍ تحميل الواجبات...</div>
         </div>
+
       </section>
 
       <!-- المنتدى -->
+
       <section class="section">
+
         <div class="section-heading">
           <div>
             <h3>💬 مشاركات المنتدى</h3>
             <p>المشاركات المسجلة لحسابك.</p>
           </div>
+
           <div class="section-icon">🌱</div>
         </div>
 
@@ -974,19 +1083,42 @@
             الانتقال إلى المنتدى
           </a>
         </div>
+
       </section>
 
     </div>
 
     <footer>© 2026 منصة أرض الأحياء — جميع الحقوق محفوظة</footer>
+
   </main>
 
+  <!-- شريط التنقل السفلي للموبايل -->
+
   <nav class="mobile-nav">
-    <a href="../index.html"><span>🏠</span>الرئيسية</a>
-    <a href="../videos/index.html"><span>🎥</span>المحاضرات</a>
-    <a href="../notes/index.html"><span>📚</span>المذكرات</a>
-    <a href="../forum/index.html"><span>💬</span>المنتدى</a>
-    <a href="index.html" class="active"><span>👤</span>حسابي</a>
+    <a href="../index.html">
+      <span>🏠</span>
+      الرئيسية
+    </a>
+
+    <a href="../videos/index.html">
+      <span>🎥</span>
+      المحاضرات
+    </a>
+
+    <a href="../notes/index.html">
+      <span>📚</span>
+      المذكرات
+    </a>
+
+    <a href="../forum/index.html">
+      <span>💬</span>
+      المنتدى
+    </a>
+
+    <a href="index.html" class="active">
+      <span>👤</span>
+      حسابي
+    </a>
   </nav>
 
   <script>
@@ -1163,12 +1295,14 @@
 
       if (mode === "phone") {
         $("phone").focus();
+
         message(
           "عدّل رقم الهاتف فقط، ثم اضغط حفظ. لن تستطيع تعديل بيانات التواصل مرة أخرى لمدة 30 يومًا.",
           "info"
         );
       } else {
         $("email").focus();
+
         message(
           "عدّل البريد الإلكتروني فقط. قد يرسل Supabase رسالة لتأكيد البريد الجديد.",
           "info"
@@ -1179,6 +1313,7 @@
     async function init() {
       try {
         const { data, error } = await db.auth.getSession();
+
         if (error) throw error;
 
         if (!data.session) {
@@ -1199,7 +1334,6 @@
 
         profile = row || {};
 
-        // الاسم للعرض فقط، وليس حقلًا قابلًا للتعديل.
         const name =
           profile.full_name ||
           currentUser.user_metadata?.full_name ||
@@ -1222,20 +1356,36 @@
 
         await Promise.allSettled([
           loadLectureCount(),
-          loadResults(TABLES.exams, "examResults", "examCount", "الامتحانات"),
-          loadResults(TABLES.homework, "homeworkResults", "homeworkCount", "الواجبات"),
+          loadResults(
+            TABLES.exams,
+            "examResults",
+            "examCount",
+            "الامتحانات"
+          ),
+          loadResults(
+            TABLES.homework,
+            "homeworkResults",
+            "homeworkCount",
+            "الواجبات"
+          ),
           loadForumPosts()
         ]);
 
       } catch (err) {
         console.error(err);
+
         $("pageLoading").textContent =
           "تعذر تحميل بيانات الحساب. تحقق من اتصال Supabase وصلاحيات جدول profiles.";
       }
     }
 
-    $("editPhoneBtn").addEventListener("click", () => beginEdit("phone"));
-    $("editEmailBtn").addEventListener("click", () => beginEdit("email"));
+    $("editPhoneBtn").addEventListener("click", () => {
+      beginEdit("phone");
+    });
+
+    $("editEmailBtn").addEventListener("click", () => {
+      beginEdit("email");
+    });
 
     $("cancelBtn").addEventListener("click", () => {
       clearMessage();
@@ -1252,6 +1402,7 @@
           "انتهت إمكانية التعديل لهذه الفترة. انتظر انتهاء مهلة الـ30 يومًا.",
           "error"
         );
+
         resetForm();
         return;
       }
@@ -1272,7 +1423,6 @@
             throw new Error("لم تغيّر رقم الهاتف.");
           }
 
-          // لا نرسل الاسم ولا البريد عند تحديث الهاتف.
           const { data, error } = await db
             .from("profiles")
             .update({
@@ -1294,6 +1444,7 @@
           savedPhone = newPhone;
 
           resetForm();
+
           message(
             "تم تحديث رقم الهاتف. لن تتمكن من تعديل بيانات التواصل مرة أخرى لمدة 30 يومًا.",
             "success"
@@ -1310,7 +1461,6 @@
             throw new Error("البريد الإلكتروني لم يتغير.");
           }
 
-          // تغيير البريد من Supabase Auth وليس تعديل عمود profiles وحده.
           const { error } = await db.auth.updateUser({
             email: newEmail
           });
@@ -1328,9 +1478,10 @@
       } catch (err) {
         console.error(err);
 
-        const text = err.message || "حدث خطأ أثناء الحفظ.";
-
-        message(text, "error");
+        message(
+          err.message || "حدث خطأ أثناء الحفظ.",
+          "error"
+        );
 
       } finally {
         btn.disabled = false;
@@ -1342,7 +1493,10 @@
       try {
         const { count, error } = await db
           .from("lectures")
-          .select("id", { count: "exact", head: true });
+          .select("id", {
+            count: "exact",
+            head: true
+          });
 
         if (error) throw error;
 
@@ -1354,18 +1508,26 @@
       }
     }
 
-    async function loadResults(table, containerId, countId, label) {
+    async function loadResults(
+      table,
+      containerId,
+      countId,
+      label
+    ) {
       try {
         const { data, error } = await db
           .from(table)
           .select("*")
           .eq("user_id", currentUser.id)
-          .order("created_at", { ascending: false })
+          .order("created_at", {
+            ascending: false
+          })
           .limit(20);
 
         if (error) throw error;
 
         const rows = data || [];
+
         $(countId).textContent = rows.length;
         $(containerId).replaceChildren();
 
@@ -1374,20 +1536,29 @@
             containerId,
             "لا توجد " + label + " مسجلة لحسابك حتى الآن."
           );
+
           return;
         }
 
         rows.forEach(row => {
           const title =
-            row.title || row.exam_title || row.homework_title ||
-            row.name || label;
+            row.title ||
+            row.exam_title ||
+            row.homework_title ||
+            row.name ||
+            label;
 
           const score =
-            row.score ?? row.grade ?? row.mark ?? row.student_score;
+            row.score ??
+            row.grade ??
+            row.mark ??
+            row.student_score;
 
           const total =
-            row.total_marks ?? row.max_score ??
-            row.total_score ?? row.out_of;
+            row.total_marks ??
+            row.max_score ??
+            row.total_score ??
+            row.out_of;
 
           let scoreText = "لم تُرصد الدرجة بعد";
 
@@ -1400,14 +1571,18 @@
           }
 
           const date = fmtDate(
-            row.created_at || row.date || row.submitted_at
+            row.created_at ||
+            row.date ||
+            row.submitted_at
           );
 
           addItem(
             containerId,
             String(title),
             date ? scoreText + " • " + date : scoreText,
-            score !== null && score !== undefined ? "تم الرصد" : "قيد التصحيح"
+            score !== null && score !== undefined
+              ? "تم الرصد"
+              : "قيد التصحيح"
           );
         });
 
@@ -1430,12 +1605,15 @@
           .from(TABLES.forum)
           .select("*")
           .eq("user_id", currentUser.id)
-          .order("created_at", { ascending: false })
+          .order("created_at", {
+            ascending: false
+          })
           .limit(10);
 
         if (error) throw error;
 
         const posts = data || [];
+
         $("forumPosts").replaceChildren();
 
         if (!posts.length) {
@@ -1444,20 +1622,26 @@
             "لا توجد مشاركات مسجلة لك في المنتدى حتى الآن.",
             "💬"
           );
+
           return;
         }
 
         posts.forEach(post => {
           const title =
-            post.title || post.subject || post.content ||
-            post.body || "مشاركة في المنتدى";
+            post.title ||
+            post.subject ||
+            post.content ||
+            post.body ||
+            "مشاركة في المنتدى";
 
           const date = fmtDate(post.created_at);
 
           addItem(
             "forumPosts",
             String(title),
-            date ? "تاريخ المشاركة: " + date : "مشاركة بالمنتدى",
+            date
+              ? "تاريخ المشاركة: " + date
+              : "مشاركة بالمنتدى",
             "مشاركة"
           );
         });
@@ -1479,6 +1663,7 @@
 
       try {
         const { error } = await db.auth.signOut();
+
         if (error) throw error;
 
         window.location.href = "../index.html";
@@ -1486,7 +1671,11 @@
       } catch (err) {
         console.error(err);
 
-        message("تعذر تسجيل الخروج. حاول مرة أخرى.", "error");
+        message(
+          "تعذر تسجيل الخروج. حاول مرة أخرى.",
+          "error"
+        );
+
         btn.disabled = false;
       }
     });
