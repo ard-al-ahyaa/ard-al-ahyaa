@@ -34,6 +34,8 @@
       --muted: #64748b;
       --border: #e2e8f0;
       --shadow: 0 4px 20px rgba(30, 58, 138, .05);
+      --sidebar-width: 270px;
+      --sidebar-collapsed-width: 82px;
     }
 
     * {
@@ -58,11 +60,11 @@
     }
 
     /* ================================
-       الشريط الجانبي - نفس تصميم المحاضرات
+       الشريط الجانبي
     ================================= */
 
     .sidebar {
-      width: 270px;
+      width: var(--sidebar-width);
       background: linear-gradient(
         180deg,
         #026857 0%,
@@ -78,11 +80,49 @@
       flex-direction: column;
       justify-content: space-between;
       z-index: 1000;
+      overflow-x: hidden;
       overflow-y: auto;
+      transition: width .25s ease;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,.3) transparent;
     }
 
     .sidebar-top {
       padding: 28px 18px;
+      min-width: 0;
+    }
+
+    /* زر تصغير وتوسيع الشريط */
+
+    .sidebar-toggle {
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 11px;
+      background: rgba(255,255,255,.12);
+      color: white;
+      cursor: pointer;
+      margin-bottom: 18px;
+      transition: background .2s, transform .25s;
+      flex-shrink: 0;
+    }
+
+    .sidebar-toggle:hover {
+      background: rgba(255,255,255,.24);
+    }
+
+    .sidebar-toggle svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform .25s;
     }
 
     .logo-box {
@@ -92,6 +132,8 @@
       margin-bottom: 32px;
       padding-bottom: 20px;
       border-bottom: 1px solid rgba(255, 255, 255, .16);
+      min-width: 0;
+      overflow: hidden;
     }
 
     .logo-box img {
@@ -109,12 +151,14 @@
       color: white;
       font-weight: 900;
       margin-bottom: 0;
+      white-space: nowrap;
     }
 
     .logo-box p {
       font-size: 11px;
       opacity: .8;
       margin-top: 4px;
+      white-space: nowrap;
     }
 
     .menu-title {
@@ -123,6 +167,7 @@
       font-weight: 700;
       padding: 0 12px;
       margin-bottom: 10px;
+      white-space: nowrap;
     }
 
     .menu {
@@ -143,11 +188,14 @@
       align-items: center;
       gap: 12px;
       width: 100%;
+      min-width: 0;
       border: none;
       background: transparent;
       text-align: right;
       cursor: pointer;
       transition: background .2s, transform .2s;
+      position: relative;
+      white-space: nowrap;
     }
 
     .menu a:hover,
@@ -197,6 +245,127 @@
       font-size: 11px;
       line-height: 2;
       color: rgba(255, 255, 255, .9);
+      transition: opacity .2s;
+    }
+
+    /* ================================
+       حالة الشريط المصغر
+    ================================= */
+
+    body.sidebar-collapsed .sidebar {
+      width: var(--sidebar-collapsed-width);
+    }
+
+    body.sidebar-collapsed .sidebar-top {
+      padding: 20px 10px;
+    }
+
+    body.sidebar-collapsed .sidebar-toggle {
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    body.sidebar-collapsed .sidebar-toggle svg {
+      transform: rotate(180deg);
+    }
+
+    body.sidebar-collapsed .logo-box {
+      justify-content: center;
+      margin-bottom: 23px;
+      padding-bottom: 18px;
+    }
+
+    body.sidebar-collapsed .logo-box img {
+      width: 43px;
+      height: 43px;
+    }
+
+    body.sidebar-collapsed .logo-box > div,
+    body.sidebar-collapsed .menu-title,
+    body.sidebar-collapsed .menu a > span:not(.menu-icon),
+    body.sidebar-collapsed .logout-btn > span:not(.menu-icon),
+    body.sidebar-collapsed .sidebar-bottom {
+      display: none;
+    }
+
+    body.sidebar-collapsed .menu {
+      align-items: center;
+    }
+
+    body.sidebar-collapsed .menu a,
+    body.sidebar-collapsed .logout-btn {
+      width: 48px;
+      height: 46px;
+      padding: 0;
+      justify-content: center;
+      gap: 0;
+      border-radius: 12px;
+    }
+
+    body.sidebar-collapsed .menu a.active {
+      border-right: none;
+      box-shadow: inset -3px 0 #b9f6df;
+    }
+
+    body.sidebar-collapsed .menu a:hover {
+      transform: none;
+    }
+
+    /* إظهار اسم القسم عند الوقوف على الأيقونة */
+
+    body.sidebar-collapsed .menu a::after,
+    body.sidebar-collapsed .logout-btn::after {
+      position: absolute;
+      right: calc(100% + 10px);
+      top: 50%;
+      transform: translateY(-50%);
+      background: #102f49;
+      color: white;
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .15s;
+      box-shadow: 0 5px 15px rgba(0,0,0,.15);
+      z-index: 5000;
+    }
+
+    body.sidebar-collapsed .menu a:hover::after,
+    body.sidebar-collapsed .logout-btn:hover::after {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    body.sidebar-collapsed .menu a:nth-of-type(1)::after {
+      content: "الرئيسية";
+    }
+
+    body.sidebar-collapsed .menu a:nth-of-type(2)::after {
+      content: "المحاضرات";
+    }
+
+    body.sidebar-collapsed .menu a:nth-of-type(3)::after {
+      content: "المذكرات";
+    }
+
+    body.sidebar-collapsed .menu a:nth-of-type(4)::after {
+      content: "المنتدى";
+    }
+
+    body.sidebar-collapsed .menu a:nth-of-type(5)::after {
+      content: "بطل الفصل";
+    }
+
+    body.sidebar-collapsed .menu a:nth-of-type(6)::after {
+      content: "حساب الطالب";
+    }
+
+    body.sidebar-collapsed .logout-btn::after {
+      content: "تسجيل الخروج";
     }
 
     /* ================================
@@ -204,10 +373,15 @@
     ================================= */
 
     .main {
-      margin-right: 270px;
+      margin-right: var(--sidebar-width);
       padding: 30px 35px;
       min-height: 100vh;
       min-width: 0;
+      transition: margin-right .25s ease;
+    }
+
+    body.sidebar-collapsed .main {
+      margin-right: var(--sidebar-collapsed-width);
     }
 
     .topbar {
@@ -275,9 +449,7 @@
       font-size: 10px;
     }
 
-    /* ================================
-       بطاقة الترحيب
-    ================================= */
+    /* بطاقة الترحيب */
 
     .champion-hero {
       position: relative;
@@ -337,9 +509,7 @@
       pointer-events: none;
     }
 
-    /* ================================
-       الإحصائيات
-    ================================= */
+    /* الإحصائيات */
 
     .stats-grid {
       display: grid;
@@ -400,9 +570,7 @@
       overflow-wrap: anywhere;
     }
 
-    /* ================================
-       عناوين الأقسام
-    ================================= */
+    /* عناوين الأقسام */
 
     .section-heading {
       display: flex;
@@ -446,9 +614,7 @@
       cursor: wait;
     }
 
-    /* ================================
-       المراكز الثلاثة الأولى
-    ================================= */
+    /* المراكز الثلاثة الأولى */
 
     .podium {
       display: grid;
@@ -523,9 +689,7 @@
       color: #8a6300;
     }
 
-    /* ================================
-       قائمة ترتيب الطلاب
-    ================================= */
+    /* قائمة ترتيب الطلاب */
 
     .ranking {
       display: grid;
@@ -612,9 +776,7 @@
       margin-top: 3px;
     }
 
-    /* ================================
-       حالات التحميل والأخطاء
-    ================================= */
+    /* حالات التحميل والأخطاء */
 
     .state-box {
       background: white;
@@ -666,9 +828,7 @@
       display: none !important;
     }
 
-    /* ================================
-       زر تليجرام
-    ================================= */
+    /* زر تليجرام */
 
     .telegram-floating {
       position: fixed;
@@ -692,9 +852,7 @@
       transform: scale(1.07);
     }
 
-    /* ================================
-       التذييل
-    ================================= */
+    /* التذييل */
 
     footer {
       margin-top: 30px;
@@ -705,9 +863,7 @@
       padding: 15px 10px;
     }
 
-    /* ================================
-       شريط التنقل السفلي
-    ================================= */
+    /* شريط التنقل السفلي */
 
     .bottom-nav {
       display: none;
@@ -732,7 +888,8 @@
         display: none;
       }
 
-      .main {
+      .main,
+      body.sidebar-collapsed .main {
         margin-right: 0;
         padding: 14px 13px 95px;
       }
@@ -990,15 +1147,42 @@
         font-size: 10px;
       }
     }
+
+    /* احترام إعدادات تقليل الحركة */
+
+    @media (prefers-reduced-motion: reduce) {
+      .sidebar,
+      .main,
+      .sidebar-toggle,
+      .sidebar-toggle svg {
+        transition: none;
+      }
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- الشريط الجانبي المطابق لصفحة المحاضرات -->
+  <!-- الشريط الجانبي -->
   <aside class="sidebar">
 
     <div class="sidebar-top">
+
+      <!-- زر تصغير وتوسيع الشريط -->
+      <button
+        type="button"
+        class="sidebar-toggle"
+        id="sidebarToggle"
+        aria-label="تصغير الشريط الجانبي"
+        aria-expanded="true"
+        title="تصغير أو توسيع القائمة">
+
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+          <path d="M4 4v16"></path>
+        </svg>
+
+      </button>
 
       <div class="logo-box">
         <img src="../logo.png" alt="شعار منصة أرض الأحياء">
@@ -1013,7 +1197,7 @@
 
       <nav class="menu">
 
-        <a href="../index.html">
+        <a href="../index.html" aria-label="الرئيسية">
           <span class="menu-icon">
             <svg viewBox="0 0 24 24">
               <path d="m3 10 9-7 9 7"></path>
@@ -1024,7 +1208,7 @@
           <span>الرئيسية</span>
         </a>
 
-        <a href="../videos/index.html">
+        <a href="../videos/index.html" aria-label="المحاضرات">
           <span class="menu-icon">
             <svg viewBox="0 0 24 24">
               <rect x="3" y="5" width="18" height="14" rx="3"></rect>
@@ -1034,7 +1218,7 @@
           <span>المحاضرات</span>
         </a>
 
-        <a href="../notes/index.html">
+        <a href="../notes/index.html" aria-label="المذكرات">
           <span class="menu-icon">
             <svg viewBox="0 0 24 24">
               <path d="M6 3h9l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path>
@@ -1045,7 +1229,7 @@
           <span>المذكرات</span>
         </a>
 
-        <a href="../forum/index.html">
+        <a href="../forum/index.html" aria-label="المنتدى">
           <span class="menu-icon">
             <svg viewBox="0 0 24 24">
               <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.9-5.5a9 9 0 0 1-.9-4A8.5 8.5 0 0 1 12.5 3H13a8.5 8.5 0 0 1 8 8z"></path>
@@ -1054,7 +1238,7 @@
           <span>المنتدى</span>
         </a>
 
-        <a href="index.html" class="active" aria-current="page">
+        <a href="index.html" class="active" aria-current="page" aria-label="بطل الفصل">
           <span class="menu-icon">
             <svg viewBox="0 0 24 24">
               <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"></path>
@@ -1063,7 +1247,7 @@
           <span>بطل الفصل</span>
         </a>
 
-        <a href="../account/index.html">
+        <a href="../account/index.html" aria-label="حساب الطالب">
           <span class="menu-icon">
             <svg viewBox="0 0 24 24">
               <circle cx="12" cy="8" r="4"></circle>
@@ -1073,7 +1257,7 @@
           <span>حساب الطالب</span>
         </a>
 
-        <button type="button" class="logout-btn" id="logoutBtn">
+        <button type="button" class="logout-btn" id="logoutBtn" aria-label="تسجيل الخروج">
           <span class="menu-icon">
             <svg viewBox="0 0 24 24">
               <path d="M10 17l5-5-5-5"></path>
@@ -1274,6 +1458,64 @@
     );
 
     // ========================================
+    // زر تصغير وتوسيع الشريط الجانبي
+    // ========================================
+
+    const sidebarToggle = document.getElementById("sidebarToggle");
+
+    function setSidebarState(collapsed) {
+      document.body.classList.toggle("sidebar-collapsed", collapsed);
+
+      sidebarToggle.setAttribute(
+        "aria-expanded",
+        String(!collapsed)
+      );
+
+      sidebarToggle.setAttribute(
+        "aria-label",
+        collapsed
+          ? "توسيع الشريط الجانبي"
+          : "تصغير الشريط الجانبي"
+      );
+
+      sidebarToggle.title = collapsed
+        ? "توسيع القائمة"
+        : "تصغير القائمة";
+
+      try {
+        localStorage.setItem(
+          "ardAlahyaaSidebarCollapsed",
+          String(collapsed)
+        );
+      } catch (error) {
+        console.warn("تعذر حفظ حالة الشريط الجانبي:", error);
+      }
+    }
+
+    // استرجاع الحالة السابقة.
+    try {
+      const savedSidebarState =
+        localStorage.getItem("ardAlahyaaSidebarCollapsed");
+
+      if (savedSidebarState === "true") {
+        document.body.classList.add("sidebar-collapsed");
+
+        sidebarToggle.setAttribute("aria-expanded", "false");
+        sidebarToggle.setAttribute("aria-label", "توسيع الشريط الجانبي");
+        sidebarToggle.title = "توسيع القائمة";
+      }
+    } catch (error) {
+      console.warn("تعذر استرجاع حالة الشريط الجانبي:", error);
+    }
+
+    sidebarToggle.addEventListener("click", function () {
+      const isCollapsed =
+        document.body.classList.contains("sidebar-collapsed");
+
+      setSidebarState(!isCollapsed);
+    });
+
+    // ========================================
     // عناصر الصفحة
     // ========================================
 
@@ -1373,7 +1615,6 @@
           user.user_metadata?.name ||
           "";
 
-        // الحصول على الاسم من ملف الطالب.
         const { data: profile, error: profileError } =
           await supabaseClient
             .from("profiles")
@@ -1716,7 +1957,6 @@
           return;
         }
 
-        // عرض المراكز الثلاثة الأولى.
         podiumElement.replaceChildren();
 
         const topThree = students.slice(0, 3);
@@ -1729,7 +1969,6 @@
 
         podiumSection.classList.remove("hidden");
 
-        // عرض القائمة الكاملة.
         rankingElement.replaceChildren();
 
         students.forEach((student, index) => {
