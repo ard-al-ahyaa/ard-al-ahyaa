@@ -1748,26 +1748,26 @@
             </p>
 
             ${optionalSection(
-              "📖 الشرح التفصيلي",
+              " الشرح التفصيلي",
               `<p>${escapeHtml(details)}</p>`
             )}
 
             ${optionalSection(
-              "📚 مذكرة المحاضرة (PDF)",
+              " مذكرة المحاضرة (PDF)",
               pdfUrl
                 ? `<a href="${escapeHtml(pdfUrl)}"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="btn-link">
-                     تحميل أو استعراض المذكرة
+                     تنزيل أو افتح المذكرة
                    </a>`
                 : `<p style="color:#64748b">
-                     المذكرة غير متوفرة لهذه المحاضرة حاليًا.
+                     المذكرة مش موجوده لهذه المحاضرة حاليًا.
                    </p>`
             )}
 
             ${optionalSection(
-              "✏️ واجب المحاضرة",
+              " واجب المحاضرة",
               homeworkUrl
                 ? `<a href="${escapeHtml(homeworkUrl)}"
                       target="_blank"
@@ -1776,7 +1776,7 @@
                      فتح الواجب أو الامتحان
                    </a>`
                 : `<p style="color:#64748b">
-                     الواجب غير متوفر حاليًا.
+                     "الواجب مش موجود "ابسط .
                    </p>`
             )}
 
@@ -1849,7 +1849,7 @@
               <span class="empty-icon">📅</span>
               لا توجد شهور متاحة حاليًا.
               <br>
-              ستظهر الشهور هنا عندما يفعّلها المسؤول من لوحة التحكم.
+                     ستظهر الشهور هنا.
             </div>
           `;
 
@@ -1861,7 +1861,7 @@
         selectMonth(Number(visibleMonths[0].month_number));
 
       } catch (error) {
-        console.error("خطأ تحميل المحاضرات:", error);
+        console.error("صلي علي النبي وجرب تاني:", error);
 
         list.replaceChildren();
 
