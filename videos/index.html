@@ -524,15 +524,18 @@
 
     .lecture-body.open {
       padding: 20px 25px;
-      max-height: 10000px;
+      max-height: none;
       overflow: visible;
     }
+
+    /* مشغل الفيديو المتجاوب */
 
     .video-container {
       position: relative;
       width: 100%;
-      padding-bottom: 56.25%;
-      height: 0;
+      aspect-ratio: 16 / 9;
+      height: auto;
+      padding-bottom: 0;
       background: #000;
       border-radius: 10px;
       overflow: hidden;
@@ -547,6 +550,70 @@
       width: 100%;
       height: 100%;
       border: none;
+      object-fit: contain;
+      background: #000;
+    }
+
+    /* ملء الشاشة */
+
+    .video-container:fullscreen {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      max-width: none;
+      max-height: none;
+      aspect-ratio: auto;
+      padding: 0;
+      margin: 0;
+      border-radius: 0;
+      background: #000;
+      z-index: 99999;
+    }
+
+    .video-container:fullscreen video,
+    .video-container:fullscreen iframe {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .video-container:-webkit-full-screen {
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+    }
+
+    .video-container:-webkit-full-screen video,
+    .video-container:-webkit-full-screen iframe {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* زر ملء الشاشة */
+
+    .video-fullscreen-btn {
+      display: block;
+      width: 100%;
+      padding: 11px 15px;
+      margin: 0 0 18px;
+      border: none;
+      border-radius: 9px;
+      background: var(--green);
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .video-fullscreen-btn:hover {
+      background: var(--green-dark);
+    }
+
+    .video-fullscreen-btn:focus-visible {
+      outline: 3px solid #86efac;
+      outline-offset: 2px;
     }
 
     .dropdown-section {
@@ -714,6 +781,14 @@
         padding: 13px;
       }
 
+      .video-container {
+        border-radius: 8px;
+      }
+
+      .video-fullscreen-btn {
+        padding: 12px;
+      }
+
       .mobile-bottom {
         display: flex;
         position: fixed;
@@ -805,7 +880,6 @@
       </div>
 
       <div class="logo-box">
-
         <img
           src="../logo.png"
           alt="شعار أرض الأحياء"
@@ -815,7 +889,6 @@
           <h2>أرض الأحياء</h2>
           <p>الصف الثالث الثانوي</p>
         </div>
-
       </div>
 
       <div class="menu-title">القائمة الرئيسية</div>
@@ -900,7 +973,6 @@
   <main class="main">
 
     <header class="top-bar">
-
       <div>
         <h1>محاضرات منهج الأحياء</h1>
         <p>اختر الشهر الذي تريد مذاكرته، ثم افتح المحاضرة المناسبة.</p>
@@ -912,7 +984,6 @@
           <path d="m10 9 5 3-5 3z"></path>
         </svg>
       </div>
-
     </header>
 
     <div id="pageNotice" class="notice" style="display:none"></div>
@@ -920,14 +991,11 @@
     <div id="monthsGrid" class="months-grid" style="display:none"></div>
 
     <div id="monthHeading" class="month-heading" style="display:none">
-
       <div>
         <h2 id="selectedMonthTitle"></h2>
         <p id="selectedMonthDescription"></p>
       </div>
-
       <span class="month-badge" id="lectureCountBadge"></span>
-
     </div>
 
     <div id="lecturesList">
@@ -1106,14 +1174,13 @@
 
       if (!value) return "";
 
-      /*
-       * لو القيمة ليست رابطًا، نتعامل معها باعتبارها مسار الملف.
-       */
-
       if (!/^https?:\/\//i.test(value)) {
         let path = value.replace(/^\/+/, "");
 
-        path = path.replace(/^storage\/v1\/object\/(public|sign|authenticated)\//i, "");
+        path = path.replace(
+          /^storage\/v1\/object\/(public|sign|authenticated)\//i,
+          ""
+        );
 
         if (path.startsWith(STORAGE_BUCKET + "/")) {
           path = path.slice(STORAGE_BUCKET.length + 1);
@@ -1122,19 +1189,12 @@
         return path;
       }
 
-      /*
-       * لو الرابط صادرًا من Supabase Storage،
-       * نستخرج اسم الملف حتى لو كان الرابط عامًا أو موقّعًا.
-       */
-
       try {
         const parsed = new URL(value);
         const parts = parsed.pathname.split("/").filter(Boolean);
         const objectIndex = parts.indexOf("object");
 
-        if (objectIndex === -1) {
-          return "";
-        }
+        if (objectIndex === -1) return "";
 
         const accessType = parts[objectIndex + 1] || "";
 
@@ -1145,21 +1205,12 @@
         ) {
           const bucketName = parts[objectIndex + 2] || "";
 
-          if (bucketName !== STORAGE_BUCKET) {
-            return "";
-          }
+          if (bucketName !== STORAGE_BUCKET) return "";
 
-          const fileParts = decodePathParts(
+          return decodePathParts(
             parts.slice(objectIndex + 3)
-          );
-
-          return fileParts.join("/");
+          ).join("/");
         }
-
-        /*
-         * يدعم أيضًا المسار بالشكل:
-         * /storage/v1/object/lectures/folder/video.mp4
-         */
 
         if (accessType === STORAGE_BUCKET) {
           return decodePathParts(
@@ -1175,10 +1226,7 @@
       }
     }
 
-    /*
-     * إنشاء رابط مؤقت لفيديو موجود في Bucket خاص.
-     * لا نستخدم مفتاح Service Role في المتصفح.
-     */
+    /* إنشاء رابط مؤقت للفيديو الخاص */
 
     async function createPrivateLectureUrl(storagePath) {
       if (!storagePath) return "";
@@ -1190,14 +1238,15 @@
         } = await supabaseClient.auth.getSession();
 
         if (sessionError) {
-          console.error("تعذر التحقق من جلسة المستخدم:", sessionError);
+          console.error(
+            "تعذر التحقق من جلسة المستخدم:",
+            sessionError
+          );
           return "";
         }
 
         if (!sessionData?.session) {
-          console.warn(
-            "يجب تسجيل الدخول للحصول على رابط المحاضرة الخاصة."
-          );
+          console.warn("يجب تسجيل الدخول لمشاهدة المحاضرة.");
           return "";
         }
 
@@ -1222,11 +1271,7 @@
         return data?.signedUrl || "";
 
       } catch (error) {
-        console.error(
-          "حدث خطأ أثناء تجهيز رابط الفيديو:",
-          error
-        );
-
+        console.error("حدث خطأ أثناء تجهيز رابط الفيديو:", error);
         return "";
       }
     }
@@ -1250,7 +1295,6 @@
         ) {
           if (parsed.pathname === "/watch") {
             videoId = parsed.searchParams.get("v") || "";
-
           } else {
             const parts = parsed.pathname.split("/").filter(Boolean);
 
@@ -1262,7 +1306,8 @@
 
         if (videoId) {
           return "https://www.youtube.com/embed/" +
-            encodeURIComponent(videoId);
+            encodeURIComponent(videoId) +
+            "?rel=0";
         }
 
         return url;
@@ -1282,13 +1327,6 @@
       return /\.(mp4|webm|ogg|m4v)(?:$|[?#])/i.test(url || "");
     }
 
-    /*
-     * حل رابط الفيديو:
-     * 1. روابط YouTube والخدمات الخارجية تظل كما هي.
-     * 2. روابط Supabase Storage تتحول إلى Signed URL.
-     * 3. مسارات الملفات تتحول إلى Signed URL.
-     */
-
     async function resolveVideoUrl(rawUrl) {
       if (!rawUrl) return "";
 
@@ -1296,17 +1334,9 @@
 
       if (!url) return "";
 
-      /*
-       * روابط YouTube لا تحتاج إلى Supabase Signed URL.
-       */
-
       if (isYoutubeUrl(url)) {
         return url;
       }
-
-      /*
-       * روابط خارجية عادية تظل كما هي.
-       */
 
       if (
         /^https?:\/\//i.test(url) &&
@@ -1315,17 +1345,9 @@
         return url;
       }
 
-      /*
-       * روابط Supabase Storage أو مسارات الملفات.
-       */
-
       const storagePath = getStorageObjectPath(url);
 
       if (!storagePath) {
-        /*
-         * السماح بروابط الفيديو المباشرة الخارجية.
-         */
-
         if (/^https?:\/\//i.test(url)) {
           return url;
         }
@@ -1341,7 +1363,9 @@
       return await createPrivateLectureUrl(storagePath);
     }
 
-    function createVideoPlayer(url) {
+    /* إنشاء مشغل الفيديو */
+
+    function createVideoPlayer(url, index) {
       if (!url) {
         return `
           <div class="empty">
@@ -1370,8 +1394,16 @@
         url.includes("/storage/v1/object/")
       ) {
         return `
-          <video controls playsinline preload="metadata">
+          <video
+            controls
+            playsinline
+            preload="metadata"
+            controlsList="nodownload"
+            disablePictureInPicture
+            oncontextmenu="return false">
+
             <source src="${escapeHtml(url)}">
+
             متصفحك لا يدعم عرض الفيديو.
           </video>
         `;
@@ -1393,6 +1425,40 @@
       `;
     }
 
+    /* تكبير مشغل الفيديو */
+
+    async function enterVideoFullscreen(index) {
+      const container = document.getElementById("video-container-" + index);
+
+      if (!container) return;
+
+      try {
+        if (document.fullscreenElement) {
+          await document.exitFullscreen();
+          return;
+        }
+
+        if (container.requestFullscreen) {
+          await container.requestFullscreen();
+        } else if (container.webkitRequestFullscreen) {
+          container.webkitRequestFullscreen();
+        } else {
+          const video = container.querySelector("video");
+
+          if (video && video.webkitEnterFullscreen) {
+            video.webkitEnterFullscreen();
+          } else {
+            alert(
+              "ملء الشاشة غير مدعوم في هذا المتصفح. جرّب تشغيل الفيديو ثم استخدام زر ملء الشاشة داخل المشغّل."
+            );
+          }
+        }
+
+      } catch (error) {
+        console.warn("تعذر تشغيل وضع ملء الشاشة:", error);
+      }
+    }
+
     /* فتح وإغلاق المحاضرات */
 
     function toggleLecture(index) {
@@ -1408,6 +1474,31 @@
       arrow.style.transform = willOpen
         ? "rotate(180deg)"
         : "rotate(0deg)";
+
+      const header = body.previousElementSibling;
+
+      if (header) {
+        header.setAttribute("aria-expanded", String(willOpen));
+      }
+
+      if (willOpen) {
+        requestAnimationFrame(() => {
+          const videoContainer = body.querySelector(".video-container");
+
+          if (videoContainer) {
+            videoContainer.scrollIntoView({
+              behavior: "smooth",
+              block: "center"
+            });
+          }
+        });
+      } else {
+        const video = body.querySelector("video");
+
+        if (video) {
+          video.pause();
+        }
+      }
     }
 
     function toggleSub(header) {
@@ -1587,9 +1678,7 @@
 
       list.replaceChildren();
 
-      prepared.forEach(({ lecture }, index) => {
-        const videoUrl = prepared[index].videoUrl;
-
+      prepared.forEach(({ lecture, videoUrl }, index) => {
         const title = lecture.title || "محاضرة أحياء";
         const description = lecture.description || "";
 
@@ -1623,7 +1712,7 @@
             role="button"
             tabindex="0"
             aria-expanded="false"
-            onclick="toggleLecture(${index});this.setAttribute('aria-expanded',String(document.getElementById('body-${index}').classList.contains('open')))"
+            onclick="toggleLecture(${index})"
             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
 
             <div class="lecture-title">
@@ -1637,9 +1726,16 @@
 
           <div class="lecture-body" id="body-${index}">
 
-            <div class="video-container">
-              ${createVideoPlayer(videoUrl)}
+            <div class="video-container" id="video-container-${index}">
+              ${createVideoPlayer(videoUrl, index)}
             </div>
+
+            <button
+              type="button"
+              class="video-fullscreen-btn"
+              onclick="enterVideoFullscreen(${index})">
+              ⛶ تكبير الفيديو لملء الشاشة
+            </button>
 
             <p style="
               margin-bottom:15px;
@@ -1714,8 +1810,7 @@
 
         if (monthsError) {
           throw new Error(
-            "تعذر قراءة جدول الشهور (lecture_months). " +
-            "تحقق من وجود الجدول وأسماء الأعمدة وصلاحيات القراءة. " +
+            "تعذر قراءة جدول الشهور. " +
             monthsError.message
           );
         }
@@ -1730,7 +1825,7 @@
 
         if (lecturesError) {
           throw new Error(
-            "تعذر تحميل المحاضرات. تحقق من صلاحيات القراءة في جدول lectures. " +
+            "تعذر تحميل المحاضرات. " +
             lecturesError.message
           );
         }
