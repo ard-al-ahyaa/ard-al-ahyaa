@@ -39,6 +39,7 @@
       --muted: #8792a4;
       --border: #e8edf3;
       --shadow: 0 5px 25px rgba(26, 45, 75, .045);
+      --sidebar-width: 250px;
     }
 
     * {
@@ -160,19 +161,50 @@
       top: 0;
       right: 0;
       bottom: 0;
-      width: 250px;
+      width: var(--sidebar-width);
       z-index: 1000;
       display: flex;
       flex-direction: column;
       background: linear-gradient(165deg, #087f5b, #075e54 50%, #1e3a8a);
       color: white;
       box-shadow: -5px 0 25px rgba(0, 0, 0, .06);
+      transition: width .28s ease;
     }
 
     .sidebar-inner {
       padding: 25px 17px;
       flex: 1;
+      overflow-x: hidden;
       overflow-y: auto;
+    }
+
+    /* زر تصغير وتوسيع القائمة */
+
+    .sidebar-top-actions {
+      display: flex;
+      justify-content: flex-start;
+      margin-bottom: 18px;
+    }
+
+    .sidebar-toggle {
+      width: 39px;
+      height: 39px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      color: white;
+      background: rgba(255, 255, 255, .13);
+      border: 1px solid rgba(255, 255, 255, .18);
+      border-radius: 11px;
+      transition: background .2s, transform .25s;
+    }
+
+    .sidebar-toggle:hover {
+      background: rgba(255, 255, 255, .24);
+    }
+
+    .sidebar-toggle i {
+      transition: transform .28s ease;
     }
 
     .brand {
@@ -182,6 +214,7 @@
       padding: 0 5px 22px;
       border-bottom: 1px solid rgba(255,255,255,.18);
       margin-bottom: 28px;
+      min-width: 0;
     }
 
     .brand-logo-wrap {
@@ -203,6 +236,13 @@
       border-radius: 50%;
     }
 
+    .brand-text {
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      transition: opacity .18s ease;
+    }
+
     .brand h2 {
       font-size: 17px;
       font-weight: 900;
@@ -220,6 +260,9 @@
       font-size: 11px;
       font-weight: 700;
       margin: 0 10px 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      transition: opacity .18s ease;
     }
 
     .side-menu {
@@ -229,21 +272,31 @@
     }
 
     .side-link {
+      position: relative;
       display: flex;
       align-items: center;
       gap: 13px;
+      min-height: 47px;
       padding: 13px 14px;
       color: #e9f5ef;
       border-radius: 11px;
       font-size: 13px;
       font-weight: 700;
-      transition: .2s;
+      transition: background .2s, color .2s, transform .2s;
+      white-space: nowrap;
     }
 
     .side-link i {
       width: 20px;
+      min-width: 20px;
       text-align: center;
       font-size: 16px;
+    }
+
+    .side-link-text {
+      overflow: hidden;
+      white-space: nowrap;
+      transition: opacity .18s ease;
     }
 
     .side-link:hover,
@@ -259,13 +312,98 @@
       text-align: center;
       font-size: 11px;
       opacity: .8;
+      white-space: nowrap;
+      overflow: hidden;
+      transition: opacity .18s ease;
+    }
+
+    .sidebar-bottom i {
+      margin-left: 4px;
     }
 
     .main {
-      margin-right: 250px;
+      margin-right: var(--sidebar-width);
       min-height: 100vh;
       padding: 25px 30px;
       max-width: 1800px;
+      transition: margin-right .28s ease;
+    }
+
+    /* وضع الشريط المصغر */
+
+    body.sidebar-collapsed {
+      --sidebar-width: 82px;
+    }
+
+    body.sidebar-collapsed .sidebar-inner {
+      padding: 18px 10px;
+    }
+
+    body.sidebar-collapsed .sidebar-top-actions {
+      justify-content: center;
+    }
+
+    body.sidebar-collapsed .sidebar-toggle i {
+      transform: rotate(180deg);
+    }
+
+    body.sidebar-collapsed .brand {
+      justify-content: center;
+      padding: 0 0 20px;
+    }
+
+    body.sidebar-collapsed .brand-text,
+    body.sidebar-collapsed .menu-label,
+    body.sidebar-collapsed .side-link-text,
+    body.sidebar-collapsed .sidebar-bottom span {
+      display: none;
+    }
+
+    body.sidebar-collapsed .side-link {
+      justify-content: center;
+      gap: 0;
+      padding: 13px 5px;
+    }
+
+    body.sidebar-collapsed .side-link i {
+      font-size: 18px;
+    }
+
+    body.sidebar-collapsed .side-link:hover {
+      transform: none;
+    }
+
+    body.sidebar-collapsed .sidebar-bottom {
+      padding: 16px 5px;
+    }
+
+    /* تلميحات أسماء الأيقونات في الوضع المصغر */
+
+    body.sidebar-collapsed .side-link::after {
+      content: attr(data-title);
+      position: absolute;
+      right: calc(100% + 10px);
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 8px 12px;
+      background: #173b38;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 8px;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      z-index: 5000;
+      box-shadow: 0 5px 20px rgba(0,0,0,.15);
+      transition: opacity .15s ease;
+    }
+
+    body.sidebar-collapsed .side-link:hover::after,
+    body.sidebar-collapsed .side-link:focus-visible::after {
+      opacity: 1;
+      visibility: visible;
     }
 
     /* الشريط العلوي */
@@ -473,7 +611,7 @@
       color: rgba(255,255,255,.91);
     }
 
-    /* أربعة صناديق الإحصائيات */
+    /* الإحصائيات */
 
     .stats-grid {
       display: grid;
@@ -578,7 +716,7 @@
       opacity: .025;
     }
 
-    /* منطقة الرسم البياني */
+    /* الرسوم البيانية */
 
     .dashboard-grid {
       display: grid;
@@ -833,7 +971,7 @@
       color: #b3c3d1;
     }
 
-    /* إعدادات الخصوصية */
+    /* الخصوصية */
 
     .privacy-modal {
       display: none;
@@ -918,6 +1056,7 @@
       margin-top: 20px;
       display: flex;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     .secondary-btn {
@@ -939,7 +1078,7 @@
       line-height: 2;
     }
 
-    /* حركة الشعار */
+    /* الحركات */
 
     @keyframes logoFloat {
       0%, 100% {
@@ -965,13 +1104,20 @@
 
     /* التابلت */
 
-    @media (max-width: 1200px) {
-      .sidebar {
-        width: 220px;
+    @media (max-width: 1200px) and (min-width: 761px) {
+      :root {
+        --sidebar-width: 220px;
+      }
+
+      body.sidebar-collapsed {
+        --sidebar-width: 82px;
+      }
+
+      .sidebar-inner {
+        padding: 20px 13px;
       }
 
       .main {
-        margin-right: 220px;
         padding: 20px;
       }
 
@@ -1239,6 +1385,18 @@
         padding: 10px;
       }
     }
+
+    /* تقليل الحركة لمن يفضل ذلك */
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
   </style>
 </head>
 
@@ -1277,13 +1435,30 @@
 
       <div class="sidebar-inner">
 
+        <!-- زر تصغير وتوسيع القائمة -->
+
+        <div class="sidebar-top-actions">
+          <button
+            type="button"
+            class="sidebar-toggle"
+            id="sidebarToggle"
+            aria-label="تصغير القائمة الجانبية"
+            aria-expanded="true"
+            title="تصغير القائمة"
+            onclick="toggleSidebar()">
+
+            <i class="fa-solid fa-angles-right"></i>
+
+          </button>
+        </div>
+
         <div class="brand">
 
           <div class="brand-logo-wrap">
             <img src="logo.png" class="brand-logo" alt="شعار المنصة">
           </div>
 
-          <div>
+          <div class="brand-text">
             <h2>أرض الأحياء</h2>
             <p>الصف الثالث الثانوي</p>
           </div>
@@ -1292,41 +1467,77 @@
 
         <p class="menu-label">القائمة الرئيسية</p>
 
-        <nav class="side-menu">
+        <nav class="side-menu" aria-label="القائمة الرئيسية">
 
-          <a href="index.html" class="side-link active">
+          <a href="index.html"
+            class="side-link active"
+            data-title="الرئيسية"
+            title="الرئيسية">
+
             <i class="fa-solid fa-house"></i>
-            الرئيسية
+            <span class="side-link-text">الرئيسية</span>
+
           </a>
 
-          <a href="videos/index.html" class="side-link">
+          <a href="videos/index.html"
+            class="side-link"
+            data-title="المحاضرات"
+            title="المحاضرات">
+
             <i class="fa-solid fa-circle-play"></i>
-            المحاضرات
+            <span class="side-link-text">المحاضرات</span>
+
           </a>
 
-          <a href="notes/index.html" class="side-link">
+          <a href="notes/index.html"
+            class="side-link"
+            data-title="المذكرات"
+            title="المذكرات">
+
             <i class="fa-solid fa-book-open"></i>
-            المذكرات
+            <span class="side-link-text">المذكرات</span>
+
           </a>
 
-          <a href="forum/index.html" class="side-link">
+          <a href="forum/index.html"
+            class="side-link"
+            data-title="المنتدى"
+            title="المنتدى">
+
             <i class="fa-regular fa-comments"></i>
-            المنتدى
+            <span class="side-link-text">المنتدى</span>
+
           </a>
 
-          <a href="champion/index.html" class="side-link">
+          <a href="champion/index.html"
+            class="side-link"
+            data-title="بطل الفصل"
+            title="بطل الفصل">
+
             <i class="fa-solid fa-trophy"></i>
-            بطل الفصل
+            <span class="side-link-text">بطل الفصل</span>
+
           </a>
 
-          <a href="account/index.html" class="side-link">
+          <a href="account/index.html"
+            class="side-link"
+            data-title="حساب الطالب"
+            title="حساب الطالب">
+
             <i class="fa-regular fa-user"></i>
-            حساب الطالب
+            <span class="side-link-text">حساب الطالب</span>
+
           </a>
 
-          <a href="#" class="side-link" onclick="openPrivacy(event)">
+          <a href="#"
+            class="side-link"
+            data-title="الخصوصية"
+            title="الخصوصية"
+            onclick="openPrivacy(event)">
+
             <i class="fa-solid fa-shield-halved"></i>
-            الخصوصية
+            <span class="side-link-text">الخصوصية</span>
+
           </a>
 
         </nav>
@@ -1361,7 +1572,9 @@
             title="تحديث البيانات"
             onclick="loadDashboard()"
             aria-label="تحديث البيانات">
+
             <i class="fa-solid fa-rotate"></i>
+
           </button>
 
           <div class="profile-wrap">
@@ -1425,9 +1638,7 @@
           رحلتك التعليمية
         </span>
 
-        <h2 id="welcomeTitle">
-          أهلاً بك في أرض الأحياء 🌿
-        </h2>
+        <h2 id="welcomeTitle">أهلاً بك في أرض الأحياء 🌿</h2>
 
         <p>
           هنا تتابع محاضراتك وإنجازاتك التعليمية.
@@ -1436,24 +1647,18 @@
 
       </section>
 
-      <!-- أربعة صناديق -->
+      <!-- الإحصائيات -->
 
       <section class="stats-grid">
-
-        <!-- المحاضرات المحفوظة -->
 
         <article class="stat-card green">
 
           <div class="stat-top">
-
-            <div class="stat-caption">
-              المحاضرات المحفوظة
-            </div>
+            <div class="stat-caption">المحاضرات المحفوظة</div>
 
             <div class="stat-icon">
               <i class="fa-regular fa-bookmark"></i>
             </div>
-
           </div>
 
           <strong class="stat-number" id="savedCount">—</strong>
@@ -1464,20 +1669,14 @@
 
         </article>
 
-        <!-- نسبة التقدم -->
-
         <article class="stat-card blue">
 
           <div class="stat-top">
-
-            <div class="stat-caption">
-              تقدم الطالب
-            </div>
+            <div class="stat-caption">تقدم الطالب</div>
 
             <div class="stat-icon">
               <i class="fa-solid fa-chart-line"></i>
             </div>
-
           </div>
 
           <strong class="stat-number">
@@ -1490,20 +1689,14 @@
 
         </article>
 
-        <!-- إجمالي المحاضرات -->
-
         <article class="stat-card purple">
 
           <div class="stat-top">
-
-            <div class="stat-caption">
-              إجمالي المحاضرات
-            </div>
+            <div class="stat-caption">إجمالي المحاضرات</div>
 
             <div class="stat-icon">
               <i class="fa-solid fa-video"></i>
             </div>
-
           </div>
 
           <strong class="stat-number" id="totalCount">—</strong>
@@ -1514,20 +1707,14 @@
 
         </article>
 
-        <!-- المحاضرات المكتملة -->
-
         <article class="stat-card orange">
 
           <div class="stat-top">
-
-            <div class="stat-caption">
-              المحاضرات المكتملة
-            </div>
+            <div class="stat-caption">المحاضرات المكتملة</div>
 
             <div class="stat-icon">
               <i class="fa-solid fa-circle-check"></i>
             </div>
-
           </div>
 
           <strong class="stat-number" id="completedCount">—</strong>
@@ -1560,7 +1747,8 @@
           </div>
 
           <div class="chart-wrap">
-            <canvas id="progressChart"
+            <canvas
+              id="progressChart"
               role="img"
               aria-label="رسم بياني لتقدم الطالب">
             </canvas>
@@ -1591,12 +1779,7 @@
 
             <svg viewBox="0 0 120 120" aria-label="دائرة التقدم">
 
-              <circle
-                class="ring-bg"
-                cx="60"
-                cy="60"
-                r="52">
-              </circle>
+              <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
 
               <circle
                 class="ring-value"
@@ -1609,11 +1792,8 @@
             </svg>
 
             <div class="ring-center">
-
               <strong id="ringPercent">0%</strong>
-
               <span>نسبة الإنجاز</span>
-
             </div>
 
           </div>
@@ -1625,6 +1805,7 @@
                 <span class="detail-dot"></span>
                 المحاضرات المكتملة
               </span>
+
               <strong id="detailCompleted">—</strong>
             </div>
 
@@ -1633,6 +1814,7 @@
                 <span class="detail-dot" style="background:#e7edf4"></span>
                 المحاضرات المتبقية
               </span>
+
               <strong id="detailRemaining">—</strong>
             </div>
 
@@ -1655,9 +1837,7 @@
               أحدث المحاضرات
             </h3>
 
-            <p>
-              أحدث المحاضرات المنشورة على المنصة
-            </p>
+            <p>أحدث المحاضرات المنشورة على المنصة</p>
           </div>
 
           <a href="videos/index.html" class="view-all">
@@ -1721,24 +1901,32 @@
 
   <!-- نافذة الخصوصية -->
 
-  <div class="privacy-modal" id="privacyModal" onclick="closePrivacyOutside(event)">
+  <div
+    class="privacy-modal"
+    id="privacyModal"
+    onclick="closePrivacyOutside(event)">
 
-    <section class="privacy-box" role="dialog" aria-modal="true"
+    <section
+      class="privacy-box"
+      role="dialog"
+      aria-modal="true"
       aria-labelledby="privacyTitle">
 
       <div class="privacy-header">
 
         <h3 id="privacyTitle">
-          <i class="fa-solid fa-shield-halved"
-            style="color:#087f5b"></i>
+          <i class="fa-solid fa-shield-halved" style="color:#087f5b"></i>
           إعدادات الخصوصية
         </h3>
 
         <button
           class="icon-button"
+          type="button"
           onclick="closePrivacy()"
           aria-label="إغلاق">
+
           <i class="fa-solid fa-xmark"></i>
+
         </button>
 
       </div>
@@ -1789,11 +1977,11 @@
 
       <div class="privacy-footer">
 
-        <button class="primary-btn" onclick="savePrivacy()">
+        <button class="primary-btn" type="button" onclick="savePrivacy()">
           حفظ الإعدادات
         </button>
 
-        <button class="secondary-btn" onclick="closePrivacy()">
+        <button class="secondary-btn" type="button" onclick="closePrivacy()">
           إغلاق
         </button>
 
@@ -1803,9 +1991,10 @@
 
   </div>
 
-  <!-- حجب المحتوى عند مغادرة الصفحة إذا اختار الطالب ذلك -->
+  <!-- غطاء الخصوصية -->
 
-  <div id="privacyCover"
+  <div
+    id="privacyCover"
     style="display:none;position:fixed;inset:0;background:#000;z-index:20000">
   </div>
 
@@ -1848,6 +2037,15 @@
     function showDashboard() {
       byId("authScreen").style.display = "none";
       byId("app").style.display = "block";
+
+      /*
+        رسم المخطط بعد ظهور الصفحة حتى نحصل على
+        أبعاد Canvas الصحيحة.
+      */
+
+      requestAnimationFrame(function() {
+        redrawCurrentChart();
+      });
     }
 
     function escapeHTML(value) {
@@ -1862,6 +2060,70 @@
 
         return map[char];
       });
+    }
+
+    /* تصغير وتوسيع الشريط الجانبي */
+
+    function setSidebarCollapsed(collapsed) {
+      document.body.classList.toggle(
+        "sidebar-collapsed",
+        collapsed
+      );
+
+      const toggle = byId("sidebarToggle");
+
+      if (toggle) {
+        toggle.setAttribute(
+          "aria-expanded",
+          collapsed ? "false" : "true"
+        );
+
+        toggle.setAttribute(
+          "aria-label",
+          collapsed
+            ? "توسيع القائمة الجانبية"
+            : "تصغير القائمة الجانبية"
+        );
+
+        toggle.title = collapsed
+          ? "توسيع القائمة"
+          : "تصغير القائمة";
+      }
+
+      try {
+        localStorage.setItem(
+          "ardAlahyaaSidebarCollapsed",
+          collapsed ? "true" : "false"
+        );
+      } catch (error) {
+        console.warn("تعذر حفظ حالة القائمة:", error);
+      }
+
+      /*
+        إعادة رسم الرسم البياني بعد انتهاء حركة القائمة.
+      */
+
+      setTimeout(redrawCurrentChart, 320);
+    }
+
+    function toggleSidebar() {
+      const collapsed =
+        document.body.classList.contains("sidebar-collapsed");
+
+      setSidebarCollapsed(!collapsed);
+    }
+
+    function initializeSidebar() {
+      let collapsed = false;
+
+      try {
+        collapsed =
+          localStorage.getItem("ardAlahyaaSidebarCollapsed") === "true";
+      } catch (error) {
+        console.warn("تعذر قراءة حالة القائمة:", error);
+      }
+
+      setSidebarCollapsed(collapsed);
     }
 
     function toggleProfile() {
@@ -1881,9 +2143,15 @@
 
       if (wrap && !wrap.contains(event.target)) {
         byId("profileDropdown").classList.remove("show");
-        byId("profileButton").setAttribute("aria-expanded", "false");
+
+        byId("profileButton").setAttribute(
+          "aria-expanded",
+          "false"
+        );
       }
     });
+
+    /* إعدادات الخصوصية */
 
     function openPrivacy(event) {
       if (event) event.preventDefault();
@@ -1912,15 +2180,18 @@
         byId("hideOnLeave").checked ? "true" : "false"
       );
 
+      /*
+        لو تم إيقاف الخيار، نزيل الغطاء فورًا.
+      */
+
+      if (!byId("hideOnLeave").checked) {
+        byId("privacyCover").style.display = "none";
+      }
+
       closePrivacy();
 
       alert("تم حفظ إعدادات الخصوصية على هذا الجهاز.");
     }
-
-    /*
-      إخفاء المحتوى عند مغادرة علامة التبويب:
-      هذا لا يمنع تسجيل الشاشة أثناء بقاء الصفحة ظاهرة.
-    */
 
     document.addEventListener("visibilitychange", function() {
       const enabled =
@@ -1993,7 +2264,7 @@
       }
     }
 
-    /* قراءة المحاضرات من الجدول الحالي */
+    /* قراءة المحاضرات من Supabase */
 
     async function fetchLectures() {
       const { data, error } = await supabaseClient
@@ -2009,9 +2280,8 @@
     }
 
     /*
-      الحفظ والإكمال في هذا الإصدار محفوظان محليًا لكل حساب
-      داخل المتصفح الحالي.
-      لا ندّعي أنهما متزامنان مع الأجهزة الأخرى.
+      الحفظ والإكمال محليان في المتصفح الحالي.
+      لا تتم مزامنتهما تلقائيًا بين الأجهزة.
     */
 
     function storageKey(type) {
@@ -2026,7 +2296,9 @@
       if (!key) return new Set();
 
       try {
-        const value = JSON.parse(localStorage.getItem(key) || "[]");
+        const value = JSON.parse(
+          localStorage.getItem(key) || "[]"
+        );
 
         if (!Array.isArray(value)) return new Set();
 
@@ -2067,10 +2339,6 @@
           lectureCache.map(item => String(item.id))
         );
 
-        /*
-          لا نحتسب المحاضرات المحذوفة من قاعدة البيانات.
-        */
-
         const savedValid = new Set(
           [...saved].filter(id => validIds.has(id))
         );
@@ -2086,7 +2354,10 @@
           ? Math.round((completedCount / total) * 100)
           : 0;
 
-        const remaining = Math.max(0, total - completedCount);
+        const remaining = Math.max(
+          0,
+          total - completedCount
+        );
 
         updateStat("savedCount", savedCount);
         updateStat("progressCount", percent);
@@ -2100,10 +2371,6 @@
           "المحاضرات المحفوظة على هذا الجهاز";
 
         byId("ringPercent").textContent = percent + "%";
-
-        /*
-          محيط الدائرة = 2 × π × 52 تقريبًا 327.
-        */
 
         const circumference = 327;
 
@@ -2141,7 +2408,7 @@
       }
     }
 
-    /* رسم بياني باستخدام Canvas دون مكتبات إضافية */
+    /* رسم بياني باستخدام Canvas */
 
     function renderChart(percent, completed, total) {
       const canvas = byId("progressChart");
@@ -2151,7 +2418,10 @@
 
       if (!rect.width || !rect.height) return;
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(
+        window.devicePixelRatio || 1,
+        2
+      );
 
       canvas.width = Math.round(rect.width * dpr);
       canvas.height = Math.round(rect.height * dpr);
@@ -2163,19 +2433,24 @@
 
       ctx.clearRect(0, 0, width, height);
 
-      const isArabic = true;
-
-      ctx.direction = isArabic ? "rtl" : "ltr";
+      ctx.direction = "rtl";
 
       const padding = {
         top: 20,
-        right: 22,
+        right: 38,
         bottom: 38,
         left: 38
       };
 
-      const graphWidth = width - padding.left - padding.right;
-      const graphHeight = height - padding.top - padding.bottom;
+      const graphWidth = Math.max(
+        0,
+        width - padding.left - padding.right
+      );
+
+      const graphHeight = Math.max(
+        0,
+        height - padding.top - padding.bottom
+      );
 
       ctx.font = "10px Cairo, sans-serif";
       ctx.textAlign = "right";
@@ -2185,7 +2460,9 @@
 
       for (let i = 0; i <= 4; i++) {
         const value = 100 - i * 25;
-        const y = padding.top + graphHeight * i / 4;
+
+        const y =
+          padding.top + graphHeight * i / 4;
 
         ctx.beginPath();
         ctx.strokeStyle = "#edf1f6";
@@ -2203,22 +2480,13 @@
         );
       }
 
-      /*
-        رسم منحنى يوضح نسبة الإنجاز الحالية.
-        لا يمثل سجلًا تاريخيًا؛ فالتاريخ الفعلي يحتاج إلى
-        حفظ تغييرات التقدم في قاعدة البيانات.
-      */
-
-      const points = [
-        { label: "البداية", value: 0 },
-        { label: "التقدم", value: percent }
-      ];
-
       const x1 = padding.left;
       const x2 = width - padding.right;
 
       const y1 = padding.top + graphHeight;
-      const y2 = padding.top + graphHeight * (1 - percent / 100);
+
+      const y2 =
+        padding.top + graphHeight * (1 - percent / 100);
 
       /* مساحة التعبئة */
 
@@ -2229,14 +2497,22 @@
         height - padding.bottom
       );
 
-      gradient.addColorStop(0, "rgba(8,127,91,.22)");
-      gradient.addColorStop(1, "rgba(8,127,91,.01)");
+      gradient.addColorStop(
+        0,
+        "rgba(8,127,91,.22)"
+      );
+
+      gradient.addColorStop(
+        1,
+        "rgba(8,127,91,.01)"
+      );
 
       ctx.beginPath();
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2);
       ctx.lineTo(x2, y1);
       ctx.closePath();
+
       ctx.fillStyle = gradient;
       ctx.fill();
 
@@ -2268,23 +2544,52 @@
       ctx.textAlign = "center";
       ctx.fillStyle = "#718096";
 
-      ctx.fillText("بداية", x1, height - 17);
-      ctx.fillText("الإنجاز الحالي", x2, height - 17);
+      ctx.fillText(
+        "البداية",
+        x1,
+        height - 17
+      );
 
-      /*
-        إظهار عدد المحاضرات المكتملة والإجمالية
-        في النص أسفل الرسم.
-      */
+      ctx.fillText(
+        "الإنجاز الحالي",
+        x2,
+        height - 17
+      );
 
       if (total === 0) {
         ctx.textAlign = "center";
         ctx.fillStyle = "#8792a4";
+
         ctx.fillText(
           "لا توجد محاضرات منشورة حتى الآن",
           width / 2,
           height / 2
         );
       }
+    }
+
+    /* إعادة رسم المخطط بعد تغيير الحجم */
+
+    function redrawCurrentChart() {
+      if (!currentUser) return;
+
+      const completed = getLocalSet("completed");
+
+      const validIds = new Set(
+        lectureCache.map(item => String(item.id))
+      );
+
+      const completedCount = [...completed].filter(
+        id => validIds.has(id)
+      ).length;
+
+      const total = lectureCache.length;
+
+      const percent = total > 0
+        ? Math.round(completedCount / total * 100)
+        : 0;
+
+      renderChart(percent, completedCount, total);
     }
 
     /* عرض أحدث المحاضرات */
@@ -2344,6 +2649,7 @@
             </div>
 
             <button
+              type="button"
               class="lecture-open"
               onclick="openLecture('${encodeURIComponent(id)}')">
 
@@ -2359,24 +2665,22 @@
 
     /*
       الانتقال إلى صفحة المحاضرات.
-      لا نفترض وجود صفحة مشاهدة مستقلة لم يتم تحديدها.
+      لا نفترض وجود صفحة مشاهدة مستقلة.
     */
 
     function openLecture(encodedId) {
       const id = decodeURIComponent(encodedId);
 
-      if (!lectureCache.some(item => String(item.id) === id)) {
+      if (!lectureCache.some(
+        item => String(item.id) === id
+      )) {
         return;
       }
 
       window.location.href = "videos/index.html";
     }
 
-    /*
-      دوال الحفظ والإكمال متاحة لصفحة المحاضرات
-      عند ربط أزرارها بهذه الدوال.
-      لا يتم اعتبار مشاهدة الفيديو مكتملة تلقائيًا في هذه الصفحة.
-    */
+    /* الحفظ المحلي للمحاضرات */
 
     window.saveLectureLocally = function(lectureId) {
       if (!currentUser) return;
@@ -2397,6 +2701,8 @@
 
       loadDashboard();
     };
+
+    /* تسجيل إكمال المحاضرة محليًا */
 
     window.completeLectureLocally = function(lectureId) {
       if (!currentUser) return;
@@ -2423,7 +2729,8 @@
       if (!confirmed) return;
 
       try {
-        const { error } = await supabaseClient.auth.signOut();
+        const { error } =
+          await supabaseClient.auth.signOut();
 
         if (error) throw error;
 
@@ -2444,29 +2751,11 @@
       clearTimeout(resizeTimer);
 
       resizeTimer = setTimeout(function() {
-        if (currentUser && lectureCache.length >= 0) {
-          const completed = getLocalSet("completed");
-
-          const total = lectureCache.length;
-
-          const validIds = new Set(
-            lectureCache.map(item => String(item.id))
-          );
-
-          const count = [...completed].filter(
-            id => validIds.has(id)
-          ).length;
-
-          const percent = total > 0
-            ? Math.round(count / total * 100)
-            : 0;
-
-          renderChart(percent, count, total);
-        }
-      }, 150);
+        redrawCurrentChart();
+      }, 180);
     });
 
-    /* متابعة حالة الدخول والخروج */
+    /* متابعة حالة تسجيل الدخول والخروج */
 
     supabaseClient.auth.onAuthStateChange(
       function(event, session) {
@@ -2479,6 +2768,7 @@
 
     /* بدء التشغيل */
 
+    initializeSidebar();
     checkUser();
   </script>
 
