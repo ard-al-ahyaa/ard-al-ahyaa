@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
@@ -7,264 +6,660 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>إنشاء حساب | منصة أرض الأحياء</title>
-
+  <meta name="description" content="إنشاء حساب طالب جديد في منصة أرض الأحياء التعليمية للصف الثالث الثانوي.">
   <meta name="robots" content="noindex, nofollow">
 
   <link rel="canonical"
     href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/register/">
 
-  <link rel="icon"
-    type="image/png"
+  <link rel="icon" type="image/png"
     href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/favicon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+    :root {
+      --green: #087f5b;
+      --green-dark: #066747;
+      --blue: #2994f2;
+      --blue-light: #eaf4ff;
+      --text: #172b3a;
+      --muted: #718096;
+      --border: #e2e8f0;
+      --background: #f4f8fc;
+    }
+
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Cairo", Tahoma, Arial, sans-serif;
     }
 
     body {
-      margin: 0;
       min-height: 100vh;
-      font-family: Arial, Tahoma, sans-serif;
-      background: #f5f7f6;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 28px 16px;
+      background:
+        radial-gradient(ellipse at top right, rgba(8, 127, 91, .10), transparent 38%),
+        radial-gradient(ellipse at bottom left, rgba(41, 148, 242, .12), transparent 38%),
+        var(--background);
+      color: var(--text);
     }
 
-    .register-box {
+    .page {
       width: 100%;
-      max-width: 430px;
-      background: #ffffff;
-      border-radius: 18px;
-      padding: 30px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
+      max-width: 480px;
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .logo-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 94px;
+      height: 94px;
+      margin-bottom: 10px;
+      border-radius: 27px;
+      background: #fff;
+      border: 1px solid rgba(8, 127, 91, .10);
+      box-shadow: 0 8px 25px rgba(22, 65, 80, .08);
     }
 
     .logo {
-      width: 90px;
-      height: 90px;
+      width: 76px;
+      height: 76px;
       object-fit: contain;
-      display: block;
-      margin: 0 auto 15px;
     }
 
-    h1 {
-      text-align: center;
-      color: #075e4d;
-      margin: 0 0 8px;
+    .brand h1 {
       font-size: 27px;
+      font-weight: 800;
+      color: var(--green-dark);
+      line-height: 1.5;
     }
 
-    .subtitle {
-      text-align: center;
-      color: #777;
-      margin-bottom: 25px;
-      line-height: 1.6;
+    .brand p {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.9;
+    }
+
+    .card {
+      width: 100%;
+      padding: 30px;
+      border-radius: 23px;
+      background: #fff;
+      border: 1px solid rgba(226, 232, 240, .9);
+      box-shadow: 0 18px 55px rgba(25, 55, 75, .09);
+    }
+
+    .card-heading {
+      margin-bottom: 23px;
+    }
+
+    .card-heading h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+
+    .card-heading p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.9;
+    }
+
+    .form-group {
+      margin-bottom: 17px;
     }
 
     label {
       display: block;
       margin-bottom: 7px;
-      color: #333;
-      font-weight: bold;
+      font-size: 14px;
+      font-weight: 700;
+      color: #334155;
     }
 
-    input {
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap input {
       width: 100%;
-      padding: 13px;
-      margin-bottom: 17px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      font-size: 16px;
+      height: 51px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
       outline: none;
+      background: #fbfdff;
+      color: var(--text);
+      font-size: 15px;
+      transition: border-color .2s, background .2s, box-shadow .2s;
+    }
+
+    .input-wrap input::placeholder {
+      color: #a0acba;
+      font-size: 13px;
+    }
+
+    /* تحديد أزرق فاتح عند الضغط على الخانة */
+    .input-wrap input:focus {
+      border-color: var(--blue);
       background: #fff;
+      box-shadow: 0 0 0 4px rgba(41, 148, 242, .15);
     }
 
-    input:focus {
-      border-color: #075e4d;
-      box-shadow: 0 0 0 3px rgba(7, 94, 77, 0.08);
+    .input-wrap input:focus-visible {
+      outline: 2px solid rgba(41, 148, 242, .35);
+      outline-offset: 2px;
     }
 
-    button {
-      width: 100%;
-      border: none;
-      background: #075e4d;
-      color: white;
-      padding: 14px;
-      border-radius: 10px;
-      font-size: 17px;
+    .password-toggle {
+      position: absolute;
+      left: 7px;
+      top: 7px;
+      width: 38px;
+      height: 37px;
+      padding: 0;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: #718096;
       cursor: pointer;
-      transition: 0.2s;
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    button:hover {
-      background: #064d40;
+    .password-toggle:hover,
+    .password-toggle:focus-visible {
+      background: var(--blue-light);
+      color: #0875d1;
+      outline: none;
     }
 
-    button:disabled {
-      opacity: 0.6;
+    .password-input {
+      padding-left: 48px !important;
+    }
+
+    .hint {
+      display: block;
+      color: #8391a2;
+      font-size: 11px;
+      margin-top: 5px;
+    }
+
+    .primary-button {
+      width: 100%;
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 13px 18px;
+      border: 1px solid transparent;
+      border-radius: 13px;
+      background: linear-gradient(110deg, var(--green), #09916b);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s, background .2s;
+      box-shadow: 0 7px 18px rgba(8, 127, 91, .16);
+    }
+
+    .primary-button:hover {
+      background: linear-gradient(110deg, var(--green-dark), var(--green));
+      box-shadow: 0 9px 23px rgba(8, 127, 91, .22);
+      transform: translateY(-1px);
+    }
+
+    .primary-button:focus-visible,
+    .secondary-button:focus-visible,
+    .telegram-button:focus-visible {
+      outline: 3px solid rgba(41, 148, 242, .45);
+      outline-offset: 3px;
+    }
+
+    .primary-button:disabled {
+      opacity: .7;
       cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
     }
 
     .message {
       display: none;
-      margin-top: 15px;
-      padding: 12px;
-      border-radius: 9px;
-      text-align: center;
-      line-height: 1.7;
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.9;
+      overflow-wrap: anywhere;
     }
 
     .success {
       display: block;
-      background: #e8f7ef;
       color: #176b3a;
+      background: #eaf8ef;
+      border: 1px solid #ccebd6;
     }
 
     .error {
       display: block;
-      background: #fdeaea;
-      color: #a11;
+      color: #a12632;
+      background: #fff0f1;
+      border: 1px solid #f4d0d4;
+    }
+
+    .info {
+      display: block;
+      color: #14558b;
+      background: #edf6ff;
+      border: 1px solid #d1e8ff;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 22px 0 17px;
+      color: #a0acba;
+      font-size: 12px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: #edf0f4;
     }
 
     .login-link {
       text-align: center;
-      margin-top: 20px;
-      color: #666;
-      line-height: 1.7;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 2;
     }
 
     .login-link a {
-      color: #075e4d;
+      color: var(--green);
+      font-weight: 800;
       text-decoration: none;
-      font-weight: bold;
+      border-radius: 5px;
     }
 
     .login-link a:hover {
+      color: #0869b8;
       text-decoration: underline;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      color: #8996a5;
+      font-size: 11px;
+    }
+
+    /* شاشة الخطوة التالية */
+    .telegram-step {
+      display: none;
+      text-align: center;
+    }
+
+    .telegram-step.visible {
+      display: block;
+    }
+
+    .step-icon {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 17px;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #eaf8ef;
+      color: var(--green);
+      font-size: 35px;
+    }
+
+    .telegram-step h2 {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 9px;
+    }
+
+    .telegram-step p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 2;
+      margin-bottom: 18px;
+    }
+
+    .telegram-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 52px;
+      border-radius: 13px;
+      color: #fff;
+      background: #229ed9;
+      font-size: 15px;
+      font-weight: 800;
+      text-decoration: none;
+      transition: background .2s, box-shadow .2s;
+      box-shadow: 0 6px 18px rgba(34, 158, 217, .18);
+    }
+
+    .telegram-button:hover {
+      background: #1688c0;
+      box-shadow: 0 8px 22px rgba(34, 158, 217, .25);
+    }
+
+    .telegram-button svg {
+      width: 23px;
+      height: 23px;
+      fill: currentColor;
+    }
+
+    .secondary-button {
+      display: block;
+      width: 100%;
+      min-height: 49px;
+      margin-top: 12px;
+      border: 1px solid #dce8f4;
+      border-radius: 12px;
+      background: #f8fbff;
+      color: #236ba5;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .secondary-button:hover {
+      background: var(--blue-light);
+      border-color: #a9d5ff;
+    }
+
+    .step-note {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 11px;
+      background: #f5f8fc;
+      color: #65768a;
+      font-size: 11px;
+      line-height: 1.9;
+      text-align: right;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 20px 12px;
+      }
+
+      .logo-wrap {
+        width: 78px;
+        height: 78px;
+        border-radius: 22px;
+      }
+
+      .logo {
+        width: 64px;
+        height: 64px;
+      }
+
+      .brand h1 {
+        font-size: 23px;
+      }
+
+      .card {
+        padding: 23px 18px;
+        border-radius: 19px;
+      }
+
+      .card-heading h2,
+      .telegram-step h2 {
+        font-size: 20px;
+      }
+
+      .input-wrap input {
+        height: 49px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        transition-duration: .01ms !important;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <div class="register-box">
+  <main class="page">
 
-    <img
-      src="https://ard-al-ahyaa.github.io/ard-al-ahyaa/logo.png"
-      class="logo"
-      alt="شعار منصة أرض الأحياء"
-      onerror="this.style.display='none'"
-    >
+    <header class="brand">
+      <div class="logo-wrap">
+        <img
+          src="https://ard-al-ahyaa.github.io/ard-al-ahyaa/logo.png"
+          class="logo"
+          alt="شعار منصة أرض الأحياء"
+          onerror="this.style.display='none'"
+        >
+      </div>
 
-    <h1>إنشاء حساب</h1>
+      <h1>أرض الأحياء</h1>
+      <p>منصتك التعليمية للصف الثالث الثانوي</p>
+    </header>
 
-    <div class="subtitle">
-      منصة أرض الأحياء التعليمية لطلاب الصف الثالث الثانوي
-    </div>
+    <section class="card">
 
-    <form id="registerForm">
+      <div id="registrationView">
 
-      <!-- اسم الطالب -->
-      <label for="name">اسم الطالب ثلاثي</label>
+        <div class="card-heading">
+          <h2>إنشاء حساب جديد</h2>
+          <p>أدخل بياناتك بدقة للانضمام إلى مجتمع أرض الأحياء.</p>
+        </div>
 
-      <input
-        type="text"
-        id="name"
-        placeholder="مثال: محمد أحمد علي"
-        autocomplete="name"
-        maxlength="100"
-        required
-      >
+        <form id="registerForm">
 
-      <!-- رقم هاتف الطالب -->
-      <label for="phone">رقم هاتف الطالب</label>
+          <div class="form-group">
+            <label for="name">اسم الطالب ثلاثي</label>
+            <div class="input-wrap">
+              <input
+                type="text"
+                id="name"
+                placeholder="مثال: محمد أحمد علي"
+                autocomplete="name"
+                maxlength="100"
+                required
+              >
+            </div>
+          </div>
 
-      <input
-        type="tel"
-        id="phone"
-        placeholder="مثال: 01012345678"
-        autocomplete="tel"
-        maxlength="11"
-        inputmode="numeric"
-        required
-      >
+          <div class="form-group">
+            <label for="phone">رقم هاتف الطالب</label>
+            <div class="input-wrap">
+              <input
+                type="tel"
+                id="phone"
+                placeholder="01xxxxxxxxx"
+                autocomplete="tel"
+                maxlength="11"
+                inputmode="numeric"
+                pattern="01[0125][0-9]{8}"
+                required
+              >
+            </div>
+          </div>
 
-      <!-- رقم ولي الأمر -->
-      <label for="parentPhone">رقم هاتف ولي الأمر</label>
+          <div class="form-group">
+            <label for="parentPhone">رقم هاتف ولي الأمر</label>
+            <div class="input-wrap">
+              <input
+                type="tel"
+                id="parentPhone"
+                placeholder="01xxxxxxxxx"
+                autocomplete="tel"
+                maxlength="11"
+                inputmode="numeric"
+                pattern="01[0125][0-9]{8}"
+                required
+              >
+            </div>
+          </div>
 
-      <input
-        type="tel"
-        id="parentPhone"
-        placeholder="مثال: 01112345678"
-        autocomplete="tel"
-        maxlength="11"
-        inputmode="numeric"
-        required
-      >
+          <div class="form-group">
+            <label for="email">البريد الإلكتروني</label>
+            <div class="input-wrap">
+              <input
+                type="email"
+                id="email"
+                placeholder="example@email.com"
+                autocomplete="email"
+                maxlength="150"
+                required
+              >
+            </div>
+          </div>
 
-      <!-- البريد الإلكتروني -->
-      <label for="email">البريد الإلكتروني</label>
+          <div class="form-group">
+            <label for="password">كلمة المرور</label>
+            <div class="input-wrap">
+              <input
+                type="password"
+                id="password"
+                class="password-input"
+                placeholder="6 أحرف أو أرقام على الأقل"
+                minlength="6"
+                autocomplete="new-password"
+                required
+              >
+              <button
+                class="password-toggle"
+                type="button"
+                data-target="password"
+                aria-label="إظهار كلمة المرور"
+                title="إظهار أو إخفاء كلمة المرور"
+              >◉</button>
+            </div>
+          </div>
 
-      <input
-        type="email"
-        id="email"
-        placeholder="example@email.com"
-        autocomplete="email"
-        maxlength="150"
-        required
-      >
+          <div class="form-group">
+            <label for="confirmPassword">تأكيد كلمة المرور</label>
+            <div class="input-wrap">
+              <input
+                type="password"
+                id="confirmPassword"
+                class="password-input"
+                placeholder="أعد كتابة كلمة المرور"
+                minlength="6"
+                autocomplete="new-password"
+                required
+              >
+              <button
+                class="password-toggle"
+                type="button"
+                data-target="confirmPassword"
+                aria-label="إظهار تأكيد كلمة المرور"
+                title="إظهار أو إخفاء كلمة المرور"
+              >◉</button>
+            </div>
+          </div>
 
-      <!-- كلمة المرور -->
-      <label for="password">كلمة المرور</label>
+          <button type="submit" id="registerButton" class="primary-button">
+            إنشاء الحساب
+          </button>
 
-      <input
-        type="password"
-        id="password"
-        placeholder="كلمة المرور"
-        minlength="6"
-        autocomplete="new-password"
-        required
-      >
+        </form>
 
-      <!-- تأكيد كلمة المرور -->
-      <label for="confirmPassword">تأكيد كلمة المرور</label>
+        <div id="message" class="message" role="status" aria-live="polite"></div>
 
-      <input
-        type="password"
-        id="confirmPassword"
-        placeholder="أعد كتابة كلمة المرور"
-        minlength="6"
-        autocomplete="new-password"
-        required
-      >
+        <div class="divider">أو</div>
 
-      <button type="submit" id="registerButton">
-        إنشاء الحساب
-      </button>
+        <div class="login-link">
+          لديك حساب بالفعل؟
+          <a href="../login/index.html">تسجيل الدخول</a>
+        </div>
 
-    </form>
+      </div>
 
-    <div id="message" class="message"></div>
+      <!-- تظهر بعد نجاح إنشاء الحساب -->
+      <section id="telegramStep" class="telegram-step" aria-labelledby="telegramTitle">
 
-    <div class="login-link">
-      لديك حساب بالفعل؟
-      <a href="../login/index.html">تسجيل الدخول</a>
-    </div>
+        <div class="step-icon" aria-hidden="true">✓</div>
 
-  </div>
+        <h2 id="telegramTitle">تم إنشاء حسابك بنجاح</h2>
 
+        <p>
+          أهلًا بك في منصة أرض الأحياء!
+          يمكنك الانضمام إلى مجتمع المنصة على تليجرام لمتابعة الإعلانات والتحديثات.
+        </p>
+
+        <a
+          class="telegram-button"
+          href="https://t.me/+KB1Z0dws0f01YjNk"
+          target="_blank"
+          rel="noopener noreferrer"
+          id="telegramLink"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21.9 3.3L18.6 20c-.25 1.18-.9 1.47-1.82.92l-5.01-3.69-2.42 2.33c-.27.27-.5.5-1.02.5l.36-5.1 9.28-8.38c.4-.36-.09-.56-.62-.2L5.87 13.63.94 12.09c-1.07-.34-1.09-1.07.22-1.58L20.42 2.9c.91-.34 1.7.2 1.48.4z"/>
+          </svg>
+          الانضمام إلى تليجرام
+        </a>
+
+        <div class="step-note">
+          <strong>تنبيه:</strong>
+          هذه الخطوة تعرض رابط الانضمام فقط. التحقق الفعلي من عضوية الطالب يحتاج إعداد بوت تليجرام وربطه بخدمة تحقق آمنة؛ الضغط على الرابط لا يثبت الاشتراك.
+        </div>
+
+        <button type="button" id="loginAfterRegister" class="secondary-button">
+          الانتقال إلى تسجيل الدخول
+        </button>
+
+      </section>
+
+    </section>
+
+    <footer class="footer">
+      منصة أرض الأحياء التعليمية © 2026
+    </footer>
+
+  </main>
 
   <script>
+    "use strict";
 
-    // =====================================================
-    // إعداد Supabase
-    // =====================================================
-
+    // إعداد Supabase الحالي
     const SUPABASE_URL =
       "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 
@@ -277,11 +672,6 @@
         SUPABASE_ANON_KEY
       );
 
-
-    // =====================================================
-    // عناصر الصفحة
-    // =====================================================
-
     const registerForm =
       document.getElementById("registerForm");
 
@@ -291,376 +681,161 @@
     const message =
       document.getElementById("message");
 
+    const registrationView =
+      document.getElementById("registrationView");
 
-    // =====================================================
-    // عرض الرسائل
-    // =====================================================
+    const telegramStep =
+      document.getElementById("telegramStep");
 
     function showMessage(text, type) {
-
       message.textContent = text;
-
-      message.className =
-        "message " + type;
+      message.className = "message " + type;
     }
 
-
-    // =====================================================
-    // التحقق من رقم الهاتف المصري
-    // =====================================================
-
     function isValidEgyptianPhone(phone) {
-
       return /^01[0125][0-9]{8}$/.test(phone);
     }
 
-
-    // =====================================================
-    // إنشاء الحساب
-    // =====================================================
-
-    registerForm.addEventListener(
-      "submit",
-      async function (event) {
-
-        event.preventDefault();
-
-        if (registerButton.disabled) {
-          return;
-        }
-
-
-        // ===================================================
-        // قراءة البيانات
-        // ===================================================
-
-        const name =
-          document
-            .getElementById("name")
-            .value
-            .trim();
-
-        const phone =
-          document
-            .getElementById("phone")
-            .value
-            .trim()
-            .replace(/\s+/g, "");
-
-        const parentPhone =
-          document
-            .getElementById("parentPhone")
-            .value
-            .trim()
-            .replace(/\s+/g, "");
-
-        const email =
-          document
-            .getElementById("email")
-            .value
-            .trim()
-            .toLowerCase();
-
-        const password =
-          document
-            .getElementById("password")
-            .value;
-
-        const confirmPassword =
-          document
-            .getElementById("confirmPassword")
-            .value;
-
-
-        // ===================================================
-        // التحقق من الاسم الثلاثي
-        // ===================================================
-
-        const nameParts =
-          name.split(/\s+/).filter(Boolean);
-
-        if (nameParts.length < 3) {
-
-          showMessage(
-            "من فضلك اكتب اسم الطالب ثلاثيًا.",
-            "error"
-          );
-
-          return;
-        }
-
-
-        // ===================================================
-        // التحقق من رقم الطالب
-        // ===================================================
-
-        if (!isValidEgyptianPhone(phone)) {
-
-          showMessage(
-            "رقم هاتف الطالب غير صحيح. اكتب رقمًا مصريًا مكونًا من 11 رقمًا.",
-            "error"
-          );
-
-          return;
-        }
-
-
-        // ===================================================
-        // التحقق من رقم ولي الأمر
-        // ===================================================
-
-        if (!isValidEgyptianPhone(parentPhone)) {
-
-          showMessage(
-            "رقم هاتف ولي الأمر غير صحيح. اكتب رقمًا مصريًا مكونًا من 11 رقمًا.",
-            "error"
-          );
-
-          return;
-        }
-
-
-        // ===================================================
-        // منع استخدام نفس الرقم
-        // ===================================================
-
-        if (phone === parentPhone) {
-
-          showMessage(
-            "يجب أن يكون رقم الطالب مختلفًا عن رقم ولي الأمر.",
-            "error"
-          );
-
-          return;
-        }
-
-
-        // ===================================================
-        // التحقق من البريد
-        // ===================================================
-
-        if (!email) {
-
-          showMessage(
-            "اكتب البريد الإلكتروني.",
-            "error"
-          );
-
-          return;
-        }
-
-
-        // ===================================================
-        // التحقق من كلمة المرور
-        // ===================================================
-
-        if (password.length < 6) {
-
-          showMessage(
-            "كلمة المرور يجب أن تكون 6 أحرف أو أرقام على الأقل.",
-            "error"
-          );
-
-          return;
-        }
-
-
-        if (password !== confirmPassword) {
-
-          showMessage(
-            "كلمتا المرور غير متطابقتين.",
-            "error"
-          );
-
-          return;
-        }
-
-
-        // ===================================================
-        // بدء التسجيل
-        // ===================================================
-
-        registerButton.disabled = true;
-
-        registerButton.textContent =
-          "جاري إنشاء الحساب...";
-
-        message.className =
-          "message";
-
-
-        try {
-
-          // =================================================
-          // إنشاء حساب Supabase Auth
-          //
-          // لا نرسل role من المتصفح.
-          // الـ Trigger في قاعدة البيانات يضع:
-          // role = student
-          // =================================================
-
-          const {
-            data,
-            error
-          } =
-            await supabaseClient.auth.signUp({
-
-              email: email,
-
-              password: password,
-
-              options: {
-
-                data: {
-                  full_name: name,
-                  phone: phone,
-                  parent_phone: parentPhone
-                }
-
-              }
-
-            });
-
-
-          if (error) {
-            throw error;
-          }
-
-
-          if (!data || !data.user) {
-
-            throw new Error(
-              "تعذر إنشاء الحساب."
-            );
-
-          }
-
-
-          // =================================================
-          // نجاح التسجيل
-          // =================================================
-
-          if (!data.session) {
-
-            showMessage(
-              "تم إنشاء الحساب بنجاح باسم " +
-              name +
-              ". راجع بريدك الإلكتروني لتأكيد الحساب، ثم سجل الدخول.",
-              "success"
-            );
-
-            registerForm.reset();
-
-          } else {
-
-            showMessage(
-              "تم إنشاء حسابك باسم " +
-              name +
-              " بنجاح. جاري نقلك لتسجيل الدخول...",
-              "success"
-            );
-
-            setTimeout(function () {
-
-              window.location.href =
-                "../login/index.html";
-
-            }, 1800);
-
-          }
-
-
-        } catch (error) {
-
-          console.error(
-            "Registration error:",
-            error
-          );
-
-
-          let errorMessage =
-            error.message ||
-            "حدث خطأ أثناء إنشاء الحساب.";
-
-
-          const lowerError =
-            errorMessage.toLowerCase();
-
-
-          // =================================================
-          // رسائل الأخطاء
-          // =================================================
-
-          if (
-            lowerError.includes("already registered") ||
-            lowerError.includes("user already registered")
-          ) {
-
-            errorMessage =
-              "هذا البريد الإلكتروني مسجل بالفعل.";
-
-          }
-
-          else if (
-            lowerError.includes("invalid email")
-          ) {
-
-            errorMessage =
-              "البريد الإلكتروني غير صحيح.";
-
-          }
-
-          else if (
-            lowerError.includes("password should be at least")
-          ) {
-
-            errorMessage =
-              "كلمة المرور قصيرة جدًا.";
-
-          }
-
-          else if (
-            lowerError.includes("email rate limit exceeded")
-          ) {
-
-            errorMessage =
-              "تم إجراء محاولات تسجيل كثيرة. حاول مرة أخرى لاحقًا.";
-
-          }
-
-          else if (
-            lowerError.includes("signup is disabled")
-          ) {
-
-            errorMessage =
-              "إنشاء الحسابات متوقف حاليًا من إعدادات المنصة.";
-
-          }
-
-
-          showMessage(
-            errorMessage,
-            "error"
-          );
-
-        }
-
-
-        // ===================================================
-        // إعادة تفعيل الزر
-        // ===================================================
-
-        registerButton.disabled = false;
-
-        registerButton.textContent =
-          "إنشاء الحساب";
-
+    // إظهار أو إخفاء كلمة المرور
+    document.querySelectorAll(".password-toggle").forEach(function (button) {
+      button.addEventListener("click", function () {
+        const input = document.getElementById(button.dataset.target);
+        const showing = input.type === "text";
+
+        input.type = showing ? "password" : "text";
+        button.setAttribute(
+          "aria-label",
+          showing ? "إظهار كلمة المرور" : "إخفاء كلمة المرور"
+        );
+      });
+    });
+
+    // الانتقال إلى تسجيل الدخول بعد ظهور شاشة نجاح التسجيل
+    document.getElementById("loginAfterRegister")
+      .addEventListener("click", function () {
+        window.location.href = "../login/index.html";
+      });
+
+    registerForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      if (registerButton.disabled) return;
+
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim().replace(/\s+/g, "");
+      const parentPhone = document.getElementById("parentPhone").value.trim().replace(/\s+/g, "");
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+
+      const nameParts = name.split(/\s+/).filter(Boolean);
+
+      if (nameParts.length < 3) {
+        showMessage("من فضلك اكتب اسم الطالب ثلاثيًا.", "error");
+        document.getElementById("name").focus();
+        return;
       }
-    );
 
+      if (!isValidEgyptianPhone(phone)) {
+        showMessage("رقم هاتف الطالب غير صحيح. اكتب رقمًا مصريًا مكونًا من 11 رقمًا.", "error");
+        document.getElementById("phone").focus();
+        return;
+      }
+
+      if (!isValidEgyptianPhone(parentPhone)) {
+        showMessage("رقم هاتف ولي الأمر غير صحيح. اكتب رقمًا مصريًا مكونًا من 11 رقمًا.", "error");
+        document.getElementById("parentPhone").focus();
+        return;
+      }
+
+      if (phone === parentPhone) {
+        showMessage("يجب أن يكون رقم هاتف الطالب مختلفًا عن رقم ولي الأمر.", "error");
+        document.getElementById("parentPhone").focus();
+        return;
+      }
+
+      if (!email) {
+        showMessage("اكتب البريد الإلكتروني.", "error");
+        document.getElementById("email").focus();
+        return;
+      }
+
+      if (password.length < 6) {
+        showMessage("كلمة المرور يجب أن تكون 6 أحرف أو أرقام على الأقل.", "error");
+        document.getElementById("password").focus();
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showMessage("كلمتا المرور غير متطابقتين.", "error");
+        document.getElementById("confirmPassword").focus();
+        return;
+      }
+
+      registerButton.disabled = true;
+      registerButton.textContent = "جاري إنشاء الحساب...";
+      message.className = "message";
+
+      try {
+        const { data, error } = await supabaseClient.auth.signUp({
+          email: email,
+          password: password,
+          options: {
+            data: {
+              full_name: name,
+              phone: phone,
+              parent_phone: parentPhone
+            }
+          }
+        });
+
+        if (error) throw error;
+
+        if (!data || !data.user) {
+          throw new Error("تعذر إنشاء الحساب. حاول مرة أخرى.");
+        }
+
+        registrationView.hidden = true;
+        telegramStep.classList.add("visible");
+
+        if (!data.session) {
+          document.getElementById("telegramTitle").textContent =
+            "تم إنشاء حسابك بنجاح";
+
+          telegramStep.querySelector("p").textContent =
+            "راجع بريدك الإلكتروني لتأكيد الحساب إذا طُلب منك ذلك، ثم يمكنك تسجيل الدخول إلى المنصة.";
+        }
+
+      } catch (error) {
+        console.error("Registration error:", error);
+
+        let errorMessage = "حدث خطأ أثناء إنشاء الحساب. حاول مرة أخرى.";
+        const lowerError = String(error.message || "").toLowerCase();
+
+        if (
+          lowerError.includes("already registered") ||
+          lowerError.includes("user already registered")
+        ) {
+          errorMessage = "هذا البريد الإلكتروني مسجل بالفعل. جرّب تسجيل الدخول.";
+        } else if (lowerError.includes("invalid email")) {
+          errorMessage = "البريد الإلكتروني غير صحيح.";
+        } else if (lowerError.includes("password should be at least")) {
+          errorMessage = "كلمة المرور قصيرة جدًا.";
+        } else if (
+          lowerError.includes("email rate limit exceeded") ||
+          lowerError.includes("rate limit")
+        ) {
+          errorMessage = "تم إجراء محاولات تسجيل كثيرة. حاول مرة أخرى لاحقًا.";
+        } else if (lowerError.includes("signup is disabled")) {
+          errorMessage = "إنشاء الحسابات متوقف حاليًا من إعدادات المنصة.";
+        }
+
+        showMessage(errorMessage, "error");
+        registerButton.disabled = false;
+        registerButton.textContent = "إنشاء الحساب";
+      }
+    });
   </script>
 
 </body>
-
 </html>
-```
