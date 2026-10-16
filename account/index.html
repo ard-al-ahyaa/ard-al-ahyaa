@@ -7,12 +7,13 @@
 
   <title>حساب الطالب | منصة أرض الأحياء</title>
   <meta name="description" content="حساب الطالب في منصة أرض الأحياء للصف الثالث الثانوي.">
+  <meta name="theme-color" content="#026857">
 
   <link rel="icon" href="../favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Aref+Ruqaa:wght@400;700&display=swap"
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Aref+Ruqaa:wght@400;700&display=swap"
         rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -30,6 +31,10 @@
       --border: #e5e7eb;
       --shadow: 0 5px 20px rgba(0,0,0,.05);
       --radius: 16px;
+
+      /* أبعاد الشريط الجانبي مثل صفحة المحاضرات */
+      --sidebar-width: 270px;
+      --sidebar-collapsed-width: 82px;
     }
 
     * {
@@ -57,11 +62,11 @@
     }
 
     /* ==============================
-       الشريط الجانبي - أيقونات SVG
+       الشريط الجانبي
     ============================== */
 
     .sidebar {
-      width: 270px;
+      width: var(--sidebar-width);
       background: linear-gradient(
         180deg,
         #026857 0%,
@@ -77,12 +82,59 @@
       flex-direction: column;
       justify-content: space-between;
       z-index: 1000;
+      overflow-x: hidden;
       overflow-y: auto;
       padding: 0;
+      transition: width .25s ease;
     }
 
     .sidebar-top {
-      padding: 28px 18px;
+      padding: 18px;
+      min-width: 0;
+    }
+
+    /* زر تصغير وتوسيع الشريط - نفس زر صفحة المحاضرات */
+
+    .sidebar-control {
+      display: flex;
+      justify-content: flex-start;
+      margin-bottom: 18px;
+    }
+
+    .sidebar-toggle {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.23);
+      border-radius: 11px;
+      background: rgba(255,255,255,.12);
+      color: white;
+      cursor: pointer;
+      flex-shrink: 0;
+      padding: 0;
+      transition: background .2s, transform .2s;
+    }
+
+    .sidebar-toggle:hover {
+      background: rgba(255,255,255,.23);
+      transform: scale(1.04);
+    }
+
+    .sidebar-toggle:focus-visible {
+      outline: 2px solid white;
+      outline-offset: 3px;
+    }
+
+    .sidebar-toggle svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform .25s;
     }
 
     .brand {
@@ -92,6 +144,7 @@
       margin-bottom: 32px;
       padding-bottom: 20px;
       border-bottom: 1px solid rgba(255,255,255,.16);
+      min-width: 0;
     }
 
     .brand img {
@@ -102,6 +155,12 @@
       background: white;
       padding: 3px;
       flex-shrink: 0;
+    }
+
+    .brand-text {
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
     }
 
     .brand h2 {
@@ -124,6 +183,7 @@
       font-weight: 700;
       padding: 0 12px;
       margin: 0 0 10px;
+      white-space: nowrap;
     }
 
     .sidebar nav {
@@ -149,6 +209,9 @@
       text-align: right;
       cursor: pointer;
       transition: background .2s, transform .2s;
+      min-height: 46px;
+      white-space: nowrap;
+      position: relative;
     }
 
     .nav-link:hover,
@@ -161,7 +224,7 @@
       transform: translateX(-2px);
     }
 
-    /* الأيقونات الجديدة */
+    /* الحفاظ على أيقونات SVG الأصلية */
 
     .nav-icon {
       width: 21px;
@@ -191,6 +254,12 @@
       stroke-width: 2.2;
     }
 
+    .nav-text {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .sidebar-bottom {
       margin: 0 18px 20px;
       padding: 14px;
@@ -199,16 +268,84 @@
       font-size: 11px;
       line-height: 2;
       color: rgba(255,255,255,.9);
+      overflow: hidden;
+      white-space: nowrap;
     }
 
     /* ==============================
-       المحتوى الرئيسي - دون تغيير
+       حالة الشريط المصغّر
+    ============================== */
+
+    body.sidebar-collapsed .sidebar {
+      width: var(--sidebar-collapsed-width);
+    }
+
+    body.sidebar-collapsed .sidebar-top {
+      padding: 18px 12px;
+    }
+
+    body.sidebar-collapsed .sidebar-control {
+      justify-content: center;
+    }
+
+    body.sidebar-collapsed .sidebar-toggle svg {
+      transform: rotate(180deg);
+    }
+
+    body.sidebar-collapsed .brand {
+      justify-content: center;
+      padding-bottom: 18px;
+    }
+
+    body.sidebar-collapsed .brand-text,
+    body.sidebar-collapsed .nav-title,
+    body.sidebar-collapsed .nav-text,
+    body.sidebar-collapsed .sidebar-bottom {
+      display: none;
+    }
+
+    body.sidebar-collapsed .nav-link {
+      justify-content: center;
+      padding: 12px 8px;
+      gap: 0;
+    }
+
+    body.sidebar-collapsed .nav-icon {
+      width: 25px;
+      height: 25px;
+    }
+
+    body.sidebar-collapsed .nav-link[title]:hover::after {
+      content: attr(title);
+      position: absolute;
+      right: calc(100% + 10px);
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 7px 12px;
+      background: #0f172a;
+      color: white;
+      font-size: 11px;
+      border-radius: 8px;
+      white-space: nowrap;
+      z-index: 2000;
+      box-shadow: 0 4px 12px rgba(0,0,0,.15);
+      pointer-events: none;
+    }
+
+    /* ==============================
+       المحتوى الرئيسي
     ============================== */
 
     .main {
-      margin-right: 270px;
+      margin-right: var(--sidebar-width);
       min-height: 100vh;
       padding: 24px;
+      transition: margin-right .25s ease;
+      min-width: 0;
+    }
+
+    body.sidebar-collapsed .main {
+      margin-right: var(--sidebar-collapsed-width);
     }
 
     .topbar {
@@ -642,15 +779,6 @@
     }
 
     @media(max-width:900px) {
-      .sidebar {
-        width: 270px;
-      }
-
-      .main {
-        margin-right: 270px;
-        padding: 18px;
-      }
-
       .stats-grid {
         grid-template-columns: repeat(2,minmax(0,1fr));
       }
@@ -663,7 +791,8 @@
         display: none;
       }
 
-      .main {
+      .main,
+      body.sidebar-collapsed .main {
         margin-right: 0;
         padding: 12px;
         padding-bottom: 90px;
@@ -803,33 +932,67 @@
         padding-bottom: 15px;
       }
     }
+
+    @media(prefers-reduced-motion:reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- الشريط الجانبي بأيقونات SVG الجديدة -->
+  <!-- الشريط الجانبي -->
 
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
 
     <div class="sidebar-top">
 
+      <!-- زر القائمة بنفس تصميم صفحة المحاضرات -->
+
+      <div class="sidebar-control">
+        <button
+          type="button"
+          class="sidebar-toggle"
+          id="sidebarToggle"
+          aria-label="تصغير القائمة الجانبية"
+          title="تصغير القائمة الجانبية"
+          aria-expanded="true">
+
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m14 5-7 7 7 7"></path>
+            <path d="M20 5v14"></path>
+          </svg>
+
+        </button>
+      </div>
+
       <div class="brand">
-        <img src="../logo.png" alt="شعار أرض الأحياء"
+
+        <img src="../logo.png"
+             alt="شعار أرض الأحياء"
              onerror="this.style.display='none'">
 
-        <div>
+        <div class="brand-text">
           <h2>أرض الأحياء</h2>
           <small>الصف الثالث الثانوي</small>
         </div>
+
       </div>
 
       <div class="nav-title">القائمة الرئيسية</div>
 
-      <nav>
+      <nav aria-label="القائمة الرئيسية">
 
         <!-- الرئيسية -->
-        <a class="nav-link" href="../index.html">
+        <a class="nav-link"
+           href="../index.html"
+           title="الرئيسية">
+
           <span class="nav-icon">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="m3 10 9-7 9 7"/>
@@ -837,22 +1000,30 @@
               <path d="M9 21v-7h6v7"/>
             </svg>
           </span>
-          <span>الرئيسية</span>
+
+          <span class="nav-text">الرئيسية</span>
         </a>
 
         <!-- المحاضرات -->
-        <a class="nav-link" href="../videos/index.html">
+        <a class="nav-link"
+           href="../videos/index.html"
+           title="المحاضرات">
+
           <span class="nav-icon">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <rect x="3" y="5" width="18" height="14" rx="2"/>
               <path d="m10 9 5 3-5 3z"/>
             </svg>
           </span>
-          <span>المحاضرات</span>
+
+          <span class="nav-text">المحاضرات</span>
         </a>
 
         <!-- المذكرات -->
-        <a class="nav-link" href="../notes/index.html">
+        <a class="nav-link"
+           href="../notes/index.html"
+           title="المذكرات">
+
           <span class="nav-icon">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M5 3h11l3 3v15H5z"/>
@@ -861,21 +1032,29 @@
               <path d="M8 16h8"/>
             </svg>
           </span>
-          <span>المذكرات</span>
+
+          <span class="nav-text">المذكرات</span>
         </a>
 
         <!-- بطل الفصل -->
-        <a class="nav-link" href="../champion/index.html">
+        <a class="nav-link"
+           href="../champion/index.html"
+           title="بطل الفصل">
+
           <span class="nav-icon">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>
             </svg>
           </span>
-          <span>بطل الفصل</span>
+
+          <span class="nav-text">بطل الفصل</span>
         </a>
 
         <!-- المنتدى -->
-        <a class="nav-link" href="../forum/index.html">
+        <a class="nav-link"
+           href="../forum/index.html"
+           title="المنتدى">
+
           <span class="nav-icon">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/>
@@ -884,21 +1063,28 @@
               <path d="M16 12h.01"/>
             </svg>
           </span>
-          <span>المنتدى</span>
+
+          <span class="nav-text">المنتدى</span>
         </a>
 
         <!-- حساب الطالب -->
-        <a class="nav-link active" href="index.html" aria-current="page">
+        <a class="nav-link active"
+           href="index.html"
+           title="حساب الطالب"
+           aria-current="page">
+
           <span class="nav-icon">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="12" cy="8" r="4"/>
               <path d="M5 21a7 7 0 0 1 14 0"/>
             </svg>
           </span>
-          <span>حساب الطالب</span>
+
+          <span class="nav-text">حساب الطالب</span>
         </a>
 
       </nav>
+
     </div>
 
     <div class="sidebar-bottom">
@@ -916,19 +1102,23 @@
   <main class="main">
 
     <header class="topbar">
+
       <div>
         <h1>حساب الطالب</h1>
         <p>بياناتك الشخصية ومتابعة تقدمك</p>
       </div>
 
       <div class="student-chip">
+
         <div class="avatar">👨‍🎓</div>
 
         <div>
           <strong id="topStudentName" class="ruqaa">جارٍ التحميل...</strong>
           <small>طالب أرض الأحياء</small>
         </div>
+
       </div>
+
     </header>
 
     <div id="pageLoading" class="section loading">
@@ -936,20 +1126,25 @@
     </div>
 
     <div id="loginRequired" style="display:none">
+
       <div class="login-box">
         <div style="font-size:45px">🔐</div>
+
         <h2>سجّل الدخول أولًا</h2>
+
         <p>يجب تسجيل الدخول إلى المنصة لعرض بيانات حسابك.</p>
 
         <a class="btn btn-primary" href="../index.html">
           الذهاب إلى المنصة
         </a>
       </div>
+
     </div>
 
     <div id="accountContent" style="display:none">
 
       <section class="welcome">
+
         <h2>
           أهلًا بك يا
           <span id="welcomeName" class="ruqaa">طالبنا المتميز</span>
@@ -962,6 +1157,7 @@
         </p>
 
         <div class="welcome-icon">🎓</div>
+
       </section>
 
       <div class="stats-grid">
@@ -1020,47 +1216,67 @@
             <div class="field">
               <label for="fullName">اسم الطالب — غير قابل للتعديل</label>
 
-              <input type="text" id="fullName" class="ruqaa"
-                     readonly disabled>
+              <input type="text"
+                     id="fullName"
+                     class="ruqaa"
+                     readonly
+                     disabled>
             </div>
 
             <div class="field">
               <label for="email">البريد الإلكتروني</label>
 
-              <input type="email" id="email" readonly disabled
+              <input type="email"
+                     id="email"
+                     readonly
+                     disabled
                      autocomplete="email">
             </div>
 
             <div class="field">
               <label for="phone">رقم الهاتف</label>
 
-              <input type="tel" id="phone" readonly disabled
-                     autocomplete="tel" placeholder="غير مسجل">
+              <input type="tel"
+                     id="phone"
+                     readonly
+                     disabled
+                     autocomplete="tel"
+                     placeholder="غير مسجل">
             </div>
 
           </div>
 
           <div class="actions">
 
-            <button type="button" class="btn btn-primary" id="editPhoneBtn">
+            <button type="button"
+                    class="btn btn-primary"
+                    id="editPhoneBtn">
               ✏️ تعديل رقم الهاتف
             </button>
 
-            <button type="button" class="btn btn-primary" id="editEmailBtn">
+            <button type="button"
+                    class="btn btn-primary"
+                    id="editEmailBtn">
               ✉️ تعديل البريد الإلكتروني
             </button>
 
-            <button type="button" class="btn btn-primary"
-                    id="saveBtn" style="display:none">
+            <button type="button"
+                    class="btn btn-primary"
+                    id="saveBtn"
+                    style="display:none">
               💾 حفظ التعديل
             </button>
 
-            <button type="button" class="btn btn-light"
-                    id="cancelBtn" style="display:none">
+            <button type="button"
+                    class="btn btn-light"
+                    id="cancelBtn"
+                    style="display:none">
               إلغاء
             </button>
 
-            <button type="button" class="btn btn-danger" id="logoutBtn">
+            <button type="button"
+                    class="btn btn-danger"
+                    id="logoutBtn">
               تسجيل الخروج
             </button>
 
@@ -1074,6 +1290,7 @@
           </div>
 
         </form>
+
       </section>
 
       <!-- الامتحانات -->
@@ -1145,9 +1362,10 @@
 
   </main>
 
-  <!-- شريط التنقل السفلي للموبايل - دون تغيير -->
+  <!-- شريط التنقل السفلي للموبايل -->
 
-  <nav class="mobile-nav">
+  <nav class="mobile-nav" aria-label="التنقل السريع">
+
     <a href="../index.html">
       <span>🏠</span>
       الرئيسية
@@ -1168,13 +1386,20 @@
       المنتدى
     </a>
 
-    <a href="index.html" class="active">
+    <a href="index.html" class="active" aria-current="page">
       <span>👤</span>
       حسابي
     </a>
+
   </nav>
 
   <script>
+    "use strict";
+
+    /* =================================
+       إعداد Supabase
+    ================================= */
+
     const SUPABASE_URL =
       "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 
@@ -1201,6 +1426,83 @@
     let savedEmail = "";
 
     const $ = id => document.getElementById(id);
+
+    /* =================================
+       زر الشريط الجانبي
+       نفس وظيفة صفحة المحاضرات
+    ================================= */
+
+    const sidebarToggle = $("sidebarToggle");
+
+    /* نفس مفتاح التخزين المستخدم بصفحة المحاضرات */
+    const SIDEBAR_STORAGE_KEY =
+      "ardAlahyaaLecturesSidebarCollapsed";
+
+    function setSidebarCollapsed(collapsed, save = true) {
+      document.body.classList.toggle(
+        "sidebar-collapsed",
+        collapsed
+      );
+
+      sidebarToggle.setAttribute(
+        "aria-expanded",
+        String(!collapsed)
+      );
+
+      sidebarToggle.setAttribute(
+        "aria-label",
+        collapsed
+          ? "توسيع القائمة الجانبية"
+          : "تصغير القائمة الجانبية"
+      );
+
+      sidebarToggle.title = collapsed
+        ? "توسيع القائمة الجانبية"
+        : "تصغير القائمة الجانبية";
+
+      if (save) {
+        try {
+          localStorage.setItem(
+            SIDEBAR_STORAGE_KEY,
+            collapsed ? "true" : "false"
+          );
+        } catch (error) {
+          console.warn(
+            "تعذر حفظ حالة القائمة الجانبية:",
+            error
+          );
+        }
+      }
+    }
+
+    function loadSidebarState() {
+      try {
+        const savedState = localStorage.getItem(
+          SIDEBAR_STORAGE_KEY
+        );
+
+        setSidebarCollapsed(
+          savedState === "true",
+          false
+        );
+
+      } catch (error) {
+        setSidebarCollapsed(false, false);
+      }
+    }
+
+    sidebarToggle.addEventListener("click", function () {
+      const isCollapsed =
+        document.body.classList.contains("sidebar-collapsed");
+
+      setSidebarCollapsed(!isCollapsed);
+    });
+
+    loadSidebarState();
+
+    /* =================================
+       رسائل الحساب
+    ================================= */
 
     function message(text, type = "info") {
       $("profileMessage").textContent = text;
@@ -1259,20 +1561,30 @@
       if (!value) return "";
 
       const d = new Date(value);
+
       if (Number.isNaN(d.getTime())) return "";
 
       return d.toLocaleDateString("ar-EG");
     }
 
+    /* =================================
+       مهلة تعديل بيانات التواصل
+    ================================= */
+
     function remainingDays() {
       if (!profile.contact_updated_at) return 0;
 
-      const last = new Date(profile.contact_updated_at).getTime();
+      const last = new Date(
+        profile.contact_updated_at
+      ).getTime();
+
       if (!Number.isFinite(last)) return 0;
 
       return Math.max(
         0,
-        Math.ceil((last + COOLDOWN_MS - Date.now()) / 86400000)
+        Math.ceil(
+          (last + COOLDOWN_MS - Date.now()) / 86400000
+        )
       );
     }
 
@@ -1326,6 +1638,7 @@
           "لا يمكنك تعديل بيانات التواصل الآن. انتظر حتى تنتهي مهلة الـ30 يومًا.",
           "error"
         );
+
         return;
       }
 
@@ -1352,6 +1665,7 @@
           "عدّل رقم الهاتف فقط، ثم اضغط حفظ. لن تستطيع تعديل بيانات التواصل مرة أخرى لمدة 30 يومًا.",
           "info"
         );
+
       } else {
         $("email").focus();
 
@@ -1362,9 +1676,14 @@
       }
     }
 
+    /* =================================
+       تحميل بيانات الحساب
+    ================================= */
+
     async function init() {
       try {
-        const { data, error } = await db.auth.getSession();
+        const { data, error } =
+          await db.auth.getSession();
 
         if (error) throw error;
 
@@ -1376,11 +1695,12 @@
 
         currentUser = data.session.user;
 
-        const { data: row, error: profileError } = await db
-          .from("profiles")
-          .select("*")
-          .eq("id", currentUser.id)
-          .maybeSingle();
+        const { data: row, error: profileError } =
+          await db
+            .from("profiles")
+            .select("*")
+            .eq("id", currentUser.id)
+            .maybeSingle();
 
         if (profileError) throw profileError;
 
@@ -1395,7 +1715,9 @@
         $("topStudentName").textContent = name;
         $("welcomeName").textContent = name;
 
-        $("email").value = currentUser.email || profile.email || "";
+        $("email").value =
+          currentUser.email || profile.email || "";
+
         $("phone").value = profile.phone || "";
 
         savedPhone = profile.phone || "";
@@ -1408,18 +1730,21 @@
 
         await Promise.allSettled([
           loadLectureCount(),
+
           loadResults(
             TABLES.exams,
             "examResults",
             "examCount",
             "الامتحانات"
           ),
+
           loadResults(
             TABLES.homework,
             "homeworkResults",
             "homeworkCount",
             "الواجبات"
           ),
+
           loadForumPosts()
         ]);
 
@@ -1430,6 +1755,10 @@
           "تعذر تحميل بيانات الحساب. تحقق من اتصال Supabase وصلاحيات جدول profiles.";
       }
     }
+
+    /* =================================
+       أزرار تعديل البيانات
+    ================================= */
 
     $("editPhoneBtn").addEventListener("click", () => {
       beginEdit("phone");
@@ -1460,6 +1789,7 @@
       }
 
       const btn = $("saveBtn");
+
       btn.disabled = true;
       btn.textContent = "جارٍ الحفظ...";
 
@@ -1492,7 +1822,11 @@
             );
           }
 
-          profile = { ...profile, ...data };
+          profile = {
+            ...profile,
+            ...data
+          };
+
           savedPhone = newPhone;
 
           resetForm();
@@ -1509,7 +1843,10 @@
             throw new Error("اكتب البريد الإلكتروني الجديد.");
           }
 
-          if (newEmail.toLowerCase() === savedEmail.toLowerCase()) {
+          if (
+            newEmail.toLowerCase() ===
+            savedEmail.toLowerCase()
+          ) {
             throw new Error("البريد الإلكتروني لم يتغير.");
           }
 
@@ -1541,6 +1878,10 @@
       }
     });
 
+    /* =================================
+       عدد المحاضرات
+    ================================= */
+
     async function loadLectureCount() {
       try {
         const { count, error } = await db
@@ -1559,6 +1900,10 @@
         $("totalLectures").textContent = "—";
       }
     }
+
+    /* =================================
+       نتائج الامتحانات والواجبات
+    ================================= */
 
     async function loadResults(
       table,
@@ -1651,6 +1996,10 @@
       }
     }
 
+    /* =================================
+       مشاركات المنتدى
+    ================================= */
+
     async function loadForumPosts() {
       try {
         const { data, error } = await db
@@ -1709,6 +2058,10 @@
       }
     }
 
+    /* =================================
+       تسجيل الخروج
+    ================================= */
+
     $("logoutBtn").addEventListener("click", async () => {
       const btn = $("logoutBtn");
       btn.disabled = true;
@@ -1732,6 +2085,7 @@
       }
     });
 
+    /* تشغيل الصفحة */
     init();
   </script>
 
