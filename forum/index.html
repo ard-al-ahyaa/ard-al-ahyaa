@@ -3,20 +3,17 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>المنتدى | منصة أرض الأحياء</title>
-
-  <meta name="description"
-    content="منتدى طلاب منصة أرض الأحياء للصف الثالث الثانوي لمشاركة الأسئلة والمناقشات والصور التعليمية.">
+  <meta name="description" content="منتدى طلاب منصة أرض الأحياء للصف الثالث الثانوي لمشاركة الأسئلة والمناقشات والصور التعليمية.">
+  <meta name="theme-color" content="#026857">
 
   <link rel="icon" href="../favicon.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -33,6 +30,9 @@
       --border: #e5ebee;
       --danger: #dc3545;
       --shadow: 0 5px 22px rgba(15, 48, 55, .07);
+
+      --sidebar-width: 270px;
+      --sidebar-small: 78px;
     }
 
     * {
@@ -61,7 +61,6 @@
       cursor: pointer;
     }
 
-    /* الأيقونات */
     .icon {
       width: 22px;
       height: 22px;
@@ -74,45 +73,32 @@
       stroke-linejoin: round;
     }
 
-    .brand-icon .icon {
-      width: 29px;
-      height: 29px;
-    }
-
-    .nav-icon {
-      width: 24px;
-      height: 24px;
-      display: grid;
-      place-items: center;
-      flex-shrink: 0;
-    }
-
-    .nav-icon .icon {
-      width: 22px;
-      height: 22px;
-    }
+    /* الشريط الجانبي */
 
     .sidebar {
       position: fixed;
       top: 0;
       right: 0;
-      width: 270px;
+      width: var(--sidebar-width);
       height: 100vh;
+      overflow-x: hidden;
       overflow-y: auto;
-      padding: 25px 16px;
+      padding: 22px 15px;
       color: white;
       background: linear-gradient(165deg, #026857, #075e54 48%, #1e3a8a);
       z-index: 1000;
       box-shadow: -4px 0 18px rgba(0, 0, 0, .08);
+      transition: width .3s ease, padding .3s ease;
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 7px 9px 24px;
+      padding: 7px 8px 22px;
       border-bottom: 1px solid rgba(255, 255, 255, .18);
-      margin-bottom: 23px;
+      margin-bottom: 15px;
+      min-width: 0;
     }
 
     .brand-icon {
@@ -125,8 +111,20 @@
       border-radius: 15px;
     }
 
+    .brand-icon .icon {
+      width: 29px;
+      height: 29px;
+    }
+
+    .brand-text {
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      transition: opacity .2s, width .3s;
+    }
+
     .brand h2 {
-      font-size: 16px;
+      font-size: 15px;
       line-height: 1.7;
       margin: 0;
       font-weight: 800;
@@ -134,9 +132,42 @@
 
     .brand small {
       display: block;
-      font-size: 11px;
+      font-size: 10px;
       opacity: .8;
       font-weight: 500;
+    }
+
+    .sidebar-toggle-wrap {
+      display: flex;
+      justify-content: flex-start;
+      margin-bottom: 18px;
+    }
+
+    .sidebar-toggle {
+      width: 43px;
+      height: 43px;
+      border: 1px solid rgba(255, 255, 255, .19);
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: rgba(255, 255, 255, .12);
+      transition: background .2s, transform .3s;
+      flex-shrink: 0;
+    }
+
+    .sidebar-toggle:hover {
+      background: rgba(255, 255, 255, .23);
+    }
+
+    .sidebar-toggle .icon {
+      width: 23px;
+      height: 23px;
+      transition: transform .35s ease;
+    }
+
+    .sidebar-toggle:hover .icon {
+      transform: rotate(35deg);
     }
 
     .nav-title {
@@ -144,43 +175,140 @@
       opacity: .68;
       padding: 0 13px;
       margin: 18px 0 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      transition: opacity .2s;
     }
 
     .nav-link {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 12px 14px;
+      min-height: 48px;
+      padding: 11px 12px;
       margin: 5px 0;
-      border-radius: 11px;
+      border-radius: 12px;
       color: rgba(255, 255, 255, .9);
       text-decoration: none;
       font-size: 13px;
       font-weight: 600;
+      white-space: nowrap;
       transition: .2s;
+      position: relative;
     }
 
     .nav-link:hover,
     .nav-link.active {
       background: rgba(255, 255, 255, .17);
       color: white;
-      transform: translateX(-3px);
+    }
+
+    .nav-link:hover {
+      transform: translateX(-2px);
+    }
+
+    .nav-icon {
+      width: 25px;
+      height: 25px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .nav-icon .icon {
+      width: 22px;
+      height: 22px;
+    }
+
+    .nav-text {
+      overflow: hidden;
+      opacity: 1;
+      transition: opacity .2s;
     }
 
     .sidebar-bottom {
       margin-top: 25px;
-      padding: 15px 10px;
+      padding: 15px 5px;
       border-top: 1px solid rgba(255, 255, 255, .16);
       font-size: 11px;
       line-height: 2;
       opacity: .8;
       text-align: center;
+      overflow: hidden;
     }
 
+    .sidebar-bottom .icon {
+      margin: 0 auto 5px;
+      width: 20px;
+      height: 20px;
+    }
+
+    .sidebar-bottom-text {
+      white-space: nowrap;
+      transition: opacity .2s;
+    }
+
+    /* الوضع المصغر */
+
+    body.sidebar-collapsed {
+      --sidebar-width: var(--sidebar-small);
+    }
+
+    body.sidebar-collapsed .sidebar {
+      padding: 18px 10px;
+    }
+
+    body.sidebar-collapsed .brand {
+      justify-content: center;
+      padding: 7px 0 18px;
+    }
+
+    body.sidebar-collapsed .brand-text,
+    body.sidebar-collapsed .nav-title,
+    body.sidebar-collapsed .nav-text,
+    body.sidebar-collapsed .sidebar-bottom-text {
+      display: none;
+    }
+
+    body.sidebar-collapsed .sidebar-toggle-wrap {
+      justify-content: center;
+    }
+
+    body.sidebar-collapsed .sidebar-toggle {
+      width: 44px;
+      height: 44px;
+    }
+
+    body.sidebar-collapsed .nav-link {
+      justify-content: center;
+      padding: 12px 0;
+      gap: 0;
+    }
+
+    body.sidebar-collapsed .nav-link:hover {
+      transform: none;
+    }
+
+    body.sidebar-collapsed .nav-icon {
+      width: 28px;
+      height: 28px;
+    }
+
+    body.sidebar-collapsed .sidebar-bottom {
+      padding-top: 14px;
+    }
+
+    body.sidebar-collapsed .sidebar-toggle .icon {
+      transform: rotate(180deg);
+    }
+
+    /* المحتوى */
+
     .main {
-      margin-right: 270px;
+      margin-right: var(--sidebar-width);
       min-height: 100vh;
       padding: 25px 30px 50px;
+      transition: margin-right .3s ease;
     }
 
     .topbar {
@@ -474,7 +602,6 @@
 
     .publish-button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(2, 104, 87, .2);
     }
 
     .publish-button:disabled {
@@ -529,7 +656,7 @@
 
     .post-card {
       padding: 19px;
-      transition: .2s;
+      transition: border-color .2s;
       min-width: 0;
     }
 
@@ -552,11 +679,6 @@
       background: linear-gradient(135deg, #e8f5f1, #eaf0ff);
       color: var(--green);
       border-radius: 13px;
-    }
-
-    .post-avatar .icon {
-      width: 23px;
-      height: 23px;
     }
 
     .post-author {
@@ -628,6 +750,96 @@
       color: var(--green);
     }
 
+    /* ردود الإدارة */
+
+    .replies-section {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid #edf1f2;
+    }
+
+    .replies-heading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--green-dark);
+    }
+
+    .replies-heading .icon {
+      width: 19px;
+      height: 19px;
+    }
+
+    .reply-card {
+      padding: 12px 13px;
+      margin-top: 9px;
+      border: 1px solid #dcefe8;
+      border-right: 4px solid var(--green);
+      border-radius: 11px;
+      background: #f5fbf8;
+    }
+
+    .reply-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+
+    .reply-author {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--green-dark);
+    }
+
+    .reply-author .icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    .admin-label {
+      font-size: 9px;
+      padding: 3px 7px;
+      border-radius: 20px;
+      background: #d9f3e7;
+      color: #076b4d;
+    }
+
+    .reply-date {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .reply-content {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.9;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .reply-audio {
+      display: block;
+      width: 100%;
+      max-width: 380px;
+      margin-top: 10px;
+    }
+
+    .replies-loading,
+    .no-replies {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.8;
+    }
+
     .empty-state,
     .loading-state {
       text-align: center;
@@ -678,12 +890,7 @@
     }
 
     @media (max-width: 1000px) {
-      .sidebar {
-        width: 235px;
-      }
-
       .main {
-        margin-right: 235px;
         padding: 22px;
       }
     }
@@ -720,11 +927,6 @@
       .student-avatar {
         width: 32px;
         height: 32px;
-      }
-
-      .student-avatar .icon {
-        width: 19px;
-        height: 19px;
       }
 
       .student-info strong {
@@ -817,7 +1019,6 @@
         text-decoration: none;
         font-size: 9px;
         font-weight: 700;
-        transition: color .2s;
       }
 
       .mobile-nav a .icon {
@@ -834,21 +1035,12 @@
       }
     }
 
-    @media (max-width: 380px) {
-      .student-badge {
-        max-width: 120px;
-      }
-
-      .page-heading h1 {
-        font-size: 18px;
-      }
-
-      .composer-tools {
-        flex-direction: column;
-      }
-
-      .tool-button {
-        width: 100%;
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
       }
     }
   </style>
@@ -856,7 +1048,7 @@
 
 <body>
 
-  <!-- رموز SVG موحدة -->
+  <!-- رموز SVG -->
   <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
     <symbol id="icon-plant" viewBox="0 0 24 24">
       <path d="M12 21v-9"></path>
@@ -888,8 +1080,6 @@
       <path d="M7 4h10v6a5 5 0 0 1-10 0z"></path>
       <path d="M7 6H3v2a5 5 0 0 0 5 5"></path>
       <path d="M17 6h4v2a5 5 0 0 1-5 5"></path>
-      <path d="m12 6 .8 2 2.2.2-1.7 1.4.5 2.1-1.8-1.2-1.8 1.2.5-2.1L9 8.2l2.2-.2z"
-        fill="currentColor" stroke="none"></path>
     </symbol>
 
     <symbol id="icon-forum" viewBox="0 0 24 24">
@@ -929,72 +1119,82 @@
       <circle cx="12" cy="12" r="9"></circle>
       <path d="M12 7v5l3 2"></path>
     </symbol>
+
+    <symbol id="icon-chevron" viewBox="0 0 24 24">
+      <path d="m15 18-6-6 6-6"></path>
+    </symbol>
+
+    <symbol id="icon-message" viewBox="0 0 24 24">
+      <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"></path>
+    </symbol>
   </svg>
 
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
+
     <div class="brand">
       <div class="brand-icon">
         <svg class="icon"><use href="#icon-plant"></use></svg>
       </div>
-      <div>
+
+      <div class="brand-text">
         <h2>منصة أرض الأحياء</h2>
         <small>الصف الثالث الثانوي</small>
       </div>
     </div>
 
+    <div class="sidebar-toggle-wrap">
+      <button
+        type="button"
+        class="sidebar-toggle"
+        id="sidebarToggle"
+        aria-label="تصغير الشريط الجانبي"
+        aria-expanded="true"
+        title="تصغير أو توسيع القائمة">
+        <svg class="icon"><use href="#icon-chevron"></use></svg>
+      </button>
+    </div>
+
     <div class="nav-title">القائمة الرئيسية</div>
 
     <nav>
-      <a class="nav-link" href="../index.html">
-        <span class="nav-icon">
-          <svg class="icon"><use href="#icon-home"></use></svg>
-        </span>
-        <span>الرئيسية</span>
+      <a class="nav-link" href="../index.html" title="الرئيسية">
+        <span class="nav-icon"><svg class="icon"><use href="#icon-home"></use></svg></span>
+        <span class="nav-text">الرئيسية</span>
       </a>
 
-      <a class="nav-link" href="../videos/index.html">
-        <span class="nav-icon">
-          <svg class="icon"><use href="#icon-video"></use></svg>
-        </span>
-        <span>المحاضرات</span>
+      <a class="nav-link" href="../videos/index.html" title="المحاضرات">
+        <span class="nav-icon"><svg class="icon"><use href="#icon-video"></use></svg></span>
+        <span class="nav-text">المحاضرات</span>
       </a>
 
-      <a class="nav-link" href="../notes/index.html">
-        <span class="nav-icon">
-          <svg class="icon"><use href="#icon-notes"></use></svg>
-        </span>
-        <span>المذكرات</span>
+      <a class="nav-link" href="../notes/index.html" title="المذكرات">
+        <span class="nav-icon"><svg class="icon"><use href="#icon-notes"></use></svg></span>
+        <span class="nav-text">المذكرات</span>
       </a>
 
-      <a class="nav-link" href="../champion/index.html">
-        <span class="nav-icon">
-          <svg class="icon"><use href="#icon-trophy"></use></svg>
-        </span>
-        <span>بطل الفصل</span>
+      <a class="nav-link" href="../champion/index.html" title="بطل الفصل">
+        <span class="nav-icon"><svg class="icon"><use href="#icon-trophy"></use></svg></span>
+        <span class="nav-text">بطل الفصل</span>
       </a>
 
-      <a class="nav-link active" href="./index.html" aria-current="page">
-        <span class="nav-icon">
-          <svg class="icon"><use href="#icon-forum"></use></svg>
-        </span>
-        <span>المنتدى</span>
+      <a class="nav-link active" href="./index.html" aria-current="page" title="المنتدى">
+        <span class="nav-icon"><svg class="icon"><use href="#icon-forum"></use></svg></span>
+        <span class="nav-text">المنتدى</span>
       </a>
 
-      <a class="nav-link" href="../account/index.html">
-        <span class="nav-icon">
-          <svg class="icon"><use href="#icon-user"></use></svg>
-        </span>
-        <span>حساب الطالب</span>
+      <a class="nav-link" href="../account/index.html" title="حساب الطالب">
+        <span class="nav-icon"><svg class="icon"><use href="#icon-user"></use></svg></span>
+        <span class="nav-text">حساب الطالب</span>
       </a>
     </nav>
 
     <div class="sidebar-bottom">
-      <svg class="icon" style="margin:0 auto 5px;width:20px;height:20px">
-        <use href="#icon-plant"></use>
-      </svg>
-      معًا نحو التفوق في الأحياء
-      <br>
-      منصة أرض الأحياء © 2026
+      <svg class="icon"><use href="#icon-plant"></use></svg>
+      <div class="sidebar-bottom-text">
+        معًا نحو التفوق في الأحياء
+        <br>
+        منصة أرض الأحياء © 2026
+      </div>
     </div>
   </aside>
 
@@ -1010,6 +1210,7 @@
         <div class="student-avatar">
           <svg class="icon"><use href="#icon-user"></use></svg>
         </div>
+
         <div class="student-info">
           <strong id="studentName">جارٍ التحقق...</strong>
           <small>طالب بالمنصة</small>
@@ -1021,7 +1222,9 @@
       <div class="welcome-decoration">
         <svg class="icon"><use href="#icon-plant"></use></svg>
       </div>
+
       <h2>أهلًا بك في مجتمع أرض الأحياء!</h2>
+
       <p>
         اطرح سؤالك، شارك زملاءك المعلومة، وارفع صورة للسؤال أو المعلومة
         التي تريد مناقشتها. بالتعاون نحقق التفوق.
@@ -1038,6 +1241,7 @@
         <div class="composer-avatar">
           <svg class="icon"><use href="#icon-user"></use></svg>
         </div>
+
         <div>
           <strong id="composerName">طالب بالمنصة</strong>
           <small>شارك سؤالك أو أضف صورة تعليمية</small>
@@ -1056,6 +1260,7 @@
 
       <div class="image-preview-wrap" id="imagePreviewWrap">
         <img id="imagePreview" class="image-preview" alt="معاينة الصورة المختارة">
+
         <button type="button" class="remove-image" id="removeImage">
           <svg class="icon"><use href="#icon-trash"></use></svg>
           إزالة الصورة
@@ -1097,7 +1302,6 @@
     <div class="footer">
       جميع الحقوق محفوظة © 2026 منصة أرض الأحياء
     </div>
-
   </main>
 
   <nav class="mobile-nav" aria-label="التنقل الرئيسي">
@@ -1133,6 +1337,7 @@
     // إعدادات Supabase
     const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
     const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+
     const STORAGE_BUCKET = "forum-images";
     const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 
@@ -1163,12 +1368,57 @@
     const composerNameElement = document.getElementById("composerName");
     const charCount = document.getElementById("charCount");
     const postsCount = document.getElementById("postsCount");
+    const sidebarToggle = document.getElementById("sidebarToggle");
 
     let currentUser = null;
     let currentStudentName = "طالب بالمنصة";
     let selectedImage = null;
     let previewObjectUrl = null;
     let isPublishing = false;
+
+    // حفظ وضع الشريط الجانبي
+    const SIDEBAR_STORAGE_KEY = "ard_al_ahyaa_forum_sidebar_collapsed";
+
+    function applySidebarState(collapsed) {
+      document.body.classList.toggle("sidebar-collapsed", collapsed);
+
+      sidebarToggle.setAttribute("aria-expanded", String(!collapsed));
+
+      sidebarToggle.setAttribute(
+        "aria-label",
+        collapsed ? "توسيع الشريط الجانبي" : "تصغير الشريط الجانبي"
+      );
+
+      sidebarToggle.title = collapsed
+        ? "توسيع القائمة"
+        : "تصغير القائمة";
+
+      try {
+        localStorage.setItem(
+          SIDEBAR_STORAGE_KEY,
+          collapsed ? "true" : "false"
+        );
+      } catch (error) {
+        console.warn("تعذر حفظ وضع الشريط الجانبي.");
+      }
+    }
+
+    try {
+      const savedSidebarState = localStorage.getItem(SIDEBAR_STORAGE_KEY);
+
+      if (savedSidebarState === "true") {
+        document.body.classList.add("sidebar-collapsed");
+      }
+    } catch (error) {
+      console.warn("تعذر قراءة إعدادات الشريط الجانبي.");
+    }
+
+    sidebarToggle.addEventListener("click", function () {
+      const isCollapsed =
+        document.body.classList.contains("sidebar-collapsed");
+
+      applySidebarState(!isCollapsed);
+    });
 
     // الرسائل
     function showMessage(message, type = "info") {
@@ -1198,11 +1448,6 @@
         studentNameElement.textContent = "غير مسجل الدخول";
         composerNameElement.textContent = "طالب بالمنصة";
 
-        showMessage(
-          "يجب تسجيل الدخول إلى حسابك قبل نشر منشور أو رفع صورة.",
-          "info"
-        );
-
         return false;
       }
 
@@ -1226,7 +1471,7 @@
           studentName = profile.full_name;
         }
       } catch (error) {
-        console.warn("تعذر قراءة اسم الطالب من profiles:", error);
+        console.warn("تعذر قراءة اسم الطالب:", error);
       }
 
       currentStudentName =
@@ -1235,12 +1480,10 @@
       studentNameElement.textContent = currentStudentName;
       composerNameElement.textContent = currentStudentName;
 
-      hideMessage();
-
       return true;
     }
 
-    // اختيار الصورة
+    // اختيار صورة
     chooseImageBtn.addEventListener("click", function () {
       imageInput.click();
     });
@@ -1250,13 +1493,11 @@
 
       const file = imageInput.files && imageInput.files[0];
 
-      if (!file) {
-        return;
-      }
+      if (!file) return;
 
       if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
         showMessage(
-          "نوع الصورة غير مدعوم. اختر صورة بصيغة JPG أو PNG أو WEBP أو GIF.",
+          "نوع الصورة غير مدعوم. اختر JPG أو PNG أو WEBP أو GIF.",
           "error"
         );
 
@@ -1282,7 +1523,7 @@
       imagePreview.src = previewObjectUrl;
       imagePreviewWrap.classList.add("show");
 
-      showMessage("تم اختيار الصورة. يمكنك نشرها مع المنشور.", "success");
+      showMessage("تم اختيار الصورة بنجاح.", "success");
     });
 
     function clearPreviewUrl() {
@@ -1305,12 +1546,11 @@
       hideMessage();
     });
 
-    // عداد الأحرف
     postContent.addEventListener("input", function () {
       charCount.textContent = postContent.value.length;
     });
 
-    // رفع الصور إلى Supabase Storage
+    // رفع الصور
     async function uploadForumImage(file) {
       if (!currentUser) {
         throw new Error("يجب تسجيل الدخول أولًا.");
@@ -1329,16 +1569,14 @@
         throw new Error("نوع الصورة غير مسموح به.");
       }
 
-      const filePath =
-        currentUser.id +
-        "/" +
-        Date.now() +
-        "_" +
-        crypto.randomUUID() +
-        "." +
-        extension;
+      const randomId = crypto.randomUUID
+        ? crypto.randomUUID()
+        : Date.now() + "_" + Math.random().toString(36).slice(2);
 
-      const { error: uploadError } = await supabaseClient
+      const filePath =
+        currentUser.id + "/" + Date.now() + "_" + randomId + "." + extension;
+
+      const { error } = await supabaseClient
         .storage
         .from(STORAGE_BUCKET)
         .upload(filePath, file, {
@@ -1347,11 +1585,11 @@
           upsert: false
         });
 
-      if (uploadError) {
-        console.error("خطأ رفع الصورة:", uploadError);
+      if (error) {
+        console.error("خطأ رفع الصورة:", error);
 
         throw new Error(
-          "تعذر رفع الصورة. تأكد من إنشاء Bucket باسم forum-images وضبط صلاحيات الرفع."
+          "تعذر رفع الصورة. تحقق من Bucket forum-images وصلاحيات Storage."
         );
       }
 
@@ -1371,19 +1609,14 @@
     publishBtn.addEventListener("click", publishPost);
 
     async function publishPost() {
-      if (isPublishing) {
-        return;
-      }
+      if (isPublishing) return;
 
       hideMessage();
 
       const content = postContent.value.trim();
 
       if (!content && !selectedImage) {
-        showMessage(
-          "اكتب محتوى المنشور أو اختر صورة قبل النشر.",
-          "error"
-        );
+        showMessage("اكتب محتوى المنشور أو اختر صورة قبل النشر.", "error");
         return;
       }
 
@@ -1394,16 +1627,14 @@
 
       setPublishingState(true, "جارٍ النشر...");
 
-      let uploadedImageUrl = null;
-
       try {
         const loggedIn = await loadCurrentStudent();
 
         if (!loggedIn) {
-          throw new Error(
-            "يجب تسجيل الدخول إلى المنصة قبل نشر المنشورات."
-          );
+          throw new Error("يجب تسجيل الدخول قبل نشر المنشورات.");
         }
+
+        let uploadedImageUrl = null;
 
         if (selectedImage) {
           setPublishingState(true, "جارٍ رفع الصورة...");
@@ -1412,7 +1643,7 @@
 
         setPublishingState(true, "جارٍ حفظ المنشور...");
 
-        const { error: insertError } = await supabaseClient
+        const { error } = await supabaseClient
           .from("forum")
           .insert({
             user_id: currentUser.id,
@@ -1421,11 +1652,11 @@
             image_url: uploadedImageUrl
           });
 
-        if (insertError) {
-          console.error("خطأ حفظ المنشور:", insertError);
+        if (error) {
+          console.error("خطأ حفظ المنشور:", error);
 
           throw new Error(
-            "تعذر حفظ المنشور في قاعدة البيانات. راجع إعدادات جدول forum وسياسات INSERT."
+            "تعذر حفظ المنشور. تحقق من أعمدة جدول forum وسياسات INSERT."
           );
         }
 
@@ -1441,7 +1672,7 @@
         console.error(error);
 
         showMessage(
-          error.message || "حدث خطأ أثناء النشر. حاول مرة أخرى.",
+          error.message || "حدث خطأ أثناء النشر.",
           "error"
         );
 
@@ -1452,15 +1683,11 @@
 
     // تنسيق التاريخ
     function formatDate(dateValue) {
-      if (!dateValue) {
-        return "";
-      }
+      if (!dateValue) return "";
 
       const date = new Date(dateValue);
 
-      if (Number.isNaN(date.getTime())) {
-        return "";
-      }
+      if (Number.isNaN(date.getTime())) return "";
 
       return date.toLocaleString("ar-EG", {
         year: "numeric",
@@ -1471,7 +1698,7 @@
       });
     }
 
-    // إنشاء أيقونة SVG داخل عنصر
+    // إنشاء أيقونة
     function createIcon(symbolId, className = "icon") {
       const svg = document.createElementNS(
         "http://www.w3.org/2000/svg",
@@ -1492,7 +1719,124 @@
       return svg;
     }
 
-    // إنشاء المنشور بطريقة آمنة
+    // عرض الردود الخاصة بمنشور
+    async function loadReplies(postId, container) {
+      container.innerHTML = "";
+
+      const loading = document.createElement("div");
+      loading.className = "replies-loading";
+      loading.textContent = "جارٍ تحميل الردود...";
+      container.appendChild(loading);
+
+      try {
+        const { data, error } = await supabaseClient
+          .from("forum_replies")
+          .select("id, post_id, user_id, content, reply_type, created_at, audio_url")
+          .eq("post_id", postId)
+          .order("created_at", { ascending: true });
+
+        container.innerHTML = "";
+
+        if (error) {
+          console.error("تعذر تحميل الردود:", error);
+
+          const errorMessage = document.createElement("div");
+          errorMessage.className = "no-replies";
+          errorMessage.textContent =
+            "تعذر تحميل الردود. تحقق من صلاحيات قراءة جدول forum_replies.";
+
+          container.appendChild(errorMessage);
+          return;
+        }
+
+        const replies = Array.isArray(data) ? data : [];
+
+        if (!replies.length) {
+          const empty = document.createElement("div");
+          empty.className = "no-replies";
+          empty.textContent = "لا توجد ردود على هذا المنشور حتى الآن.";
+          container.appendChild(empty);
+          return;
+        }
+
+        replies.forEach(function (reply) {
+          const card = document.createElement("div");
+          card.className = "reply-card";
+
+          const header = document.createElement("div");
+          header.className = "reply-header";
+
+          const author = document.createElement("div");
+          author.className = "reply-author";
+          author.appendChild(createIcon("icon-user"));
+
+          const authorName = document.createElement("span");
+
+          const isAdminReply =
+            String(reply.reply_type || "").toLowerCase() === "admin";
+
+          authorName.textContent = isAdminReply
+            ? "إدارة منصة أرض الأحياء"
+            : "رد";
+
+          author.appendChild(authorName);
+
+          if (isAdminReply) {
+            const badge = document.createElement("span");
+            badge.className = "admin-label";
+            badge.textContent = "إدارة المنصة";
+            author.appendChild(badge);
+          }
+
+          const date = document.createElement("span");
+          date.className = "reply-date";
+          date.textContent = formatDate(reply.created_at);
+
+          header.appendChild(author);
+          header.appendChild(date);
+          card.appendChild(header);
+
+          if (reply.content) {
+            const content = document.createElement("p");
+            content.className = "reply-content";
+            content.textContent = reply.content;
+            card.appendChild(content);
+          }
+
+          if (reply.audio_url) {
+            try {
+              const audioUrl = new URL(reply.audio_url);
+
+              if (audioUrl.protocol === "https:") {
+                const audio = document.createElement("audio");
+                audio.className = "reply-audio";
+                audio.controls = true;
+                audio.preload = "none";
+                audio.src = audioUrl.href;
+                card.appendChild(audio);
+              }
+            } catch (error) {
+              console.warn("رابط الملف الصوتي غير صالح.");
+            }
+          }
+
+          container.appendChild(card);
+        });
+
+      } catch (error) {
+        console.error(error);
+
+        container.innerHTML = "";
+
+        const errorMessage = document.createElement("div");
+        errorMessage.className = "no-replies";
+        errorMessage.textContent = "حدث خطأ أثناء تحميل الردود.";
+
+        container.appendChild(errorMessage);
+      }
+    }
+
+    // إنشاء المنشور
     function createPostElement(post) {
       const article = document.createElement("article");
       article.className = "post-card";
@@ -1530,30 +1874,25 @@
         article.appendChild(paragraph);
       }
 
-      // عرض الصورة المرفقة
+      // الصورة المرفقة
       if (post.image_url) {
         try {
           const imageUrl = new URL(post.image_url);
 
-          const allowedHost =
-            imageUrl.hostname === "fpfbmjtpzamzlyzitmsd.supabase.co";
-
-          if (
+          const validImage =
             imageUrl.protocol === "https:" &&
-            allowedHost &&
+            imageUrl.hostname === "fpfbmjtpzamzlyzitmsd.supabase.co" &&
             imageUrl.pathname.includes(
               "/storage/v1/object/public/forum-images/"
-            )
-          ) {
+            );
+
+          if (validImage) {
             const imageLink = document.createElement("a");
             imageLink.className = "post-image-link";
             imageLink.href = imageUrl.href;
             imageLink.target = "_blank";
             imageLink.rel = "noopener noreferrer";
-            imageLink.setAttribute(
-              "aria-label",
-              "عرض الصورة بالحجم الكامل"
-            );
+            imageLink.setAttribute("aria-label", "عرض الصورة بالحجم الكامل");
 
             const img = document.createElement("img");
             img.className = "post-image";
@@ -1579,10 +1918,33 @@
 
       const label = document.createElement("span");
       label.appendChild(createIcon("icon-plant"));
-      label.appendChild(document.createTextNode("منشور في منتدى أرض الأحياء"));
+      label.appendChild(
+        document.createTextNode("منشور في منتدى أرض الأحياء")
+      );
 
       footer.appendChild(label);
       article.appendChild(footer);
+
+      // منطقة الردود
+      const repliesSection = document.createElement("section");
+      repliesSection.className = "replies-section";
+
+      const repliesHeading = document.createElement("div");
+      repliesHeading.className = "replies-heading";
+      repliesHeading.appendChild(createIcon("icon-message"));
+      repliesHeading.appendChild(
+        document.createTextNode("ردود ومناقشات المنشور")
+      );
+
+      const repliesContainer = document.createElement("div");
+      repliesContainer.className = "replies-container";
+
+      repliesSection.appendChild(repliesHeading);
+      repliesSection.appendChild(repliesContainer);
+      article.appendChild(repliesSection);
+
+      // تحميل الردود لكل منشور
+      loadReplies(post.id, repliesContainer);
 
       return article;
     }
@@ -1620,7 +1982,7 @@
 
           const details = document.createElement("p");
           details.textContent =
-            "تأكد من إعداد جدول forum وصلاحيات قراءة المنشورات في Supabase.";
+            "تحقق من جدول forum وسياسات قراءة المنشورات في Supabase.";
 
           const retry = document.createElement("button");
           retry.className = "reload-button";
@@ -1634,7 +1996,6 @@
 
           postsList.appendChild(errorBox);
           postsCount.textContent = "تعذر التحميل";
-
           return;
         }
 
@@ -1643,7 +2004,7 @@
         const posts = Array.isArray(data) ? data : [];
         postsCount.textContent = posts.length + " منشور";
 
-        if (posts.length === 0) {
+        if (!posts.length) {
           const empty = document.createElement("div");
           empty.className = "empty-state";
 
@@ -1661,7 +2022,6 @@
           empty.appendChild(icon);
           empty.appendChild(title);
           empty.appendChild(description);
-
           postsList.appendChild(empty);
           return;
         }
