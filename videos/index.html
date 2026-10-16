@@ -80,8 +80,6 @@
       padding: 18px;
     }
 
-    /* زر تصغير وتوسيع الشريط */
-
     .sidebar-control {
       display: flex;
       justify-content: flex-start;
@@ -234,8 +232,6 @@
       overflow: hidden;
       transition: opacity .2s;
     }
-
-    /* حالة الشريط المصغّر */
 
     body.sidebar-collapsed .sidebar {
       width: var(--sidebar-collapsed-width);
@@ -1002,6 +998,8 @@
 
     const MONTHS_TABLE = "lecture_months";
     const LECTURES_TABLE = "lectures";
+    const STORAGE_BUCKET = "lectures";
+    const SIGNED_URL_SECONDS = 3600;
 
     let allLectures = [];
     let visibleMonths = [];
@@ -1089,6 +1087,150 @@
       document.getElementById("pageNotice").style.display = "none";
     }
 
+    /* استخراج مسار الملف من رابط Supabase */
+
+    function decodePathParts(parts) {
+      return parts.map(part => {
+        try {
+          return decodeURIComponent(part);
+        } catch {
+          return part;
+        }
+      });
+    }
+
+    function getStorageObjectPath(rawValue) {
+      if (!rawValue) return "";
+
+      const value = String(rawValue).trim();
+
+      if (!value) return "";
+
+      /*
+       * لو القيمة ليست رابطًا، نتعامل معها باعتبارها مسار الملف.
+       */
+
+      if (!/^https?:\/\//i.test(value)) {
+        let path = value.replace(/^\/+/, "");
+
+        path = path.replace(/^storage\/v1\/object\/(public|sign|authenticated)\//i, "");
+
+        if (path.startsWith(STORAGE_BUCKET + "/")) {
+          path = path.slice(STORAGE_BUCKET.length + 1);
+        }
+
+        return path;
+      }
+
+      /*
+       * لو الرابط صادرًا من Supabase Storage،
+       * نستخرج اسم الملف حتى لو كان الرابط عامًا أو موقّعًا.
+       */
+
+      try {
+        const parsed = new URL(value);
+        const parts = parsed.pathname.split("/").filter(Boolean);
+        const objectIndex = parts.indexOf("object");
+
+        if (objectIndex === -1) {
+          return "";
+        }
+
+        const accessType = parts[objectIndex + 1] || "";
+
+        if (
+          accessType === "public" ||
+          accessType === "sign" ||
+          accessType === "authenticated"
+        ) {
+          const bucketName = parts[objectIndex + 2] || "";
+
+          if (bucketName !== STORAGE_BUCKET) {
+            return "";
+          }
+
+          const fileParts = decodePathParts(
+            parts.slice(objectIndex + 3)
+          );
+
+          return fileParts.join("/");
+        }
+
+        /*
+         * يدعم أيضًا المسار بالشكل:
+         * /storage/v1/object/lectures/folder/video.mp4
+         */
+
+        if (accessType === STORAGE_BUCKET) {
+          return decodePathParts(
+            parts.slice(objectIndex + 2)
+          ).join("/");
+        }
+
+        return "";
+
+      } catch (error) {
+        console.error("تعذر تحليل رابط ملف المحاضرة:", error);
+        return "";
+      }
+    }
+
+    /*
+     * إنشاء رابط مؤقت لفيديو موجود في Bucket خاص.
+     * لا نستخدم مفتاح Service Role في المتصفح.
+     */
+
+    async function createPrivateLectureUrl(storagePath) {
+      if (!storagePath) return "";
+
+      try {
+        const {
+          data: sessionData,
+          error: sessionError
+        } = await supabaseClient.auth.getSession();
+
+        if (sessionError) {
+          console.error("تعذر التحقق من جلسة المستخدم:", sessionError);
+          return "";
+        }
+
+        if (!sessionData?.session) {
+          console.warn(
+            "يجب تسجيل الدخول للحصول على رابط المحاضرة الخاصة."
+          );
+          return "";
+        }
+
+        const {
+          data,
+          error
+        } = await supabaseClient.storage
+          .from(STORAGE_BUCKET)
+          .createSignedUrl(
+            storagePath,
+            SIGNED_URL_SECONDS
+          );
+
+        if (error) {
+          console.error(
+            "تعذر إنشاء رابط مؤقت للفيديو:",
+            error
+          );
+          return "";
+        }
+
+        return data?.signedUrl || "";
+
+      } catch (error) {
+        console.error(
+          "حدث خطأ أثناء تجهيز رابط الفيديو:",
+          error
+        );
+
+        return "";
+      }
+    }
+
     /* التعامل مع روابط الفيديو */
 
     function getYoutubeEmbedUrl(url) {
@@ -1140,33 +1282,72 @@
       return /\.(mp4|webm|ogg|m4v)(?:$|[?#])/i.test(url || "");
     }
 
+    /*
+     * حل رابط الفيديو:
+     * 1. روابط YouTube والخدمات الخارجية تظل كما هي.
+     * 2. روابط Supabase Storage تتحول إلى Signed URL.
+     * 3. مسارات الملفات تتحول إلى Signed URL.
+     */
+
     async function resolveVideoUrl(rawUrl) {
       if (!rawUrl) return "";
 
       const url = String(rawUrl).trim();
 
-      if (/^https?:\/\//i.test(url) || url.startsWith("blob:")) {
+      if (!url) return "";
+
+      /*
+       * روابط YouTube لا تحتاج إلى Supabase Signed URL.
+       */
+
+      if (isYoutubeUrl(url)) {
         return url;
       }
 
-      const path = url.replace(/^\/+/, "");
+      /*
+       * روابط خارجية عادية تظل كما هي.
+       */
 
-      const { data, error } = supabaseClient.storage
-        .from("lectures")
-        .getPublicUrl(path);
-
-      if (error) {
-        console.warn("تعذر إنشاء رابط الفيديو:", error);
+      if (
+        /^https?:\/\//i.test(url) &&
+        !url.includes("/storage/v1/object/")
+      ) {
+        return url;
       }
 
-      return data?.publicUrl || "";
+      /*
+       * روابط Supabase Storage أو مسارات الملفات.
+       */
+
+      const storagePath = getStorageObjectPath(url);
+
+      if (!storagePath) {
+        /*
+         * السماح بروابط الفيديو المباشرة الخارجية.
+         */
+
+        if (/^https?:\/\//i.test(url)) {
+          return url;
+        }
+
+        console.error(
+          "تعذر استخراج مسار ملف الفيديو من:",
+          url
+        );
+
+        return "";
+      }
+
+      return await createPrivateLectureUrl(storagePath);
     }
 
     function createVideoPlayer(url) {
       if (!url) {
         return `
           <div class="empty">
-            لم يتم تحديد رابط الفيديو لهذه المحاضرة.
+            تعذر تجهيز رابط الفيديو.
+            <br>
+            تأكد من تسجيل الدخول ومن صلاحيات قراءة ملفات المحاضرات.
           </div>
         `;
       }
@@ -1406,7 +1587,9 @@
 
       list.replaceChildren();
 
-      prepared.forEach(({ lecture, videoUrl }, index) => {
+      prepared.forEach(({ lecture }, index) => {
+        const videoUrl = prepared[index].videoUrl;
+
         const title = lecture.title || "محاضرة أحياء";
         const description = lecture.description || "";
 
@@ -1520,14 +1703,14 @@
       hideNotice();
 
       try {
-        /* قراءة الشهور المفعّلة */
-
-        const { data: months, error: monthsError } =
-          await supabaseClient
-            .from(MONTHS_TABLE)
-            .select("month_number,title,is_visible,sort_order")
-            .eq("is_visible", true)
-            .order("sort_order", { ascending: true });
+        const {
+          data: months,
+          error: monthsError
+        } = await supabaseClient
+          .from(MONTHS_TABLE)
+          .select("month_number,title,is_visible,sort_order")
+          .eq("is_visible", true)
+          .order("sort_order", { ascending: true });
 
         if (monthsError) {
           throw new Error(
@@ -1537,13 +1720,13 @@
           );
         }
 
-        /* قراءة المحاضرات */
-
-        const { data: lectures, error: lecturesError } =
-          await supabaseClient
-            .from(LECTURES_TABLE)
-            .select("*")
-            .order("created_at", { ascending: true });
+        const {
+          data: lectures,
+          error: lecturesError
+        } = await supabaseClient
+          .from(LECTURES_TABLE)
+          .select("*")
+          .order("created_at", { ascending: true });
 
         if (lecturesError) {
           throw new Error(
@@ -1554,8 +1737,6 @@
 
         allLectures = lectures || [];
         visibleMonths = months || [];
-
-        /* عرض المحاضرات التابعة للشهور المفعّلة فقط */
 
         const visibleNumbers = new Set(
           visibleMonths.map(month => Number(month.month_number))
@@ -1581,8 +1762,6 @@
 
           return;
         }
-
-        /* فتح أول شهر مفعّل تلقائيًا */
 
         selectMonth(Number(visibleMonths[0].month_number));
 
