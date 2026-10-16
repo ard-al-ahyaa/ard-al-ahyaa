@@ -10,6 +10,8 @@
   <meta name="description"
     content="محاضرات الأحياء للصف الثالث الثانوي في منصة أرض الأحياء.">
 
+  <meta name="theme-color" content="#026857">
+
   <link rel="icon" href="../favicon.png">
 
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap"
@@ -34,6 +36,8 @@
       --border: #e2e8f0;
       --text: #2c3e50;
       --muted: #64748b;
+      --sidebar-width: 270px;
+      --sidebar-collapsed-width: 82px;
     }
 
     body {
@@ -43,10 +47,15 @@
       min-height: 100vh;
     }
 
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
     /* الشريط الجانبي */
 
     .sidebar {
-      width: 270px;
+      width: var(--sidebar-width);
       background: linear-gradient(
         180deg,
         #026857 0%,
@@ -62,11 +71,51 @@
       flex-direction: column;
       justify-content: space-between;
       z-index: 1000;
+      overflow-x: hidden;
       overflow-y: auto;
+      transition: width .25s ease;
     }
 
     .sidebar-top {
-      padding: 28px 18px;
+      padding: 18px;
+    }
+
+    /* زر تصغير وتوسيع الشريط */
+
+    .sidebar-control {
+      display: flex;
+      justify-content: flex-start;
+      margin-bottom: 18px;
+    }
+
+    .sidebar-toggle {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.23);
+      border-radius: 11px;
+      background: rgba(255,255,255,.12);
+      color: white;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background .2s, transform .2s;
+    }
+
+    .sidebar-toggle:hover {
+      background: rgba(255,255,255,.23);
+      transform: scale(1.04);
+    }
+
+    .sidebar-toggle svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform .25s;
     }
 
     .logo-box {
@@ -76,6 +125,7 @@
       margin-bottom: 32px;
       padding-bottom: 20px;
       border-bottom: 1px solid rgba(255,255,255,.16);
+      min-width: 0;
     }
 
     .logo-box img {
@@ -86,6 +136,13 @@
       background: white;
       padding: 3px;
       flex-shrink: 0;
+    }
+
+    .logo-text {
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      transition: opacity .2s;
     }
 
     .logo-box h2 {
@@ -106,6 +163,7 @@
       font-weight: 700;
       padding: 0 12px;
       margin-bottom: 10px;
+      white-space: nowrap;
     }
 
     .menu {
@@ -125,6 +183,9 @@
       align-items: center;
       gap: 12px;
       transition: background .2s, transform .2s;
+      min-height: 46px;
+      white-space: nowrap;
+      position: relative;
     }
 
     .menu a:hover,
@@ -156,6 +217,12 @@
       stroke-linejoin: round;
     }
 
+    .menu-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: opacity .2s;
+    }
+
     .sidebar-bottom {
       margin: 0 18px 20px;
       padding: 14px;
@@ -164,15 +231,80 @@
       font-size: 11px;
       line-height: 2;
       color: rgba(255,255,255,.9);
+      overflow: hidden;
+      transition: opacity .2s;
+    }
+
+    /* حالة الشريط المصغّر */
+
+    body.sidebar-collapsed .sidebar {
+      width: var(--sidebar-collapsed-width);
+    }
+
+    body.sidebar-collapsed .sidebar-top {
+      padding: 18px 12px;
+    }
+
+    body.sidebar-collapsed .sidebar-control {
+      justify-content: center;
+    }
+
+    body.sidebar-collapsed .sidebar-toggle svg {
+      transform: rotate(180deg);
+    }
+
+    body.sidebar-collapsed .logo-box {
+      justify-content: center;
+      padding-bottom: 18px;
+    }
+
+    body.sidebar-collapsed .logo-text,
+    body.sidebar-collapsed .menu-title,
+    body.sidebar-collapsed .menu-text,
+    body.sidebar-collapsed .sidebar-bottom {
+      display: none;
+    }
+
+    body.sidebar-collapsed .menu a {
+      justify-content: center;
+      padding: 12px 8px;
+      gap: 0;
+    }
+
+    body.sidebar-collapsed .menu-icon {
+      width: 25px;
+      height: 25px;
+    }
+
+    body.sidebar-collapsed .menu a[title]:hover::after {
+      content: attr(title);
+      position: absolute;
+      right: calc(100% + 10px);
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 7px 12px;
+      background: #0f172a;
+      color: white;
+      font-size: 11px;
+      border-radius: 8px;
+      white-space: nowrap;
+      z-index: 2000;
+      box-shadow: 0 4px 12px rgba(0,0,0,.15);
+      pointer-events: none;
     }
 
     /* المحتوى الرئيسي */
 
     .main {
-      margin-right: 270px;
+      margin-right: var(--sidebar-width);
       flex: 1;
       min-width: 0;
       padding: 30px 35px;
+      transition: margin-right .25s ease;
+    }
+
+    body.sidebar-collapsed .main {
+      margin-right: var(--sidebar-collapsed-width);
     }
 
     .top-bar {
@@ -287,6 +419,7 @@
       color: var(--green);
       font-weight: 900;
       font-size: 12px;
+      flex-shrink: 0;
     }
 
     .month-button.active .month-number {
@@ -333,7 +466,7 @@
       white-space: nowrap;
     }
 
-    /* بطاقة المحاضرة - الحفاظ على التصميم الأصلي */
+    /* بطاقة المحاضرة */
 
     .lecture-card {
       background: white;
@@ -345,11 +478,7 @@
     }
 
     .lecture-header {
-      background: linear-gradient(
-        135deg,
-        #1e3a8a 0%,
-        #2563eb 100%
-      );
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
       color: white;
       padding: 18px 25px;
       display: flex;
@@ -357,6 +486,12 @@
       align-items: center;
       gap: 12px;
       cursor: pointer;
+    }
+
+    .lecture-header:focus-visible,
+    .dropdown-header:focus-visible {
+      outline: 3px solid #86efac;
+      outline-offset: -3px;
     }
 
     .lecture-title {
@@ -480,6 +615,7 @@
       border: 1px solid var(--border);
       font-size: 13px;
       line-height: 2;
+      overflow-wrap: anywhere;
     }
 
     .empty-icon {
@@ -499,7 +635,7 @@
       margin-bottom: 20px;
     }
 
-    /* الهاتف */
+    /* قائمة الهاتف */
 
     .mobile-bottom {
       display: none;
@@ -520,7 +656,8 @@
         display: none;
       }
 
-      .main {
+      .main,
+      body.sidebar-collapsed .main {
         margin-right: 0;
         padding: 15px;
         padding-bottom: 85px;
@@ -598,10 +735,12 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
         gap: 4px;
         color: #64748b;
         font-size: 10px;
         flex: 1;
+        text-decoration: none;
       }
 
       .mobile-bottom a.active {
@@ -624,93 +763,133 @@
       .months-grid {
         grid-template-columns: 1fr;
       }
+
+      .month-heading {
+        align-items: flex-start;
+      }
+
+      .month-badge {
+        font-size: 10px;
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <aside class="sidebar">
+  <!-- الشريط الجانبي -->
+  <aside class="sidebar" id="sidebar">
 
     <div class="sidebar-top">
 
-      <div class="logo-box">
-        <img src="../logo.png" alt="شعار أرض الأحياء"
-             onerror="this.style.display='none'">
+      <div class="sidebar-control">
+        <button
+          type="button"
+          class="sidebar-toggle"
+          id="sidebarToggle"
+          aria-label="تصغير القائمة الجانبية"
+          title="تصغير القائمة الجانبية"
+          aria-expanded="true">
 
-        <div>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m14 5-7 7 7 7"></path>
+            <path d="M20 5v14"></path>
+          </svg>
+
+        </button>
+      </div>
+
+      <div class="logo-box">
+
+        <img
+          src="../logo.png"
+          alt="شعار أرض الأحياء"
+          onerror="this.style.display='none'">
+
+        <div class="logo-text">
           <h2>أرض الأحياء</h2>
           <p>الصف الثالث الثانوي</p>
         </div>
+
       </div>
 
       <div class="menu-title">القائمة الرئيسية</div>
 
-      <nav class="menu">
+      <nav class="menu" aria-label="القائمة الرئيسية">
 
-        <a href="../index.html">
+        <a href="../index.html" title="الرئيسية">
           <span class="menu-icon">
-            <svg viewBox="0 0 24 24">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="m3 10 9-7 9 7"></path>
               <path d="M5 9v11h14V9"></path>
               <path d="M9 20v-7h6v7"></path>
             </svg>
           </span>
-          الرئيسية
+          <span class="menu-text">الرئيسية</span>
         </a>
 
-        <a href="index.html" class="active">
+        <a href="index.html" class="active" title="المحاضرات" aria-current="page">
           <span class="menu-icon">
-            <svg viewBox="0 0 24 24">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
               <rect x="3" y="5" width="18" height="14" rx="3"></rect>
               <path d="m10 9 5 3-5 3z"></path>
             </svg>
           </span>
-          المحاضرات
+          <span class="menu-text">المحاضرات</span>
         </a>
 
-        <a href="../notes/index.html">
+        <a href="../notes/index.html" title="المذكرات">
           <span class="menu-icon">
-            <svg viewBox="0 0 24 24">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M5 3h11l3 3v15H5z"></path>
               <path d="M16 3v4h4"></path>
               <path d="M8 12h8M8 16h8"></path>
             </svg>
           </span>
-          المذكرات
+          <span class="menu-text">المذكرات</span>
         </a>
 
-        <a href="../champion/index.html">
+        <a href="../champion/index.html" title="بطل الفصل">
           <span class="menu-icon">
-            <svg viewBox="0 0 24 24">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="m8 4 4-2 4 2 4 1v5c0 5-4 8-8 12-4-4-8-7-8-12V5z"></path>
               <path d="m9 11 2 2 4-5"></path>
             </svg>
           </span>
-          بطل الفصل
+          <span class="menu-text">بطل الفصل</span>
         </a>
 
-        <a href="../forum/index.html">
+        <a href="../forum/index.html" title="المنتدى">
           <span class="menu-icon">
-            <svg viewBox="0 0 24 24">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.3A8.5 8.5 0 1 1 21 11.5Z"></path>
               <path d="M8 10h8M8 14h5"></path>
             </svg>
           </span>
-          المنتدى
+          <span class="menu-text">المنتدى</span>
         </a>
 
-        <a href="../account/index.html">
+        <a href="../account/index.html" title="حساب الطالب">
           <span class="menu-icon">
-            <svg viewBox="0 0 24 24">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="12" cy="8" r="4"></circle>
               <path d="M4 21a8 8 0 0 1 16 0"></path>
             </svg>
           </span>
-          حساب الطالب
+          <span class="menu-text">حساب الطالب</span>
         </a>
 
       </nav>
+
     </div>
 
     <div class="sidebar-bottom">
@@ -721,20 +900,23 @@
 
   </aside>
 
+  <!-- المحتوى الرئيسي -->
   <main class="main">
 
     <header class="top-bar">
+
       <div>
         <h1>محاضرات منهج الأحياء</h1>
         <p>اختر الشهر الذي تريد مذاكرته، ثم افتح المحاضرة المناسبة.</p>
       </div>
 
       <div class="top-icon">
-        <svg viewBox="0 0 24 24">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
           <rect x="3" y="5" width="18" height="14" rx="3"></rect>
           <path d="m10 9 5 3-5 3z"></path>
         </svg>
       </div>
+
     </header>
 
     <div id="pageNotice" class="notice" style="display:none"></div>
@@ -742,12 +924,14 @@
     <div id="monthsGrid" class="months-grid" style="display:none"></div>
 
     <div id="monthHeading" class="month-heading" style="display:none">
+
       <div>
         <h2 id="selectedMonthTitle"></h2>
         <p id="selectedMonthDescription"></p>
       </div>
 
       <span class="month-badge" id="lectureCountBadge"></span>
+
     </div>
 
     <div id="lecturesList">
@@ -757,18 +941,18 @@
   </main>
 
   <!-- قائمة الهاتف -->
-  <nav class="mobile-bottom">
+  <nav class="mobile-bottom" aria-label="التنقل السريع">
 
     <a href="../index.html">
-      <svg viewBox="0 0 24 24">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="m3 10 9-7 9 7"></path>
         <path d="M5 9v11h14V9"></path>
       </svg>
       الرئيسية
     </a>
 
-    <a href="index.html" class="active">
-      <svg viewBox="0 0 24 24">
+    <a href="index.html" class="active" aria-current="page">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
         <rect x="3" y="5" width="18" height="14" rx="3"></rect>
         <path d="m10 9 5 3-5 3z"></path>
       </svg>
@@ -776,7 +960,7 @@
     </a>
 
     <a href="../notes/index.html">
-      <svg viewBox="0 0 24 24">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M5 3h11l3 3v15H5z"></path>
         <path d="M16 3v4h4M8 12h8M8 16h8"></path>
       </svg>
@@ -784,14 +968,14 @@
     </a>
 
     <a href="../forum/index.html">
-      <svg viewBox="0 0 24 24">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.3A8.5 8.5 0 1 1 21 11.5Z"></path>
       </svg>
       المنتدى
     </a>
 
     <a href="../account/index.html">
-      <svg viewBox="0 0 24 24">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
         <circle cx="12" cy="8" r="4"></circle>
         <path d="M4 21a8 8 0 0 1 16 0"></path>
       </svg>
@@ -801,6 +985,10 @@
   </nav>
 
   <script>
+    "use strict";
+
+    /* إعداد Supabase */
+
     const SUPABASE_URL =
       "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 
@@ -818,6 +1006,67 @@
     let allLectures = [];
     let visibleMonths = [];
     let selectedMonth = null;
+
+    /* التحكم في الشريط الجانبي */
+
+    const sidebarToggle = document.getElementById("sidebarToggle");
+
+    const SIDEBAR_STORAGE_KEY =
+      "ardAlahyaaLecturesSidebarCollapsed";
+
+    function setSidebarCollapsed(collapsed, save = true) {
+      document.body.classList.toggle("sidebar-collapsed", collapsed);
+
+      sidebarToggle.setAttribute(
+        "aria-expanded",
+        String(!collapsed)
+      );
+
+      sidebarToggle.setAttribute(
+        "aria-label",
+        collapsed
+          ? "توسيع القائمة الجانبية"
+          : "تصغير القائمة الجانبية"
+      );
+
+      sidebarToggle.title = collapsed
+        ? "توسيع القائمة الجانبية"
+        : "تصغير القائمة الجانبية";
+
+      if (save) {
+        try {
+          localStorage.setItem(
+            SIDEBAR_STORAGE_KEY,
+            collapsed ? "true" : "false"
+          );
+        } catch (error) {
+          console.warn("تعذر حفظ حالة القائمة الجانبية:", error);
+        }
+      }
+    }
+
+    function loadSidebarState() {
+      try {
+        const savedState = localStorage.getItem(
+          SIDEBAR_STORAGE_KEY
+        );
+
+        setSidebarCollapsed(savedState === "true", false);
+      } catch (error) {
+        setSidebarCollapsed(false, false);
+      }
+    }
+
+    sidebarToggle.addEventListener("click", function () {
+      const isCollapsed =
+        document.body.classList.contains("sidebar-collapsed");
+
+      setSidebarCollapsed(!isCollapsed);
+    });
+
+    loadSidebarState();
+
+    /* أدوات مساعدة */
 
     function escapeHtml(value) {
       if (value === null || value === undefined) return "";
@@ -840,6 +1089,8 @@
       document.getElementById("pageNotice").style.display = "none";
     }
 
+    /* التعامل مع روابط الفيديو */
+
     function getYoutubeEmbedUrl(url) {
       if (!url) return "";
 
@@ -848,13 +1099,16 @@
         let videoId = "";
 
         if (parsed.hostname.includes("youtu.be")) {
-          videoId = parsed.pathname.split("/").filter(Boolean)[0] || "";
+          videoId =
+            parsed.pathname.split("/").filter(Boolean)[0] || "";
+
         } else if (
           parsed.hostname.includes("youtube.com") ||
           parsed.hostname.includes("youtube-nocookie.com")
         ) {
           if (parsed.pathname === "/watch") {
             videoId = parsed.searchParams.get("v") || "";
+
           } else {
             const parts = parsed.pathname.split("/").filter(Boolean);
 
@@ -877,7 +1131,9 @@
     }
 
     function isYoutubeUrl(url) {
-      return /youtube\.com|youtu\.be|youtube-nocookie\.com/i.test(url || "");
+      return /youtube\.com|youtu\.be|youtube-nocookie\.com/i.test(
+        url || ""
+      );
     }
 
     function isDirectVideoUrl(url) {
@@ -895,9 +1151,13 @@
 
       const path = url.replace(/^\/+/, "");
 
-      const { data } = supabaseClient.storage
+      const { data, error } = supabaseClient.storage
         .from("lectures")
         .getPublicUrl(path);
+
+      if (error) {
+        console.warn("تعذر إنشاء رابط الفيديو:", error);
+      }
 
       return data?.publicUrl || "";
     }
@@ -952,6 +1212,8 @@
       `;
     }
 
+    /* فتح وإغلاق المحاضرات */
+
     function toggleLecture(index) {
       const body = document.getElementById("body-" + index);
       const arrow = document.getElementById("arrow-" + index);
@@ -969,23 +1231,37 @@
 
     function toggleSub(header) {
       const content = header.nextElementSibling;
-      if (content) content.classList.toggle("open");
+
+      if (content) {
+        content.classList.toggle("open");
+      }
     }
 
     function optionalSection(title, content) {
       return `
         <div class="dropdown-section">
-          <div class="dropdown-header" onclick="toggleSub(this)">
+
+          <div
+            class="dropdown-header"
+            role="button"
+            tabindex="0"
+            onclick="toggleSub(this)"
+            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSub(this)}">
+
             <span>${title}</span>
-            <span>▼</span>
+            <span aria-hidden="true">▼</span>
+
           </div>
 
           <div class="dropdown-content">
             ${content}
           </div>
+
         </div>
       `;
     }
+
+    /* إدارة الشهور */
 
     function getMonthNumber(lecture) {
       const number = Number(lecture.month_number);
@@ -1033,6 +1309,7 @@
         ).length;
 
         const button = document.createElement("button");
+
         button.type = "button";
         button.className = "month-button";
         button.dataset.month = String(number);
@@ -1053,6 +1330,8 @@
         grid.appendChild(button);
       });
     }
+
+    /* عرض المحاضرات الخاصة بالشهر المختار */
 
     function renderSelectedMonth() {
       const month = visibleMonths.find(item =>
@@ -1104,6 +1383,8 @@
       renderLectures(lectures);
     }
 
+    /* تجهيز وعرض بطاقات المحاضرات */
+
     async function renderLectures(lectures) {
       const list = document.getElementById("lecturesList");
 
@@ -1115,7 +1396,10 @@
         lectures.map(async lecture => ({
           lecture,
           videoUrl: await resolveVideoUrl(
-            lecture.video_url || lecture.videoUrl || lecture.url || ""
+            lecture.video_url ||
+            lecture.videoUrl ||
+            lecture.url ||
+            ""
           )
         }))
       );
@@ -1124,7 +1408,6 @@
 
       prepared.forEach(({ lecture, videoUrl }, index) => {
         const title = lecture.title || "محاضرة أحياء";
-
         const description = lecture.description || "";
 
         const details =
@@ -1148,18 +1431,25 @@
           "";
 
         const card = document.createElement("div");
+
         card.className = "lecture-card";
 
         card.innerHTML = `
-          <div class="lecture-header"
-               onclick="toggleLecture(${index})">
+          <div
+            class="lecture-header"
+            role="button"
+            tabindex="0"
+            aria-expanded="false"
+            onclick="toggleLecture(${index});this.setAttribute('aria-expanded',String(document.getElementById('body-${index}').classList.contains('open')))"
+            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
 
             <div class="lecture-title">
               <h3>${escapeHtml(title)}</h3>
               <p>${escapeHtml(chapter || description)}</p>
             </div>
 
-            <div class="arrow-icon" id="arrow-${index}">▼</div>
+            <div class="arrow-icon" id="arrow-${index}" aria-hidden="true">▼</div>
+
           </div>
 
           <div class="lecture-body" id="body-${index}">
@@ -1173,6 +1463,7 @@
               color:#475569;
               font-size:14px;
               line-height:2;
+              overflow-wrap:anywhere;
             ">
               ${escapeHtml(description)}
             </p>
@@ -1217,6 +1508,8 @@
       });
     }
 
+    /* تحميل البيانات من Supabase */
+
     async function loadLectures() {
       const list = document.getElementById("lecturesList");
 
@@ -1224,8 +1517,11 @@
         <div class="loading">جارٍ تحميل المحاضرات...</div>
       `;
 
+      hideNotice();
+
       try {
-        // قراءة الشهور المفعلة فقط
+        /* قراءة الشهور المفعّلة */
+
         const { data: months, error: monthsError } =
           await supabaseClient
             .from(MONTHS_TABLE)
@@ -1235,12 +1531,14 @@
 
         if (monthsError) {
           throw new Error(
-            "تعذر قراءة جدول الشهور. أنشئ جدول lecture_months باستخدام كود SQL أعلاه. " +
+            "تعذر قراءة جدول الشهور (lecture_months). " +
+            "تحقق من وجود الجدول وأسماء الأعمدة وصلاحيات القراءة. " +
             monthsError.message
           );
         }
 
-        // قراءة المحاضرات
+        /* قراءة المحاضرات */
+
         const { data: lectures, error: lecturesError } =
           await supabaseClient
             .from(LECTURES_TABLE)
@@ -1257,7 +1555,8 @@
         allLectures = lectures || [];
         visibleMonths = months || [];
 
-        // لا تعرض الشهر إلا إذا كان مفعّلًا في لوحة التحكم/قاعدة البيانات
+        /* عرض المحاضرات التابعة للشهور المفعّلة فقط */
+
         const visibleNumbers = new Set(
           visibleMonths.map(month => Number(month.month_number))
         );
@@ -1279,16 +1578,18 @@
           `;
 
           document.getElementById("monthHeading").style.display = "none";
+
           return;
         }
 
-        // افتح أول شهر مفعّل تلقائيًا
+        /* فتح أول شهر مفعّل تلقائيًا */
+
         selectMonth(Number(visibleMonths[0].month_number));
 
       } catch (error) {
         console.error("خطأ تحميل المحاضرات:", error);
 
-        list.innerHTML = "";
+        list.replaceChildren();
 
         const box = document.createElement("div");
         box.className = "empty";
@@ -1309,6 +1610,8 @@
         list.appendChild(box);
       }
     }
+
+    /* تشغيل الصفحة */
 
     loadLectures();
   </script>
