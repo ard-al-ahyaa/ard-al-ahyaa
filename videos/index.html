@@ -1,1884 +1,659 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>المحاضرات | منصة أرض الأحياء</title>
-
-  <meta name="description"
-    content="محاضرات الأحياء للصف الثالث الثانوي في منصة أرض الأحياء.">
-
-  <meta name="theme-color" content="#026857">
-
-  <link rel="icon" href="../favicon.png">
-
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap"
-    rel="stylesheet">
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Cairo', sans-serif;
-    }
-
-    :root {
-      --green: #026857;
-      --green-dark: #014d40;
-      --blue: #1e3a8a;
-      --blue-light: #2563eb;
-      --bg: #f0f4f8;
-      --border: #e2e8f0;
-      --text: #2c3e50;
-      --muted: #64748b;
-      --sidebar-width: 270px;
-      --sidebar-collapsed-width: 82px;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      display: flex;
-      min-height: 100vh;
-    }
-
-    button,
-    a {
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    /* الشريط الجانبي */
-
-    .sidebar {
-      width: var(--sidebar-width);
-      background: linear-gradient(
-        180deg,
-        #026857 0%,
-        #075e54 48%,
-        #1e3a8a 100%
-      );
-      color: white;
-      position: fixed;
-      right: 0;
-      top: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      z-index: 1000;
-      overflow-x: hidden;
-      overflow-y: auto;
-      transition: width .25s ease;
-    }
-
-    .sidebar-top {
-      padding: 18px;
-    }
-
-    .sidebar-control {
-      display: flex;
-      justify-content: flex-start;
-      margin-bottom: 18px;
-    }
-
-    .sidebar-toggle {
-      width: 38px;
-      height: 38px;
-      display: grid;
-      place-items: center;
-      border: 1px solid rgba(255,255,255,.23);
-      border-radius: 11px;
-      background: rgba(255,255,255,.12);
-      color: white;
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: background .2s, transform .2s;
-    }
-
-    .sidebar-toggle:hover {
-      background: rgba(255,255,255,.23);
-      transform: scale(1.04);
-    }
-
-    .sidebar-toggle svg {
-      width: 20px;
-      height: 20px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      transition: transform .25s;
-    }
-
-    .logo-box {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      margin-bottom: 32px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid rgba(255,255,255,.16);
-      min-width: 0;
-    }
-
-    .logo-box img {
-      width: 49px;
-      height: 49px;
-      object-fit: contain;
-      border-radius: 13px;
-      background: white;
-      padding: 3px;
-      flex-shrink: 0;
-    }
-
-    .logo-text {
-      min-width: 0;
-      overflow: hidden;
-      white-space: nowrap;
-      transition: opacity .2s;
-    }
-
-    .logo-box h2 {
-      font-size: 17px;
-      color: white;
-      font-weight: 900;
-    }
-
-    .logo-box p {
-      font-size: 11px;
-      opacity: .8;
-      margin-top: 4px;
-    }
-
-    .menu-title {
-      color: rgba(255,255,255,.62);
-      font-size: 10px;
-      font-weight: 700;
-      padding: 0 12px;
-      margin-bottom: 10px;
-      white-space: nowrap;
-    }
-
-    .menu {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-
-    .menu a {
-      text-decoration: none;
-      color: #e2f1ee;
-      padding: 12px 13px;
-      border-radius: 11px;
-      font-size: 13px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      transition: background .2s, transform .2s;
-      min-height: 46px;
-      white-space: nowrap;
-      position: relative;
-    }
-
-    .menu a:hover,
-    .menu a.active {
-      background: rgba(255,255,255,.17);
-      color: #fff;
-    }
-
-    .menu a:hover {
-      transform: translateX(-2px);
-    }
-
-    .menu-icon {
-      width: 21px;
-      height: 21px;
-      flex-shrink: 0;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .menu-icon svg {
-      width: 20px;
-      height: 20px;
-      stroke: currentColor;
-      stroke-width: 1.8;
-      fill: none;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .menu-text {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      transition: opacity .2s;
-    }
-
-    .sidebar-bottom {
-      margin: 0 18px 20px;
-      padding: 14px;
-      border-radius: 12px;
-      background: rgba(255,255,255,.1);
-      font-size: 11px;
-      line-height: 2;
-      color: rgba(255,255,255,.9);
-      overflow: hidden;
-      transition: opacity .2s;
-    }
-
-    body.sidebar-collapsed .sidebar {
-      width: var(--sidebar-collapsed-width);
-    }
-
-    body.sidebar-collapsed .sidebar-top {
-      padding: 18px 12px;
-    }
-
-    body.sidebar-collapsed .sidebar-control {
-      justify-content: center;
-    }
-
-    body.sidebar-collapsed .sidebar-toggle svg {
-      transform: rotate(180deg);
-    }
-
-    body.sidebar-collapsed .logo-box {
-      justify-content: center;
-      padding-bottom: 18px;
-    }
-
-    body.sidebar-collapsed .logo-text,
-    body.sidebar-collapsed .menu-title,
-    body.sidebar-collapsed .menu-text,
-    body.sidebar-collapsed .sidebar-bottom {
-      display: none;
-    }
-
-    body.sidebar-collapsed .menu a {
-      justify-content: center;
-      padding: 12px 8px;
-      gap: 0;
-    }
-
-    body.sidebar-collapsed .menu-icon {
-      width: 25px;
-      height: 25px;
-    }
-
-    body.sidebar-collapsed .menu a[title]:hover::after {
-      content: attr(title);
-      position: absolute;
-      right: calc(100% + 10px);
-      top: 50%;
-      transform: translateY(-50%);
-      padding: 7px 12px;
-      background: #0f172a;
-      color: white;
-      font-size: 11px;
-      border-radius: 8px;
-      white-space: nowrap;
-      z-index: 2000;
-      box-shadow: 0 4px 12px rgba(0,0,0,.15);
-      pointer-events: none;
-    }
-
-    /* المحتوى الرئيسي */
-
-    .main {
-      margin-right: var(--sidebar-width);
-      flex: 1;
-      min-width: 0;
-      padding: 30px 35px;
-      transition: margin-right .25s ease;
-    }
-
-    body.sidebar-collapsed .main {
-      margin-right: var(--sidebar-collapsed-width);
-    }
-
-    .top-bar {
-      background: white;
-      padding: 22px 25px;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(30,58,138,.04);
-      margin-bottom: 25px;
-      border: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .top-bar h1 {
-      color: var(--blue);
-      font-size: 22px;
-      font-weight: 900;
-    }
-
-    .top-bar p {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 6px;
-      line-height: 1.8;
-    }
-
-    .top-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      background: #e8f5e9;
-      color: var(--green);
-      flex-shrink: 0;
-    }
-
-    .top-icon svg {
-      width: 25px;
-      height: 25px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 1.8;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    /* أقسام الشهور */
-
-    .months-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 13px;
-      margin-bottom: 25px;
-    }
-
-    .month-button {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      padding: 15px;
-      text-align: right;
-      cursor: pointer;
-      transition: .2s;
-      color: var(--text);
-      min-width: 0;
-    }
-
-    .month-button:hover {
-      border-color: var(--green);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(2,104,87,.07);
-    }
-
-    .month-button.active {
-      color: white;
-      background: linear-gradient(135deg, var(--green), var(--blue));
-      border-color: transparent;
-    }
-
-    .month-button-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 7px;
-    }
-
-    .month-button strong {
-      font-size: 13px;
-      font-weight: 900;
-    }
-
-    .month-button small {
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .month-button.active small {
-      color: rgba(255,255,255,.8);
-    }
-
-    .month-number {
-      width: 30px;
-      height: 30px;
-      border-radius: 9px;
-      display: grid;
-      place-items: center;
-      background: #e8f5e9;
-      color: var(--green);
-      font-weight: 900;
-      font-size: 12px;
-      flex-shrink: 0;
-    }
-
-    .month-button.active .month-number {
-      background: rgba(255,255,255,.18);
-      color: white;
-    }
-
-    /* عنوان الشهر */
-
-    .month-heading {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin: 5px 0 17px;
-      padding: 17px 20px;
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 13px;
-    }
-
-    .month-heading h2 {
-      font-size: 17px;
-      font-weight: 900;
-      color: var(--blue);
-    }
-
-    .month-heading p {
-      margin-top: 5px;
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .month-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 7px 11px;
-      border-radius: 8px;
-      background: #e8f5e9;
-      color: var(--green);
-      font-size: 11px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    /* بطاقة المحاضرة */
-
-    .lecture-card {
-      background: white;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      margin-bottom: 20px;
-      overflow: hidden;
-      box-shadow: 0 4px 15px rgba(30,58,138,.03);
-    }
-
-    .lecture-header {
-      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
-      color: white;
-      padding: 18px 25px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-    }
-
-    .lecture-header:focus-visible,
-    .dropdown-header:focus-visible {
-      outline: 3px solid #86efac;
-      outline-offset: -3px;
-    }
-
-    .lecture-title {
-      min-width: 0;
-    }
-
-    .lecture-title h3 {
-      font-size: 17px;
-      font-weight: 700;
-      margin-bottom: 4px;
-      overflow-wrap: anywhere;
-    }
-
-    .lecture-title p {
-      font-size: 12px;
-      opacity: .9;
-      line-height: 1.8;
-      overflow-wrap: anywhere;
-    }
-
-    .arrow-icon {
-      font-size: 18px;
-      transition: transform .3s;
-      flex-shrink: 0;
-    }
-
-    .lecture-body {
-      padding: 0;
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height .3s ease-out, padding .3s;
-      background: #fafafa;
-    }
-
-    .lecture-body.open {
-      padding: 20px 25px;
-      max-height: none;
-      overflow: visible;
-    }
-
-    /* مشغل الفيديو المتجاوب */
-
-    .video-container {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      height: auto;
-      padding-bottom: 0;
-      background: #000;
-      border-radius: 10px;
-      overflow: hidden;
-      margin-bottom: 15px;
-    }
-
-    .video-container iframe,
-    .video-container video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-      object-fit: contain;
-      background: #000;
-    }
-
-    /* ملء الشاشة */
-
-    .video-container:fullscreen {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      max-width: none;
-      max-height: none;
-      aspect-ratio: auto;
-      padding: 0;
-      margin: 0;
-      border-radius: 0;
-      background: #000;
-      z-index: 99999;
-    }
-
-    .video-container:fullscreen video,
-    .video-container:fullscreen iframe {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .video-container:-webkit-full-screen {
-      width: 100vw;
-      height: 100vh;
-      background: #000;
-    }
-
-    .video-container:-webkit-full-screen video,
-    .video-container:-webkit-full-screen iframe {
-      width: 100%;
-      height: 100%;
-    }
-
-    /* زر ملء الشاشة */
-
-    .video-fullscreen-btn {
-      display: block;
-      width: 100%;
-      padding: 11px 15px;
-      margin: 0 0 18px;
-      border: none;
-      border-radius: 9px;
-      background: var(--green);
-      color: white;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background .2s;
-    }
-
-    .video-fullscreen-btn:hover {
-      background: var(--green-dark);
-    }
-
-    .video-fullscreen-btn:focus-visible {
-      outline: 3px solid #86efac;
-      outline-offset: 2px;
-    }
-
-    .dropdown-section {
-      background: #e8f5e9;
-      border: 1px solid #c8e6c9;
-      border-radius: 10px;
-      margin-bottom: 12px;
-      overflow: hidden;
-    }
-
-    .dropdown-header {
-      padding: 12px 18px;
-      font-weight: 700;
-      color: #2e7d32;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      background: #f1f8e9;
-      font-size: 13px;
-    }
-
-    .dropdown-content {
-      padding: 15px 18px;
-      background: white;
-      border-top: 1px solid #c8e6c9;
-      display: none;
-      font-size: 13px;
-      line-height: 2;
-      overflow-wrap: anywhere;
-    }
-
-    .dropdown-content.open {
-      display: block;
-    }
-
-    .btn-link {
-      display: inline-block;
-      background: #026857;
-      color: white;
-      padding: 8px 16px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 13px;
-      margin-top: 8px;
-    }
-
-    .btn-link:hover {
-      background: #014d40;
-    }
-
-    .loading,
-    .empty {
-      text-align: center;
-      padding: 30px;
-      color: #64748b;
-      font-weight: 600;
-      background: white;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      font-size: 13px;
-      line-height: 2;
-      overflow-wrap: anywhere;
-    }
-
-    .empty-icon {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 27px;
-    }
-
-    .notice {
-      color: #92400e;
-      background: #fffbeb;
-      border: 1px solid #fde68a;
-      border-radius: 12px;
-      padding: 15px;
-      font-size: 12px;
-      line-height: 2;
-      margin-bottom: 20px;
-    }
-
-    /* قائمة الهاتف */
-
-    .mobile-bottom {
-      display: none;
-    }
-
-    @media(max-width:1100px) {
-      .months-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .main {
-        padding: 25px;
-      }
-    }
-
-    @media(max-width:768px) {
-      .sidebar {
-        display: none;
-      }
-
-      .main,
-      body.sidebar-collapsed .main {
-        margin-right: 0;
-        padding: 15px;
-        padding-bottom: 85px;
-      }
-
-      .top-bar {
-        padding: 17px;
-        margin-bottom: 18px;
-      }
-
-      .top-bar h1 {
-        font-size: 18px;
-      }
-
-      .top-bar p {
-        font-size: 11px;
-      }
-
-      .top-icon {
-        width: 41px;
-        height: 41px;
-      }
-
-      .months-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 9px;
-      }
-
-      .month-button {
-        padding: 12px;
-      }
-
-      .month-button strong {
-        font-size: 12px;
-      }
-
-      .month-heading {
-        padding: 14px;
-      }
-
-      .month-heading h2 {
-        font-size: 15px;
-      }
-
-      .lecture-header {
-        padding: 15px;
-      }
-
-      .lecture-title h3 {
-        font-size: 15px;
-      }
-
-      .lecture-title p {
-        font-size: 11px;
-      }
-
-      .lecture-body.open {
-        padding: 13px;
-      }
-
-      .video-container {
-        border-radius: 8px;
-      }
-
-      .video-fullscreen-btn {
-        padding: 12px;
-      }
-
-      .mobile-bottom {
-        display: flex;
-        position: fixed;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        z-index: 1500;
-        background: white;
-        box-shadow: 0 -3px 18px rgba(0,0,0,.08);
-        justify-content: space-around;
-        padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
-      }
-
-      .mobile-bottom a {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-        color: #64748b;
-        font-size: 10px;
-        flex: 1;
-        text-decoration: none;
-      }
-
-      .mobile-bottom a.active {
-        color: var(--green);
-        font-weight: 900;
-      }
-
-      .mobile-bottom svg {
-        width: 21px;
-        height: 21px;
-        stroke: currentColor;
-        fill: none;
-        stroke-width: 1.8;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-      }
-    }
-
-    @media(max-width:360px) {
-      .months-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .month-heading {
-        align-items: flex-start;
-      }
-
-      .month-badge {
-        font-size: 10px;
-      }
-    }
-
-    @media(prefers-reduced-motion:reduce) {
-      *,
-      *::before,
-      *::after {
-        scroll-behavior: auto !important;
-        transition-duration: .01ms !important;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المحاضرات | منصة أرض الأحياء</title>
+<meta name="description" content="محاضرات الأحياء للثانوية العامة في منصة أرض الأحياء.">
+<meta name="theme-color" content="#026857">
+<link rel="icon" href="../favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="../progress.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',sans-serif}
+:root{--green:#026857;--green-dark:#014d40;--blue:#1e3a8a;--bg:#f0f4f8;--border:#e2e8f0;--text:#2c3e50;--muted:#64748b;--sidebar-width:270px;--sidebar-collapsed-width:82px}
+body{background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+button,a{-webkit-tap-highlight-color:transparent}
+
+/* الشريط الجانبي */
+.sidebar{width:var(--sidebar-width);background:linear-gradient(180deg,#026857 0%,#075e54 48%,#1e3a8a 100%);color:#fff;position:fixed;right:0;top:0;height:100vh;display:flex;flex-direction:column;justify-content:space-between;z-index:1000;overflow-x:hidden;overflow-y:auto;transition:width .25s ease}
+.sidebar-top{padding:18px}
+.sidebar-control{display:flex;justify-content:flex-start;margin-bottom:18px}
+.sidebar-toggle{width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.23);border-radius:11px;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;flex-shrink:0;transition:background .2s,transform .2s}
+.sidebar-toggle:hover{background:rgba(255,255,255,.23);transform:scale(1.04)}
+.sidebar-toggle svg,.menu-icon svg,.top-icon svg,.mobile-bottom svg{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+.sidebar-toggle svg{width:20px;height:20px;stroke-width:2;transition:transform .25s}
+.logo-box{display:flex;align-items:center;gap:13px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,.16);min-width:0}
+.logo-box img{width:49px;height:49px;object-fit:contain;border-radius:13px;background:#fff;padding:3px;flex-shrink:0}
+.logo-text{min-width:0;overflow:hidden;white-space:nowrap}
+.logo-box h2{font-size:17px;color:#fff;font-weight:900}
+.logo-box p{font-size:11px;opacity:.8;margin-top:4px}
+.menu-title{color:rgba(255,255,255,.62);font-size:10px;font-weight:700;padding:0 12px;margin-bottom:10px;white-space:nowrap}
+.menu{display:flex;flex-direction:column;gap:7px}
+.menu a{text-decoration:none;color:#e2f1ee;padding:12px 13px;border-radius:11px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:12px;transition:background .2s,transform .2s;min-height:46px;white-space:nowrap}
+.menu a:hover,.menu a.active{background:rgba(255,255,255,.17);color:#fff}
+.menu a:hover{transform:translateX(-2px)}
+.menu-icon{width:21px;height:21px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center}
+.menu-icon svg{width:20px;height:20px;stroke-width:1.8}
+.menu-text{overflow:hidden;text-overflow:ellipsis}
+.sidebar-bottom{margin:0 18px 20px;padding:14px;border-radius:12px;background:rgba(255,255,255,.1);font-size:11px;line-height:2;color:rgba(255,255,255,.9);overflow:hidden}
+body.sidebar-collapsed .sidebar{width:var(--sidebar-collapsed-width)}
+body.sidebar-collapsed .sidebar-top{padding:18px 12px}
+body.sidebar-collapsed .sidebar-control,body.sidebar-collapsed .logo-box{justify-content:center}
+body.sidebar-collapsed .sidebar-toggle svg{transform:rotate(180deg)}
+body.sidebar-collapsed .logo-text,body.sidebar-collapsed .menu-title,body.sidebar-collapsed .menu-text,body.sidebar-collapsed .sidebar-bottom{display:none}
+body.sidebar-collapsed .menu a{justify-content:center;padding:12px 8px;gap:0}
+body.sidebar-collapsed .menu a:hover{transform:none}
+body.sidebar-collapsed .menu-icon{width:25px;height:25px}
+
+/* المحتوى */
+.main{margin-right:var(--sidebar-width);flex:1;min-width:0;padding:30px 35px;transition:margin-right .25s ease}
+body.sidebar-collapsed .main{margin-right:var(--sidebar-collapsed-width)}
+.top-bar{background:#fff;padding:22px 25px;border-radius:16px;box-shadow:0 4px 20px rgba(30,58,138,.04);margin-bottom:25px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:15px}
+.top-bar h1{color:var(--blue);font-size:22px;font-weight:900}
+.top-bar p{color:var(--muted);font-size:12px;margin-top:6px;line-height:1.8}
+.top-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:#e8f5e9;color:var(--green);flex-shrink:0}
+.top-icon svg{width:25px;height:25px;stroke-width:1.8}
+
+/* الشهور */
+.months-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-bottom:25px}
+.month-button{background:#fff;border:1px solid var(--border);border-radius:13px;padding:15px;text-align:right;cursor:pointer;transition:.2s;color:var(--text);min-width:0}
+.month-button:hover{border-color:var(--green);transform:translateY(-2px);box-shadow:0 5px 15px rgba(2,104,87,.07)}
+.month-button.active{color:#fff;background:linear-gradient(135deg,var(--green),var(--blue));border-color:transparent}
+.month-cover{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:9px;margin-bottom:10px;background:#e2e8f0}
+.month-button-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}
+.month-button strong{font-size:13px;font-weight:900}
+.month-button small{color:var(--muted);font-size:11px}
+.month-button.active small{color:rgba(255,255,255,.8)}
+.month-number{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:#e8f5e9;color:var(--green);font-weight:900;font-size:12px;flex-shrink:0}
+.month-button.active .month-number{background:rgba(255,255,255,.18);color:#fff}
+.month-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:5px 0 17px;padding:17px 20px;background:#fff;border:1px solid var(--border);border-radius:13px}
+.month-heading-info{display:flex;align-items:center;gap:13px;min-width:0}
+.month-heading img{width:74px;aspect-ratio:16/9;object-fit:cover;border-radius:9px;flex-shrink:0}
+.month-heading h2{font-size:17px;font-weight:900;color:var(--blue)}
+.month-heading p{margin-top:5px;font-size:11px;color:var(--muted)}
+.month-badge{display:inline-flex;align-items:center;justify-content:center;padding:7px 11px;border-radius:8px;background:#e8f5e9;color:var(--green);font-size:11px;font-weight:700;white-space:nowrap}
+
+/* المحاضرة */
+.lecture-card{background:#fff;border-radius:14px;border:1px solid var(--border);margin-bottom:20px;overflow:hidden;box-shadow:0 4px 15px rgba(30,58,138,.03)}
+.lecture-header{background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%);color:#fff;padding:14px 25px;display:flex;align-items:center;gap:14px;cursor:pointer}
+.lecture-header:focus-visible,.dropdown-header:focus-visible{outline:3px solid #86efac;outline-offset:-3px}
+.lecture-thumb{width:86px;aspect-ratio:16/9;object-fit:cover;border-radius:9px;border:2px solid rgba(255,255,255,.35);flex-shrink:0;background:#1e3a8a}
+.lecture-title{min-width:0;flex:1}
+.lecture-title h3{font-size:17px;font-weight:700;margin-bottom:4px;overflow-wrap:anywhere}
+.lecture-title p{font-size:12px;opacity:.9;line-height:1.8;overflow-wrap:anywhere}
+.arrow-icon{font-size:18px;transition:transform .3s;flex-shrink:0}
+.lecture-body{padding:0;max-height:0;overflow:hidden;background:#fafafa}
+.lecture-body.open{padding:20px 25px;max-height:none;overflow:visible}
+
+/* المشغل */
+.video-container{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden;margin-bottom:12px;user-select:none;-webkit-user-select:none}
+.video-container iframe,.video-container video{position:absolute;inset:0;width:100%;height:100%;border:none;object-fit:contain;background:#000}
+.video-container:fullscreen,.video-container.pseudo-fs{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;max-width:none;aspect-ratio:auto;margin:0;border-radius:0;z-index:99999}
+.video-container:-webkit-full-screen{width:100vw;height:100vh;background:#000}
+.player-msg{position:absolute;inset:0;display:grid;place-items:center;padding:20px;color:#fff;text-align:center;font-size:13px;line-height:2}
+.watermark{position:absolute;z-index:5;pointer-events:none;user-select:none;-webkit-user-select:none;color:#fff;opacity:.4;font-weight:700;font-size:clamp(11px,2.2vw,18px);text-shadow:0 0 4px #000,0 0 2px #000;transition:top 1.4s ease,left 1.4s ease;direction:ltr;white-space:nowrap}
+.exit-fs{display:none;position:absolute;top:12px;left:12px;z-index:6;border:0;border-radius:50%;width:38px;height:38px;background:rgba(0,0,0,.6);color:#fff;font-size:17px;cursor:pointer}
+.pseudo-fs .exit-fs{display:block}
+.player-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.quality-wrap{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--green-dark)}
+.quality-wrap[hidden]{display:none}
+.quality-wrap select{border:1px solid #cbd5e1;border-radius:8px;padding:8px 10px;background:#fff;font-size:12px;font-weight:700;color:var(--text)}
+.video-fullscreen-btn{flex:1;min-width:170px;padding:11px 15px;border:none;border-radius:9px;background:var(--green);color:#fff;font-size:13px;font-weight:700;cursor:pointer;transition:background .2s}
+.video-fullscreen-btn:hover{background:var(--green-dark)}
+.video-fullscreen-btn:focus-visible{outline:3px solid #86efac;outline-offset:2px}
+.actions-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.action-btn{flex:1;min-width:140px;padding:10px 12px;border:1px solid #c8e6c9;border-radius:9px;background:#fff;color:#2e7d32;font-size:12px;font-weight:700;cursor:pointer;transition:.2s}
+.action-btn.on{background:#2e7d32;color:#fff;border-color:#2e7d32}
+.action-btn:disabled{opacity:.6;cursor:wait}
+.desc{margin-bottom:15px;color:#475569;font-size:14px;line-height:2;overflow-wrap:anywhere}
+.dropdown-section{background:#e8f5e9;border:1px solid #c8e6c9;border-radius:10px;margin-bottom:12px;overflow:hidden}
+.dropdown-header{padding:12px 18px;font-weight:700;color:#2e7d32;display:flex;justify-content:space-between;align-items:center;gap:10px;cursor:pointer;background:#f1f8e9;font-size:13px}
+.dropdown-content{padding:15px 18px;background:#fff;border-top:1px solid #c8e6c9;display:none;font-size:13px;line-height:2;overflow-wrap:anywhere}
+.dropdown-content.open{display:block}
+.handout-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px dashed #e2e8f0}
+.handout-row:last-child{border:0}
+.handout-row span{font-weight:600;min-width:0}
+.btn-link{display:inline-block;background:#026857;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-weight:600;font-size:13px;border:0;cursor:pointer;white-space:nowrap}
+.btn-link:hover{background:#014d40}
+.muted{color:#64748b}
+.loading,.empty{text-align:center;padding:30px;color:#64748b;font-weight:600;background:#fff;border-radius:14px;border:1px solid var(--border);font-size:13px;line-height:2;overflow-wrap:anywhere}
+.empty-icon{display:block;margin-bottom:8px;font-size:27px}
+.notice{color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:15px;font-size:12px;line-height:2;margin-bottom:20px}
+.notice a{font-weight:800;text-decoration:underline}
+.mobile-bottom{display:none}
+
+@media(max-width:1100px){.months-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.main{padding:25px}}
+@media(max-width:768px){
+.sidebar{display:none}
+.main,body.sidebar-collapsed .main{margin-right:0;padding:15px 15px 85px}
+.top-bar{padding:17px;margin-bottom:18px}.top-bar h1{font-size:18px}.top-bar p{font-size:11px}
+.top-icon{width:41px;height:41px}
+.months-grid{gap:9px}.month-button{padding:12px}.month-button strong{font-size:12px}
+.month-heading{padding:14px}.month-heading h2{font-size:15px}.month-heading img{width:56px}
+.lecture-header{padding:12px 14px;gap:10px}.lecture-thumb{width:62px}
+.lecture-title h3{font-size:15px}.lecture-title p{font-size:11px}
+.lecture-body.open{padding:13px}
+.video-container{border-radius:8px}
+.mobile-bottom{display:flex;position:fixed;right:0;bottom:0;left:0;z-index:1500;background:#fff;box-shadow:0 -3px 18px rgba(0,0,0,.08);justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom))}
+.mobile-bottom a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#64748b;font-size:9px;flex:1;min-width:0;text-decoration:none}
+.mobile-bottom a.active{color:var(--green);font-weight:900}
+.mobile-bottom svg{width:21px;height:21px;stroke-width:1.8}}
+@media(max-width:360px){.months-grid{grid-template-columns:1fr}.month-heading{align-items:flex-start}.month-badge{font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}}
+</style>
 </head>
-
 <body>
 
-  <!-- الشريط الجانبي -->
-  <aside class="sidebar" id="sidebar">
-
-    <div class="sidebar-top">
-
-      <div class="sidebar-control">
-        <button
-          type="button"
-          class="sidebar-toggle"
-          id="sidebarToggle"
-          aria-label="تصغير القائمة الجانبية"
-          title="تصغير القائمة الجانبية"
-          aria-expanded="true">
-
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m14 5-7 7 7 7"></path>
-            <path d="M20 5v14"></path>
-          </svg>
-
-        </button>
-      </div>
-
-      <div class="logo-box">
-        <img
-          src="../logo.png"
-          alt="شعار أرض الأحياء"
-          onerror="this.style.display='none'">
-
-        <div class="logo-text">
-          <h2>أرض الأحياء</h2>
-          <p>الثانويه العامه </p>
-        </div>
-      </div>
-
-      <div class="menu-title">القائمة الرئيسية</div>
-
-      <nav class="menu" aria-label="القائمة الرئيسية">
-
-        <a href="../index.html" title="الرئيسية">
-          <span class="menu-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m3 10 9-7 9 7"></path>
-              <path d="M5 9v11h14V9"></path>
-              <path d="M9 20v-7h6v7"></path>
-            </svg>
-          </span>
-          <span class="menu-text">الرئيسية</span>
-        </a>
-
-        <a href="index.html" class="active" title="المحاضرات" aria-current="page">
-          <span class="menu-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="3" y="5" width="18" height="14" rx="3"></rect>
-              <path d="m10 9 5 3-5 3z"></path>
-            </svg>
-          </span>
-          <span class="menu-text">المحاضرات</span>
-        </a>
-</a>
-
-        <a href="../champion/index.html" title="بطل الفصل">
-          <span class="menu-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m8 4 4-2 4 2 4 1v5c0 5-4 8-8 12-4-4-8-7-8-12V5z"></path>
-              <path d="m9 11 2 2 4-5"></path>
-            </svg>
-          </span>
-          <span class="menu-text">بطل الفصل</span>
-        </a>
-
-        <a href="../forum/index.html" title="المنتدى">
-          <span class="menu-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.3A8.5 8.5 0 1 1 21 11.5Z"></path>
-              <path d="M8 10h8M8 14h5"></path>
-            </svg>
-          </span>
-          <span class="menu-text">المنتدى</span>
-        </a>
-
-        <a href="../account/index.html" title="حساب الطالب">
-          <span class="menu-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="8" r="4"></circle>
-              <path d="M4 21a8 8 0 0 1 16 0"></path>
-            </svg>
-          </span>
-          <span class="menu-text">حساب الطالب</span>
-        </a>
-
-      </nav>
-
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-top">
+    <div class="sidebar-control">
+      <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="تصغير القائمة الجانبية" title="تصغير القائمة الجانبية" aria-expanded="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 5-7 7 7 7"></path><path d="M20 5v14"></path></svg>
+      </button>
     </div>
-
-    <div class="sidebar-bottom">
-      <strong>أرض الأحياء</strong>
-      <br>
-      رحلتك نحو التفوق تبدأ من هنا.
+    <div class="logo-box">
+      <img src="../logo.png" alt="شعار أرض الأحياء" onerror="this.style.display='none'">
+      <div class="logo-text"><h2>أرض الأحياء</h2><p>الثانوية العامة</p></div>
     </div>
+    <div class="menu-title">القائمة الرئيسية</div>
+    <nav class="menu" aria-label="القائمة الرئيسية">
+      <a href="../index.html" data-title="الرئيسية" aria-label="الرئيسية"><span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7"></path><path d="M5 9v11h14V9"></path><path d="M9 20v-7h6v7"></path></svg></span><span class="menu-text">الرئيسية</span></a>
+      <a href="index.html" class="active" data-title="المحاضرات" aria-label="المحاضرات" aria-current="page"><span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="m10 9 5 3-5 3z"></path></svg></span><span class="menu-text">المحاضرات</span></a>
+      <a href="../notes/index.html" data-title="المذكرات" aria-label="المذكرات"><span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l3 3v15H5z"></path><path d="M16 3v4h4M8 12h8M8 16h8"></path></svg></span><span class="menu-text">المذكرات</span></a>
+      <a href="../champion/index.html" data-title="بطل الفصل" aria-label="بطل الفصل"><span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 4-2 4 2 4 1v5c0 5-4 8-8 12-4-4-8-7-8-12V5z"></path><path d="m9 11 2 2 4-5"></path></svg></span><span class="menu-text">بطل الفصل</span></a>
+      <a href="../forum/index.html" data-title="المنتدى" aria-label="المنتدى"><span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.3A8.5 8.5 0 1 1 21 11.5Z"></path><path d="M8 10h8M8 14h5"></path></svg></span><span class="menu-text">المنتدى</span></a>
+      <a href="../account/index.html" data-title="حساب الطالب" aria-label="حساب الطالب"><span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></span><span class="menu-text">حساب الطالب</span></a>
+    </nav>
+  </div>
+  <div class="sidebar-bottom"><strong>أرض الأحياء</strong><br>رحلتك نحو التفوق تبدأ من هنا.</div>
+</aside>
 
-  </aside>
+<main class="main">
+  <header class="top-bar">
+    <div><h1>محاضرات منهج الأحياء</h1><p>اختر الشهر الذي تريد مذاكرته، ثم افتح المحاضرة المناسبة.</p></div>
+    <div class="top-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="m10 9 5 3-5 3z"></path></svg></div>
+  </header>
 
-  <!-- المحتوى الرئيسي -->
-  <main class="main">
+  <div id="pageNotice" class="notice" style="display:none"></div>
+  <div id="monthsGrid" class="months-grid" style="display:none"></div>
 
-    <header class="top-bar">
-      <div>
-        <h1>محاضرات منهج الأحياء</h1>
-        <p>اختر الشهر الذي تريد مذاكرته، ثم افتح المحاضرة المناسبة.</p>
-      </div>
-
-      <div class="top-icon">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="3" y="5" width="18" height="14" rx="3"></rect>
-          <path d="m10 9 5 3-5 3z"></path>
-        </svg>
-      </div>
-    </header>
-
-    <div id="pageNotice" class="notice" style="display:none"></div>
-
-    <div id="monthsGrid" class="months-grid" style="display:none"></div>
-
-    <div id="monthHeading" class="month-heading" style="display:none">
-      <div>
-        <h2 id="selectedMonthTitle"></h2>
-        <p id="selectedMonthDescription"></p>
-      </div>
-      <span class="month-badge" id="lectureCountBadge"></span>
+  <div id="monthHeading" class="month-heading" style="display:none">
+    <div class="month-heading-info">
+      <img id="monthHeadingImg" alt="" style="display:none">
+      <div><h2 id="selectedMonthTitle"></h2><p id="selectedMonthDescription"></p></div>
     </div>
+    <span class="month-badge" id="lectureCountBadge"></span>
+  </div>
 
-    <div id="lecturesList">
-      <div class="loading">جارٍ تحميل المحاضرات...</div>
-    </div>
+  <div id="lecturesList"><div class="loading">جارٍ تحميل المحاضرات...</div></div>
+</main>
 
-  </main>
+<nav class="mobile-bottom" aria-label="التنقل السريع">
+  <a href="../index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7"></path><path d="M5 9v11h14V9"></path></svg>الرئيسية</a>
+  <a href="index.html" class="active" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="m10 9 5 3-5 3z"></path></svg>المحاضرات</a>
+  <a href="../notes/index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l3 3v15H5z"></path><path d="M16 3v4h4M8 12h8M8 16h8"></path></svg>المذكرات</a>
+  <a href="../champion/index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 4-2 4 2 4 1v5c0 5-4 8-8 12-4-4-8-7-8-12V5z"></path></svg>البطل</a>
+  <a href="../forum/index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.3A8.5 8.5 0 1 1 21 11.5Z"></path></svg>المنتدى</a>
+  <a href="../account/index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>حسابي</a>
+</nav>
 
-  <!-- قائمة الهاتف -->
-  <nav class="mobile-bottom" aria-label="التنقل السريع">
+<script>
+"use strict";
 
-    <a href="../index.html">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="m3 10 9-7 9 7"></path>
-        <path d="M5 9v11h14V9"></path>
-      </svg>
-      الرئيسية
-    </a>
+if (!window.supabase) {
+  document.getElementById("lecturesList").textContent = "تعذر تحميل مكتبة Supabase. تحقق من الإنترنت ثم أعد تحميل الصفحة.";
+  throw new Error("Missing dependency: supabase-js");
+}
 
-    <a href="index.html" class="active" aria-current="page">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <rect x="3" y="5" width="18" height="14" rx="3"></rect>
-        <path d="m10 9 5 3-5 3z"></path>
-      </svg>
-      المحاضرات
-    </a>
+const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+if (window.ArdProgress) ArdProgress.init(supabaseClient);
 
-    <a href="../notes/index.html">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M5 3h11l3 3v15H5z"></path>
-        <path d="M16 3v4h4M8 12h8M8 16h8"></path>
-      </svg>
-      المذكرات
-    </a>
+const MONTHS_TABLE = "lecture_months", LECTURES_TABLE = "lectures";
+const VIDEO_BUCKET = "lectures", HANDOUT_BUCKET = "handouts";
+const SIGNED_URL_SECONDS = 3600;
+const LOGIN_URL = "../login/index.html";
+const QUALITY_KEY = "ardAlahyaaQuality";
 
-    <a href="../forum/index.html">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.3A8.5 8.5 0 1 1 21 11.5Z"></path>
-      </svg>
-      المنتدى
-    </a>
+let allLectures = [], visibleMonths = [], currentList = [], selectedMonth = null;
+let viewerLabel = "", progress = new Map();
 
-    <a href="../account/index.html">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="12" cy="8" r="4"></circle>
-        <path d="M4 21a8 8 0 0 1 16 0"></path>
-      </svg>
-      حسابي
-    </a>
+const $ = id => document.getElementById(id);
 
-  </nav>
+/* ---------- الشريط الجانبي ---------- */
+const sidebarToggle = $("sidebarToggle");
+const SIDEBAR_KEY = "ardAlahyaaSidebarCollapsed";
 
-  <script>
-    "use strict";
+function setSidebarCollapsed(collapsed, save = true) {
+  document.body.classList.toggle("sidebar-collapsed", collapsed);
+  const text = collapsed ? "توسيع القائمة الجانبية" : "تصغير القائمة الجانبية";
+  sidebarToggle.setAttribute("aria-expanded", String(!collapsed));
+  sidebarToggle.setAttribute("aria-label", text);
+  sidebarToggle.title = text;
+  document.querySelectorAll(".menu a[data-title]").forEach(a => {
+    if (collapsed) a.title = a.dataset.title; else a.removeAttribute("title");
+  });
+  if (save) { try { localStorage.setItem(SIDEBAR_KEY, collapsed ? "true" : "false"); } catch (e) { console.warn(e); } }
+}
+sidebarToggle.addEventListener("click", () => setSidebarCollapsed(!document.body.classList.contains("sidebar-collapsed")));
+try { setSidebarCollapsed(localStorage.getItem(SIDEBAR_KEY) === "true", false); } catch { setSidebarCollapsed(false, false); }
 
-    /* إعداد Supabase */
+/* ---------- أدوات ---------- */
+function escapeHtml(v) {
+  if (v === null || v === undefined) return "";
+  return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
 
-    const SUPABASE_URL =
-      "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+function safeHttps(u) {
+  try { const x = new URL(String(u || "").trim()); return x.protocol === "https:" ? x.href : ""; } catch { return ""; }
+}
 
-    const SUPABASE_KEY =
-      "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+function showNotice(html) { const n = $("pageNotice"); n.innerHTML = html; n.style.display = "block"; }
+function hideNotice() { $("pageNotice").style.display = "none"; }
 
-    const supabaseClient = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
+function toStoragePath(raw, bucket) {
+  const v = String(raw || "").trim();
+  if (!v) return "";
+  if (!/^https?:\/\//i.test(v)) {
+    return v.replace(/^\/+/, "").replace(/^storage\/v1\/object\/(public|sign|authenticated)\//i, "").replace(new RegExp("^" + bucket + "/"), "");
+  }
+  try {
+    const parts = new URL(v).pathname.split("/").filter(Boolean), i = parts.indexOf("object");
+    if (i === -1) return "";
+    const rest = ["public", "sign", "authenticated"].includes(parts[i + 1]) ? parts.slice(i + 2) : parts.slice(i + 1);
+    if (rest[0] !== bucket) return "";
+    return rest.slice(1).map(p => { try { return decodeURIComponent(p); } catch { return p; } }).join("/");
+  } catch { return ""; }
+}
 
-    const MONTHS_TABLE = "lecture_months";
-    const LECTURES_TABLE = "lectures";
-    const STORAGE_BUCKET = "lectures";
-    const SIGNED_URL_SECONDS = 3600;
+async function signedUrl(bucket, path) {
+  if (!path) return "";
+  const { data, error } = await supabaseClient.storage.from(bucket).createSignedUrl(path, SIGNED_URL_SECONDS);
+  if (error) { console.error("Signed URL error:", error); return ""; }
+  return data?.signedUrl || "";
+}
 
-    let allLectures = [];
-    let visibleMonths = [];
-    let selectedMonth = null;
+const isYoutube = u => /youtube\.com|youtu\.be|youtube-nocookie\.com/i.test(u || "");
 
-    /* التحكم في الشريط الجانبي */
+function youtubeEmbed(url) {
+  try {
+    const p = new URL(url);
+    let id = "";
+    if (p.hostname.includes("youtu.be")) id = p.pathname.split("/").filter(Boolean)[0] || "";
+    else if (p.pathname === "/watch") id = p.searchParams.get("v") || "";
+    else { const s = p.pathname.split("/").filter(Boolean); if (["embed", "shorts", "live"].includes(s[0])) id = s[1] || ""; }
+    return id ? "https://www.youtube.com/embed/" + encodeURIComponent(id) + "?rel=0&fs=0" : "";
+  } catch { return ""; }
+}
 
-    const sidebarToggle = document.getElementById("sidebarToggle");
+/* رابط الفيديو: رابط خارجي https كما هو، وغير ذلك مسار في bucket خاص يُوقَّع مؤقتًا */
+async function resolveVideo(raw) {
+  const v = String(raw || "").trim();
+  if (!v) return "";
+  if (/^https?:\/\//i.test(v) && !v.includes("/storage/v1/object/")) return safeHttps(v);
+  return signedUrl(VIDEO_BUCKET, toStoragePath(v, VIDEO_BUCKET));
+}
 
-    const SIDEBAR_STORAGE_KEY =
-      "ardAlahyaaLecturesSidebarCollapsed";
+/* ---------- بيانات المشاهد (للعلامة المائية) ---------- */
+async function loadViewer(user) {
+  let phone = "";
+  try {
+    const { data } = await supabaseClient.from("profiles").select("phone").eq("id", user.id).maybeSingle();
+    phone = (data?.phone || "").trim();
+  } catch (e) { console.warn("Viewer profile:", e); }
+  viewerLabel = phone || user.phone || (user.email ? user.email.split("@")[0] : "") || ("ID-" + String(user.id).slice(0, 8));
+}
 
-    function setSidebarCollapsed(collapsed, save = true) {
-      document.body.classList.toggle("sidebar-collapsed", collapsed);
+/* ---------- التقدم ---------- */
+async function loadProgress() {
+  if (!window.ArdProgress) return;
+  try { progress = new Map((await ArdProgress.fetchAll()).map(r => [String(r.lecture_id), r])); }
+  catch (e) { console.warn("Progress unavailable:", e); }
+}
 
-      sidebarToggle.setAttribute(
-        "aria-expanded",
-        String(!collapsed)
-      );
+function refreshActions(i) {
+  const id = String(currentList[i].id), row = progress.get(id) || {};
+  const save = $("save-" + i), done = $("done-" + i);
+  if (save) { save.classList.toggle("on", !!row.saved); save.textContent = row.saved ? "★ محفوظة" : "☆ حفظ المحاضرة"; save.disabled = false; }
+  if (done) { done.classList.toggle("on", !!row.completed); done.textContent = row.completed ? "✓ تمت المشاهدة" : "تمت المشاهدة؟"; done.disabled = false; }
+}
 
-      sidebarToggle.setAttribute(
-        "aria-label",
-        collapsed
-          ? "توسيع القائمة الجانبية"
-          : "تصغير القائمة الجانبية"
-      );
+async function updateProgress(i, field) {
+  const id = String(currentList[i].id), row = progress.get(id) || { lecture_id: id };
+  const btn = $((field === "saved" ? "save-" : "done-") + i);
+  const next = !row[field];
+  if (btn) btn.disabled = true;
+  try {
+    if (field === "saved") await ArdProgress.setSaved(id, next); else await ArdProgress.setCompleted(id, next);
+    progress.set(id, { ...row, [field]: next });
+  } catch (e) { console.error(e); alert("تعذر حفظ التقدم. تحقق من الاتصال وسياسات جدول lecture_progress."); }
+  refreshActions(i);
+}
+const toggleSaved = i => updateProgress(i, "saved");
+const toggleCompleted = i => updateProgress(i, "completed");
 
-      sidebarToggle.title = collapsed
-        ? "توسيع القائمة الجانبية"
-        : "تصغير القائمة الجانبية";
+/* ---------- المشغل ---------- */
+function getQualities(lec) {
+  const q = lec.qualities && typeof lec.qualities === "object" ? lec.qualities : {};
+  let list = Object.entries(q).filter(([, v]) => v)
+    .map(([k, v]) => ({ label: /p$/i.test(k) ? k : k + "p", height: parseInt(k, 10) || 0, src: v }))
+    .sort((a, b) => b.height - a.height);
+  const single = lec.video_url || lec.videoUrl || lec.url;
+  if (!list.length && single) list = [{ label: "الأصلية", height: 0, src: single }];
+  return list;
+}
 
-      if (save) {
-        try {
-          localStorage.setItem(
-            SIDEBAR_STORAGE_KEY,
-            collapsed ? "true" : "false"
-          );
-        } catch (error) {
-          console.warn("تعذر حفظ حالة القائمة الجانبية:", error);
-        }
-      }
+function watermarkHtml() {
+  return '<div class="watermark" aria-hidden="true" style="top:' + (10 + Math.random() * 70) + '%;left:' + (5 + Math.random() * 65) + '%">' + escapeHtml(viewerLabel) + "</div>";
+}
+
+setInterval(function () {
+  document.querySelectorAll(".watermark").forEach(w => {
+    w.style.top = (8 + Math.random() * 78) + "%";
+    w.style.left = (4 + Math.random() * 70) + "%";
+  });
+}, 4000);
+
+async function setSource(i, label) {
+  const lec = currentList[i], box = $("video-container-" + i), video = box && box.querySelector("video");
+  const q = getQualities(lec).find(x => x.label === label);
+  if (!video || !q) return false;
+
+  const t = video.currentTime || 0, wasPlaying = !video.paused && !video.ended;
+  const url = await resolveVideo(q.src);
+  if (!url) return false;
+
+  video.src = url;
+  video.addEventListener("loadedmetadata", () => {
+    if (t > 0) video.currentTime = t;
+    if (wasPlaying) video.play().catch(() => {});
+  }, { once: true });
+  video.dataset.quality = label;
+  return true;
+}
+
+async function changeQuality(i, label) {
+  if (!(await setSource(i, label))) { alert("تعذر تغيير الجودة. حاول مرة أخرى."); return; }
+  try { localStorage.setItem(QUALITY_KEY, label); } catch {}
+}
+
+async function buildPlayer(i) {
+  const lec = currentList[i], box = $("video-container-" + i);
+  if (!box || box.dataset.ready) return;
+  box.dataset.ready = "1";
+
+  const qualities = getQualities(lec);
+  const fail = text => { box.innerHTML = '<div class="player-msg">' + text + "</div>"; box.dataset.ready = ""; };
+  if (!qualities.length) return fail("لا يوجد فيديو لهذه المحاضرة حتى الآن.");
+
+  box.innerHTML = '<div class="player-msg">جارٍ تجهيز الفيديو...</div>';
+  const exitBtn = '<button type="button" class="exit-fs" aria-label="إغلاق ملء الشاشة" onclick="toggleFs(this.parentElement)">✕</button>';
+
+  if (isYoutube(qualities[0].src)) {
+    const embed = youtubeEmbed(qualities[0].src);
+    if (!embed) return fail("رابط الفيديو غير صالح.");
+    box.innerHTML = '<iframe src="' + escapeHtml(embed) + '" title="فيديو المحاضرة" loading="lazy" allow="encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>' + watermarkHtml() + exitBtn;
+    return;
+  }
+
+  const saved = (() => { try { return localStorage.getItem(QUALITY_KEY); } catch { return null; } })();
+  const start = qualities.find(q => q.label === saved) || qualities[0];
+  const poster = safeHttps(lec.image_url);
+
+  box.innerHTML = '<video controls playsinline preload="metadata" controlsList="nodownload nofullscreen" disablePictureInPicture' +
+    (poster ? ' poster="' + escapeHtml(poster) + '"' : "") + "></video>" + watermarkHtml() + exitBtn;
+  const video = box.querySelector("video");
+
+  if (!(await setSource(i, start.label))) return fail("تعذر تجهيز الفيديو. تأكد من تسجيل الدخول ومن صلاحيات قراءة ملفات المحاضرات.");
+
+  if (qualities.length > 1) {
+    $("quality-" + i).innerHTML = qualities.map(q => '<option value="' + escapeHtml(q.label) + '"' + (q.label === start.label ? " selected" : "") + ">" + escapeHtml(q.label) + "</option>").join("");
+    $("quality-wrap-" + i).hidden = false;
+  }
+
+  // انتهاء الرابط المؤقت: نجدده مرة واحدة ونكمل من نفس المكان
+  video.addEventListener("error", async () => {
+    if (video.dataset.retried) return;
+    video.dataset.retried = "1";
+    await setSource(i, video.dataset.quality || start.label);
+  });
+
+  video.addEventListener("ended", () => { if (window.ArdProgress && !(progress.get(String(lec.id)) || {}).completed) updateProgress(i, "completed"); });
+  video.addEventListener("webkitbeginfullscreen", () => { video.webkitExitFullscreen(); toggleFs(box); }); // iPhone
+}
+
+/* ملء الشاشة على الحاوية نفسها حتى تبقى العلامة المائية ظاهرة */
+async function toggleFs(box) {
+  if (!box) return;
+  if (box.classList.contains("pseudo-fs")) { box.classList.remove("pseudo-fs"); document.body.style.overflow = ""; return; }
+  if (document.fullscreenElement || document.webkitFullscreenElement) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
+  const req = box.requestFullscreen || box.webkitRequestFullscreen;
+  if (req) { try { await req.call(box); return; } catch (e) { console.warn(e); } }
+  box.classList.add("pseudo-fs");
+  document.body.style.overflow = "hidden";
+}
+const enterVideoFullscreen = i => toggleFs($("video-container-" + i));
+
+function onFsChange() {
+  const el = document.fullscreenElement || document.webkitFullscreenElement;
+  if (el && el.tagName === "VIDEO") {
+    const box = el.closest(".video-container");
+    (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    setTimeout(() => toggleFs(box), 150);
+  }
+}
+document.addEventListener("fullscreenchange", onFsChange);
+document.addEventListener("webkitfullscreenchange", onFsChange);
+
+document.addEventListener("visibilitychange", () => { if (document.hidden) document.querySelectorAll("video").forEach(v => v.pause()); });
+document.addEventListener("contextmenu", e => { if (e.target.closest(".video-container")) e.preventDefault(); });
+
+/* ---------- فتح المحاضرة والأقسام ---------- */
+async function toggleLecture(i) {
+  const body = $("body-" + i), arrow = $("arrow-" + i);
+  if (!body || !arrow) return;
+
+  const willOpen = !body.classList.contains("open");
+  body.classList.toggle("open", willOpen);
+  arrow.style.transform = willOpen ? "rotate(180deg)" : "rotate(0deg)";
+  if (body.previousElementSibling) body.previousElementSibling.setAttribute("aria-expanded", String(willOpen));
+
+  if (willOpen) {
+    await buildPlayer(i);
+    const c = body.querySelector(".video-container");
+    if (c) c.scrollIntoView({ behavior: "smooth", block: "center" });
+  } else {
+    const v = body.querySelector("video");
+    if (v) v.pause();
+  }
+}
+
+function toggleSub(header) { const c = header.nextElementSibling; if (c) c.classList.toggle("open"); }
+
+function section(title, content) {
+  return '<div class="dropdown-section"><div class="dropdown-header" role="button" tabindex="0" onclick="toggleSub(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();toggleSub(this)}"><span>' +
+    title + '</span><span aria-hidden="true">▼</span></div><div class="dropdown-content">' + content + "</div></div>";
+}
+
+function externalLink(url, text, emptyText) {
+  const href = safeHttps(url);
+  return href ? '<a class="btn-link" href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer">' + text + "</a>" : '<p class="muted">' + emptyText + "</p>";
+}
+
+/* الملازم: عدد غير محدود لكل محاضرة (مع دعم الحقل القديم pdf_url) */
+function getHandouts(lec) {
+  let h = lec.handouts;
+  if (typeof h === "string") { try { h = JSON.parse(h); } catch { h = []; } }
+  h = Array.isArray(h) ? h.filter(x => x && x.url).map(x => ({ title: String(x.title || "ملزمة"), url: String(x.url) })) : [];
+  const legacy = lec.pdf_url || lec.pdfUrl;
+  if (!h.length && legacy) h = [{ title: "ملزمة المحاضرة", url: String(legacy) }];
+  return h;
+}
+
+function handoutsHtml(lec, i) {
+  const list = getHandouts(lec);
+  if (!list.length) return '<p class="muted">لا توجد ملازم لهذه المحاضرة حاليًا.</p>';
+  return list.map((h, n) => {
+    const external = /^https?:\/\//i.test(h.url) && !h.url.includes("/storage/v1/object/");
+    const action = external
+      ? externalLink(h.url, "فتح الملزمة", "الرابط غير صالح")
+      : '<button type="button" class="btn-link" onclick="openHandout(' + i + "," + n + ')">تنزيل الملزمة</button>';
+    return '<div class="handout-row"><span>📄 ' + escapeHtml(h.title) + "</span>" + action + "</div>";
+  }).join("");
+}
+
+async function openHandout(i, n) {
+  const item = getHandouts(currentList[i])[n];
+  if (!item) return;
+  const w = window.open("about:blank", "_blank"); // نفتح النافذة فورًا حتى لا يمنعها المتصفح
+  const url = await signedUrl(HANDOUT_BUCKET, toStoragePath(item.url, HANDOUT_BUCKET));
+  if (!url) { if (w) w.close(); alert("تعذر فتح الملزمة. تأكد من تسجيل الدخول ومن صلاحيات قراءة الملازم."); return; }
+  if (w) { w.opener = null; w.location.href = url; } else window.location.href = url;
+}
+
+/* ---------- الشهور ---------- */
+function getMonthNumber(l) { const n = Number(l.month_number); return Number.isInteger(n) && n >= 1 && n <= 12 ? n : null; }
+
+function selectMonth(num) {
+  selectedMonth = num;
+  document.querySelectorAll(".month-button").forEach(b => b.classList.toggle("active", Number(b.dataset.month) === num));
+  renderSelectedMonth();
+}
+
+function renderMonths() {
+  const grid = $("monthsGrid");
+  grid.replaceChildren();
+  if (!visibleMonths.length) { grid.style.display = "none"; return; }
+  grid.style.display = "grid";
+
+  visibleMonths.forEach(month => {
+    const num = Number(month.month_number), count = allLectures.filter(l => getMonthNumber(l) === num).length;
+    const img = safeHttps(month.image_url);
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "month-button"; b.dataset.month = String(num);
+    b.innerHTML = (img ? '<img class="month-cover" src="' + escapeHtml(img) + '" alt="" loading="lazy">' : "") +
+      '<div class="month-button-top"><strong>' + escapeHtml(month.title) + '</strong><span class="month-number">' + num + "</span></div><small>" + count + " محاضرة</small>";
+    b.addEventListener("click", () => selectMonth(num));
+    grid.appendChild(b);
+  });
+}
+
+function renderSelectedMonth() {
+  const month = visibleMonths.find(m => Number(m.month_number) === selectedMonth);
+  const heading = $("monthHeading"), list = $("lecturesList");
+
+  if (!month) { heading.style.display = "none"; list.innerHTML = '<div class="empty"><span class="empty-icon">📚</span>اختر شهرًا لعرض محاضراته.</div>'; return; }
+
+  currentList = allLectures.filter(l => getMonthNumber(l) === selectedMonth);
+  heading.style.display = "flex";
+  $("selectedMonthTitle").textContent = month.title;
+  $("selectedMonthDescription").textContent = "محاضرات الأحياء الخاصة بهذا الشهر.";
+  $("lectureCountBadge").textContent = currentList.length + " محاضرة";
+
+  const mImg = safeHttps(month.image_url), mEl = $("monthHeadingImg");
+  mEl.style.display = mImg ? "" : "none";
+  if (mImg) mEl.src = mImg; else mEl.removeAttribute("src");
+
+  if (!currentList.length) { list.innerHTML = '<div class="empty"><span class="empty-icon">📚</span>لا توجد محاضرات مضافة لهذا الشهر حتى الآن.</div>'; return; }
+  renderLectures(currentList);
+}
+
+/* ---------- بطاقات المحاضرات (الفيديو يُجهَّز عند الفتح فقط) ---------- */
+function renderLectures(lectures) {
+  const list = $("lecturesList");
+  list.replaceChildren();
+  const hasProgress = !!window.ArdProgress;
+
+  lectures.forEach((lec, i) => {
+    const title = lec.title || "محاضرة أحياء", description = lec.description || "";
+    const details = lec.details || lec.content || "لا توجد تفاصيل نصية إضافية.";
+    const chapter = lec.chapter || lec.lesson || "";
+    const img = safeHttps(lec.image_url);
+
+    const card = document.createElement("div");
+    card.className = "lecture-card";
+    card.innerHTML =
+      '<div class="lecture-header" role="button" tabindex="0" aria-expanded="false" onclick="toggleLecture(' + i + ')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();this.click()}">' +
+        (img ? '<img class="lecture-thumb" src="' + escapeHtml(img) + '" alt="" loading="lazy">' : "") +
+        '<div class="lecture-title"><h3>' + escapeHtml(title) + "</h3><p>" + escapeHtml(chapter || description) + "</p></div>" +
+        '<div class="arrow-icon" id="arrow-' + i + '" aria-hidden="true">▼</div></div>' +
+      '<div class="lecture-body" id="body-' + i + '">' +
+        '<div class="video-container" id="video-container-' + i + '"></div>' +
+        '<div class="player-bar">' +
+          '<label class="quality-wrap" id="quality-wrap-' + i + '" hidden>الجودة <select id="quality-' + i + '" onchange="changeQuality(' + i + ', this.value)"></select></label>' +
+          '<button type="button" class="video-fullscreen-btn" onclick="enterVideoFullscreen(' + i + ')">⛶ تكبير الفيديو لملء الشاشة</button>' +
+        "</div>" +
+        (hasProgress ? '<div class="actions-row"><button type="button" class="action-btn" id="save-' + i + '" onclick="toggleSaved(' + i + ')">☆ حفظ المحاضرة</button>' +
+          '<button type="button" class="action-btn" id="done-' + i + '" onclick="toggleCompleted(' + i + ')">تمت المشاهدة؟</button></div>' : "") +
+        '<p class="desc">' + escapeHtml(description) + "</p>" +
+        section("📖 الشرح التفصيلي", "<p>" + escapeHtml(details) + "</p>") +
+        section("📚 ملازم المحاضرة", handoutsHtml(lec, i)) +
+        section("✍️ واجب المحاضرة", externalLink(lec.homework_url || lec.homeworkUrl, "فتح الواجب", "لا يوجد واجب لهذه المحاضرة حاليًا.")) +
+        section("📝 امتحان المحاضرة", externalLink(lec.exam_url || lec.examUrl, "بدء الامتحان", "لا يوجد امتحان لهذه المحاضرة حاليًا.")) +
+      "</div>";
+
+    list.appendChild(card);
+    if (hasProgress) refreshActions(i);
+  });
+}
+
+/* ---------- التحميل ---------- */
+async function loadLectures() {
+  const list = $("lecturesList");
+  list.innerHTML = '<div class="loading">جارٍ تحميل المحاضرات...</div>';
+  hideNotice();
+
+  try {
+    const { data: months, error: mErr } = await supabaseClient.from(MONTHS_TABLE).select("*").eq("is_visible", true).order("sort_order", { ascending: true });
+    if (mErr) throw new Error("تعذر قراءة جدول الشهور. " + mErr.message);
+
+    const { data: lectures, error: lErr } = await supabaseClient.from(LECTURES_TABLE).select("*").order("created_at", { ascending: true });
+    if (lErr) throw new Error("تعذر تحميل المحاضرات. " + lErr.message);
+
+    visibleMonths = months || [];
+    const visible = new Set(visibleMonths.map(m => Number(m.month_number)));
+    allLectures = (lectures || []).filter(l => visible.has(getMonthNumber(l)));
+
+    renderMonths();
+
+    if (!visibleMonths.length) {
+      list.innerHTML = '<div class="empty"><span class="empty-icon">📅</span>لا توجد شهور متاحة حاليًا.<br>ستظهر الشهور هنا فور إضافتها.</div>';
+      $("monthHeading").style.display = "none";
+      return;
     }
-
-    function loadSidebarState() {
-      try {
-        const savedState = localStorage.getItem(
-          SIDEBAR_STORAGE_KEY
-        );
-
-        setSidebarCollapsed(savedState === "true", false);
-      } catch (error) {
-        setSidebarCollapsed(false, false);
-      }
-    }
-
-    sidebarToggle.addEventListener("click", function () {
-      const isCollapsed =
-        document.body.classList.contains("sidebar-collapsed");
-
-      setSidebarCollapsed(!isCollapsed);
-    });
-
-    loadSidebarState();
-
-    /* أدوات مساعدة */
-
-    function escapeHtml(value) {
-      if (value === null || value === undefined) return "";
-
-      return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    function showNotice(text) {
-      const notice = document.getElementById("pageNotice");
-      notice.textContent = text;
-      notice.style.display = "block";
-    }
-
-    function hideNotice() {
-      document.getElementById("pageNotice").style.display = "none";
-    }
-
-    /* استخراج مسار الملف من رابط Supabase */
-
-    function decodePathParts(parts) {
-      return parts.map(part => {
-        try {
-          return decodeURIComponent(part);
-        } catch {
-          return part;
-        }
-      });
-    }
-
-    function getStorageObjectPath(rawValue) {
-      if (!rawValue) return "";
-
-      const value = String(rawValue).trim();
-
-      if (!value) return "";
-
-      if (!/^https?:\/\//i.test(value)) {
-        let path = value.replace(/^\/+/, "");
-
-        path = path.replace(
-          /^storage\/v1\/object\/(public|sign|authenticated)\//i,
-          ""
-        );
-
-        if (path.startsWith(STORAGE_BUCKET + "/")) {
-          path = path.slice(STORAGE_BUCKET.length + 1);
-        }
-
-        return path;
-      }
-
-      try {
-        const parsed = new URL(value);
-        const parts = parsed.pathname.split("/").filter(Boolean);
-        const objectIndex = parts.indexOf("object");
-
-        if (objectIndex === -1) return "";
-
-        const accessType = parts[objectIndex + 1] || "";
-
-        if (
-          accessType === "public" ||
-          accessType === "sign" ||
-          accessType === "authenticated"
-        ) {
-          const bucketName = parts[objectIndex + 2] || "";
-
-          if (bucketName !== STORAGE_BUCKET) return "";
-
-          return decodePathParts(
-            parts.slice(objectIndex + 3)
-          ).join("/");
-        }
-
-        if (accessType === STORAGE_BUCKET) {
-          return decodePathParts(
-            parts.slice(objectIndex + 2)
-          ).join("/");
-        }
-
-        return "";
-
-      } catch (error) {
-        console.error("تعذر تحليل رابط ملف المحاضرة:", error);
-        return "";
-      }
-    }
-
-    /* إنشاء رابط مؤقت للفيديو الخاص */
-
-    async function createPrivateLectureUrl(storagePath) {
-      if (!storagePath) return "";
-
-      try {
-        const {
-          data: sessionData,
-          error: sessionError
-        } = await supabaseClient.auth.getSession();
-
-        if (sessionError) {
-          console.error(
-            "تعذر التحقق من جلسة المستخدم:",
-            sessionError
-          );
-          return "";
-        }
-
-        if (!sessionData?.session) {
-          console.warn("يجب تسجيل الدخول لمشاهدة المحاضرة.");
-          return "";
-        }
-
-        const {
-          data,
-          error
-        } = await supabaseClient.storage
-          .from(STORAGE_BUCKET)
-          .createSignedUrl(
-            storagePath,
-            SIGNED_URL_SECONDS
-          );
-
-        if (error) {
-          console.error(
-            "تعذر إنشاء رابط مؤقت للفيديو:",
-            error
-          );
-          return "";
-        }
-
-        return data?.signedUrl || "";
-
-      } catch (error) {
-        console.error("حدث خطأ أثناء تجهيز رابط الفيديو:", error);
-        return "";
-      }
-    }
-
-    /* التعامل مع روابط الفيديو */
-
-    function getYoutubeEmbedUrl(url) {
-      if (!url) return "";
-
-      try {
-        const parsed = new URL(url);
-        let videoId = "";
-
-        if (parsed.hostname.includes("youtu.be")) {
-          videoId =
-            parsed.pathname.split("/").filter(Boolean)[0] || "";
-
-        } else if (
-          parsed.hostname.includes("youtube.com") ||
-          parsed.hostname.includes("youtube-nocookie.com")
-        ) {
-          if (parsed.pathname === "/watch") {
-            videoId = parsed.searchParams.get("v") || "";
-          } else {
-            const parts = parsed.pathname.split("/").filter(Boolean);
-
-            if (["embed", "shorts", "live"].includes(parts[0])) {
-              videoId = parts[1] || "";
-            }
-          }
-        }
-
-        if (videoId) {
-          return "https://www.youtube.com/embed/" +
-            encodeURIComponent(videoId) +
-            "?rel=0";
-        }
-
-        return url;
-
-      } catch {
-        return url;
-      }
-    }
-
-    function isYoutubeUrl(url) {
-      return /youtube\.com|youtu\.be|youtube-nocookie\.com/i.test(
-        url || ""
-      );
-    }
-
-    function isDirectVideoUrl(url) {
-      return /\.(mp4|webm|ogg|m4v)(?:$|[?#])/i.test(url || "");
-    }
-
-    async function resolveVideoUrl(rawUrl) {
-      if (!rawUrl) return "";
-
-      const url = String(rawUrl).trim();
-
-      if (!url) return "";
-
-      if (isYoutubeUrl(url)) {
-        return url;
-      }
-
-      if (
-        /^https?:\/\//i.test(url) &&
-        !url.includes("/storage/v1/object/")
-      ) {
-        return url;
-      }
-
-      const storagePath = getStorageObjectPath(url);
-
-      if (!storagePath) {
-        if (/^https?:\/\//i.test(url)) {
-          return url;
-        }
-
-        console.error(
-          "تعذر استخراج مسار ملف الفيديو من:",
-          url
-        );
-
-        return "";
-      }
-
-      return await createPrivateLectureUrl(storagePath);
-    }
-
-    /* إنشاء مشغل الفيديو */
-
-    function createVideoPlayer(url, index) {
-      if (!url) {
-        return `
-          <div class="empty">
-            تعذر تجهيز رابط الفيديو.
-            <br>
-            تأكد من تسجيل الدخول ومن صلاحيات قراءة ملفات المحاضرات.
-          </div>
-        `;
-      }
-
-      if (isYoutubeUrl(url)) {
-        return `
-          <iframe
-            src="${escapeHtml(getYoutubeEmbedUrl(url))}"
-            title="فيديو المحاضرة"
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen>
-          </iframe>
-        `;
-      }
-
-      if (
-        isDirectVideoUrl(url) ||
-        url.includes("/storage/v1/object/")
-      ) {
-        return `
-          <video
-            controls
-            playsinline
-            preload="metadata"
-            controlsList="nodownload"
-            disablePictureInPicture
-            oncontextmenu="return false">
-
-            <source src="${escapeHtml(url)}">
-
-            متصفحك لا يدعم عرض الفيديو.
-          </video>
-        `;
-      }
-
-      return `
-        <div style="background:white;padding:20px;text-align:center;">
-          <p style="margin-bottom:10px;">
-            افتح رابط المحاضرة لمشاهدة الفيديو.
-          </p>
-
-          <a class="btn-link"
-             href="${escapeHtml(url)}"
-             target="_blank"
-             rel="noopener noreferrer">
-            مشاهدة المحاضرة
-          </a>
-        </div>
-      `;
-    }
-
-    /* تكبير مشغل الفيديو */
-
-    async function enterVideoFullscreen(index) {
-      const container = document.getElementById("video-container-" + index);
-
-      if (!container) return;
-
-      try {
-        if (document.fullscreenElement) {
-          await document.exitFullscreen();
-          return;
-        }
-
-        if (container.requestFullscreen) {
-          await container.requestFullscreen();
-        } else if (container.webkitRequestFullscreen) {
-          container.webkitRequestFullscreen();
-        } else {
-          const video = container.querySelector("video");
-
-          if (video && video.webkitEnterFullscreen) {
-            video.webkitEnterFullscreen();
-          } else {
-            alert(
-              "ملء الشاشة غير مدعوم في هذا المتصفح. جرّب تشغيل الفيديو ثم استخدام زر ملء الشاشة داخل المشغّل."
-            );
-          }
-        }
-
-      } catch (error) {
-        console.warn("تعذر تشغيل وضع ملء الشاشة:", error);
-      }
-    }
-
-    /* فتح وإغلاق المحاضرات */
-
-    function toggleLecture(index) {
-      const body = document.getElementById("body-" + index);
-      const arrow = document.getElementById("arrow-" + index);
-
-      if (!body || !arrow) return;
-
-      const willOpen = !body.classList.contains("open");
-
-      body.classList.toggle("open", willOpen);
-
-      arrow.style.transform = willOpen
-        ? "rotate(180deg)"
-        : "rotate(0deg)";
-
-      const header = body.previousElementSibling;
-
-      if (header) {
-        header.setAttribute("aria-expanded", String(willOpen));
-      }
-
-      if (willOpen) {
-        requestAnimationFrame(() => {
-          const videoContainer = body.querySelector(".video-container");
-
-          if (videoContainer) {
-            videoContainer.scrollIntoView({
-              behavior: "smooth",
-              block: "center"
-            });
-          }
-        });
-      } else {
-        const video = body.querySelector("video");
-
-        if (video) {
-          video.pause();
-        }
-      }
-    }
-
-    function toggleSub(header) {
-      const content = header.nextElementSibling;
-
-      if (content) {
-        content.classList.toggle("open");
-      }
-    }
-
-    function optionalSection(title, content) {
-      return `
-        <div class="dropdown-section">
-
-          <div
-            class="dropdown-header"
-            role="button"
-            tabindex="0"
-            onclick="toggleSub(this)"
-            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSub(this)}">
-
-            <span>${title}</span>
-            <span aria-hidden="true">▼</span>
-
-          </div>
-
-          <div class="dropdown-content">
-            ${content}
-          </div>
-
-        </div>
-      `;
-    }
-
-    /* إدارة الشهور */
-
-    function getMonthNumber(lecture) {
-      const number = Number(lecture.month_number);
-
-      if (
-        Number.isInteger(number) &&
-        number >= 1 &&
-        number <= 12
-      ) {
-        return number;
-      }
-
-      return null;
-    }
-
-    function selectMonth(monthNumber) {
-      selectedMonth = monthNumber;
-
-      document.querySelectorAll(".month-button").forEach(button => {
-        button.classList.toggle(
-          "active",
-          Number(button.dataset.month) === monthNumber
-        );
-      });
-
-      renderSelectedMonth();
-    }
-
-    function renderMonths() {
-      const grid = document.getElementById("monthsGrid");
-      grid.replaceChildren();
-
-      if (!visibleMonths.length) {
-        grid.style.display = "none";
-        return;
-      }
-
-      grid.style.display = "grid";
-
-      visibleMonths.forEach(month => {
-        const number = Number(month.month_number);
-
-        const count = allLectures.filter(lecture =>
-          getMonthNumber(lecture) === number
-        ).length;
-
-        const button = document.createElement("button");
-
-        button.type = "button";
-        button.className = "month-button";
-        button.dataset.month = String(number);
-
-        button.innerHTML = `
-          <div class="month-button-top">
-            <strong>${escapeHtml(month.title)}</strong>
-            <span class="month-number">${number}</span>
-          </div>
-
-          <small>${count} محاضرة</small>
-        `;
-
-        button.addEventListener("click", () => {
-          selectMonth(number);
-        });
-
-        grid.appendChild(button);
-      });
-    }
-
-    /* عرض المحاضرات الخاصة بالشهر المختار */
-
-    function renderSelectedMonth() {
-      const month = visibleMonths.find(item =>
-        Number(item.month_number) === selectedMonth
-      );
-
-      const heading = document.getElementById("monthHeading");
-      const list = document.getElementById("lecturesList");
-
-      if (!month) {
-        heading.style.display = "none";
-
-        list.innerHTML = `
-          <div class="empty">
-            <span class="empty-icon">📚</span>
-            اختر شهرًا لعرض محاضراته.
-          </div>
-        `;
-
-        return;
-      }
-
-      const lectures = allLectures.filter(lecture =>
-        getMonthNumber(lecture) === selectedMonth
-      );
-
-      heading.style.display = "flex";
-
-      document.getElementById("selectedMonthTitle").textContent =
-        month.title;
-
-      document.getElementById("selectedMonthDescription").textContent =
-        "محاضرات الأحياء الخاصة بهذا الشهر.";
-
-      document.getElementById("lectureCountBadge").textContent =
-        lectures.length + " محاضرة";
-
-      if (!lectures.length) {
-        list.innerHTML = `
-          <div class="empty">
-            <span class="empty-icon">📚</span>
-            لا توجد محاضرات مضافة لهذا الشهر حتى الآن.
-          </div>
-        `;
-
-        return;
-      }
-
-      renderLectures(lectures);
-    }
-
-    /* تجهيز وعرض بطاقات المحاضرات */
-
-    async function renderLectures(lectures) {
-      const list = document.getElementById("lecturesList");
-
-      list.innerHTML = `
-        <div class="loading">جارٍ تجهيز المحاضرات...</div>
-      `;
-
-      const prepared = await Promise.all(
-        lectures.map(async lecture => ({
-          lecture,
-          videoUrl: await resolveVideoUrl(
-            lecture.video_url ||
-            lecture.videoUrl ||
-            lecture.url ||
-            ""
-          )
-        }))
-      );
-
-      list.replaceChildren();
-
-      prepared.forEach(({ lecture, videoUrl }, index) => {
-        const title = lecture.title || "محاضرة أحياء";
-        const description = lecture.description || "";
-
-        const details =
-          lecture.details ||
-          lecture.content ||
-          "لا توجد تفاصيل نصية إضافية.";
-
-        const pdfUrl =
-          lecture.pdf_url ||
-          lecture.pdfUrl ||
-          "";
-
-        const homeworkUrl =
-          lecture.homework_url ||
-          lecture.homeworkUrl ||
-          "";
-
-        const chapter =
-          lecture.chapter ||
-          lecture.lesson ||
-          "";
-
-        const card = document.createElement("div");
-
-        card.className = "lecture-card";
-
-        card.innerHTML = `
-          <div
-            class="lecture-header"
-            role="button"
-            tabindex="0"
-            aria-expanded="false"
-            onclick="toggleLecture(${index})"
-            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
-
-            <div class="lecture-title">
-              <h3>${escapeHtml(title)}</h3>
-              <p>${escapeHtml(chapter || description)}</p>
-            </div>
-
-            <div class="arrow-icon" id="arrow-${index}" aria-hidden="true">▼</div>
-
-          </div>
-
-          <div class="lecture-body" id="body-${index}">
-
-            <div class="video-container" id="video-container-${index}">
-              ${createVideoPlayer(videoUrl, index)}
-            </div>
-
-            <button
-              type="button"
-              class="video-fullscreen-btn"
-              onclick="enterVideoFullscreen(${index})">
-              ⛶ تكبير الفيديو لملء الشاشة
-            </button>
-
-            <p style="
-              margin-bottom:15px;
-              color:#475569;
-              font-size:14px;
-              line-height:2;
-              overflow-wrap:anywhere;
-            ">
-              ${escapeHtml(description)}
-            </p>
-
-            ${optionalSection(
-              " الشرح التفصيلي",
-              `<p>${escapeHtml(details)}</p>`
-            )}
-
-            ${optionalSection(
-              " مذكرة المحاضرة (PDF)",
-              pdfUrl
-                ? `<a href="${escapeHtml(pdfUrl)}"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="btn-link">
-                     تنزيل أو افتح المذكرة
-                   </a>`
-                : `<p style="color:#64748b">
-                     المذكرة مش موجوده لهذه المحاضرة حاليًا.
-                   </p>`
-            )}
-
-            ${optionalSection(
-              " واجب المحاضرة",
-              homeworkUrl
-                ? `<a href="${escapeHtml(homeworkUrl)}"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="btn-link">
-                     فتح الواجب أو الامتحان
-                   </a>`
-                : `<p style="color:#64748b">
-                     "الواجب مش موجود "ابسط .
-                   </p>`
-            )}
-
-          </div>
-        `;
-
-        list.appendChild(card);
-      });
-    }
-
-    /* تحميل البيانات من Supabase */
-
-    async function loadLectures() {
-      const list = document.getElementById("lecturesList");
-
-      list.innerHTML = `
-        <div class="loading">جارٍ تحميل المحاضرات...</div>
-      `;
-
-      hideNotice();
-
-      try {
-        const {
-          data: months,
-          error: monthsError
-        } = await supabaseClient
-          .from(MONTHS_TABLE)
-          .select("month_number,title,is_visible,sort_order")
-          .eq("is_visible", true)
-          .order("sort_order", { ascending: true });
-
-        if (monthsError) {
-          throw new Error(
-            "تعذر قراءة جدول الشهور. " +
-            monthsError.message
-          );
-        }
-
-        const {
-          data: lectures,
-          error: lecturesError
-        } = await supabaseClient
-          .from(LECTURES_TABLE)
-          .select("*")
-          .order("created_at", { ascending: true });
-
-        if (lecturesError) {
-          throw new Error(
-            "تعذر تحميل المحاضرات. " +
-            lecturesError.message
-          );
-        }
-
-        allLectures = lectures || [];
-        visibleMonths = months || [];
-
-        const visibleNumbers = new Set(
-          visibleMonths.map(month => Number(month.month_number))
-        );
-
-        allLectures = allLectures.filter(lecture =>
-          visibleNumbers.has(getMonthNumber(lecture))
-        );
-
-        renderMonths();
-
-        if (!visibleMonths.length) {
-          list.innerHTML = `
-            <div class="empty">
-              <span class="empty-icon">📅</span>
-              لا توجد شهور متاحة حاليًا.
-              <br>
-                     ستظهر الشهور هنا.
-            </div>
-          `;
-
-          document.getElementById("monthHeading").style.display = "none";
-
-          return;
-        }
-
-        selectMonth(Number(visibleMonths[0].month_number));
-
-      } catch (error) {
-        console.error("صلي علي النبي وجرب تاني:", error);
-
-        list.replaceChildren();
-
-        const box = document.createElement("div");
-        box.className = "empty";
-
-        const icon = document.createElement("span");
-        icon.className = "empty-icon";
-        icon.textContent = "⚠️";
-
-        const title = document.createElement("strong");
-        title.textContent = "تعذر تحميل أقسام المحاضرات";
-
-        const detail = document.createElement("p");
-        detail.style.marginTop = "8px";
-        detail.style.fontWeight = "400";
-        detail.textContent = error.message || "حدث خطأ غير معروف.";
-
-        box.append(icon, title, detail);
-        list.appendChild(box);
-      }
-    }
-
-    /* تشغيل الصفحة */
-
-    loadLectures();
-  </script>
-
+    selectMonth(Number(visibleMonths[0].month_number));
+
+  } catch (error) {
+    console.error("Lectures loading error:", error);
+    list.replaceChildren();
+    const box = document.createElement("div"), icon = document.createElement("span"), title = document.createElement("strong"), detail = document.createElement("p");
+    box.className = "empty"; icon.className = "empty-icon"; icon.textContent = "⚠️";
+    title.textContent = "تعذر تحميل أقسام المحاضرات";
+    detail.style.cssText = "margin-top:8px;font-weight:400"; detail.textContent = error.message || "حدث خطأ غير معروف.";
+    box.append(icon, title, detail);
+    list.appendChild(box);
+  }
+}
+
+/* ---------- التشغيل: لا محتوى بدون تسجيل دخول (العلامة المائية تحتاج رقم الطالب) ---------- */
+async function init() {
+  const { data, error } = await supabaseClient.auth.getSession();
+  const session = data && data.session;
+  if (error || !session) {
+    $("lecturesList").replaceChildren();
+    showNotice('سجّل الدخول لمشاهدة المحاضرات. <a href="' + LOGIN_URL + '">تسجيل الدخول</a>');
+    return;
+  }
+  await loadViewer(session.user);
+  await loadProgress();
+  await loadLectures();
+}
+
+supabaseClient.auth.onAuthStateChange(event => { if (event === "SIGNED_OUT") window.location.href = LOGIN_URL; });
+init();
+</script>
 </body>
 </html>
