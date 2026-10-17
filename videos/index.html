@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="../progress.js"></script>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',sans-serif}
 :root{--green:#026857;--green-dark:#014d40;--blue:#1e3a8a;--bg:#f0f4f8;--border:#e2e8f0;--text:#2c3e50;--muted:#64748b;--sidebar-width:270px;--sidebar-collapsed-width:82px}
@@ -87,7 +88,7 @@ body.sidebar-collapsed .main{margin-right:var(--sidebar-collapsed-width)}
 .lecture-body{padding:0;max-height:0;overflow:hidden;background:#fafafa}
 .lecture-body.open{padding:20px 25px;max-height:none;overflow:visible}
 
-/* المشغل */
+/* مشغل الفيديو */
 .video-container{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden;margin-bottom:12px;user-select:none;-webkit-user-select:none}
 .video-container iframe,.video-container video{position:absolute;inset:0;width:100%;height:100%;border:none;object-fit:contain;background:#000}
 .video-container:fullscreen,.video-container.pseudo-fs{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;max-width:none;aspect-ratio:auto;margin:0;border-radius:0;z-index:99999}
@@ -144,6 +145,7 @@ body.sidebar-collapsed .main{margin-right:var(--sidebar-collapsed-width)}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}}
 </style>
 </head>
+
 <body>
 
 <aside class="sidebar" id="sidebar">
@@ -153,27 +155,59 @@ body.sidebar-collapsed .main{margin-right:var(--sidebar-collapsed-width)}
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 5-7 7 7 7"></path><path d="M20 5v14"></path></svg>
       </button>
     </div>
+
     <div class="logo-box">
       <img src="../logo.png" alt="شعار أرض الأحياء" onerror="this.style.display='none'">
       <div class="logo-text"><h2>أرض الأحياء</h2><p>الثانوية العامة</p></div>
     </div>
+
     <div class="menu-title">القائمة الرئيسية</div>
+
     <nav class="menu" aria-label="القائمة الرئيسية">
-      <a href="../index.html" data-title="الرئيسية" aria-label="الرئيسية"><span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7"></path><path d="M5 9v11h14V9"></path><path d="M9 20v-7h6v7"></path></svg></span><span class="menu-text">الرئيسية</span></a>
-      <a href="index.html" class="active" data-title="المحاضرات" aria-label="المحاضرات" aria-current="page"><span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="m10 9 5 3-5 3z"></path></svg></span><span class="menu-text">المحاضرات</span></a>
-      <a href="../notes/index.html" data-title="المذكرات" aria-label="المذكرات"><span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l3 3v15H5z"></path><path d="M16 3v4h4M8 12h8M8 16h8"></path></svg></span><span class="menu-text">المذكرات</span></a>
-      <a href="../champion/index.html" data-title="بطل الفصل" aria-label="بطل الفصل"><span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 4-2 4 2 4 1v5c0 5-4 8-8 12-4-4-8-7-8-12V5z"></path><path d="m9 11 2 2 4-5"></path></svg></span><span class="menu-text">بطل الفصل</span></a>
-      <a href="../forum/index.html" data-title="المنتدى" aria-label="المنتدى"><span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.3A8.5 8.5 0 1 1 21 11.5Z"></path><path d="M8 10h8M8 14h5"></path></svg></span><span class="menu-text">المنتدى</span></a>
-      <a href="../account/index.html" data-title="حساب الطالب" aria-label="حساب الطالب"><span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></span><span class="menu-text">حساب الطالب</span></a>
+      <a href="../index.html" data-title="الرئيسية" aria-label="الرئيسية">
+        <span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7"></path><path d="M5 9v11h14V9"></path><path d="M9 20v-7h6v7"></path></svg></span>
+        <span class="menu-text">الرئيسية</span>
+      </a>
+
+      <a href="index.html" class="active" data-title="المحاضرات" aria-label="المحاضرات" aria-current="page">
+        <span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="m10 9 5 3-5 3z"></path></svg></span>
+        <span class="menu-text">المحاضرات</span>
+      </a>
+
+      <a href="../notes/index.html" data-title="المذكرات" aria-label="المذكرات">
+        <span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l3 3v15H5z"></path><path d="M16 3v4h4M8 12h8M8 16h8"></path></svg></span>
+        <span class="menu-text">المذكرات</span>
+      </a>
+
+      <a href="../champion/index.html" data-title="بطل الفصل" aria-label="بطل الفصل">
+        <span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 4-2 4 2 4 1v5c0 5-4 8-8 12-4-4-8-7-8-12V5z"></path><path d="m9 11 2 2 4-5"></path></svg></span>
+        <span class="menu-text">بطل الفصل</span>
+      </a>
+
+      <a href="../forum/index.html" data-title="المنتدى" aria-label="المنتدى">
+        <span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.3A8.5 8.5 0 1 1 21 11.5Z"></path><path d="M8 10h8M8 14h5"></path></svg></span>
+        <span class="menu-text">المنتدى</span>
+      </a>
+
+      <a href="../account/index.html" data-title="حساب الطالب" aria-label="حساب الطالب">
+        <span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></span>
+        <span class="menu-text">حساب الطالب</span>
+      </a>
     </nav>
   </div>
+
   <div class="sidebar-bottom"><strong>أرض الأحياء</strong><br>رحلتك نحو التفوق تبدأ من هنا.</div>
 </aside>
 
 <main class="main">
   <header class="top-bar">
-    <div><h1>محاضرات منهج الأحياء</h1><p>اختر الشهر الذي تريد مذاكرته، ثم افتح المحاضرة المناسبة.</p></div>
-    <div class="top-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="m10 9 5 3-5 3z"></path></svg></div>
+    <div>
+      <h1>محاضرات منهج الأحياء</h1>
+      <p>اختر الشهر الذي تريد مذاكرته، ثم افتح المحاضرة المناسبة.</p>
+    </div>
+    <div class="top-icon">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="m10 9 5 3-5 3z"></path></svg>
+    </div>
   </header>
 
   <div id="pageNotice" class="notice" style="display:none"></div>
@@ -182,7 +216,10 @@ body.sidebar-collapsed .main{margin-right:var(--sidebar-collapsed-width)}
   <div id="monthHeading" class="month-heading" style="display:none">
     <div class="month-heading-info">
       <img id="monthHeadingImg" alt="" style="display:none">
-      <div><h2 id="selectedMonthTitle"></h2><p id="selectedMonthDescription"></p></div>
+      <div>
+        <h2 id="selectedMonthTitle"></h2>
+        <p id="selectedMonthDescription"></p>
+      </div>
     </div>
     <span class="month-badge" id="lectureCountBadge"></span>
   </div>
@@ -191,35 +228,61 @@ body.sidebar-collapsed .main{margin-right:var(--sidebar-collapsed-width)}
 </main>
 
 <nav class="mobile-bottom" aria-label="التنقل السريع">
-  <a href="../index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7"></path><path d="M5 9v11h14V9"></path></svg>الرئيسية</a>
-  <a href="index.html" class="active" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="m10 9 5 3-5 3z"></path></svg>المحاضرات</a>
-  <a href="../notes/index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l3 3v15H5z"></path><path d="M16 3v4h4M8 12h8M8 16h8"></path></svg>المذكرات</a>
-  <a href="../champion/index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 4-2 4 2 4 1v5c0 5-4 8-8 12-4-4-8-7-8-12V5z"></path></svg>البطل</a>
-  <a href="../forum/index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.3A8.5 8.5 0 1 1 21 11.5Z"></path></svg>المنتدى</a>
-  <a href="../account/index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>حسابي</a>
+  <a href="../index.html">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7"></path><path d="M5 9v11h14V9"></path></svg>
+    الرئيسية
+  </a>
+  <a href="index.html" class="active" aria-current="page">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="m10 9 5 3-5 3z"></path></svg>
+    المحاضرات
+  </a>
+  <a href="../notes/index.html">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l3 3v15H5z"></path><path d="M16 3v4h4M8 12h8M8 16h8"></path></svg>
+    المذكرات
+  </a>
+  <a href="../champion/index.html">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 4-2 4 2 4 1v5c0 5-4 8-8 12-4-4-8-7-8-12V5z"></path></svg>
+    البطل
+  </a>
+  <a href="../forum/index.html">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.3A8.5 8.5 0 1 1 21 11.5Z"></path></svg>
+    المنتدى
+  </a>
+  <a href="../account/index.html">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>
+    حسابي
+  </a>
 </nav>
 
 <script>
 "use strict";
 
 if (!window.supabase) {
-  document.getElementById("lecturesList").textContent = "تعذر تحميل مكتبة Supabase. تحقق من الإنترنت ثم أعد تحميل الصفحة.";
+  document.getElementById("lecturesList").textContent =
+    "تعذر تحميل مكتبة Supabase. تحقق من الإنترنت ثم أعد تحميل الصفحة.";
   throw new Error("Missing dependency: supabase-js");
 }
 
 const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 if (window.ArdProgress) ArdProgress.init(supabaseClient);
 
-const MONTHS_TABLE = "lecture_months", LECTURES_TABLE = "lectures";
-const VIDEO_BUCKET = "lectures", HANDOUT_BUCKET = "handouts";
+const MONTHS_TABLE = "lecture_months";
+const LECTURES_TABLE = "lectures";
+const VIDEO_BUCKET = "lectures";
+const HANDOUT_BUCKET = "handouts";
 const SIGNED_URL_SECONDS = 3600;
 const LOGIN_URL = "../login/index.html";
 const QUALITY_KEY = "ardAlahyaaQuality";
 
-let allLectures = [], visibleMonths = [], currentList = [], selectedMonth = null;
-let viewerLabel = "", progress = new Map();
+let allLectures = [];
+let visibleMonths = [];
+let currentList = [];
+let selectedMonth = null;
+let viewerLabel = "";
+let progress = new Map();
 
 const $ = id => document.getElementById(id);
 
@@ -229,125 +292,288 @@ const SIDEBAR_KEY = "ardAlahyaaSidebarCollapsed";
 
 function setSidebarCollapsed(collapsed, save = true) {
   document.body.classList.toggle("sidebar-collapsed", collapsed);
-  const text = collapsed ? "توسيع القائمة الجانبية" : "تصغير القائمة الجانبية";
+
+  const text = collapsed
+    ? "توسيع القائمة الجانبية"
+    : "تصغير القائمة الجانبية";
+
   sidebarToggle.setAttribute("aria-expanded", String(!collapsed));
   sidebarToggle.setAttribute("aria-label", text);
   sidebarToggle.title = text;
-  document.querySelectorAll(".menu a[data-title]").forEach(a => {
-    if (collapsed) a.title = a.dataset.title; else a.removeAttribute("title");
-  });
-  if (save) { try { localStorage.setItem(SIDEBAR_KEY, collapsed ? "true" : "false"); } catch (e) { console.warn(e); } }
-}
-sidebarToggle.addEventListener("click", () => setSidebarCollapsed(!document.body.classList.contains("sidebar-collapsed")));
-try { setSidebarCollapsed(localStorage.getItem(SIDEBAR_KEY) === "true", false); } catch { setSidebarCollapsed(false, false); }
 
-/* ---------- أدوات ---------- */
+  document.querySelectorAll(".menu a[data-title]").forEach(a => {
+    if (collapsed) a.title = a.dataset.title;
+    else a.removeAttribute("title");
+  });
+
+  if (save) {
+    try {
+      localStorage.setItem(SIDEBAR_KEY, collapsed ? "true" : "false");
+    } catch (e) {
+      console.warn(e);
+    }
+  }
+}
+
+sidebarToggle.addEventListener("click", () => {
+  setSidebarCollapsed(!document.body.classList.contains("sidebar-collapsed"));
+});
+
+try {
+  setSidebarCollapsed(localStorage.getItem(SIDEBAR_KEY) === "true", false);
+} catch {
+  setSidebarCollapsed(false, false);
+}
+
+/* ---------- أدوات عامة ---------- */
 function escapeHtml(v) {
   if (v === null || v === undefined) return "";
-  return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+
+  return String(v)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 function safeHttps(u) {
-  try { const x = new URL(String(u || "").trim()); return x.protocol === "https:" ? x.href : ""; } catch { return ""; }
+  try {
+    const x = new URL(String(u || "").trim());
+    return x.protocol === "https:" ? x.href : "";
+  } catch {
+    return "";
+  }
 }
 
-function showNotice(html) { const n = $("pageNotice"); n.innerHTML = html; n.style.display = "block"; }
-function hideNotice() { $("pageNotice").style.display = "none"; }
+function showNotice(html) {
+  const n = $("pageNotice");
+  n.innerHTML = html;
+  n.style.display = "block";
+}
+
+function hideNotice() {
+  $("pageNotice").style.display = "none";
+}
 
 function toStoragePath(raw, bucket) {
   const v = String(raw || "").trim();
   if (!v) return "";
+
   if (!/^https?:\/\//i.test(v)) {
-    return v.replace(/^\/+/, "").replace(/^storage\/v1\/object\/(public|sign|authenticated)\//i, "").replace(new RegExp("^" + bucket + "/"), "");
+    return v
+      .replace(/^\/+/, "")
+      .replace(/^storage\/v1\/object\/(public|sign|authenticated)\//i, "")
+      .replace(new RegExp("^" + bucket + "/"), "");
   }
+
   try {
-    const parts = new URL(v).pathname.split("/").filter(Boolean), i = parts.indexOf("object");
+    const parts = new URL(v).pathname.split("/").filter(Boolean);
+    const i = parts.indexOf("object");
+
     if (i === -1) return "";
-    const rest = ["public", "sign", "authenticated"].includes(parts[i + 1]) ? parts.slice(i + 2) : parts.slice(i + 1);
+
+    const rest = ["public", "sign", "authenticated"].includes(parts[i + 1])
+      ? parts.slice(i + 2)
+      : parts.slice(i + 1);
+
     if (rest[0] !== bucket) return "";
-    return rest.slice(1).map(p => { try { return decodeURIComponent(p); } catch { return p; } }).join("/");
-  } catch { return ""; }
+
+    return rest.slice(1).map(p => {
+      try {
+        return decodeURIComponent(p);
+      } catch {
+        return p;
+      }
+    }).join("");
+  } catch {
+    return "";
+  }
 }
 
 async function signedUrl(bucket, path) {
   if (!path) return "";
-  const { data, error } = await supabaseClient.storage.from(bucket).createSignedUrl(path, SIGNED_URL_SECONDS);
-  if (error) { console.error("Signed URL error:", error); return ""; }
+
+  const { data, error } = await supabaseClient.storage
+    .from(bucket)
+    .createSignedUrl(path, SIGNED_URL_SECONDS);
+
+  if (error) {
+    console.error("Signed URL error:", error);
+    return "";
+  }
+
   return data?.signedUrl || "";
 }
 
-const isYoutube = u => /youtube\.com|youtu\.be|youtube-nocookie\.com/i.test(u || "");
+const isYoutube = u =>
+  /youtube\.com|youtu\.be|youtube-nocookie\.com/i.test(u || "");
 
+/* ---------- تعديل مشغّل YouTube ---------- */
 function youtubeEmbed(url) {
   try {
     const p = new URL(url);
     let id = "";
-    if (p.hostname.includes("youtu.be")) id = p.pathname.split("/").filter(Boolean)[0] || "";
-    else if (p.pathname === "/watch") id = p.searchParams.get("v") || "";
-    else { const s = p.pathname.split("/").filter(Boolean); if (["embed", "shorts", "live"].includes(s[0])) id = s[1] || ""; }
-    return id ? "https://www.youtube.com/embed/" + encodeURIComponent(id) + "?rel=0&fs=0" : "";
-  } catch { return ""; }
+
+    if (p.hostname.includes("youtu.be")) {
+      id = p.pathname.split("/").filter(Boolean)[0] || "";
+    } else if (p.pathname === "/watch") {
+      id = p.searchParams.get("v") || "";
+    } else {
+      const s = p.pathname.split("/").filter(Boolean);
+
+      if (["embed", "shorts", "live"].includes(s[0])) {
+        id = s[1] || "";
+      }
+    }
+
+    if (!id) return "";
+
+    const params = new URLSearchParams({
+      controls: "1",
+      rel: "0",
+      fs: "0",
+      playsinline: "1"
+    });
+
+    return "https://www.youtube-nocookie.com/embed/"
+      + encodeURIComponent(id)
+      + "?"
+      + params.toString();
+
+  } catch {
+    return "";
+  }
 }
 
-/* رابط الفيديو: رابط خارجي https كما هو، وغير ذلك مسار في bucket خاص يُوقَّع مؤقتًا */
+/* رابط الفيديو */
 async function resolveVideo(raw) {
   const v = String(raw || "").trim();
   if (!v) return "";
-  if (/^https?:\/\//i.test(v) && !v.includes("/storage/v1/object/")) return safeHttps(v);
+
+  if (/^https?:\/\//i.test(v) && !v.includes("/storage/v1/object/")) {
+    return safeHttps(v);
+  }
+
   return signedUrl(VIDEO_BUCKET, toStoragePath(v, VIDEO_BUCKET));
 }
 
-/* ---------- بيانات المشاهد (للعلامة المائية) ---------- */
+/* ---------- بيانات المشاهد والعلامة المائية ---------- */
 async function loadViewer(user) {
   let phone = "";
+
   try {
-    const { data } = await supabaseClient.from("profiles").select("phone").eq("id", user.id).maybeSingle();
+    const { data } = await supabaseClient
+      .from("profiles")
+      .select("phone")
+      .eq("id", user.id)
+      .maybeSingle();
+
     phone = (data?.phone || "").trim();
-  } catch (e) { console.warn("Viewer profile:", e); }
-  viewerLabel = phone || user.phone || (user.email ? user.email.split("@")[0] : "") || ("ID-" + String(user.id).slice(0, 8));
+  } catch (e) {
+    console.warn("Viewer profile:", e);
+  }
+
+  viewerLabel =
+    phone ||
+    user.phone ||
+    (user.email ? user.email.split("@")[0] : "") ||
+    ("ID-" + String(user.id).slice(0, 8));
 }
 
 /* ---------- التقدم ---------- */
 async function loadProgress() {
   if (!window.ArdProgress) return;
-  try { progress = new Map((await ArdProgress.fetchAll()).map(r => [String(r.lecture_id), r])); }
-  catch (e) { console.warn("Progress unavailable:", e); }
+
+  try {
+    progress = new Map(
+      (await ArdProgress.fetchAll()).map(r => [String(r.lecture_id), r])
+    );
+  } catch (e) {
+    console.warn("Progress unavailable:", e);
+  }
 }
 
 function refreshActions(i) {
-  const id = String(currentList[i].id), row = progress.get(id) || {};
-  const save = $("save-" + i), done = $("done-" + i);
-  if (save) { save.classList.toggle("on", !!row.saved); save.textContent = row.saved ? "★ محفوظة" : "☆ حفظ المحاضرة"; save.disabled = false; }
-  if (done) { done.classList.toggle("on", !!row.completed); done.textContent = row.completed ? "✓ تمت المشاهدة" : "تمت المشاهدة؟"; done.disabled = false; }
+  const id = String(currentList[i].id);
+  const row = progress.get(id) || {};
+
+  const save = $("save-" + i);
+  const done = $("done-" + i);
+
+  if (save) {
+    save.classList.toggle("on", !!row.saved);
+    save.textContent = row.saved ? "★ محفوظة" : "☆ حفظ المحاضرة";
+    save.disabled = false;
+  }
+
+  if (done) {
+    done.classList.toggle("on", !!row.completed);
+    done.textContent = row.completed ? "✓ تمت المشاهدة" : "تمت المشاهدة؟";
+    done.disabled = false;
+  }
 }
 
 async function updateProgress(i, field) {
-  const id = String(currentList[i].id), row = progress.get(id) || { lecture_id: id };
+  const id = String(currentList[i].id);
+  const row = progress.get(id) || { lecture_id: id };
   const btn = $((field === "saved" ? "save-" : "done-") + i);
   const next = !row[field];
+
   if (btn) btn.disabled = true;
+
   try {
-    if (field === "saved") await ArdProgress.setSaved(id, next); else await ArdProgress.setCompleted(id, next);
+    if (field === "saved") {
+      await ArdProgress.setSaved(id, next);
+    } else {
+      await ArdProgress.setCompleted(id, next);
+    }
+
     progress.set(id, { ...row, [field]: next });
-  } catch (e) { console.error(e); alert("تعذر حفظ التقدم. تحقق من الاتصال وسياسات جدول lecture_progress."); }
+  } catch (e) {
+    console.error(e);
+    alert("تعذر حفظ التقدم. تحقق من الاتصال وسياسات جدول lecture_progress.");
+  }
+
   refreshActions(i);
 }
+
 const toggleSaved = i => updateProgress(i, "saved");
 const toggleCompleted = i => updateProgress(i, "completed");
 
-/* ---------- المشغل ---------- */
+/* ---------- إعداد الجودات ---------- */
 function getQualities(lec) {
-  const q = lec.qualities && typeof lec.qualities === "object" ? lec.qualities : {};
-  let list = Object.entries(q).filter(([, v]) => v)
-    .map(([k, v]) => ({ label: /p$/i.test(k) ? k : k + "p", height: parseInt(k, 10) || 0, src: v }))
+  const q = lec.qualities && typeof lec.qualities === "object"
+    ? lec.qualities
+    : {};
+
+  let list = Object.entries(q)
+    .filter(([, v]) => v)
+    .map(([k, v]) => ({
+      label: /p$/i.test(k) ? k : k + "p",
+      height: parseInt(k, 10) || 0,
+      src: v
+    }))
     .sort((a, b) => b.height - a.height);
+
   const single = lec.video_url || lec.videoUrl || lec.url;
-  if (!list.length && single) list = [{ label: "الأصلية", height: 0, src: single }];
+
+  if (!list.length && single) {
+    list = [{ label: "الأصلية", height: 0, src: single }];
+  }
+
   return list;
 }
 
+/* ---------- العلامة المائية ---------- */
 function watermarkHtml() {
-  return '<div class="watermark" aria-hidden="true" style="top:' + (10 + Math.random() * 70) + '%;left:' + (5 + Math.random() * 65) + '%">' + escapeHtml(viewerLabel) + "</div>";
+  return '<div class="watermark" aria-hidden="true" style="top:'
+    + (10 + Math.random() * 70)
+    + '%;left:'
+    + (5 + Math.random() * 65)
+    + '%">'
+    + escapeHtml(viewerLabel)
+    + "</div>";
 }
 
 setInterval(function () {
@@ -357,315 +583,642 @@ setInterval(function () {
   });
 }, 4000);
 
+/* ---------- تغيير جودة الفيديو ---------- */
 async function setSource(i, label) {
-  const lec = currentList[i], box = $("video-container-" + i), video = box && box.querySelector("video");
+  const lec = currentList[i];
+  const box = $("video-container-" + i);
+  const video = box && box.querySelector("video");
+
   const q = getQualities(lec).find(x => x.label === label);
   if (!video || !q) return false;
 
-  const t = video.currentTime || 0, wasPlaying = !video.paused && !video.ended;
+  const t = video.currentTime || 0;
+  const wasPlaying = !video.paused && !video.ended;
   const url = await resolveVideo(q.src);
+
   if (!url) return false;
 
   video.src = url;
+
   video.addEventListener("loadedmetadata", () => {
     if (t > 0) video.currentTime = t;
     if (wasPlaying) video.play().catch(() => {});
   }, { once: true });
+
   video.dataset.quality = label;
   return true;
 }
 
 async function changeQuality(i, label) {
-  if (!(await setSource(i, label))) { alert("تعذر تغيير الجودة. حاول مرة أخرى."); return; }
-  try { localStorage.setItem(QUALITY_KEY, label); } catch {}
+  if (!(await setSource(i, label))) {
+    alert("تعذر تغيير الجودة. حاول مرة أخرى.");
+    return;
+  }
+
+  try {
+    localStorage.setItem(QUALITY_KEY, label);
+  } catch {}
 }
 
+/* ---------- إنشاء مشغل الفيديو ---------- */
 async function buildPlayer(i) {
-  const lec = currentList[i], box = $("video-container-" + i);
+  const lec = currentList[i];
+  const box = $("video-container-" + i);
+
   if (!box || box.dataset.ready) return;
+
   box.dataset.ready = "1";
 
   const qualities = getQualities(lec);
-  const fail = text => { box.innerHTML = '<div class="player-msg">' + text + "</div>"; box.dataset.ready = ""; };
-  if (!qualities.length && !lec.bunny_video_id) return fail("لا يوجد فيديو لهذه المحاضرة حتى الآن.");
+
+  const fail = text => {
+    box.innerHTML = '<div class="player-msg">' + escapeHtml(text) + "</div>";
+    box.dataset.ready = "";
+  };
+
+  if (!qualities.length && !lec.bunny_video_id) {
+    return fail("لا يوجد فيديو لهذه المحاضرة حتى الآن.");
+  }
 
   box.innerHTML = '<div class="player-msg">جارٍ تجهيز الفيديو...</div>';
-  const exitBtn = '<button type="button" class="exit-fs" aria-label="إغلاق ملء الشاشة" onclick="toggleFs(this.parentElement)">✕</button>';
 
-  // فيديو مستضاف على Bunny Stream: رابط موقّع من دالة bunny-embed، ولا ملء شاشة داخل الـ iframe حتى تبقى العلامة المائية
+  const exitBtn =
+    '<button type="button" class="exit-fs" aria-label="إغلاق ملء الشاشة" onclick="toggleFs(this.parentElement)">✕</button>';
+
+  /* Bunny Stream */
   if (lec.bunny_video_id) {
     try {
-      const { data, error } = await supabaseClient.functions.invoke("bunny-embed", { body: { lectureId: lec.id } });
-      if (error || !data || !data.url) throw error || new Error("No signed URL");
-      box.innerHTML = '<iframe src="' + escapeHtml(data.url) + '" title="فيديو المحاضرة" loading="lazy" allow="encrypted-media; picture-in-picture; accelerometer; gyroscope" referrerpolicy="strict-origin-when-cross-origin"></iframe>' + watermarkHtml() + exitBtn;
+      const { data, error } = await supabaseClient.functions.invoke(
+        "bunny-embed",
+        { body: { lectureId: lec.id } }
+      );
+
+      if (error || !data || !data.url) {
+        throw error || new Error("No signed URL");
+      }
+
+      box.innerHTML =
+        '<iframe src="' + escapeHtml(data.url) +
+        '" title="فيديو المحاضرة" loading="lazy" ' +
+        'allow="encrypted-media; picture-in-picture; accelerometer; gyroscope" ' +
+        'referrerpolicy="strict-origin-when-cross-origin"></iframe>' +
+        watermarkHtml() + exitBtn;
+
     } catch (e) {
       console.error("Bunny embed error:", e);
       fail("تعذر تجهيز الفيديو. تأكد من تسجيل الدخول ثم حاول مرة أخرى.");
     }
+
     return;
   }
 
+  /* YouTube */
   if (isYoutube(qualities[0].src)) {
     const embed = youtubeEmbed(qualities[0].src);
-    if (!embed) return fail("رابط الفيديو غير صالح.");
-    box.innerHTML = '<iframe src="' + escapeHtml(embed) + '" title="فيديو المحاضرة" loading="lazy" allow="encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>' + watermarkHtml() + exitBtn;
+
+    if (!embed) {
+      return fail("رابط الفيديو غير صالح.");
+    }
+
+    box.innerHTML =
+      '<iframe src="' + escapeHtml(embed) +
+      '" title="فيديو المحاضرة" loading="lazy" ' +
+      'allow="encrypted-media; picture-in-picture" ' +
+      'referrerpolicy="strict-origin-when-cross-origin"></iframe>' +
+      watermarkHtml() + exitBtn;
+
     return;
   }
 
-  const saved = (() => { try { return localStorage.getItem(QUALITY_KEY); } catch { return null; } })();
+  /* الفيديوهات الموجودة في التخزين */
+  const saved = (() => {
+    try {
+      return localStorage.getItem(QUALITY_KEY);
+    } catch {
+      return null;
+    }
+  })();
+
   const start = qualities.find(q => q.label === saved) || qualities[0];
   const poster = safeHttps(lec.image_url);
 
-  box.innerHTML = '<video controls playsinline preload="metadata" controlsList="nodownload nofullscreen" disablePictureInPicture' +
-    (poster ? ' poster="' + escapeHtml(poster) + '"' : "") + "></video>" + watermarkHtml() + exitBtn;
+  box.innerHTML =
+    '<video controls playsinline preload="metadata" ' +
+    'controlsList="nodownload nofullscreen" disablePictureInPicture' +
+    (poster ? ' poster="' + escapeHtml(poster) + '"' : "") +
+    "></video>" +
+    watermarkHtml() +
+    exitBtn;
+
   const video = box.querySelector("video");
 
-  if (!(await setSource(i, start.label))) return fail("تعذر تجهيز الفيديو. تأكد من تسجيل الدخول ومن صلاحيات قراءة ملفات المحاضرات.");
+  if (!(await setSource(i, start.label))) {
+    return fail(
+      "تعذر تجهيز الفيديو. تأكد من تسجيل الدخول ومن صلاحيات قراءة ملفات المحاضرات."
+    );
+  }
 
   if (qualities.length > 1) {
-    $("quality-" + i).innerHTML = qualities.map(q => '<option value="' + escapeHtml(q.label) + '"' + (q.label === start.label ? " selected" : "") + ">" + escapeHtml(q.label) + "</option>").join("");
+    $("quality-" + i).innerHTML = qualities.map(q =>
+      '<option value="' + escapeHtml(q.label) + '"' +
+      (q.label === start.label ? " selected" : "") +
+      ">" + escapeHtml(q.label) + "</option>"
+    ).join("");
+
     $("quality-wrap-" + i).hidden = false;
   }
 
-  // انتهاء الرابط المؤقت: نجدده مرة واحدة ونكمل من نفس المكان
   video.addEventListener("error", async () => {
     if (video.dataset.retried) return;
+
     video.dataset.retried = "1";
     await setSource(i, video.dataset.quality || start.label);
   });
 
-  video.addEventListener("ended", () => { if (window.ArdProgress && !(progress.get(String(lec.id)) || {}).completed) updateProgress(i, "completed"); });
-  video.addEventListener("webkitbeginfullscreen", () => { video.webkitExitFullscreen(); toggleFs(box); }); // iPhone
+  video.addEventListener("ended", () => {
+    if (
+      window.ArdProgress &&
+      !(progress.get(String(lec.id)) || {}).completed
+    ) {
+      updateProgress(i, "completed");
+    }
+  });
+
+  video.addEventListener("webkitbeginfullscreen", () => {
+    video.webkitExitFullscreen();
+    toggleFs(box);
+  });
 }
 
-/* ملء الشاشة على الحاوية نفسها حتى تبقى العلامة المائية ظاهرة */
+/* ---------- ملء الشاشة ---------- */
 async function toggleFs(box) {
   if (!box) return;
-  if (box.classList.contains("pseudo-fs")) { box.classList.remove("pseudo-fs"); document.body.style.overflow = ""; return; }
-  if (document.fullscreenElement || document.webkitFullscreenElement) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
+
+  if (box.classList.contains("pseudo-fs")) {
+    box.classList.remove("pseudo-fs");
+    document.body.style.overflow = "";
+    return;
+  }
+
+  if (document.fullscreenElement || document.webkitFullscreenElement) {
+    (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    return;
+  }
+
   const req = box.requestFullscreen || box.webkitRequestFullscreen;
-  if (req) { try { await req.call(box); return; } catch (e) { console.warn(e); } }
+
+  if (req) {
+    try {
+      await req.call(box);
+      return;
+    } catch (e) {
+      console.warn(e);
+    }
+  }
+
   box.classList.add("pseudo-fs");
   document.body.style.overflow = "hidden";
 }
-const enterVideoFullscreen = i => toggleFs($("video-container-" + i));
+
+const enterVideoFullscreen = i =>
+  toggleFs($("video-container-" + i));
 
 function onFsChange() {
   const el = document.fullscreenElement || document.webkitFullscreenElement;
+
   if (el && el.tagName === "VIDEO") {
     const box = el.closest(".video-container");
+
     (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+
     setTimeout(() => toggleFs(box), 150);
   }
 }
+
 document.addEventListener("fullscreenchange", onFsChange);
 document.addEventListener("webkitfullscreenchange", onFsChange);
 
-document.addEventListener("visibilitychange", () => { if (document.hidden) document.querySelectorAll("video").forEach(v => v.pause()); });
-document.addEventListener("contextmenu", e => { if (e.target.closest(".video-container")) e.preventDefault(); });
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    document.querySelectorAll("video").forEach(v => v.pause());
+  }
+});
 
-/* ---------- فتح المحاضرة والأقسام ---------- */
+document.addEventListener("contextmenu", e => {
+  if (e.target.closest(".video-container")) e.preventDefault();
+});
+
+/* ---------- فتح المحاضرات والأقسام ---------- */
 async function toggleLecture(i) {
-  const body = $("body-" + i), arrow = $("arrow-" + i);
+  const body = $("body-" + i);
+  const arrow = $("arrow-" + i);
+
   if (!body || !arrow) return;
 
   const willOpen = !body.classList.contains("open");
+
   body.classList.toggle("open", willOpen);
   arrow.style.transform = willOpen ? "rotate(180deg)" : "rotate(0deg)";
-  if (body.previousElementSibling) body.previousElementSibling.setAttribute("aria-expanded", String(willOpen));
+
+  if (body.previousElementSibling) {
+    body.previousElementSibling.setAttribute("aria-expanded", String(willOpen));
+  }
 
   if (willOpen) {
     await buildPlayer(i);
+
     const c = body.querySelector(".video-container");
-    if (c) c.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    if (c) {
+      c.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   } else {
     const v = body.querySelector("video");
     if (v) v.pause();
   }
 }
 
-function toggleSub(header) { const c = header.nextElementSibling; if (c) c.classList.toggle("open"); }
+function toggleSub(header) {
+  const c = header.nextElementSibling;
+  if (c) c.classList.toggle("open");
+}
 
 function section(title, content) {
-  return '<div class="dropdown-section"><div class="dropdown-header" role="button" tabindex="0" onclick="toggleSub(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();toggleSub(this)}"><span>' +
-    title + '</span><span aria-hidden="true">▼</span></div><div class="dropdown-content">' + content + "</div></div>";
+  return '<div class="dropdown-section">' +
+    '<div class="dropdown-header" role="button" tabindex="0" ' +
+    'onclick="toggleSub(this)" ' +
+    'onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();toggleSub(this)}">' +
+    '<span>' + title + '</span><span aria-hidden="true">▼</span></div>' +
+    '<div class="dropdown-content">' + content + "</div></div>";
 }
 
 function externalLink(url, text, emptyText) {
   const href = safeHttps(url);
-  return href ? '<a class="btn-link" href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer">' + text + "</a>" : '<p class="muted">' + emptyText + "</p>";
+
+  return href
+    ? '<a class="btn-link" href="' + escapeHtml(href) +
+      '" target="_blank" rel="noopener noreferrer">' + text + "</a>"
+    : '<p class="muted">' + emptyText + "</p>";
 }
 
-/* الملازم: عدد غير محدود لكل محاضرة (مع دعم الحقل القديم pdf_url) */
+/* ---------- الملازم ---------- */
 function getHandouts(lec) {
   let h = lec.handouts;
-  if (typeof h === "string") { try { h = JSON.parse(h); } catch { h = []; } }
-  h = Array.isArray(h) ? h.filter(x => x && x.url).map(x => ({ title: String(x.title || "ملزمة"), url: String(x.url) })) : [];
+
+  if (typeof h === "string") {
+    try {
+      h = JSON.parse(h);
+    } catch {
+      h = [];
+    }
+  }
+
+  h = Array.isArray(h)
+    ? h.filter(x => x && x.url).map(x => ({
+        title: String(x.title || "ملزمة"),
+        url: String(x.url)
+      }))
+    : [];
+
   const legacy = lec.pdf_url || lec.pdfUrl;
-  if (!h.length && legacy) h = [{ title: "ملزمة المحاضرة", url: String(legacy) }];
+
+  if (!h.length && legacy) {
+    h = [{ title: "ملزمة المحاضرة", url: String(legacy) }];
+  }
+
   return h;
 }
 
 function handoutsHtml(lec, i) {
   const list = getHandouts(lec);
-  if (!list.length) return '<p class="muted">لا توجد ملازم لهذه المحاضرة حاليًا.</p>';
+
+  if (!list.length) {
+    return '<p class="muted">لا توجد ملازم لهذه المحاضرة حاليًا.</p>';
+  }
+
   return list.map((h, n) => {
-    const external = /^https?:\/\//i.test(h.url) && !h.url.includes("/storage/v1/object/");
+    const external =
+      /^https?:\/\//i.test(h.url) &&
+      !h.url.includes("/storage/v1/object/");
+
     const action = external
       ? externalLink(h.url, "فتح الملزمة", "الرابط غير صالح")
-      : '<button type="button" class="btn-link" onclick="openHandout(' + i + "," + n + ')">تنزيل الملزمة</button>';
-    return '<div class="handout-row"><span>📄 ' + escapeHtml(h.title) + "</span>" + action + "</div>";
+      : '<button type="button" class="btn-link" onclick="openHandout(' +
+        i + "," + n + ')">تنزيل الملزمة</button>';
+
+    return '<div class="handout-row"><span>📄 ' +
+      escapeHtml(h.title) + "</span>" + action + "</div>";
   }).join("");
 }
 
 async function openHandout(i, n) {
   const item = getHandouts(currentList[i])[n];
   if (!item) return;
-  const w = window.open("about:blank", "_blank"); // نفتح النافذة فورًا حتى لا يمنعها المتصفح
-  const url = await signedUrl(HANDOUT_BUCKET, toStoragePath(item.url, HANDOUT_BUCKET));
-  if (!url) { if (w) w.close(); alert("تعذر فتح الملزمة. تأكد من تسجيل الدخول ومن صلاحيات قراءة الملازم."); return; }
-  if (w) { w.opener = null; w.location.href = url; } else window.location.href = url;
+
+  const w = window.open("about:blank", "_blank");
+
+  const url = await signedUrl(
+    HANDOUT_BUCKET,
+    toStoragePath(item.url, HANDOUT_BUCKET)
+  );
+
+  if (!url) {
+    if (w) w.close();
+
+    alert(
+      "تعذر فتح الملزمة. تأكد من تسجيل الدخول ومن صلاحيات قراءة الملازم."
+    );
+
+    return;
+  }
+
+  if (w) {
+    w.opener = null;
+    w.location.href = url;
+  } else {
+    window.location.href = url;
+  }
 }
 
 /* ---------- الشهور ---------- */
-function getMonthNumber(l) { const n = Number(l.month_number); return Number.isInteger(n) && n >= 1 && n <= 12 ? n : null; }
+function getMonthNumber(l) {
+  const n = Number(l.month_number);
+  return Number.isInteger(n) && n >= 1 && n <= 12 ? n : null;
+}
 
 function selectMonth(num) {
   selectedMonth = num;
-  document.querySelectorAll(".month-button").forEach(b => b.classList.toggle("active", Number(b.dataset.month) === num));
+
+  document.querySelectorAll(".month-button").forEach(b => {
+    b.classList.toggle("active", Number(b.dataset.month) === num);
+  });
+
   renderSelectedMonth();
 }
 
 function renderMonths() {
   const grid = $("monthsGrid");
   grid.replaceChildren();
-  if (!visibleMonths.length) { grid.style.display = "none"; return; }
+
+  if (!visibleMonths.length) {
+    grid.style.display = "none";
+    return;
+  }
+
   grid.style.display = "grid";
 
   visibleMonths.forEach(month => {
-    const num = Number(month.month_number), count = allLectures.filter(l => getMonthNumber(l) === num).length;
+    const num = Number(month.month_number);
+    const count = allLectures.filter(
+      l => getMonthNumber(l) === num
+    ).length;
+
     const img = safeHttps(month.image_url);
     const b = document.createElement("button");
-    b.type = "button"; b.className = "month-button"; b.dataset.month = String(num);
-    b.innerHTML = (img ? '<img class="month-cover" src="' + escapeHtml(img) + '" alt="" loading="lazy">' : "") +
-      '<div class="month-button-top"><strong>' + escapeHtml(month.title) + '</strong><span class="month-number">' + num + "</span></div><small>" + count + " محاضرة</small>";
+
+    b.type = "button";
+    b.className = "month-button";
+    b.dataset.month = String(num);
+
+    b.innerHTML =
+      (img
+        ? '<img class="month-cover" src="' + escapeHtml(img) +
+          '" alt="" loading="lazy">'
+        : "") +
+      '<div class="month-button-top"><strong>' +
+      escapeHtml(month.title) +
+      '</strong><span class="month-number">' +
+      num +
+      "</span></div><small>" +
+      count +
+      " محاضرة</small>";
+
     b.addEventListener("click", () => selectMonth(num));
     grid.appendChild(b);
   });
 }
 
 function renderSelectedMonth() {
-  const month = visibleMonths.find(m => Number(m.month_number) === selectedMonth);
-  const heading = $("monthHeading"), list = $("lecturesList");
+  const month = visibleMonths.find(
+    m => Number(m.month_number) === selectedMonth
+  );
 
-  if (!month) { heading.style.display = "none"; list.innerHTML = '<div class="empty"><span class="empty-icon">📚</span>اختر شهرًا لعرض محاضراته.</div>'; return; }
+  const heading = $("monthHeading");
+  const list = $("lecturesList");
 
-  currentList = allLectures.filter(l => getMonthNumber(l) === selectedMonth);
+  if (!month) {
+    heading.style.display = "none";
+    list.innerHTML =
+      '<div class="empty"><span class="empty-icon">📚</span>اختر شهرًا لعرض محاضراته.</div>';
+    return;
+  }
+
+  currentList = allLectures.filter(
+    l => getMonthNumber(l) === selectedMonth
+  );
+
   heading.style.display = "flex";
+
   $("selectedMonthTitle").textContent = month.title;
-  $("selectedMonthDescription").textContent = "محاضرات الأحياء الخاصة بهذا الشهر.";
-  $("lectureCountBadge").textContent = currentList.length + " محاضرة";
+  $("selectedMonthDescription").textContent =
+    "محاضرات الأحياء الخاصة بهذا الشهر.";
+  $("lectureCountBadge").textContent =
+    currentList.length + " محاضرة";
 
-  const mImg = safeHttps(month.image_url), mEl = $("monthHeadingImg");
+  const mImg = safeHttps(month.image_url);
+  const mEl = $("monthHeadingImg");
+
   mEl.style.display = mImg ? "" : "none";
-  if (mImg) mEl.src = mImg; else mEl.removeAttribute("src");
 
-  if (!currentList.length) { list.innerHTML = '<div class="empty"><span class="empty-icon">📚</span>لا توجد محاضرات مضافة لهذا الشهر حتى الآن.</div>'; return; }
+  if (mImg) mEl.src = mImg;
+  else mEl.removeAttribute("src");
+
+  if (!currentList.length) {
+    list.innerHTML =
+      '<div class="empty"><span class="empty-icon">📚</span>لا توجد محاضرات مضافة لهذا الشهر حتى الآن.</div>';
+    return;
+  }
+
   renderLectures(currentList);
 }
 
-/* ---------- بطاقات المحاضرات (الفيديو يُجهَّز عند الفتح فقط) ---------- */
+/* ---------- بطاقات المحاضرات ---------- */
 function renderLectures(lectures) {
   const list = $("lecturesList");
   list.replaceChildren();
+
   const hasProgress = !!window.ArdProgress;
 
   lectures.forEach((lec, i) => {
-    const title = lec.title || "محاضرة أحياء", description = lec.description || "";
+    const title = lec.title || "محاضرة أحياء";
+    const description = lec.description || "";
     const details = lec.details || lec.content || "لا توجد تفاصيل نصية إضافية.";
     const chapter = lec.chapter || lec.lesson || "";
     const img = safeHttps(lec.image_url);
 
     const card = document.createElement("div");
     card.className = "lecture-card";
+
     card.innerHTML =
-      '<div class="lecture-header" role="button" tabindex="0" aria-expanded="false" onclick="toggleLecture(' + i + ')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();this.click()}">' +
-        (img ? '<img class="lecture-thumb" src="' + escapeHtml(img) + '" alt="" loading="lazy">' : "") +
-        '<div class="lecture-title"><h3>' + escapeHtml(title) + "</h3><p>" + escapeHtml(chapter || description) + "</p></div>" +
-        '<div class="arrow-icon" id="arrow-' + i + '" aria-hidden="true">▼</div></div>' +
+      '<div class="lecture-header" role="button" tabindex="0" aria-expanded="false" ' +
+      'onclick="toggleLecture(' + i + ')" ' +
+      'onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();this.click()}">' +
+
+      (img
+        ? '<img class="lecture-thumb" src="' + escapeHtml(img) +
+          '" alt="" loading="lazy">'
+        : "") +
+
+      '<div class="lecture-title"><h3>' +
+      escapeHtml(title) +
+      "</h3><p>" +
+      escapeHtml(chapter || description) +
+      '</p></div><div class="arrow-icon" id="arrow-' +
+      i +
+      '" aria-hidden="true">▼</div></div>' +
+
       '<div class="lecture-body" id="body-' + i + '">' +
-        '<div class="video-container" id="video-container-' + i + '"></div>' +
-        '<div class="player-bar">' +
-          '<label class="quality-wrap" id="quality-wrap-' + i + '" hidden>الجودة <select id="quality-' + i + '" onchange="changeQuality(' + i + ', this.value)"></select></label>' +
-          '<button type="button" class="video-fullscreen-btn" onclick="enterVideoFullscreen(' + i + ')">⛶ تكبير الفيديو لملء الشاشة</button>' +
-        "</div>" +
-        (hasProgress ? '<div class="actions-row"><button type="button" class="action-btn" id="save-' + i + '" onclick="toggleSaved(' + i + ')">☆ حفظ المحاضرة</button>' +
-          '<button type="button" class="action-btn" id="done-' + i + '" onclick="toggleCompleted(' + i + ')">تمت المشاهدة؟</button></div>' : "") +
-        '<p class="desc">' + escapeHtml(description) + "</p>" +
-        section("📖 الشرح التفصيلي", "<p>" + escapeHtml(details) + "</p>") +
-        section("📚 ملازم المحاضرة", handoutsHtml(lec, i)) +
-        section("✍️ واجب المحاضرة", externalLink(lec.homework_url || lec.homeworkUrl, "فتح الواجب", "لا يوجد واجب لهذه المحاضرة حاليًا.")) +
-        section("📝 امتحان المحاضرة", externalLink(lec.exam_url || lec.examUrl, "بدء الامتحان", "لا يوجد امتحان لهذه المحاضرة حاليًا.")) +
+      '<div class="video-container" id="video-container-' + i + '"></div>' +
+
+      '<div class="player-bar">' +
+      '<label class="quality-wrap" id="quality-wrap-' + i + '" hidden>' +
+      'الجودة <select id="quality-' + i +
+      '" onchange="changeQuality(' + i + ', this.value)"></select></label>' +
+      '<button type="button" class="video-fullscreen-btn" onclick="enterVideoFullscreen(' +
+      i + ')">⛶ تكبير الفيديو لملء الشاشة</button></div>' +
+
+      (hasProgress
+        ? '<div class="actions-row">' +
+          '<button type="button" class="action-btn" id="save-' + i +
+          '" onclick="toggleSaved(' + i + ')">☆ حفظ المحاضرة</button>' +
+          '<button type="button" class="action-btn" id="done-' + i +
+          '" onclick="toggleCompleted(' + i + ')">تمت المشاهدة؟</button></div>'
+        : "") +
+
+      '<p class="desc">' + escapeHtml(description) + "</p>" +
+
+      section("📖 الشرح التفصيلي", "<p>" + escapeHtml(details) + "</p>") +
+      section("📚 ملازم المحاضرة", handoutsHtml(lec, i)) +
+      section("✍️ واجب المحاضرة", externalLink(
+        lec.homework_url || lec.homeworkUrl,
+        "فتح الواجب",
+        "لا يوجد واجب لهذه المحاضرة حاليًا."
+      )) +
+      section("📝 امتحان المحاضرة", externalLink(
+        lec.exam_url || lec.examUrl,
+        "بدء الامتحان",
+        "لا يوجد امتحان لهذه المحاضرة حاليًا."
+      )) +
       "</div>";
 
     list.appendChild(card);
+
     if (hasProgress) refreshActions(i);
   });
 }
 
-/* ---------- التحميل ---------- */
+/* ---------- تحميل البيانات ---------- */
 async function loadLectures() {
   const list = $("lecturesList");
-  list.innerHTML = '<div class="loading">جارٍ تحميل المحاضرات...</div>';
+
+  list.innerHTML =
+    '<div class="loading">جارٍ تحميل المحاضرات...</div>';
+
   hideNotice();
 
   try {
-    const { data: months, error: mErr } = await supabaseClient.from(MONTHS_TABLE).select("*").eq("is_visible", true).order("sort_order", { ascending: true });
-    if (mErr) throw new Error("تعذر قراءة جدول الشهور. " + mErr.message);
+    const { data: months, error: mErr } = await supabaseClient
+      .from(MONTHS_TABLE)
+      .select("*")
+      .eq("is_visible", true)
+      .order("sort_order", { ascending: true });
 
-    const { data: lectures, error: lErr } = await supabaseClient.from(LECTURES_TABLE).select("*").order("created_at", { ascending: true });
-    if (lErr) throw new Error("تعذر تحميل المحاضرات. " + lErr.message);
+    if (mErr) {
+      throw new Error("تعذر قراءة جدول الشهور. " + mErr.message);
+    }
+
+    const { data: lectures, error: lErr } = await supabaseClient
+      .from(LECTURES_TABLE)
+      .select("*")
+      .order("created_at", { ascending: true });
+
+    if (lErr) {
+      throw new Error("تعذر تحميل المحاضرات. " + lErr.message);
+    }
 
     visibleMonths = months || [];
-    const visible = new Set(visibleMonths.map(m => Number(m.month_number)));
-    allLectures = (lectures || []).filter(l => visible.has(getMonthNumber(l)));
+
+    const visible = new Set(
+      visibleMonths.map(m => Number(m.month_number))
+    );
+
+    allLectures = (lectures || []).filter(
+      l => visible.has(getMonthNumber(l))
+    );
 
     renderMonths();
 
     if (!visibleMonths.length) {
-      list.innerHTML = '<div class="empty"><span class="empty-icon">📅</span>لا توجد شهور متاحة حاليًا.<br>ستظهر الشهور هنا فور إضافتها.</div>';
+      list.innerHTML =
+        '<div class="empty"><span class="empty-icon">📅</span>لا توجد شهور متاحة حاليًا.<br>ستظهر الشهور هنا فور إضافتها.</div>';
+
       $("monthHeading").style.display = "none";
       return;
     }
+
     selectMonth(Number(visibleMonths[0].month_number));
 
   } catch (error) {
     console.error("Lectures loading error:", error);
+
     list.replaceChildren();
-    const box = document.createElement("div"), icon = document.createElement("span"), title = document.createElement("strong"), detail = document.createElement("p");
-    box.className = "empty"; icon.className = "empty-icon"; icon.textContent = "⚠️";
+
+    const box = document.createElement("div");
+    const icon = document.createElement("span");
+    const title = document.createElement("strong");
+    const detail = document.createElement("p");
+
+    box.className = "empty";
+    icon.className = "empty-icon";
+    icon.textContent = "⚠️";
     title.textContent = "تعذر تحميل أقسام المحاضرات";
-    detail.style.cssText = "margin-top:8px;font-weight:400"; detail.textContent = error.message || "حدث خطأ غير معروف.";
+
+    detail.style.cssText = "margin-top:8px;font-weight:400";
+    detail.textContent = error.message || "حدث خطأ غير معروف.";
+
     box.append(icon, title, detail);
     list.appendChild(box);
   }
 }
 
-/* ---------- التشغيل: لا محتوى بدون تسجيل دخول (العلامة المائية تحتاج رقم الطالب) ---------- */
+/* ---------- التحقق من تسجيل الدخول ---------- */
 async function init() {
   const { data, error } = await supabaseClient.auth.getSession();
   const session = data && data.session;
+
   if (error || !session) {
     $("lecturesList").replaceChildren();
-    showNotice('سجّل الدخول لمشاهدة المحاضرات. <a href="' + LOGIN_URL + '">تسجيل الدخول</a>');
+
+    showNotice(
+      'سجّل الدخول لمشاهدة المحاضرات. <a href="' +
+      LOGIN_URL +
+      '">تسجيل الدخول</a>'
+    );
+
     return;
   }
+
   await loadViewer(session.user);
   await loadProgress();
   await loadLectures();
 }
 
-supabaseClient.auth.onAuthStateChange(event => { if (event === "SIGNED_OUT") window.location.href = LOGIN_URL; });
+supabaseClient.auth.onAuthStateChange(event => {
+  if (event === "SIGNED_OUT") {
+    window.location.href = LOGIN_URL;
+  }
+});
+
 init();
 </script>
 </body>
