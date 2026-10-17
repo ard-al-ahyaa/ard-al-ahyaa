@@ -387,10 +387,23 @@ async function buildPlayer(i) {
 
   const qualities = getQualities(lec);
   const fail = text => { box.innerHTML = '<div class="player-msg">' + text + "</div>"; box.dataset.ready = ""; };
-  if (!qualities.length) return fail("لا يوجد فيديو لهذه المحاضرة حتى الآن.");
+  if (!qualities.length && !lec.bunny_video_id) return fail("لا يوجد فيديو لهذه المحاضرة حتى الآن.");
 
   box.innerHTML = '<div class="player-msg">جارٍ تجهيز الفيديو...</div>';
   const exitBtn = '<button type="button" class="exit-fs" aria-label="إغلاق ملء الشاشة" onclick="toggleFs(this.parentElement)">✕</button>';
+
+  // فيديو مستضاف على Bunny Stream: رابط موقّع من دالة bunny-embed، ولا ملء شاشة داخل الـ iframe حتى تبقى العلامة المائية
+  if (lec.bunny_video_id) {
+    try {
+      const { data, error } = await supabaseClient.functions.invoke("bunny-embed", { body: { lectureId: lec.id } });
+      if (error || !data || !data.url) throw error || new Error("No signed URL");
+      box.innerHTML = '<iframe src="' + escapeHtml(data.url) + '" title="فيديو المحاضرة" loading="lazy" allow="encrypted-media; picture-in-picture; accelerometer; gyroscope" referrerpolicy="strict-origin-when-cross-origin"></iframe>' + watermarkHtml() + exitBtn;
+    } catch (e) {
+      console.error("Bunny embed error:", e);
+      fail("تعذر تجهيز الفيديو. تأكد من تسجيل الدخول ثم حاول مرة أخرى.");
+    }
+    return;
+  }
 
   if (isYoutube(qualities[0].src)) {
     const embed = youtubeEmbed(qualities[0].src);
