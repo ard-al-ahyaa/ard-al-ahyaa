@@ -5,1396 +5,940 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>لوحة الطالب | منصة أرض الأحياء</title>
+  <title>حساب الطالب | منصة أرض الأحياء</title>
+  <meta name="description" content="حساب الطالب في منصة أرض الأحياء ثانويه عامه .">
+  <meta name="theme-color" content="#026857">
 
-  <meta name="description"
-    content="لوحة الطالب في منصة أرض الأحياء لمتابعة المحاضرات والتقدم التعليمي للثانويه عامه .">
-
-  <meta name="theme-color" content="#087f5b">
-
-  <link rel="icon" href="favicon.png">
-
+  <link rel="icon" href="../favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet">
-
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Aref+Ruqaa:wght@400;700&display=swap"
+        rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
       --green: #087f5b;
-      --green-dark: #056747;
-      --green-light: #e8f7ef;
-      --blue: #3468d4;
-      --purple: #805ad5;
-      --orange: #e99a36;
+      --green-dark: #075e54;
+      --green-light: #e8f5ef;
+      --blue: #1e3a8a;
       --bg: #f4f7fb;
       --white: #fff;
-      --text: #263548;
-      --muted: #8792a4;
-      --border: #e8edf3;
-      --shadow: 0 5px 25px rgba(26, 45, 75, .045);
-      --sidebar-width: 250px;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --shadow: 0 5px 20px rgba(0,0,0,.05);
+      --radius: 16px;
+
+      /* أبعاد الشريط الجانبي مثل صفحة المحاضرات */
+      --sidebar-width: 270px;
+      --sidebar-collapsed-width: 82px;
     }
 
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Cairo', sans-serif;
     }
 
     body {
+      margin: 0;
       background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
+      font-family: "Cairo", sans-serif;
     }
 
-    button,
-    input {
+    button, input {
       font: inherit;
     }
 
-    button,
-    a {
+    button, a {
       -webkit-tap-highlight-color: transparent;
     }
 
     a {
-      text-decoration: none;
       color: inherit;
+      text-decoration: none;
     }
 
-    button {
-      cursor: pointer;
-    }
-
-    /* شاشة تسجيل الدخول */
-
-    #authScreen {
-      position: fixed;
-      inset: 0;
-      z-index: 10000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: var(--bg);
-    }
-
-    .auth-box {
-      width: 100%;
-      max-width: 420px;
-      padding: 35px;
-      text-align: center;
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      box-shadow: var(--shadow);
-    }
-
-    .auth-logo {
-      width: 90px;
-      height: 90px;
-      object-fit: contain;
-      margin-bottom: 18px;
-      animation: logoFloat 3s ease-in-out infinite;
-    }
-
-    .auth-box h2 {
-      color: var(--green);
-      margin-bottom: 10px;
-    }
-
-    .auth-box p {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 2;
-      margin-bottom: 22px;
-    }
-
-    .primary-btn {
-      border: 0;
-      border-radius: 11px;
-      padding: 12px 20px;
-      color: white;
-      background: var(--green);
-      font-weight: 800;
-      transition: .2s;
-    }
-
-    .primary-btn:hover {
-      background: var(--green-dark);
-      transform: translateY(-2px);
-    }
-
-    .auth-box .primary-btn {
-      display: block;
-      width: 100%;
-    }
-
-    #authError {
-      display: none;
-      color: #b42318;
-      background: #fff0ef;
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 13px;
-      margin-top: 15px;
-      line-height: 1.8;
-    }
-
-    /* هيكل الصفحة */
-
-    #app {
-      display: none;
-      min-height: 100vh;
-    }
+    /* ==============================
+       الشريط الجانبي
+    ============================== */
 
     .sidebar {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
       width: var(--sidebar-width);
-      z-index: 1000;
+      background: linear-gradient(
+        180deg,
+        #026857 0%,
+        #075e54 48%,
+        #1e3a8a 100%
+      );
+      color: white;
+      position: fixed;
+      right: 0;
+      top: 0;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      background: linear-gradient(165deg, #087f5b, #075e54 50%, #1e3a8a);
-      color: white;
-      box-shadow: -5px 0 25px rgba(0, 0, 0, .06);
-      transition: width .28s ease;
-    }
-
-    .sidebar-inner {
-      padding: 25px 17px;
-      flex: 1;
+      justify-content: space-between;
+      z-index: 1000;
       overflow-x: hidden;
       overflow-y: auto;
+      padding: 0;
+      transition: width .25s ease;
     }
 
-    /* زر تصغير وتوسيع القائمة */
+    .sidebar-top {
+      padding: 18px;
+      min-width: 0;
+    }
 
-    .sidebar-top-actions {
+    /* زر تصغير وتوسيع الشريط - نفس زر صفحة المحاضرات */
+
+    .sidebar-control {
       display: flex;
       justify-content: flex-start;
       margin-bottom: 18px;
     }
 
     .sidebar-toggle {
-      width: 39px;
-      height: 39px;
+      width: 38px;
+      height: 38px;
       display: grid;
       place-items: center;
-      flex-shrink: 0;
-      color: white;
-      background: rgba(255, 255, 255, .13);
-      border: 1px solid rgba(255, 255, 255, .18);
+      border: 1px solid rgba(255,255,255,.23);
       border-radius: 11px;
-      transition: background .2s, transform .25s;
+      background: rgba(255,255,255,.12);
+      color: white;
+      cursor: pointer;
+      flex-shrink: 0;
+      padding: 0;
+      transition: background .2s, transform .2s;
     }
 
     .sidebar-toggle:hover {
-      background: rgba(255, 255, 255, .24);
+      background: rgba(255,255,255,.23);
+      transform: scale(1.04);
     }
 
-    .sidebar-toggle i {
-      transition: transform .28s ease;
+    .sidebar-toggle:focus-visible {
+      outline: 2px solid white;
+      outline-offset: 3px;
+    }
+
+    .sidebar-toggle svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform .25s;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 0 5px 22px;
-      border-bottom: 1px solid rgba(255,255,255,.18);
-      margin-bottom: 28px;
+      gap: 13px;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,.16);
       min-width: 0;
     }
 
-    .brand-logo-wrap {
-      width: 53px;
-      height: 53px;
-      flex-shrink: 0;
-      background: white;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      animation: logoFloat 3s ease-in-out infinite;
-      box-shadow: 0 0 0 5px rgba(255,255,255,.08);
-    }
-
-    .brand-logo {
-      width: 44px;
-      height: 44px;
+    .brand img {
+      width: 49px;
+      height: 49px;
       object-fit: contain;
-      border-radius: 50%;
+      border-radius: 13px;
+      background: white;
+      padding: 3px;
+      flex-shrink: 0;
     }
 
     .brand-text {
       min-width: 0;
-      white-space: nowrap;
       overflow: hidden;
-      transition: opacity .18s ease;
+      white-space: nowrap;
     }
 
     .brand h2 {
+      margin: 0;
       font-size: 17px;
-      font-weight: 900;
       color: white;
+      font-weight: 900;
     }
 
-    .brand p {
+    .brand small {
+      display: block;
+      margin-top: 4px;
       font-size: 11px;
       opacity: .8;
-      margin-top: 3px;
     }
 
-    .menu-label {
-      color: rgba(255,255,255,.65);
-      font-size: 11px;
+    .nav-title {
+      color: rgba(255,255,255,.62);
+      font-size: 10px;
       font-weight: 700;
-      margin: 0 10px 12px;
+      padding: 0 12px;
+      margin: 0 0 10px;
       white-space: nowrap;
-      overflow: hidden;
-      transition: opacity .18s ease;
     }
 
-    .side-menu {
+    .sidebar nav {
       display: flex;
       flex-direction: column;
       gap: 7px;
     }
 
-    .side-link {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      min-height: 47px;
-      padding: 13px 14px;
-      color: #e9f5ef;
+    .nav-link {
+      text-decoration: none;
+      color: #e2f1ee;
+      padding: 12px 13px;
       border-radius: 11px;
       font-size: 13px;
-      font-weight: 700;
-      transition: background .2s, color .2s, transform .2s;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      margin: 0;
+      border: none;
+      background: transparent;
+      text-align: right;
+      cursor: pointer;
+      transition: background .2s, transform .2s;
+      min-height: 46px;
       white-space: nowrap;
+      position: relative;
     }
 
-    .side-link i {
-      width: 20px;
-      min-width: 20px;
-      text-align: center;
-      font-size: 16px;
+    .nav-link:hover,
+    .nav-link.active {
+      background: rgba(255,255,255,.17);
+      color: #fff;
     }
 
-    .side-link-text {
-      overflow: hidden;
-      white-space: nowrap;
-      transition: opacity .18s ease;
+    .nav-link:hover {
+      transform: translateX(-2px);
     }
 
-    .side-link:hover,
-    .side-link.active {
-      background: rgba(255,255,255,.18);
-      color: white;
-      transform: translateX(-3px);
-    }
+    /* الحفاظ على أيقونات SVG الأصلية */
 
-    .sidebar-bottom {
-      padding: 17px;
-      border-top: 1px solid rgba(255,255,255,.15);
-      text-align: center;
-      font-size: 11px;
-      opacity: .8;
-      white-space: nowrap;
-      overflow: hidden;
-      transition: opacity .18s ease;
-    }
-
-    .sidebar-bottom i {
-      margin-left: 4px;
-    }
-
-    .main {
-      margin-right: var(--sidebar-width);
-      min-height: 100vh;
-      padding: 25px 30px;
-      max-width: 1800px;
-      transition: margin-right .28s ease;
-    }
-
-    /* وضع الشريط المصغر */
-
-    body.sidebar-collapsed {
-      --sidebar-width: 82px;
-    }
-
-    body.sidebar-collapsed .sidebar-inner {
-      padding: 18px 10px;
-    }
-
-    body.sidebar-collapsed .sidebar-top-actions {
+    .nav-icon {
+      width: 21px;
+      height: 21px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
       justify-content: center;
     }
 
-    body.sidebar-collapsed .sidebar-toggle i {
+    .nav-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform .2s;
+    }
+
+    .nav-link:hover .nav-icon svg {
+      transform: scale(1.08);
+    }
+
+    .nav-link.active .nav-icon svg {
+      stroke-width: 2.2;
+    }
+
+    .nav-text {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar-bottom {
+      margin: 0 18px 20px;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.1);
+      font-size: 11px;
+      line-height: 2;
+      color: rgba(255,255,255,.9);
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    /* ==============================
+       حالة الشريط المصغّر
+    ============================== */
+
+    body.sidebar-collapsed .sidebar {
+      width: var(--sidebar-collapsed-width);
+    }
+
+    body.sidebar-collapsed .sidebar-top {
+      padding: 18px 12px;
+    }
+
+    body.sidebar-collapsed .sidebar-control {
+      justify-content: center;
+    }
+
+    body.sidebar-collapsed .sidebar-toggle svg {
       transform: rotate(180deg);
     }
 
     body.sidebar-collapsed .brand {
       justify-content: center;
-      padding: 0 0 20px;
+      padding-bottom: 18px;
     }
 
     body.sidebar-collapsed .brand-text,
-    body.sidebar-collapsed .menu-label,
-    body.sidebar-collapsed .side-link-text,
-    body.sidebar-collapsed .sidebar-bottom span {
+    body.sidebar-collapsed .nav-title,
+    body.sidebar-collapsed .nav-text,
+    body.sidebar-collapsed .sidebar-bottom {
       display: none;
     }
 
-    body.sidebar-collapsed .side-link {
+    body.sidebar-collapsed .nav-link {
       justify-content: center;
+      padding: 12px 8px;
       gap: 0;
-      padding: 13px 5px;
     }
 
-    body.sidebar-collapsed .side-link i {
-      font-size: 18px;
+    body.sidebar-collapsed .nav-icon {
+      width: 25px;
+      height: 25px;
     }
 
-    body.sidebar-collapsed .side-link:hover {
-      transform: none;
-    }
-
-    body.sidebar-collapsed .sidebar-bottom {
-      padding: 16px 5px;
-    }
-
-    /* تلميحات أسماء الأيقونات في الوضع المصغر */
-
-    body.sidebar-collapsed .side-link::after {
-      content: attr(data-title);
+    body.sidebar-collapsed .nav-link[title]:hover::after {
+      content: attr(title);
       position: absolute;
       right: calc(100% + 10px);
       top: 50%;
       transform: translateY(-50%);
-      padding: 8px 12px;
-      background: #173b38;
+      padding: 7px 12px;
+      background: #0f172a;
       color: white;
       font-size: 11px;
-      font-weight: 700;
       border-radius: 8px;
       white-space: nowrap;
-      opacity: 0;
-      visibility: hidden;
+      z-index: 2000;
+      box-shadow: 0 4px 12px rgba(0,0,0,.15);
       pointer-events: none;
-      z-index: 5000;
-      box-shadow: 0 5px 20px rgba(0,0,0,.15);
-      transition: opacity .15s ease;
     }
 
-    body.sidebar-collapsed .side-link:hover::after,
-    body.sidebar-collapsed .side-link:focus-visible::after {
-      opacity: 1;
-      visibility: visible;
+    /* ==============================
+       المحتوى الرئيسي
+    ============================== */
+
+    .main {
+      margin-right: var(--sidebar-width);
+      min-height: 100vh;
+      padding: 24px;
+      transition: margin-right .25s ease;
+      min-width: 0;
     }
 
-    /* الشريط العلوي */
+    body.sidebar-collapsed .main {
+      margin-right: var(--sidebar-collapsed-width);
+    }
 
     .topbar {
-      min-height: 78px;
-      padding: 15px 20px;
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 17px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       gap: 15px;
-      margin-bottom: 25px;
+      padding: 16px 20px;
+      margin-bottom: 22px;
+      background: white;
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
     }
 
-    .page-heading h1 {
-      font-size: 21px;
-      font-weight: 900;
-      color: var(--text);
+    .topbar h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 800;
     }
 
-    .page-heading p {
-      font-size: 12px;
+    .topbar p {
+      margin: 5px 0 0;
       color: var(--muted);
-      margin-top: 4px;
+      font-size: 12px;
     }
 
-    .top-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .icon-button {
-      width: 43px;
-      height: 43px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: #fff;
-      color: #66748a;
-      display: grid;
-      place-items: center;
-      font-size: 17px;
-      transition: .2s;
-    }
-
-    .icon-button:hover {
-      color: var(--green);
-      background: var(--green-light);
-    }
-
-    .profile-wrap {
-      position: relative;
-    }
-
-    .profile-button {
+    .student-chip {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 5px 10px 5px 6px;
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      cursor: pointer;
-      max-width: 260px;
+      min-width: 0;
     }
 
     .avatar {
+      display: grid;
+      place-items: center;
+      width: 43px;
+      height: 43px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: var(--green-light);
+      font-size: 21px;
+    }
+
+    .student-chip strong {
+      display: block;
+      max-width: 220px;
+      overflow-wrap: anywhere;
+      font-size: 13px;
+    }
+
+    .student-chip small {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    /* خط الرقعة للاسم */
+
+    .ruqaa {
+      font-family: "Aref Ruqaa", serif !important;
+      font-size: 23px !important;
+      font-weight: 700;
+      line-height: 1.8;
+    }
+
+    .welcome {
+      position: relative;
+      overflow: hidden;
+      padding: 25px;
+      margin-bottom: 22px;
+      color: white;
+      border-radius: 18px;
+      background: linear-gradient(120deg,#087f5b,#075e54 58%,#1e3a8a);
+    }
+
+    .welcome h2 {
+      margin: 0 0 8px;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .welcome p {
+      max-width: 650px;
+      margin: 0;
+      font-size: 13px;
+      line-height: 2;
+      color: rgba(255,255,255,.9);
+    }
+
+    .welcome-icon {
+      position: absolute;
+      left: 22px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 58px;
+      opacity: .2;
+    }
+
+    .section {
+      min-width: 0;
+      padding: 21px;
+      margin-bottom: 22px;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .section-heading h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .section-heading p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .section-icon {
+      display: grid;
+      place-items: center;
       width: 40px;
       height: 40px;
       flex-shrink: 0;
-      display: grid;
-      place-items: center;
       border-radius: 12px;
-      background: linear-gradient(135deg, #087f5b, #39ad83);
-      color: white;
-      font-size: 19px;
+      background: var(--green-light);
+      font-size: 20px;
     }
 
-    .profile-text {
-      text-align: right;
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 16px;
+    }
+
+    .field {
       min-width: 0;
     }
 
-    .profile-text strong {
+    .field label {
       display: block;
-      max-width: 150px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      font-size: 12px;
-    }
-
-    .profile-text small {
-      display: block;
-      font-size: 10px;
-      color: var(--muted);
-      margin-top: 3px;
-    }
-
-    .profile-button > i {
-      font-size: 11px;
-      color: var(--muted);
-      margin-right: 3px;
-    }
-
-    .profile-dropdown {
-      display: none;
-      position: absolute;
-      left: 0;
-      top: calc(100% + 10px);
-      width: 225px;
-      padding: 8px;
-      border-radius: 14px;
-      background: white;
-      border: 1px solid var(--border);
-      box-shadow: 0 15px 40px rgba(0,0,0,.12);
-      z-index: 5000;
-    }
-
-    .profile-dropdown.show {
-      display: block;
-      animation: dropIn .18s ease;
-    }
-
-    .dropdown-item {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      width: 100%;
-      padding: 12px;
-      background: transparent;
-      border: none;
-      border-radius: 9px;
-      text-align: right;
+      margin-bottom: 7px;
+      color: #4b5563;
       font-size: 12px;
       font-weight: 700;
+    }
+
+    .field input {
+      width: 100%;
+      min-width: 0;
+      padding: 12px;
       color: var(--text);
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      font-size: 13px;
+      transition: .2s;
     }
 
-    .dropdown-item:hover {
-      background: #f2f7f5;
-      color: var(--green);
+    .field input:focus {
+      border-color: var(--green);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(8,127,91,.08);
     }
 
-    .dropdown-item i {
-      width: 18px;
-      text-align: center;
+    .field input[readonly],
+    .field input:disabled {
+      color: #6b7280;
+      cursor: not-allowed;
+      opacity: .9;
     }
 
-    .dropdown-item.logout {
-      color: #d14343;
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
     }
 
-    /* رسالة الترحيب */
-
-    .welcome-banner {
-      position: relative;
-      overflow: hidden;
-      padding: 28px 30px;
-      border-radius: 19px;
-      background: linear-gradient(115deg, #075e54, #087f5b 55%, #2856b6);
-      color: white;
-      margin-bottom: 25px;
-      box-shadow: 0 8px 25px rgba(8,127,91,.12);
-    }
-
-    .welcome-banner::after {
-      content: "\f06c";
-      font-family: "Font Awesome 6 Free";
-      font-weight: 900;
-      position: absolute;
-      left: 35px;
-      top: 0;
-      font-size: 115px;
-      opacity: .1;
-      transform: rotate(-20deg);
-      pointer-events: none;
-    }
-
-    .welcome-label {
+    .btn {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      padding: 5px 11px;
-      border-radius: 20px;
-      background: rgba(255,255,255,.15);
-      font-size: 11px;
-      margin-bottom: 12px;
-    }
-
-    .welcome-banner h2 {
-      font-size: 25px;
-      font-weight: 900;
-      margin-bottom: 8px;
-    }
-
-    .welcome-banner p {
+      justify-content: center;
+      padding: 10px 18px;
+      border: 0;
+      border-radius: 10px;
       font-size: 13px;
-      line-height: 2;
-      max-width: 750px;
-      color: rgba(255,255,255,.91);
+      font-weight: 700;
+      transition: .2s;
+      cursor: pointer;
     }
 
-    /* الإحصائيات */
+    .btn-primary {
+      color: white;
+      background: var(--green);
+    }
+
+    .btn-primary:hover {
+      background: var(--green-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn-light {
+      color: #374151;
+      background: #f3f4f6;
+    }
+
+    .btn-light:hover {
+      background: #e5e7eb;
+    }
+
+    .btn-danger {
+      color: #991b1b;
+      background: #fee2e2;
+    }
+
+    .btn:disabled {
+      cursor: not-allowed;
+      opacity: .55;
+      transform: none;
+    }
+
+    .message {
+      display: none;
+      padding: 11px 13px;
+      margin-top: 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      line-height: 1.9;
+      overflow-wrap: anywhere;
+    }
+
+    .message.success {
+      display: block;
+      color: #166534;
+      background: #dcfce7;
+    }
+
+    .message.error {
+      display: block;
+      color: #991b1b;
+      background: #fee2e2;
+    }
+
+    .message.info {
+      display: block;
+      color: #1d4ed8;
+      background: #eff6ff;
+    }
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 17px;
-      margin-bottom: 27px;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 15px;
+      margin-bottom: 22px;
     }
 
     .stat-card {
-      position: relative;
-      overflow: hidden;
       min-width: 0;
-      min-height: 155px;
-      padding: 19px;
+      padding: 18px;
       background: white;
-      border: 1px solid var(--border);
-      border-radius: 17px;
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
-      transition: transform .25s, box-shadow .25s;
+      border-bottom: 3px solid var(--green);
+      transition: .2s;
     }
 
     .stat-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 28px rgba(25,45,70,.08);
+      transform: translateY(-3px);
+      border-bottom-color: var(--blue);
     }
 
     .stat-top {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       gap: 8px;
-      margin-bottom: 20px;
+      margin-bottom: 14px;
     }
 
     .stat-icon {
-      width: 45px;
-      height: 45px;
-      flex-shrink: 0;
       display: grid;
       place-items: center;
-      border-radius: 13px;
+      width: 39px;
+      height: 39px;
+      border-radius: 11px;
+      background: var(--green-light);
       font-size: 19px;
     }
 
-    .stat-card.green .stat-icon {
-      color: #07875d;
-      background: #e5f8ed;
-    }
-
-    .stat-card.blue .stat-icon {
-      color: #3468d4;
-      background: #e9f0ff;
-    }
-
-    .stat-card.purple .stat-icon {
-      color: #805ad5;
-      background: #f0eaff;
-    }
-
-    .stat-card.orange .stat-icon {
-      color: #db8b26;
-      background: #fff2df;
-    }
-
-    .stat-caption {
-      font-size: 11px;
+    .stat-label {
       color: var(--muted);
-      font-weight: 700;
-      line-height: 1.8;
-    }
-
-    .stat-number {
-      display: block;
-      font-size: 29px;
-      font-weight: 900;
-      line-height: 1.3;
-      color: var(--text);
-    }
-
-    .stat-number small {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--muted);
-    }
-
-    .stat-description {
-      margin-top: 7px;
-      font-size: 10px;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-
-    .stat-card::after {
-      content: "";
-      position: absolute;
-      left: -22px;
-      bottom: -36px;
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      background: currentColor;
-      opacity: .025;
-    }
-
-    /* الرسوم البيانية */
-
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.8fr) minmax(240px, 1fr);
-      gap: 20px;
-      margin-bottom: 25px;
-    }
-
-    .panel {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 23px;
-      box-shadow: var(--shadow);
-      min-width: 0;
-    }
-
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .panel-header h3 {
-      font-size: 16px;
-      font-weight: 900;
-    }
-
-    .panel-header p {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 5px;
-      line-height: 1.8;
-    }
-
-    .panel-icon {
-      width: 38px;
-      height: 38px;
-      display: grid;
-      place-items: center;
-      border-radius: 11px;
-      background: var(--green-light);
-      color: var(--green);
-      flex-shrink: 0;
-    }
-
-    .chart-wrap {
-      position: relative;
-      width: 100%;
-      height: 250px;
-    }
-
-    #progressChart {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    .chart-note {
-      color: var(--muted);
-      font-size: 10px;
-      margin-top: 12px;
-      line-height: 1.9;
-    }
-
-    /* دائرة التقدم */
-
-    .progress-panel {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .progress-panel .panel-header {
-      width: 100%;
-    }
-
-    .progress-ring {
-      position: relative;
-      width: 170px;
-      height: 170px;
-      margin: 12px auto 20px;
-    }
-
-    .progress-ring svg {
-      width: 100%;
-      height: 100%;
-      transform: rotate(-90deg);
-    }
-
-    .ring-bg {
-      fill: none;
-      stroke: #edf1f6;
-      stroke-width: 10;
-    }
-
-    .ring-value {
-      fill: none;
-      stroke: #087f5b;
-      stroke-width: 10;
-      stroke-linecap: round;
-      stroke-dasharray: 0 327;
-      transition: stroke-dasharray 1s ease;
-    }
-
-    .ring-center {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .ring-center strong {
-      font-size: 32px;
-      font-weight: 900;
-      color: var(--green);
-    }
-
-    .ring-center span {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .progress-details {
-      width: 100%;
-      display: grid;
-      gap: 13px;
-    }
-
-    .detail-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      font-size: 11px;
-    }
-
-    .detail-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-    }
-
-    .detail-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 3px;
-      background: var(--green);
-    }
-
-    .detail-row strong {
-      font-weight: 800;
-    }
-
-    /* آخر المحاضرات */
-
-    .lectures-panel {
-      margin-bottom: 25px;
-    }
-
-    .view-all {
-      color: var(--green);
       font-size: 12px;
-      font-weight: 800;
-      white-space: nowrap;
     }
 
-    .lecture-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .lecture-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 13px;
-      background: #fafbfd;
-      border: 1px solid #edf1f5;
-      border-radius: 12px;
-      transition: .2s;
-    }
-
-    .lecture-item:hover {
-      border-color: #c7e7d5;
-      background: #f6fcf8;
-    }
-
-    .lecture-icon {
-      width: 43px;
-      height: 43px;
-      display: grid;
-      place-items: center;
-      flex-shrink: 0;
-      border-radius: 12px;
-      background: #e7f6ed;
-      color: var(--green);
-      font-size: 17px;
-    }
-
-    .lecture-info {
-      min-width: 0;
-      flex: 1;
-    }
-
-    .lecture-info h4 {
-      font-size: 12px;
+    .stat-value {
+      font-size: 24px;
       font-weight: 800;
       overflow-wrap: anywhere;
-      line-height: 1.8;
     }
 
-    .lecture-info p {
-      color: var(--muted);
-      font-size: 10px;
-      line-height: 1.8;
+    .stat-note {
       margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
     }
 
-    .lecture-open {
-      padding: 9px 13px;
-      border: 0;
-      border-radius: 9px;
-      color: var(--green);
-      background: var(--green-light);
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .list-item-main {
+      min-width: 0;
+    }
+
+    .list-item strong {
+      display: block;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .list-item small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
       font-size: 11px;
-      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 5px 9px;
+      color: var(--green-dark);
+      background: var(--green-light);
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
       white-space: nowrap;
     }
 
-    .lecture-open:hover {
-      background: #d6f0e1;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 30px 15px;
+    .empty {
+      padding: 25px 12px;
       color: var(--muted);
-      line-height: 2;
-      font-size: 12px;
-    }
-
-    .empty-state i {
-      display: block;
-      font-size: 30px;
-      margin-bottom: 12px;
-      color: #b3c3d1;
-    }
-
-    /* الخصوصية */
-
-    .privacy-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9000;
-      padding: 20px;
-      align-items: center;
-      justify-content: center;
-      background: rgba(15, 23, 42, .48);
-      backdrop-filter: blur(4px);
-    }
-
-    .privacy-modal.show {
-      display: flex;
-    }
-
-    .privacy-box {
-      width: 100%;
-      max-width: 450px;
-      max-height: 85vh;
-      overflow-y: auto;
-      padding: 25px;
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 20px 70px rgba(0,0,0,.18);
-      animation: dropIn .2s ease;
-    }
-
-    .privacy-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .privacy-header h3 {
-      font-size: 18px;
-      font-weight: 900;
-    }
-
-    .privacy-description {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 2;
-      margin-bottom: 18px;
-    }
-
-    .privacy-option {
-      padding: 15px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .privacy-option strong {
-      display: block;
+      background: #f9fafb;
+      border-radius: 12px;
       font-size: 13px;
-      margin-bottom: 5px;
+      line-height: 2;
+      text-align: center;
     }
 
-    .privacy-option p {
+    .empty span {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 27px;
+    }
+
+    .notice {
+      margin-top: 13px;
       color: var(--muted);
       font-size: 11px;
       line-height: 1.9;
     }
 
-    .privacy-option input[type="checkbox"] {
-      width: 17px;
-      height: 17px;
-      accent-color: var(--green);
-      vertical-align: middle;
-      margin-left: 5px;
-    }
-
-    .privacy-option label {
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .privacy-footer {
-      margin-top: 20px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .secondary-btn {
-      border: 1px solid var(--border);
-      background: white;
-      padding: 11px 17px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 12px;
-    }
-
-    /* الفوتر */
-
-    .footer {
-      padding: 15px;
-      text-align: center;
-      font-size: 11px;
+    .loading {
+      padding: 30px;
       color: var(--muted);
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .login-box {
+      max-width: 500px;
+      padding: 28px;
+      margin: 70px auto;
+      background: white;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .login-box h2 {
+      margin-top: 0;
+    }
+
+    .login-box p {
+      color: var(--muted);
+      font-size: 13px;
       line-height: 2;
     }
 
-    /* الحركات */
-
-    @keyframes logoFloat {
-      0%, 100% {
-        transform: translateY(0) rotate(0);
-      }
-
-      50% {
-        transform: translateY(-4px) rotate(2deg);
-      }
+    footer {
+      padding: 20px 10px 35px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 11px;
     }
 
-    @keyframes dropIn {
-      from {
-        opacity: 0;
-        transform: translateY(-7px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* التابلت */
-
-    @media (max-width: 1200px) and (min-width: 761px) {
-      :root {
-        --sidebar-width: 220px;
-      }
-
-      body.sidebar-collapsed {
-        --sidebar-width: 82px;
-      }
-
-      .sidebar-inner {
-        padding: 20px 13px;
-      }
-
-      .main {
-        padding: 20px;
-      }
-
-      .stats-grid {
-        gap: 12px;
-      }
-
-      .stat-card {
-        padding: 15px;
-      }
-
-      .stat-number {
-        font-size: 25px;
-      }
-
-      .dashboard-grid {
-        grid-template-columns: minmax(0, 1.4fr) minmax(220px, 1fr);
-      }
-    }
-
-    /* الهاتف */
-
-    .mobile-bottom-nav {
+    .mobile-nav {
       display: none;
     }
 
-    @media (max-width: 760px) {
+    /* الأجهزة المتوسطة */
+
+    @media(max-width:1100px) {
+      .main {
+        padding: 25px;
+      }
+    }
+
+    @media(max-width:900px) {
+      .stats-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+      }
+    }
+
+    /* الموبايل - الحفاظ على الشريط السفلي */
+
+    @media(max-width:650px) {
       .sidebar {
         display: none;
       }
 
-      .main {
+      .main,
+      body.sidebar-collapsed .main {
         margin-right: 0;
         padding: 12px;
-        padding-bottom: 85px;
+        padding-bottom: 90px;
       }
 
       .topbar {
-        padding: 12px;
+        padding: 13px;
         margin-bottom: 15px;
-        border-radius: 14px;
       }
 
-      .page-heading h1 {
+      .topbar h1 {
         font-size: 17px;
       }
 
-      .page-heading p {
+      .topbar p {
+        font-size: 11px;
+      }
+
+      .student-chip {
+        max-width: 48%;
+      }
+
+      .student-chip strong {
+        font-size: 11px;
+      }
+
+      .student-chip small {
         font-size: 10px;
-      }
-
-      .top-actions {
-        gap: 7px;
-      }
-
-      .icon-button {
-        width: 37px;
-        height: 37px;
-        font-size: 15px;
-      }
-
-      .profile-button {
-        gap: 6px;
-        padding: 4px;
-        border: 0;
-        background: transparent;
       }
 
       .avatar {
-        width: 37px;
-        height: 37px;
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
       }
 
-      .profile-text {
+      .ruqaa {
+        font-size: 20px !important;
+      }
+
+      .welcome {
+        padding: 20px 17px;
+        margin-bottom: 15px;
+      }
+
+      .welcome h2 {
+        font-size: 19px;
+      }
+
+      .welcome p {
+        font-size: 12px;
+      }
+
+      .welcome-icon {
         display: none;
       }
 
-      .profile-button > i {
-        display: none;
+      .section {
+        padding: 16px;
+        margin-bottom: 15px;
       }
 
-      .profile-dropdown {
-        left: 0;
-        right: auto;
-      }
-
-      .welcome-banner {
-        padding: 22px 18px;
-        margin-bottom: 17px;
-        border-radius: 15px;
-      }
-
-      .welcome-banner h2 {
-        font-size: 20px;
-      }
-
-      .welcome-banner p {
-        font-size: 11px;
-      }
-
-      .welcome-banner::after {
-        left: 12px;
-        font-size: 75px;
-      }
-
-      .stats-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-        margin-bottom: 17px;
-      }
-
-      .stat-card {
-        min-height: 140px;
-        padding: 13px;
-        border-radius: 14px;
-      }
-
-      .stat-top {
-        margin-bottom: 13px;
-      }
-
-      .stat-icon {
-        width: 38px;
-        height: 38px;
-        border-radius: 11px;
-        font-size: 16px;
-      }
-
-      .stat-caption {
-        font-size: 10px;
-      }
-
-      .stat-number {
-        font-size: 25px;
-      }
-
-      .stat-description {
-        font-size: 9px;
-      }
-
-      .dashboard-grid {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 14px;
-      }
-
-      .panel {
-        padding: 17px;
-        border-radius: 15px;
-      }
-
-      .panel-header h3 {
+      .section-heading h3 {
         font-size: 14px;
       }
 
-      .chart-wrap {
-        height: 220px;
-      }
-
-      .progress-ring {
-        width: 155px;
-        height: 155px;
-      }
-
-      .lecture-item {
-        gap: 10px;
-        padding: 10px;
-      }
-
-      .lecture-icon {
-        width: 38px;
-        height: 38px;
-      }
-
-      .lecture-info h4 {
-        font-size: 11px;
-      }
-
-      .lecture-open {
-        padding: 8px 9px;
-        font-size: 10px;
-      }
-
-      .mobile-bottom-nav {
-        position: fixed;
-        display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        right: 0;
-        left: 0;
-        bottom: 0;
-        height: 66px;
-        padding-bottom: env(safe-area-inset-bottom);
-        background: white;
-        border-top: 1px solid var(--border);
-        z-index: 3000;
-        box-shadow: 0 -5px 20px rgba(0,0,0,.06);
-      }
-
-      .mobile-bottom-nav a {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 5px;
-        color: #8792a4;
-        font-size: 17px;
-      }
-
-      .mobile-bottom-nav a span {
-        font-size: 10px;
-        font-weight: 800;
-      }
-
-      .mobile-bottom-nav a.active {
-        color: var(--green);
-      }
-
-      .footer {
-        font-size: 10px;
-      }
-    }
-
-    @media (max-width: 360px) {
-      .main {
-        padding: 9px;
-        padding-bottom: 80px;
-      }
-
-      .topbar {
-        padding: 9px;
-      }
-
-      .page-heading h1 {
-        font-size: 15px;
+      .profile-grid {
+        grid-template-columns: 1fr;
+        gap: 13px;
       }
 
       .stats-grid {
-        gap: 8px;
+        gap: 10px;
+        margin-bottom: 15px;
       }
 
       .stat-card {
-        padding: 10px;
+        padding: 13px;
       }
 
-      .stat-number {
-        font-size: 22px;
+      .stat-value {
+        font-size: 21px;
       }
 
-      .welcome-banner h2 {
-        font-size: 18px;
+      .stat-label {
+        font-size: 11px;
+      }
+
+      .stat-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 17px;
+      }
+
+      .list-item {
+        align-items: flex-start;
+        padding: 11px;
+      }
+
+      .mobile-nav {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 200;
+        display: flex;
+        justify-content: space-around;
+        gap: 3px;
+        padding: 9px 4px calc(9px + env(safe-area-inset-bottom));
+        background: white;
+        box-shadow: 0 -4px 18px rgba(0,0,0,.08);
+      }
+
+      .mobile-nav a {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        padding: 5px 2px;
+        border-radius: 9px;
+        color: var(--muted);
+        font-size: 10px;
+      }
+
+      .mobile-nav a span {
+        font-size: 19px;
+      }
+
+      .mobile-nav a.active {
+        color: var(--green);
+        background: var(--green-light);
+        font-weight: 800;
+      }
+
+      footer {
+        padding-bottom: 15px;
       }
     }
 
-    /* الطباعة */
-
-    @media print {
-      .sidebar,
-      .top-actions,
-      .mobile-bottom-nav,
-      .privacy-modal {
-        display: none !important;
-      }
-
-      .main {
-        margin: 0;
-        padding: 10px;
-      }
-    }
-
-    /* تقليل الحركة لمن يفضل ذلك */
-
-    @media (prefers-reduced-motion: reduce) {
+    @media(prefers-reduced-motion:reduce) {
       *,
       *::before,
       *::after {
-        animation-duration: .01ms !important;
-        transition-duration: .01ms !important;
         scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
       }
     }
   </style>
@@ -1402,600 +946,446 @@
 
 <body>
 
-  <!-- شاشة الدخول -->
+  <!-- الشريط الجانبي -->
 
-  <section id="authScreen">
-    <div class="auth-box">
+  <aside class="sidebar" id="sidebar">
 
-      <img class="auth-logo" src="logo.png" alt="شعار أرض الأحياء">
+    <div class="sidebar-top">
 
-      <h2>منصة أرض الأحياء</h2>
+      <!-- زر القائمة بنفس تصميم صفحة المحاضرات -->
 
-      <p id="authMessage">
-        سجّل الدخول لمتابعة تقدمك التعليمي والوصول إلى لوحة الطالب.
-      </p>
+      <div class="sidebar-control">
+        <button
+          type="button"
+          class="sidebar-toggle"
+          id="sidebarToggle"
+          aria-label="تصغير القائمة الجانبية"
+          title="تصغير القائمة الجانبية"
+          aria-expanded="true">
 
-      <a href="login/index.html" class="primary-btn">
-        <i class="fa-solid fa-right-to-bracket"></i>
-        تسجيل الدخول
-      </a>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m14 5-7 7 7 7"></path>
+            <path d="M20 5v14"></path>
+          </svg>
 
-      <div id="authError" role="alert"></div>
+        </button>
+      </div>
+
+      <div class="brand">
+
+        <img src="../logo.png"
+             alt="شعار أرض الأحياء"
+             onerror="this.style.display='none'">
+
+        <div class="brand-text">
+          <h2>أرض الأحياء</h2>
+          <small>الثانويه عامه </small>
+        </div>
+
+      </div>
+
+      <div class="nav-title">القائمة الرئيسية</div>
+
+      <nav aria-label="القائمة الرئيسية">
+
+        <!-- الرئيسية -->
+        <a class="nav-link"
+           href="../index.html"
+           title="الرئيسية">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m3 10 9-7 9 7"/>
+              <path d="M5 9v12h14V9"/>
+              <path d="M9 21v-7h6v7"/>
+            </svg>
+          </span>
+          <span class="nav-text">الرئيسية</span>
+        </a>
+
+        <!-- المحاضرات -->
+        <a class="nav-link"
+           href="../videos/index.html"
+           title="المحاضرات">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="2"/>
+              <path d="m10 9 5 3-5 3z"/>
+            </svg>
+          </span>
+          <span class="nav-text">المحاضرات</span>
+        </a>
+
+        <!-- المذكرات -->
+        <a class="nav-link"
+           href="../notes/index.html"
+           title="المذكرات">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 3h9l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/>
+              <path d="M14 3v5h5"/>
+              <path d="M8 12h8M8 16h8"/>
+            </svg>
+          </span>
+          <span class="nav-text">المذكرات</span>
+        </a>
+
+        <!-- بطل الفصل -->
+        <a class="nav-link"
+           href="../champion/index.html"
+           title="بطل الفصل">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>
+            </svg>
+          </span>
+          <span class="nav-text">بطل الفصل</span>
+        </a>
+
+        <!-- المنتدى -->
+        <a class="nav-link"
+           href="../forum/index.html"
+           title="المنتدى">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/>
+              <path d="M8 12h.01"/>
+              <path d="M12 12h.01"/>
+              <path d="M16 12h.01"/>
+            </svg>
+          </span>
+          <span class="nav-text">المنتدى</span>
+        </a>
+
+        <!-- حساب الطالب -->
+        <a class="nav-link active"
+           href="index.html"
+           title="حساب الطالب"
+           aria-current="page">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M5 21a7 7 0 0 1 14 0"/>
+            </svg>
+          </span>
+          <span class="nav-text">حساب الطالب</span>
+        </a>
+
+      </nav>
 
     </div>
-  </section>
 
-  <!-- التطبيق -->
+    <div class="sidebar-bottom">
+      <strong>🌱 أرض الأحياء</strong>
+      <br>
+      رحلتك نحو التفوق تبدأ من هنا.
+      <br>
+      <span style="opacity:.8">الثانويه عامه </span>
+    </div>
 
-  <div id="app">
+  </aside>
 
-    <!-- القائمة الجانبية -->
+  <!-- المحتوى الأصلي -->
 
-    <aside class="sidebar">
+  <main class="main">
 
-      <div class="sidebar-inner">
+    <header class="topbar">
 
-        <!-- زر تصغير وتوسيع القائمة -->
+      <div>
+        <h1>حساب الطالب</h1>
+        <p>بياناتك الشخصية ومتابعة تقدمك</p>
+      </div>
 
-        <div class="sidebar-top-actions">
-          <button
-            type="button"
-            class="sidebar-toggle"
-            id="sidebarToggle"
-            aria-label="تصغير القائمة الجانبية"
-            aria-expanded="true"
-            title="تصغير القائمة"
-            onclick="toggleSidebar()">
+      <div class="student-chip">
 
-            <i class="fa-solid fa-angles-right"></i>
+        <div class="avatar">👨‍🎓</div>
 
-          </button>
+        <div>
+          <strong id="topStudentName" class="ruqaa">جارٍ التحميل...</strong>
+          <small>طالب أرض الأحياء</small>
         </div>
-
-        <div class="brand">
-
-          <div class="brand-logo-wrap">
-            <img src="logo.png" class="brand-logo" alt="شعار المنصة">
-          </div>
-
-          <div class="brand-text">
-            <h2>أرض الأحياء</h2>
-               <h>   المصطفي  </h>
-                     
-          </div>
-
-        </div>
-
-        <p class="menu-label">القائمة الرئيسية</p>
-
-        <nav class="side-menu" aria-label="القائمة الرئيسية">
-
-          <a href="index.html"
-            class="side-link active"
-            data-title="الرئيسية"
-            title="الرئيسية">
-
-            <i class="fa-solid fa-house"></i>
-            <span class="side-link-text">الرئيسية</span>
-
-          </a>
-
-          <a href="videos/index.html"
-            class="side-link"
-            data-title="المحاضرات"
-            title="المحاضرات">
-
-            <i class="fa-solid fa-circle-play"></i>
-            <span class="side-link-text">المحاضرات</span>
-
-          </a>
-
-
-          
-          </a>
-
-          <a href="champion/index.html"
-            class="side-link"
-            data-title="بطل الفصل"
-            title="بطل الفصل">
-
-            <i class="fa-solid fa-trophy"></i>
-            <span class="side-link-text">بطل الفصل</span>
-            
-</a>
-
-          <a href="forum/index.html"
-            class="side-link"
-            data-title="المنتدى"
-            title="المنتدى">
-
-            <i class="fa-regular fa-comments"></i>
-            <span class="side-link-text">المنتدى</span>
-
-          </a>
-
-          <a href="account/index.html"
-            class="side-link"
-            data-title="حساب الطالب"
-            title="حساب الطالب">
-
-            <i class="fa-regular fa-user"></i>
-            <span class="side-link-text">حساب الطالب</span>
-
-          </a>
-
-          <a href="#"
-            class="side-link"
-            data-title="الخصوصية"
-            title="الخصوصية"
-            onclick="openPrivacy(event)">
-
-            <i class="fa-solid fa-shield-halved"></i>
-            <span class="side-link-text">الخصوصية</span>
-
-          </a>
-
-        </nav>
 
       </div>
 
-      <div class="sidebar-bottom">
-        <i class="fa-solid fa-leaf"></i>
-        <span>جميع الحقوق محفوظة © 2026</span>
-        
-      <span> محمد حامد</span>
+    </header>
+
+    <div id="pageLoading" class="section loading">
+      جارٍ تحميل بيانات حسابك...
+    </div>
+
+    <div id="loginRequired" style="display:none">
+
+      <div class="login-box">
+        <div style="font-size:45px">🔐</div>
+
+        <h2>سجّل الدخول أولًا</h2>
+
+        <p>يجب تسجيل الدخول إلى المنصة لعرض بيانات حسابك.</p>
+
+        <a class="btn btn-primary" href="../index.html">
+          الذهاب إلى المنصة
+        </a>
       </div>
 
-    </aside>
+    </div>
 
-    <!-- المحتوى -->
+    <div id="accountContent" style="display:none">
 
-    <main class="main">
+      <section class="welcome">
 
-      <!-- الشريط العلوي -->
+        <h2>
+          أهلًا بك يا
+          <span id="welcomeName" class="ruqaa">طالبنا المتميز</span>
+          🌱
+        </h2>
 
-      <header class="topbar">
+        <p>
+          تابع بياناتك التعليمية ودرجاتك، وحافظ على تحديث بيانات
+          التواصل الخاصة بك.
+        </p>
 
-        <div class="page-heading">
-          <h1>لوحة الطالب</h1>
-          <p>تابع رحلتك التعليمية وإنجازاتك</p>
+        <div class="welcome-icon">🎓</div>
+
+      </section>
+
+      <div class="stats-grid">
+
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">المحاضرات المتاحة</span>
+            <div class="stat-icon">🎥</div>
+          </div>
+
+          <div class="stat-value" id="totalLectures">—</div>
+          <div class="stat-note">إجمالي المحاضرات بالمنصة</div>
         </div>
 
-        <div class="top-actions">
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">نتائج الامتحانات</span>
+            <div class="stat-icon">📝</div>
+          </div>
 
-          <button
-            class="icon-button"
-            type="button"
-            title="تحديث البيانات"
-            onclick="loadDashboard()"
-            aria-label="تحديث البيانات">
+          <div class="stat-value" id="examCount">—</div>
+          <div class="stat-note">النتائج المسجلة لحسابك</div>
+        </div>
 
-            <i class="fa-solid fa-rotate"></i>
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">الواجبات</span>
+            <div class="stat-icon">📋</div>
+          </div>
 
-          </button>
+          <div class="stat-value" id="homeworkCount">—</div>
+          <div class="stat-note">الواجبات المسجلة لحسابك</div>
+        </div>
 
-          <div class="profile-wrap">
+      </div>
 
-            <button
-              class="profile-button"
-              id="profileButton"
-              type="button"
-              aria-expanded="false"
-              onclick="toggleProfile()">
+      <!-- البيانات الشخصية -->
 
-              <div class="avatar">
-                <i class="fa-solid fa-user-graduate"></i>
-              </div>
+      <section class="section">
 
-              <div class="profile-text">
-                <strong id="studentName">الطالب</strong>
-                <small>حساب الطالب</small>
-              </div>
+        <div class="section-heading">
+          <div>
+            <h3>👤 البيانات الشخصية</h3>
+            <p>
+              اسمك ثابت، ويمكنك تعديل رقم الهاتف أو البريد الإلكتروني وفقًا للمهلة.
+            </p>
+          </div>
 
-              <i class="fa-solid fa-chevron-down"></i>
+          <div class="section-icon">🪪</div>
+        </div>
 
+        <form id="profileForm">
+
+          <div class="profile-grid">
+
+            <div class="field">
+              <label for="fullName">اسم الطالب — غير قابل للتعديل</label>
+
+              <input type="text"
+                     id="fullName"
+                     class="ruqaa"
+                     readonly
+                     disabled>
+            </div>
+
+            <div class="field">
+              <label for="email">البريد الإلكتروني</label>
+
+              <input type="email"
+                     id="email"
+                     readonly
+                     disabled
+                     autocomplete="email">
+            </div>
+
+            <div class="field">
+              <label for="phone">رقم الهاتف</label>
+
+              <input type="tel"
+                     id="phone"
+                     readonly
+                     disabled
+                     autocomplete="tel"
+                     placeholder="غير مسجل">
+            </div>
+
+          </div>
+
+          <div class="actions">
+
+            <button type="button"
+                    class="btn btn-primary"
+                    id="editPhoneBtn">
+              ✏️ تعديل رقم الهاتف
             </button>
 
-            <div class="profile-dropdown" id="profileDropdown">
+            <button type="button"
+                    class="btn btn-primary"
+                    id="editEmailBtn">
+              ✉️ تعديل البريد الإلكتروني
+            </button>
 
-              <a class="dropdown-item" href="account/index.html">
-                <i class="fa-regular fa-user"></i>
-                الملف الشخصي
-              </a>
+            <button type="button"
+                    class="btn btn-primary"
+                    id="saveBtn"
+                    style="display:none">
+               حفظ التعديل
+            </button>
 
-              <button class="dropdown-item" onclick="openPrivacy()">
-                <i class="fa-solid fa-shield-halved"></i>
-                إعدادات الخصوصية
-              </button>
+            <button type="button"
+                    class="btn btn-light"
+                    id="cancelBtn"
+                    style="display:none">
+              إلغاء
+            </button>
 
-              <button class="dropdown-item" onclick="loadDashboard()">
-                <i class="fa-solid fa-rotate"></i>
-                تحديث الإحصائيات
-              </button>
-
-              <button class="dropdown-item logout" onclick="logout()">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                تسجيل الخروج
-              </button>
-
-            </div>
+            <button type="button"
+                    class="btn btn-danger"
+                    id="logoutBtn">
+              تسجيل الخروج
+            </button>
 
           </div>
 
-        </div>
+          <div id="profileMessage" class="message"></div>
 
-      </header>
+          <div class="notice" id="cooldownNotice">
+            يمكنك تغيير رقم الهاتف أو البريد الإلكتروني مرة واحدة كل 30 يومًا.
+            الاسم غير قابل للتعديل من صفحة حساب الطالب.
+          </div>
 
-      <!-- الترحيب -->
-
-      <section class="welcome-banner">
-
-        <span class="welcome-label">
-          <i class="fa-solid fa-leaf"></i>
-          رحلتك التعليمية
-        </span>
-
-        <h2 id="welcomeTitle">أهلاً بك في أرض الأحياء 🌿</h2>
-
-        <p>
-          هنا تتابع محاضراتك وإنجازاتك التعليمية.
-          استمر في التعلم والمراجعة، واجعل كل محاضرة خطوة جديدة نحو التفوق.
-        </p>
+        </form>
 
       </section>
 
-      <!-- الإحصائيات -->
+      <!-- الامتحانات -->
 
-      <section class="stats-grid">
+      <section class="section">
 
-        <article class="stat-card green">
-
-          <div class="stat-top">
-            <div class="stat-caption">المحاضرات المحفوظة</div>
-
-            <div class="stat-icon">
-              <i class="fa-regular fa-bookmark"></i>
-            </div>
-          </div>
-
-          <strong class="stat-number" id="savedCount">—</strong>
-
-          <p class="stat-description" id="savedDescription">
-            عدد المحاضرات التي حفظتها
-          </p>
-
-        </article>
-
-        <article class="stat-card blue">
-
-          <div class="stat-top">
-            <div class="stat-caption">تقدم الطالب</div>
-
-            <div class="stat-icon">
-              <i class="fa-solid fa-chart-line"></i>
-            </div>
-          </div>
-
-          <strong class="stat-number">
-            <span id="progressCount">0</span><small>%</small>
-          </strong>
-
-          <p class="stat-description">
-            نسبة إكمال المحاضرات المنشورة
-          </p>
-
-        </article>
-
-        <article class="stat-card purple">
-
-          <div class="stat-top">
-            <div class="stat-caption">إجمالي المحاضرات</div>
-
-            <div class="stat-icon">
-              <i class="fa-solid fa-video"></i>
-            </div>
-          </div>
-
-          <strong class="stat-number" id="totalCount">—</strong>
-
-          <p class="stat-description">
-            المحاضرات المنشورة على المنصة
-          </p>
-
-        </article>
-
-        <article class="stat-card orange">
-
-          <div class="stat-top">
-            <div class="stat-caption">المحاضرات المكتملة</div>
-
-            <div class="stat-icon">
-              <i class="fa-solid fa-circle-check"></i>
-            </div>
-          </div>
-
-          <strong class="stat-number" id="completedCount">—</strong>
-
-          <p class="stat-description">
-            المحاضرات التي أكملت مشاهدتها
-          </p>
-
-        </article>
-
-      </section>
-
-      <!-- الرسوم البيانية -->
-
-      <section class="dashboard-grid">
-
-        <article class="panel">
-
-          <div class="panel-header">
-
-            <div>
-              <h3>رسم تقدمك التعليمي</h3>
-              <p>نسبة إنجاز المحاضرات المسجلة في حسابك</p>
-            </div>
-
-            <div class="panel-icon">
-              <i class="fa-solid fa-chart-area"></i>
-            </div>
-
-          </div>
-
-          <div class="chart-wrap">
-            <canvas
-              id="progressChart"
-              role="img"
-              aria-label="رسم بياني لتقدم الطالب">
-            </canvas>
-          </div>
-
-          <p class="chart-note" id="chartNote">
-            يتم تحديث الرسم عند توفر بيانات التقدم.
-          </p>
-
-        </article>
-
-        <article class="panel progress-panel">
-
-          <div class="panel-header">
-
-            <div>
-              <h3>إنجازك الإجمالي</h3>
-              <p>نسبة المحاضرات المكتملة</p>
-            </div>
-
-            <div class="panel-icon">
-              <i class="fa-solid fa-bullseye"></i>
-            </div>
-
-          </div>
-
-          <div class="progress-ring">
-
-            <svg viewBox="0 0 120 120" aria-label="دائرة التقدم">
-
-              <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
-
-              <circle
-                class="ring-value"
-                id="progressRing"
-                cx="60"
-                cy="60"
-                r="52">
-              </circle>
-
-            </svg>
-
-            <div class="ring-center">
-              <strong id="ringPercent">0%</strong>
-              <span>نسبة الإنجاز</span>
-            </div>
-
-          </div>
-
-          <div class="progress-details">
-
-            <div class="detail-row">
-              <span class="detail-label">
-                <span class="detail-dot"></span>
-                المحاضرات المكتملة
-              </span>
-
-              <strong id="detailCompleted">—</strong>
-            </div>
-
-            <div class="detail-row">
-              <span class="detail-label">
-                <span class="detail-dot" style="background:#e7edf4"></span>
-                المحاضرات المتبقية
-              </span>
-
-              <strong id="detailRemaining">—</strong>
-            </div>
-
-          </div>
-
-        </article>
-
-      </section>
-
-      <!-- آخر المحاضرات -->
-
-      <section class="panel lectures-panel">
-
-        <div class="panel-header">
-
+        <div class="section-heading">
           <div>
-            <h3>
-              <i class="fa-solid fa-play-circle"
-                style="color:#087f5b;margin-left:7px"></i>
-              أحدث المحاضرات
-            </h3>
-
-            <p>أحدث المحاضرات المنشورة على المنصة</p>
+            <h3>📝 درجات الامتحانات</h3>
+            <p>النتائج المسجلة في قاعدة البيانات لحسابك.</p>
           </div>
 
-          <a href="videos/index.html" class="view-all">
-            كل المحاضرات
-            <i class="fa-solid fa-arrow-left"></i>
-          </a>
-
+          <div class="section-icon">📊</div>
         </div>
 
-        <div class="lecture-list" id="lectureList">
-
-          <div class="empty-state">
-            <i class="fa-solid fa-spinner fa-spin"></i>
-            جاري تحميل المحاضرات...
-          </div>
-
+        <div id="examResults" class="list">
+          <div class="loading">جارٍ تحميل النتائج...</div>
         </div>
 
       </section>
 
-      <footer class="footer">
-      منصة أرض الأحياء — أحياء للثانويه العامه 
-        <br>
-        © 2026 جميع الحقوق محفوظة
-      </footer>
+      <!-- الواجبات -->
 
-    </main>
+      <section class="section">
 
-    <!-- قائمة الهاتف -->
+        <div class="section-heading">
+          <div>
+            <h3>📋 درجات الواجبات</h3>
+            <p>متابعة الواجبات المسجلة لك.</p>
+          </div>
 
-    <nav class="mobile-bottom-nav" aria-label="التنقل الرئيسي">
+          <div class="section-icon">✍️</div>
+        </div>
 
-      <a href="index.html" class="active">
-        <i class="fa-solid fa-house"></i>
-        <span>الرئيسية</span>
-      </a>
+        <div id="homeworkResults" class="list">
+          <div class="loading">جارٍ تحميل الواجبات...</div>
+        </div>
 
-      <a href="videos/index.html">
-        <i class="fa-solid fa-circle-play"></i>
-        <span>المحاضرات</span>
-      </a>
+      </section>
 
-      </a>
+      <!-- المنتدى -->
 
-      <a href="forum/index.html">
-        <i class="fa-regular fa-comments"></i>
-        <span>المنتدى</span>
-      </a>
+      <section class="section">
 
-      <a href="account/index.html">
-        <i class="fa-regular fa-user"></i>
-        <span>حسابي</span>
-      </a>
+        <div class="section-heading">
+          <div>
+            <h3> مشاركات المنتدى</h3>
+            <p>المشاركات المسجلة لحسابك.</p>
+          </div>
 
-    </nav>
+          <div class="section-icon">🌱</div>
+        </div>
 
-  </div>
+        <div id="forumPosts" class="list">
+          <div class="loading">جارٍ تحميل المشاركات...</div>
+        </div>
 
-  <!-- نافذة الخصوصية -->
+        <div class="actions">
+          <a href="../forum/index.html" class="btn btn-primary">
+            الانتقال إلى المنتدى
+          </a>
+        </div>
 
-  <div
-    class="privacy-modal"
-    id="privacyModal"
-    onclick="closePrivacyOutside(event)">
+      </section>
 
-    <section
-      class="privacy-box"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="privacyTitle">
+    </div>
 
-      <div class="privacy-header">
+    <footer>© 2026 منصة أرض الأحياء — جميع الحقوق محفوظة</footer>
 
-        <h3 id="privacyTitle">
-          <i class="fa-solid fa-shield-halved" style="color:#087f5b"></i>
-          إعدادات الخصوصية
-        </h3>
+  </main>
 
-        <button
-          class="icon-button"
-          type="button"
-          onclick="closePrivacy()"
-          aria-label="إغلاق">
+  <!-- شريط التنقل السفلي للموبايل -->
 
-          <i class="fa-solid fa-xmark"></i>
+  <nav class="mobile-nav" aria-label="التنقل السريع">
 
-        </button>
+    <a href="../index.html">
+      <span></span>
+      الرئيسية
+    </a>
 
-      </div>
+    <a href="../videos/index.html">
+      <span></span>
+      المحاضرات
+    </a>
 
-      <p class="privacy-description">
-        تحكم في بعض خيارات الخصوصية الخاصة بواجهة المنصة على هذا الجهاز.
-      </p>
+    <a href="../notes/index.html">
+      <span></span>
+      المذكرات
+    </a>
 
-      <div class="privacy-option">
+    <a href="../forum/index.html">
+      <span></span>
+      المنتدى
+    </a>
 
-        <strong>حماية عرض الصفحة</strong>
+    <a href="index.html" class="active" aria-current="page">
+      <span></span>
+      حسابي
+    </a>
 
-        <p>
-          يمكنك إخفاء محتوى الصفحة عند انتقال المتصفح إلى الخلفية
-          أو عند مغادرة علامة التبويب.
-          هذا الخيار لا يكتشف جميع وسائل تسجيل الشاشة.
-        </p>
-
-        <label>
-          <input type="checkbox" id="hideOnLeave">
-          إخفاء المحتوى عند مغادرة الصفحة
-        </label>
-
-      </div>
-
-      <div class="privacy-option">
-
-        <strong>خصوصية الحساب</strong>
-
-        <p>
-          لا تشارك كلمة المرور أو بيانات تسجيل الدخول مع أي شخص.
-          تسجيل الخروج ينهي جلسة الحساب على هذا الجهاز.
-        </p>
-
-      </div>
-
-      <div class="privacy-option">
-
-        <strong>البيانات المحفوظة</strong>
-
-        <p>
-          يتم تحميل المحاضرات من المنصة.
-          بيانات الحفظ المحلية في هذا الإصدار مرتبطة بالمتصفح الحالي
-          وليست مزامنة تلقائيًا بين الأجهزة.
-        </p>
-
-      </div>
-
-      <div class="privacy-footer">
-
-        <button class="primary-btn" type="button" onclick="savePrivacy()">
-          حفظ الإعدادات
-        </button>
-
-        <button class="secondary-btn" type="button" onclick="closePrivacy()">
-          إغلاق
-        </button>
-
-      </div>
-
-    </section>
-
-  </div>
-
-  <!-- غطاء الخصوصية -->
-
-  <div
-    id="privacyCover"
-    style="display:none;position:fixed;inset:0;background:#000;z-index:20000">
-  </div>
+  </nav>
 
   <script>
     "use strict";
 
-    /* إعداد Supabase الحالي */
+    /* =================================
+       إعداد Supabase
+    ================================= */
 
     const SUPABASE_URL =
       "https://fpfbmjtpzamzlyzitmsd.supabase.co";
@@ -2003,767 +1393,696 @@
     const SUPABASE_KEY =
       "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
 
-    const supabaseClient = window.supabase.createClient(
+    // الاحتفاظ بتسجيل الدخول بعد تحديث الصفحة أو إغلاقها وفتحها
+    const db = window.supabase.createClient(
       SUPABASE_URL,
-      SUPABASE_KEY
+      SUPABASE_KEY,
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true,
+          storage: window.localStorage
+        }
+      }
     );
 
+    const TABLES = {
+      exams: "exam_results",
+      homework: "homework_results",
+      forum: "forum_posts"
+    };
+
+    const COOLDOWN_MS = 30 * 24 * 60 * 60 * 1000;
+
     let currentUser = null;
-    let lectureCache = [];
-    let dashboardLoading = false;
+    let profile = {};
+    let editMode = null;
+    let savedPhone = "";
+    let savedEmail = "";
 
-    /* أدوات الواجهة */
+    const $ = id => document.getElementById(id);
 
-    function byId(id) {
-      return document.getElementById(id);
-    }
+    /* =================================
+       زر الشريط الجانبي
+       نفس وظيفة صفحة المحاضرات
+    ================================= */
 
-    function showLogin(message) {
-      byId("app").style.display = "none";
-      byId("authScreen").style.display = "flex";
+    const sidebarToggle = $("sidebarToggle");
 
-      if (message) {
-        byId("authError").textContent = message;
-        byId("authError").style.display = "block";
-      }
-    }
+    /* نفس مفتاح التخزين المستخدم بصفحة المحاضرات */
+    const SIDEBAR_STORAGE_KEY =
+      "ardAlahyaaLecturesSidebarCollapsed";
 
-    function showDashboard() {
-      byId("authScreen").style.display = "none";
-      byId("app").style.display = "block";
-
-      /*
-        رسم المخطط بعد ظهور الصفحة حتى نحصل على
-        أبعاد Canvas الصحيحة.
-      */
-
-      requestAnimationFrame(function() {
-        redrawCurrentChart();
-      });
-    }
-
-    function escapeHTML(value) {
-      return String(value ?? "").replace(/[&<>"']/g, function(char) {
-        const map = {
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#39;"
-        };
-
-        return map[char];
-      });
-    }
-
-    /* تصغير وتوسيع الشريط الجانبي */
-
-    function setSidebarCollapsed(collapsed) {
+    function setSidebarCollapsed(collapsed, save = true) {
       document.body.classList.toggle(
         "sidebar-collapsed",
         collapsed
       );
 
-      const toggle = byId("sidebarToggle");
+      sidebarToggle.setAttribute(
+        "aria-expanded",
+        String(!collapsed)
+      );
 
-      if (toggle) {
-        toggle.setAttribute(
-          "aria-expanded",
-          collapsed ? "false" : "true"
-        );
+      sidebarToggle.setAttribute(
+        "aria-label",
+        collapsed
+          ? "توسيع القائمة الجانبية"
+          : "تصغير القائمة الجانبية"
+      );
 
-        toggle.setAttribute(
-          "aria-label",
-          collapsed
-            ? "توسيع القائمة الجانبية"
-            : "تصغير القائمة الجانبية"
-        );
+      sidebarToggle.title = collapsed
+        ? "توسيع القائمة الجانبية"
+        : "تصغير القائمة الجانبية";
 
-        toggle.title = collapsed
-          ? "توسيع القائمة"
-          : "تصغير القائمة";
+      if (save) {
+        try {
+          localStorage.setItem(
+            SIDEBAR_STORAGE_KEY,
+            collapsed ? "true" : "false"
+          );
+        } catch (error) {
+          console.warn(
+            "تعذر حفظ حالة القائمة الجانبية:",
+            error
+          );
+        }
       }
-
-      try {
-        localStorage.setItem(
-          "ardAlahyaaSidebarCollapsed",
-          collapsed ? "true" : "false"
-        );
-      } catch (error) {
-        console.warn("تعذر حفظ حالة القائمة:", error);
-      }
-
-      /*
-        إعادة رسم الرسم البياني بعد انتهاء حركة القائمة.
-      */
-
-      setTimeout(redrawCurrentChart, 320);
     }
 
-    function toggleSidebar() {
-      const collapsed =
+    function loadSidebarState() {
+      try {
+        const savedState = localStorage.getItem(
+          SIDEBAR_STORAGE_KEY
+        );
+
+        setSidebarCollapsed(
+          savedState === "true",
+          false
+        );
+
+      } catch (error) {
+        setSidebarCollapsed(false, false);
+      }
+    }
+
+    sidebarToggle.addEventListener("click", function () {
+      const isCollapsed =
         document.body.classList.contains("sidebar-collapsed");
 
-      setSidebarCollapsed(!collapsed);
+      setSidebarCollapsed(!isCollapsed);
+    });
+
+    loadSidebarState();
+
+    /* =================================
+       رسائل الحساب
+    ================================= */
+
+    function message(text, type = "info") {
+      $("profileMessage").textContent = text;
+      $("profileMessage").className = "message " + type;
     }
 
-    function initializeSidebar() {
-      let collapsed = false;
+    function clearMessage() {
+      $("profileMessage").textContent = "";
+      $("profileMessage").className = "message";
+    }
 
-      try {
-        collapsed =
-          localStorage.getItem("ardAlahyaaSidebarCollapsed") === "true";
-      } catch (error) {
-        console.warn("تعذر قراءة حالة القائمة:", error);
+    function displayEmpty(id, text, icon = "📭") {
+      const container = $(id);
+      container.replaceChildren();
+
+      const box = document.createElement("div");
+      box.className = "empty";
+
+      const iconEl = document.createElement("span");
+      iconEl.textContent = icon;
+
+      const textEl = document.createElement("div");
+      textEl.textContent = text;
+
+      box.append(iconEl, textEl);
+      container.appendChild(box);
+    }
+
+    function addItem(id, title, subtitle, badge) {
+      const item = document.createElement("div");
+      item.className = "list-item";
+
+      const main = document.createElement("div");
+      main.className = "list-item-main";
+
+      const titleEl = document.createElement("strong");
+      titleEl.textContent = title || "بدون عنوان";
+
+      const subEl = document.createElement("small");
+      subEl.textContent = subtitle || "";
+
+      main.append(titleEl, subEl);
+      item.appendChild(main);
+
+      if (badge) {
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = badge;
+        item.appendChild(tag);
       }
 
-      setSidebarCollapsed(collapsed);
+      $(id).appendChild(item);
     }
 
-    function toggleProfile() {
-      const dropdown = byId("profileDropdown");
-      const button = byId("profileButton");
+    function fmtDate(value) {
+      if (!value) return "";
 
-      dropdown.classList.toggle("show");
+      const d = new Date(value);
 
-      button.setAttribute(
-        "aria-expanded",
-        dropdown.classList.contains("show") ? "true" : "false"
+      if (Number.isNaN(d.getTime())) return "";
+
+      return d.toLocaleDateString("ar-EG");
+    }
+
+    /* =================================
+       مهلة تعديل بيانات التواصل
+    ================================= */
+
+    function remainingDays() {
+      if (!profile.contact_updated_at) return 0;
+
+      const last = new Date(
+        profile.contact_updated_at
+      ).getTime();
+
+      if (!Number.isFinite(last)) return 0;
+
+      return Math.max(
+        0,
+        Math.ceil(
+          (last + COOLDOWN_MS - Date.now()) / 86400000
+        )
       );
     }
 
-    document.addEventListener("click", function(event) {
-      const wrap = document.querySelector(".profile-wrap");
+    function updateCooldownUI() {
+      const days = remainingDays();
+      const locked = days > 0;
 
-      if (wrap && !wrap.contains(event.target)) {
-        byId("profileDropdown").classList.remove("show");
+      $("editPhoneBtn").disabled = locked;
+      $("editEmailBtn").disabled = locked;
 
-        byId("profileButton").setAttribute(
-          "aria-expanded",
-          "false"
+      if (locked) {
+        $("cooldownNotice").textContent =
+          "تم تعديل بيانات التواصل مؤخرًا. يمكنك تعديل رقم الهاتف أو البريد الإلكتروني بعد " +
+          days + " يومًا تقريبًا.";
+      } else {
+        $("cooldownNotice").textContent =
+          "يمكنك تعديل رقم الهاتف أو البريد الإلكتروني مرة واحدة كل 30 يومًا. " +
+          "الاسم غير قابل للتعديل من صفحة حساب الطالب.";
+      }
+    }
+
+    function resetForm() {
+      editMode = null;
+
+      $("fullName").value = profile.full_name || "";
+      $("email").value = currentUser.email || profile.email || "";
+      $("phone").value = profile.phone || "";
+
+      $("fullName").readOnly = true;
+      $("fullName").disabled = true;
+
+      $("email").readOnly = true;
+      $("email").disabled = true;
+
+      $("phone").readOnly = true;
+      $("phone").disabled = true;
+
+      $("editPhoneBtn").style.display = "";
+      $("editEmailBtn").style.display = "";
+      $("saveBtn").style.display = "none";
+      $("cancelBtn").style.display = "none";
+
+      updateCooldownUI();
+    }
+
+    function beginEdit(mode) {
+      clearMessage();
+
+      if (remainingDays() > 0) {
+        message(
+          "لا يمكنك تعديل بيانات التواصل الآن. انتظر حتى تنتهي مهلة الـ30 يومًا.",
+          "error"
+        );
+
+        return;
+      }
+
+      editMode = mode;
+
+      $("editPhoneBtn").style.display = "none";
+      $("editEmailBtn").style.display = "none";
+      $("saveBtn").style.display = "";
+      $("cancelBtn").style.display = "";
+
+      $("phone").disabled = mode !== "phone";
+      $("phone").readOnly = mode !== "phone";
+
+      $("email").disabled = mode !== "email";
+      $("email").readOnly = mode !== "email";
+
+      $("fullName").disabled = true;
+      $("fullName").readOnly = true;
+
+      if (mode === "phone") {
+        $("phone").focus();
+
+        message(
+          "عدّل رقم الهاتف فقط، ثم اضغط حفظ. لن تستطيع تعديل بيانات التواصل مرة أخرى لمدة 30 يومًا.",
+          "info"
+        );
+
+      } else {
+        $("email").focus();
+
+        message(
+          "عدّل البريد الإلكتروني فقط. قد يرسل Supabase رسالة لتأكيد البريد الجديد.",
+          "info"
         );
       }
-    });
-
-    /* إعدادات الخصوصية */
-
-    function openPrivacy(event) {
-      if (event) event.preventDefault();
-
-      byId("profileDropdown").classList.remove("show");
-
-      byId("privacyModal").classList.add("show");
-
-      byId("hideOnLeave").checked =
-        localStorage.getItem("ard_hide_on_leave") === "true";
     }
 
-    function closePrivacy() {
-      byId("privacyModal").classList.remove("show");
-    }
+    /* =================================
+       تحميل بيانات الحساب
+    ================================= */
 
-    function closePrivacyOutside(event) {
-      if (event.target === byId("privacyModal")) {
-        closePrivacy();
-      }
-    }
-
-    function savePrivacy() {
-      localStorage.setItem(
-        "ard_hide_on_leave",
-        byId("hideOnLeave").checked ? "true" : "false"
-      );
-
-      /*
-        لو تم إيقاف الخيار، نزيل الغطاء فورًا.
-      */
-
-      if (!byId("hideOnLeave").checked) {
-        byId("privacyCover").style.display = "none";
-      }
-
-      closePrivacy();
-
-      alert("تم حفظ إعدادات الخصوصية على هذا الجهاز.");
-    }
-
-    document.addEventListener("visibilitychange", function() {
-      const enabled =
-        localStorage.getItem("ard_hide_on_leave") === "true";
-
-      if (!enabled) return;
-
-      byId("privacyCover").style.display =
-        document.hidden ? "block" : "none";
-    });
-
-    /* تحميل بيانات الحساب */
-
-    async function checkUser() {
+    async function init() {
       try {
-        const {
-          data: { session },
-          error
-        } = await supabaseClient.auth.getSession();
+        const { data, error } =
+          await db.auth.getSession();
 
         if (error) throw error;
 
-        if (!session) {
-          showLogin();
+        if (!data.session) {
+          $("pageLoading").style.display = "none";
+          $("loginRequired").style.display = "block";
           return;
         }
 
-        currentUser = session.user;
+        currentUser = data.session.user;
 
-        showDashboard();
-
-        let profile = null;
-
-        try {
-          const result = await supabaseClient
+        const { data: row, error: profileError } =
+          await db
             .from("profiles")
-            .select("full_name, email, role")
+            .select("*")
             .eq("id", currentUser.id)
             .maybeSingle();
 
-          if (!result.error) {
-            profile = result.data;
-          } else {
-            console.error("Profile error:", result.error.message);
-          }
-        } catch (error) {
-          console.error("Profile request failed:", error);
-        }
+        if (profileError) throw profileError;
+
+        profile = row || {};
 
         const name =
-          profile?.full_name ||
+          profile.full_name ||
           currentUser.user_metadata?.full_name ||
-          currentUser.user_metadata?.name ||
-          currentUser.email ||
-          "الطالب";
+          "طالب أرض الأحياء";
 
-        byId("studentName").textContent = name;
+        $("fullName").value = name;
+        $("topStudentName").textContent = name;
+        $("welcomeName").textContent = name;
 
-        byId("welcomeTitle").textContent =
-          "أهلاً بك يا " + name + " 🌿";
+        $("email").value =
+          currentUser.email || profile.email || "";
 
-        await loadDashboard();
+        $("phone").value = profile.phone || "";
 
-      } catch (error) {
-        console.error("Authentication error:", error);
+        savedPhone = profile.phone || "";
+        savedEmail = currentUser.email || profile.email || "";
 
-        showLogin(
-          "تعذر تحميل الحساب. تأكد من الإنترنت ثم أعد المحاولة."
-        );
+        resetForm();
+
+        $("pageLoading").style.display = "none";
+        $("accountContent").style.display = "block";
+
+        await Promise.allSettled([
+          loadLectureCount(),
+
+          loadResults(
+            TABLES.exams,
+            "examResults",
+            "examCount",
+            "الامتحانات"
+          ),
+
+          loadResults(
+            TABLES.homework,
+            "homeworkResults",
+            "homeworkCount",
+            "الواجبات"
+          ),
+
+          loadForumPosts()
+        ]);
+
+      } catch (err) {
+        console.error(err);
+
+        $("pageLoading").textContent =
+          "تعذر تحميل بيانات الحساب. تحقق من اتصال Supabase وصلاحيات جدول profiles.";
       }
     }
 
-    /* قراءة المحاضرات من Supabase */
+    /* =================================
+       أزرار تعديل البيانات
+    ================================= */
 
-    async function fetchLectures() {
-      const { data, error } = await supabaseClient
-        .from("lectures")
-        .select("id, title, description, video_url, created_at")
-        .order("created_at", { ascending: false });
+    $("editPhoneBtn").addEventListener("click", () => {
+      beginEdit("phone");
+    });
 
-      if (error) {
-        throw error;
-      }
+    $("editEmailBtn").addEventListener("click", () => {
+      beginEdit("email");
+    });
 
-      return data || [];
-    }
+    $("cancelBtn").addEventListener("click", () => {
+      clearMessage();
+      resetForm();
+    });
 
-    /*
-      الحفظ والإكمال محليان في المتصفح الحالي.
-      لا تتم مزامنتهما تلقائيًا بين الأجهزة.
-    */
+    $("saveBtn").addEventListener("click", async () => {
+      if (!currentUser || !editMode) return;
 
-    function storageKey(type) {
-      if (!currentUser) return null;
+      clearMessage();
 
-      return "ard_" + type + "_" + currentUser.id;
-    }
-
-    function getLocalSet(type) {
-      const key = storageKey(type);
-
-      if (!key) return new Set();
-
-      try {
-        const value = JSON.parse(
-          localStorage.getItem(key) || "[]"
+      if (remainingDays() > 0) {
+        message(
+          "انتهت إمكانية التعديل لهذه الفترة. انتظر انتهاء مهلة الـ30 يومًا.",
+          "error"
         );
 
-        if (!Array.isArray(value)) return new Set();
-
-        return new Set(value.map(String));
-
-      } catch {
-        return new Set();
-      }
-    }
-
-    function updateStat(id, value) {
-      byId(id).textContent = String(value);
-    }
-
-    /* حساب الإحصائيات */
-
-    async function loadDashboard() {
-      if (dashboardLoading || !currentUser) return;
-
-      dashboardLoading = true;
-
-      try {
-        byId("lectureList").innerHTML = `
-          <div class="empty-state">
-            <i class="fa-solid fa-spinner fa-spin"></i>
-            جاري تحديث البيانات...
-          </div>
-        `;
-
-        lectureCache = await fetchLectures();
-
-        const total = lectureCache.length;
-
-        const saved = getLocalSet("saved");
-        const completed = getLocalSet("completed");
-
-        const validIds = new Set(
-          lectureCache.map(item => String(item.id))
-        );
-
-        const savedValid = new Set(
-          [...saved].filter(id => validIds.has(id))
-        );
-
-        const completedValid = new Set(
-          [...completed].filter(id => validIds.has(id))
-        );
-
-        const savedCount = savedValid.size;
-        const completedCount = completedValid.size;
-
-        const percent = total > 0
-          ? Math.round((completedCount / total) * 100)
-          : 0;
-
-        const remaining = Math.max(
-          0,
-          total - completedCount
-        );
-
-        updateStat("savedCount", savedCount);
-        updateStat("progressCount", percent);
-        updateStat("totalCount", total);
-        updateStat("completedCount", completedCount);
-
-        updateStat("detailCompleted", completedCount);
-        updateStat("detailRemaining", remaining);
-
-        byId("savedDescription").textContent =
-          "المحاضرات المحفوظة على هذا الجهاز";
-
-        byId("ringPercent").textContent = percent + "%";
-
-        const circumference = 327;
-
-        byId("progressRing").style.strokeDasharray =
-          (circumference * percent / 100) +
-          " " +
-          circumference;
-
-        renderChart(percent, completedCount, total);
-
-        renderLectures(lectureCache);
-
-        byId("chartNote").textContent =
-          total > 0
-            ? "تم احتساب التقدم من المحاضرات المكتملة المسجلة في هذا المتصفح."
-            : "ستظهر بيانات التقدم بعد نشر المحاضرات على المنصة.";
-
-      } catch (error) {
-        console.error("Dashboard loading error:", error);
-
-        byId("lectureList").innerHTML = `
-          <div class="empty-state">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            تعذر تحميل المحاضرات من قاعدة البيانات.
-            <br>
-            تحقق من جدول lectures وصلاحيات القراءة في Supabase.
-          </div>
-        `;
-
-        byId("chartNote").textContent =
-          "تعذر تحميل بيانات المحاضرات.";
-
-      } finally {
-        dashboardLoading = false;
-      }
-    }
-
-    /* رسم بياني باستخدام Canvas */
-
-    function renderChart(percent, completed, total) {
-      const canvas = byId("progressChart");
-      const ctx = canvas.getContext("2d");
-
-      const rect = canvas.getBoundingClientRect();
-
-      if (!rect.width || !rect.height) return;
-
-      const dpr = Math.min(
-        window.devicePixelRatio || 1,
-        2
-      );
-
-      canvas.width = Math.round(rect.width * dpr);
-      canvas.height = Math.round(rect.height * dpr);
-
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      const width = rect.width;
-      const height = rect.height;
-
-      ctx.clearRect(0, 0, width, height);
-
-      ctx.direction = "rtl";
-
-      const padding = {
-        top: 20,
-        right: 38,
-        bottom: 38,
-        left: 38
-      };
-
-      const graphWidth = Math.max(
-        0,
-        width - padding.left - padding.right
-      );
-
-      const graphHeight = Math.max(
-        0,
-        height - padding.top - padding.bottom
-      );
-
-      ctx.font = "10px Cairo, sans-serif";
-      ctx.textAlign = "right";
-      ctx.textBaseline = "middle";
-
-      /* خطوط الشبكة */
-
-      for (let i = 0; i <= 4; i++) {
-        const value = 100 - i * 25;
-
-        const y =
-          padding.top + graphHeight * i / 4;
-
-        ctx.beginPath();
-        ctx.strokeStyle = "#edf1f6";
-        ctx.lineWidth = 1;
-        ctx.moveTo(padding.left, y);
-        ctx.lineTo(width - padding.right, y);
-        ctx.stroke();
-
-        ctx.fillStyle = "#8792a4";
-
-        ctx.fillText(
-          value + "%",
-          padding.left - 7,
-          y
-        );
-      }
-
-      const x1 = padding.left;
-      const x2 = width - padding.right;
-
-      const y1 = padding.top + graphHeight;
-
-      const y2 =
-        padding.top + graphHeight * (1 - percent / 100);
-
-      /* مساحة التعبئة */
-
-      const gradient = ctx.createLinearGradient(
-        0,
-        padding.top,
-        0,
-        height - padding.bottom
-      );
-
-      gradient.addColorStop(
-        0,
-        "rgba(8,127,91,.22)"
-      );
-
-      gradient.addColorStop(
-        1,
-        "rgba(8,127,91,.01)"
-      );
-
-      ctx.beginPath();
-      ctx.moveTo(x1, y1);
-      ctx.lineTo(x2, y2);
-      ctx.lineTo(x2, y1);
-      ctx.closePath();
-
-      ctx.fillStyle = gradient;
-      ctx.fill();
-
-      /* خط التقدم */
-
-      ctx.beginPath();
-      ctx.moveTo(x1, y1);
-      ctx.lineTo(x2, y2);
-
-      ctx.strokeStyle = "#087f5b";
-      ctx.lineWidth = 3;
-      ctx.lineCap = "round";
-      ctx.stroke();
-
-      /* نقطة البداية */
-
-      ctx.beginPath();
-      ctx.arc(x1, y1, 4, 0, Math.PI * 2);
-      ctx.fillStyle = "#087f5b";
-      ctx.fill();
-
-      /* نقطة التقدم */
-
-      ctx.beginPath();
-      ctx.arc(x2, y2, 5, 0, Math.PI * 2);
-      ctx.fillStyle = "#087f5b";
-      ctx.fill();
-
-      ctx.textAlign = "center";
-      ctx.fillStyle = "#718096";
-
-      ctx.fillText(
-        "البداية",
-        x1,
-        height - 17
-      );
-
-      ctx.fillText(
-        "الإنجاز الحالي",
-        x2,
-        height - 17
-      );
-
-      if (total === 0) {
-        ctx.textAlign = "center";
-        ctx.fillStyle = "#8792a4";
-
-        ctx.fillText(
-          "لا توجد محاضرات منشورة حتى الآن",
-          width / 2,
-          height / 2
-        );
-      }
-    }
-
-    /* إعادة رسم المخطط بعد تغيير الحجم */
-
-    function redrawCurrentChart() {
-      if (!currentUser) return;
-
-      const completed = getLocalSet("completed");
-
-      const validIds = new Set(
-        lectureCache.map(item => String(item.id))
-      );
-
-      const completedCount = [...completed].filter(
-        id => validIds.has(id)
-      ).length;
-
-      const total = lectureCache.length;
-
-      const percent = total > 0
-        ? Math.round(completedCount / total * 100)
-        : 0;
-
-      renderChart(percent, completedCount, total);
-    }
-
-    /* عرض أحدث المحاضرات */
-
-    function renderLectures(lectures) {
-      const container = byId("lectureList");
-
-      if (!lectures.length) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <i class="fa-solid fa-video"></i>
-            لا توجد محاضرات منشورة حاليًا.
-          </div>
-        `;
-
+        resetForm();
         return;
       }
 
-      const saved = getLocalSet("saved");
-      const completed = getLocalSet("completed");
+      const btn = $("saveBtn");
 
-      const latest = lectures.slice(0, 5);
+      btn.disabled = true;
+      btn.textContent = "جارٍ الحفظ...";
 
-      container.innerHTML = latest.map(function(lecture) {
-        const id = String(lecture.id);
+      try {
+        if (editMode === "phone") {
+          const newPhone = $("phone").value.trim();
 
-        const title = escapeHTML(
-          lecture.title || "محاضرة بدون عنوان"
-        );
+          if (!newPhone) {
+            throw new Error("اكتب رقم الهاتف أولًا.");
+          }
 
-        const description = escapeHTML(
-          lecture.description || "محاضرة أحياء"
-        );
+          if (newPhone === savedPhone) {
+            throw new Error("لم تغيّر رقم الهاتف.");
+          }
 
-        const isSaved = saved.has(id);
-        const isCompleted = completed.has(id);
+          const { data, error } = await db
+            .from("profiles")
+            .update({
+              phone: newPhone
+            })
+            .eq("id", currentUser.id)
+            .select("id,full_name,phone,email,contact_updated_at")
+            .maybeSingle();
 
-        let status = "متاحة للمشاهدة";
+          if (error) throw error;
 
-        if (isCompleted) {
-          status = "مكتملة";
-        } else if (isSaved) {
-          status = "محفوظة";
+          if (!data) {
+            throw new Error(
+              "لم يتم حفظ الرقم. تحقق من صلاحيات UPDATE في جدول profiles."
+            );
+          }
+
+          profile = {
+            ...profile,
+            ...data
+          };
+
+          savedPhone = newPhone;
+
+          resetForm();
+
+          message(
+            "تم تحديث رقم الهاتف. لن تتمكن من تعديل بيانات التواصل مرة أخرى لمدة 30 يومًا.",
+            "success"
+          );
+
+        } else if (editMode === "email") {
+          const newEmail = $("email").value.trim();
+
+          if (!newEmail) {
+            throw new Error("اكتب البريد الإلكتروني الجديد.");
+          }
+
+          if (
+            newEmail.toLowerCase() ===
+            savedEmail.toLowerCase()
+          ) {
+            throw new Error("البريد الإلكتروني لم يتغير.");
+          }
+
+          const { error } = await db.auth.updateUser({
+            email: newEmail
+          });
+
+          if (error) throw error;
+
+          resetForm();
+
+          message(
+            "تم إرسال طلب تغيير البريد الإلكتروني. إذا طلب Supabase التأكيد، افتح رسالة البريد واتبع التعليمات. يبدأ احتساب المهلة بعد اعتماد التغيير فعليًا.",
+            "success"
+          );
         }
 
-        return `
-          <article class="lecture-item">
+      } catch (err) {
+        console.error(err);
 
-            <div class="lecture-icon">
-              <i class="fa-solid fa-play"></i>
-            </div>
+        message(
+          err.message || "حدث خطأ أثناء الحفظ.",
+          "error"
+        );
 
-            <div class="lecture-info">
-              <h4>${title}</h4>
-              <p>${description}</p>
-              <p>${status}</p>
-            </div>
-
-            <button
-              type="button"
-              class="lecture-open"
-              onclick="openLecture('${encodeURIComponent(id)}')">
-
-              مشاهدة
-              <i class="fa-solid fa-arrow-left"></i>
-
-            </button>
-
-          </article>
-        `;
-      }).join("");
-    }
-
-    /*
-      الانتقال إلى صفحة المحاضرات.
-      لا نفترض وجود صفحة مشاهدة مستقلة.
-    */
-
-    function openLecture(encodedId) {
-      const id = decodeURIComponent(encodedId);
-
-      if (!lectureCache.some(
-        item => String(item.id) === id
-      )) {
-        return;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "💾 حفظ التعديل";
       }
+    });
 
-      window.location.href = "videos/index.html";
-    }
+    /* =================================
+       عدد المحاضرات
+    ================================= */
 
-    /* الحفظ المحلي للمحاضرات */
-
-    window.saveLectureLocally = function(lectureId) {
-      if (!currentUser) return;
-
-      const saved = getLocalSet("saved");
-      const id = String(lectureId);
-
-      if (saved.has(id)) {
-        saved.delete(id);
-      } else {
-        saved.add(id);
-      }
-
-      localStorage.setItem(
-        storageKey("saved"),
-        JSON.stringify([...saved])
-      );
-
-      loadDashboard();
-    };
-
-    /* تسجيل إكمال المحاضرة محليًا */
-
-    window.completeLectureLocally = function(lectureId) {
-      if (!currentUser) return;
-
-      const completed = getLocalSet("completed");
-
-      completed.add(String(lectureId));
-
-      localStorage.setItem(
-        storageKey("completed"),
-        JSON.stringify([...completed])
-      );
-
-      loadDashboard();
-    };
-
-    /* تسجيل الخروج */
-
-    async function logout() {
-      const confirmed = confirm(
-        "هل تريد تسجيل الخروج من المنصة؟"
-      );
-
-      if (!confirmed) return;
-
+    async function loadLectureCount() {
       try {
-        const { error } =
-          await supabaseClient.auth.signOut();
+        const { count, error } = await db
+          .from("lectures")
+          .select("id", {
+            count: "exact",
+            head: true
+          });
 
         if (error) throw error;
 
-        window.location.href = "login/index.html";
+        $("totalLectures").textContent = count ?? 0;
 
-      } catch (error) {
-        console.error("Sign out error:", error);
-
-        alert("تعذر تسجيل الخروج. حاول مرة أخرى.");
+      } catch (err) {
+        console.error("Lecture count:", err);
+        $("totalLectures").textContent = "—";
       }
     }
 
-    /* تحديث الرسم عند تغيير حجم الشاشة */
+    /* =================================
+       نتائج الامتحانات والواجبات
+    ================================= */
 
-    let resizeTimer;
+    async function loadResults(
+      table,
+      containerId,
+      countId,
+      label
+    ) {
+      try {
+        const { data, error } = await db
+          .from(table)
+          .select("*")
+          .eq("user_id", currentUser.id)
+          .order("created_at", {
+            ascending: false
+          })
+          .limit(20);
 
-    window.addEventListener("resize", function() {
-      clearTimeout(resizeTimer);
+        if (error) throw error;
 
-      resizeTimer = setTimeout(function() {
-        redrawCurrentChart();
-      }, 180);
+        const rows = data || [];
+
+        $(countId).textContent = rows.length;
+        $(containerId).replaceChildren();
+
+        if (!rows.length) {
+          displayEmpty(
+            containerId,
+            "لا توجد " + label + " مسجلة لحسابك حتى الآن."
+          );
+
+          return;
+        }
+
+        rows.forEach(row => {
+          const title =
+            row.title ||
+            row.exam_title ||
+            row.homework_title ||
+            row.name ||
+            label;
+
+          const score =
+            row.score ??
+            row.grade ??
+            row.mark ??
+            row.student_score;
+
+          const total =
+            row.total_marks ??
+            row.max_score ??
+            row.total_score ??
+            row.out_of;
+
+          let scoreText = "لم تُرصد الدرجة بعد";
+
+          if (score !== null && score !== undefined) {
+            scoreText = "الدرجة: " + score;
+
+            if (total !== null && total !== undefined) {
+              scoreText += " / " + total;
+            }
+          }
+
+          const date = fmtDate(
+            row.created_at ||
+            row.date ||
+            row.submitted_at
+          );
+
+          addItem(
+            containerId,
+            String(title),
+            date ? scoreText + " • " + date : scoreText,
+            score !== null && score !== undefined
+              ? "تم الرصد"
+              : "قيد التصحيح"
+          );
+        });
+
+      } catch (err) {
+        console.warn("Results table:", table, err);
+
+        $(countId).textContent = "—";
+
+        displayEmpty(
+          containerId,
+          "تعذر تحميل البيانات. قد يحتاج اسم الجدول أو عمود ربط الطالب إلى تعديل.",
+          "ℹ️"
+        );
+      }
+    }
+
+    /* =================================
+       مشاركات المنتدى
+    ================================= */
+
+    async function loadForumPosts() {
+      try {
+        const { data, error } = await db
+          .from(TABLES.forum)
+          .select("*")
+          .eq("user_id", currentUser.id)
+          .order("created_at", {
+            ascending: false
+          })
+          .limit(10);
+
+        if (error) throw error;
+
+        const posts = data || [];
+
+        $("forumPosts").replaceChildren();
+
+        if (!posts.length) {
+          displayEmpty(
+            "forumPosts",
+            "لا توجد مشاركات مسجلة لك في المنتدى حتى الآن.",
+            "💬"
+          );
+
+          return;
+        }
+
+        posts.forEach(post => {
+          const title =
+            post.title ||
+            post.subject ||
+            post.content ||
+            post.body ||
+            "مشاركة في المنتدى";
+
+          const date = fmtDate(post.created_at);
+
+          addItem(
+            "forumPosts",
+            String(title),
+            date
+              ? "تاريخ المشاركة: " + date
+              : "مشاركة بالمنتدى",
+            "مشاركة"
+          );
+        });
+
+      } catch (err) {
+        console.warn("Forum loading:", err);
+
+        displayEmpty(
+          "forumPosts",
+          "تعذر تحميل المشاركات. قد يحتاج اسم جدول المنتدى أو عمود ربط الطالب إلى تعديل.",
+          "ℹ️"
+        );
+      }
+    }
+
+    /* =================================
+       تسجيل الخروج
+    ================================= */
+
+    $("logoutBtn").addEventListener("click", async () => {
+      const btn = $("logoutBtn");
+      btn.disabled = true;
+
+      try {
+        const { error } = await db.auth.signOut();
+
+        if (error) throw error;
+
+        window.location.href = "../index.html";
+
+      } catch (err) {
+        console.error(err);
+
+        message(
+          "تعذر تسجيل الخروج. حاول مرة أخرى.",
+          "error"
+        );
+
+        btn.disabled = false;
+      }
     });
 
-    /* متابعة حالة تسجيل الدخول والخروج */
-
-    supabaseClient.auth.onAuthStateChange(
-      function(event, session) {
-        if (event === "SIGNED_OUT" || !session) {
-          currentUser = null;
-          showLogin();
-        }
-      }
-    );
-
-    /* بدء التشغيل */
-
-    initializeSidebar();
-    checkUser();
+    /* تشغيل الصفحة */
+    init();
   </script>
 
 </body>
