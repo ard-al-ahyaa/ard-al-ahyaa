@@ -11,7 +11,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="progress.js"></script>
 <style>
 :root{--green:#087f5b;--green-dark:#056747;--green-light:#e8f7ef;--text:#263548;--muted:#8792a4;--bg:#f4f7fb;--border:#e8edf3;--shadow:0 5px 25px rgba(26,45,75,.045);--sidebar-width:270px}
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',sans-serif}
@@ -368,7 +369,7 @@ body.sidebar-collapsed .sidebar-bottom{padding:16px 5px;margin:0 10px 20px;text-
     </div>
     <div class="privacy-option">
       <strong>البيانات المحفوظة</strong>
-      <p>يتم تحميل المحاضرات من المنصة. بيانات الحفظ المحلية في هذا الإصدار مرتبطة بالمتصفح الحالي وليست مزامنة تلقائيًا بين الأجهزة.</p>
+      <p>يتم تحميل المحاضرات من المنصة. يُحفظ تقدمك (المحاضرات المحفوظة والمكتملة) في حسابك، فيظهر على أي جهاز تسجّل الدخول منه.</p>
     </div>
     <div class="privacy-footer">
       <button class="primary-btn" type="button" onclick="savePrivacy()">حفظ الإعدادات</button>
@@ -385,9 +386,11 @@ body.sidebar-collapsed .sidebar-bottom{padding:16px 5px;margin:0 10px 20px;text-
 const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+ArdProgress.init(supabaseClient);
 
 let currentUser = null;
 let lectureCache = null; // null = لم تُحمَّل بعد
+let progressRows = []; // صفوف lecture_progress للطالب الحالي
 let dashboardLoading = false;
 
 const byId = id => document.getElementById(id);
@@ -520,25 +523,30 @@ async function fetchLectures() {
   return data || [];
 }
 
-/* الحفظ والإكمال محليان في هذا المتصفح */
-function storageKey(type) { return currentUser ? "ard_" + type + "_" + currentUser.id : null; }
-
-function getLocalSet(type) {
-  const key = storageKey(type);
-  if (!key) return new Set();
-  try {
-    const value = JSON.parse(localStorage.getItem(key) || "[]");
-    return Array.isArray(value) ? new Set(value.map(String)) : new Set();
-  } catch { return new Set(); }
-}
-
+/* التقدم محفوظ في حسابك على Supabase (جدول lecture_progress) */
 function getStats() {
   const list = lectureCache || [];
-  const ids = new Set(list.map(item => String(item.id)));
-  const saved = [...getLocalSet("saved")].filter(id => ids.has(id)).length;
-  const completed = [...getLocalSet("completed")].filter(id => ids.has(id)).length;
+  const ids = new Set(list.map(l => String(l.id)));
+  const rows = progressRows.filter(r => ids.has(String(r.lecture_id)));
+  const completed = rows.filter(r => r.completed).length;
   const total = list.length;
-  return { total, saved, completed, percent: total ? Math.round(completed / total * 100) : 0 };
+  return { total, saved: rows.filter(r => r.saved).length, completed, percent: total ? Math.round(completed / total * 100) : 0 };
+}
+
+/* نسبة الإنجاز التراكمية لآخر 7 أيام من تواريخ الإكمال الفعلية */
+function getDailySeries() {
+  const list = lectureCache || [], total = list.length;
+  const ids = new Set(list.map(l => String(l.id)));
+  const times = progressRows
+    .filter(r => r.completed && ids.has(String(r.lecture_id)))
+    .map(r => new Date(r.completed_at || Date.now()).getTime());
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const end = new Date(); end.setHours(23, 59, 59, 999); end.setDate(end.getDate() - i);
+    const count = times.filter(t => t <= end.getTime()).length;
+    days.push({ label: end.toLocaleDateString("ar-EG", { weekday: "short" }), value: total ? Math.round(count / total * 100) : 0 });
+  }
+  return days;
 }
 
 async function loadDashboard() {
@@ -548,7 +556,8 @@ async function loadDashboard() {
   try {
     byId("lectureList").innerHTML = '<div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i>جاري تحديث البيانات...</div>';
 
-    lectureCache = await fetchLectures();
+    await ArdProgress.migrateLocal().catch(e => console.warn("Migration skipped:", e));
+    [lectureCache, progressRows] = await Promise.all([fetchLectures(), ArdProgress.fetchAll()]);
     const s = getStats();
 
     byId("savedCount").textContent = s.saved;
@@ -557,30 +566,28 @@ async function loadDashboard() {
     byId("completedCount").textContent = s.completed;
     byId("detailCompleted").textContent = s.completed;
     byId("detailRemaining").textContent = Math.max(0, s.total - s.completed);
-    byId("savedDescription").textContent = "المحاضرات المحفوظة على هذا الجهاز";
+    byId("savedDescription").textContent = "المحاضرات المحفوظة في حسابك";
     byId("ringPercent").textContent = s.percent + "%";
     byId("progressRing").style.strokeDasharray = (327 * s.percent / 100) + " 327";
 
-    renderChart(s.percent, s.completed, s.total);
+    renderChart();
     renderLectures(lectureCache);
 
     byId("chartNote").textContent = s.total > 0
-      ? "تم احتساب التقدم من المحاضرات المكتملة المسجلة في هذا المتصفح."
+      ? "يعرض الرسم نسبة إنجازك التراكمية خلال آخر 7 أيام، ويُحفظ تقدمك في حسابك على أي جهاز."
       : "ستظهر بيانات التقدم بعد نشر المحاضرات على المنصة.";
   } catch (error) {
     console.error("Dashboard loading error:", error);
-    byId("lectureList").innerHTML = '<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i>تعذر تحميل المحاضرات من قاعدة البيانات.<br>تحقق من جدول lectures وصلاحيات القراءة في Supabase.</div>';
-    byId("chartNote").textContent = "تعذر تحميل بيانات المحاضرات.";
+    byId("lectureList").innerHTML = '<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i>تعذر تحميل البيانات.<br>تحقق من جدولي lectures وlecture_progress وسياسات RLS في Supabase.</div>';
+    byId("chartNote").textContent = "تعذر تحميل بيانات التقدم.";
   } finally {
     dashboardLoading = false;
   }
 }
 
-/* الرسم البياني */
-function renderChart(percent, completed, total) {
-  const canvas = byId("progressChart");
-  const ctx = canvas.getContext("2d");
-  const rect = canvas.getBoundingClientRect();
+/* الرسم البياني: تقدم حقيقي على مدى 7 أيام */
+function renderChart() {
+  const canvas = byId("progressChart"), ctx = canvas.getContext("2d"), rect = canvas.getBoundingClientRect();
   if (!rect.width || !rect.height) return;
 
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -588,58 +595,45 @@ function renderChart(percent, completed, total) {
   canvas.height = Math.round(rect.height * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  const w = rect.width, h = rect.height;
+  const w = rect.width, h = rect.height, pad = { top: 22, right: 38, bottom: 38, left: 38 };
+  const gw = Math.max(0, w - pad.left - pad.right), gh = Math.max(0, h - pad.top - pad.bottom);
   ctx.clearRect(0, 0, w, h);
   ctx.direction = "rtl";
-
-  const pad = { top: 20, right: 38, bottom: 38, left: 38 };
-  const gh = Math.max(0, h - pad.top - pad.bottom);
-
   ctx.font = "10px Cairo, sans-serif";
-  ctx.textAlign = "right";
   ctx.textBaseline = "middle";
+  ctx.textAlign = "right";
 
   for (let i = 0; i <= 4; i++) {
     const y = pad.top + gh * i / 4;
-    ctx.beginPath();
-    ctx.strokeStyle = "#edf1f6";
-    ctx.lineWidth = 1;
-    ctx.moveTo(pad.left, y);
-    ctx.lineTo(w - pad.right, y);
-    ctx.stroke();
-    ctx.fillStyle = "#8792a4";
-    ctx.fillText((100 - i * 25) + "%", pad.left - 7, y);
+    ctx.beginPath(); ctx.strokeStyle = "#edf1f6"; ctx.lineWidth = 1;
+    ctx.moveTo(pad.left, y); ctx.lineTo(w - pad.right, y); ctx.stroke();
+    ctx.fillStyle = "#8792a4"; ctx.fillText((100 - i * 25) + "%", pad.left - 7, y);
   }
 
-  const x1 = pad.left, x2 = w - pad.right;
-  const y1 = pad.top + gh, y2 = pad.top + gh * (1 - percent / 100);
+  const s = getDailySeries(), n = s.length, base = pad.top + gh;
+  const pts = s.map((d, i) => ({ x: pad.left + gw * i / (n - 1), y: pad.top + gh * (1 - d.value / 100), d }));
 
-  const grad = ctx.createLinearGradient(0, pad.top, 0, h - pad.bottom);
-  grad.addColorStop(0, "rgba(8,127,91,.22)");
-  grad.addColorStop(1, "rgba(8,127,91,.01)");
-  ctx.beginPath();
-  ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.lineTo(x2, y1);
-  ctx.closePath();
-  ctx.fillStyle = grad;
-  ctx.fill();
+  const grad = ctx.createLinearGradient(0, pad.top, 0, base);
+  grad.addColorStop(0, "rgba(8,127,91,.22)"); grad.addColorStop(1, "rgba(8,127,91,.01)");
+  ctx.beginPath(); ctx.moveTo(pts[0].x, base);
+  pts.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.lineTo(pts[n - 1].x, base); ctx.closePath();
+  ctx.fillStyle = grad; ctx.fill();
 
   ctx.beginPath();
-  ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
-  ctx.strokeStyle = "#087f5b";
-  ctx.lineWidth = 3;
-  ctx.lineCap = "round";
-  ctx.stroke();
-
-  ctx.fillStyle = "#087f5b";
-  ctx.beginPath(); ctx.arc(x1, y1, 4, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x2, y2, 5, 0, Math.PI * 2); ctx.fill();
+  pts.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y));
+  ctx.strokeStyle = "#087f5b"; ctx.lineWidth = 3; ctx.lineJoin = "round"; ctx.lineCap = "round"; ctx.stroke();
 
   ctx.textAlign = "center";
-  ctx.fillStyle = "#718096";
-  ctx.fillText("البداية", x1, h - 17);
-  ctx.fillText("الإنجاز الحالي", x2, h - 17);
+  pts.forEach((p, i) => {
+    ctx.beginPath(); ctx.arc(p.x, p.y, i === n - 1 ? 5 : 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = "#087f5b"; ctx.fill();
+    ctx.fillStyle = "#718096"; ctx.fillText(p.d.label, p.x, h - 17);
+  });
+  const last = pts[n - 1];
+  ctx.fillStyle = "#087f5b"; ctx.fillText(last.d.value + "%", last.x, Math.max(10, last.y - 12));
 
-  if (total === 0) {
+  if (!(lectureCache || []).length) {
     ctx.fillStyle = "#8792a4";
     ctx.fillText("لا توجد محاضرات منشورة حتى الآن", w / 2, h / 2);
   }
@@ -647,8 +641,7 @@ function renderChart(percent, completed, total) {
 
 function redrawCurrentChart() {
   if (!currentUser || !lectureCache) return;
-  const s = getStats();
-  renderChart(s.percent, s.completed, s.total);
+  renderChart();
 }
 
 /* أحدث المحاضرات */
@@ -660,12 +653,11 @@ function renderLectures(lectures) {
     return;
   }
 
-  const saved = getLocalSet("saved");
-  const completed = getLocalSet("completed");
+  const state = new Map(progressRows.map(r => [String(r.lecture_id), r]));
 
   container.innerHTML = lectures.slice(0, 5).map(function(lecture) {
-    const id = String(lecture.id);
-    const status = completed.has(id) ? "مكتملة" : saved.has(id) ? "محفوظة" : "متاحة للمشاهدة";
+    const id = String(lecture.id), r = state.get(id) || {};
+    const status = r.completed ? "مكتملة" : r.saved ? "محفوظة" : "متاحة للمشاهدة";
 
     return `
       <article class="lecture-item">
@@ -692,22 +684,8 @@ byId("lectureList").addEventListener("click", function(e) {
   if (btn) openLecture(btn.dataset.id);
 });
 
-/* دوال يمكن لصفحة المحاضرات استدعاؤها */
-window.saveLectureLocally = function(lectureId) {
-  if (!currentUser) return;
-  const saved = getLocalSet("saved"), id = String(lectureId);
-  if (saved.has(id)) saved.delete(id); else saved.add(id);
-  localStorage.setItem(storageKey("saved"), JSON.stringify([...saved]));
-  loadDashboard();
-};
-
-window.completeLectureLocally = function(lectureId) {
-  if (!currentUser) return;
-  const completed = getLocalSet("completed");
-  completed.add(String(lectureId));
-  localStorage.setItem(storageKey("completed"), JSON.stringify([...completed]));
-  loadDashboard();
-};
+/* تحديث اللوحة فور تغيّر التقدم (من ArdProgress) */
+window.addEventListener("ard:progress", loadDashboard);
 
 async function logout() {
   if (!confirm("هل تريد تسجيل الخروج من المنصة؟")) return;
@@ -730,6 +708,8 @@ window.addEventListener("resize", function() {
 supabaseClient.auth.onAuthStateChange(function(event, session) {
   if (event === "SIGNED_OUT" || !session) {
     currentUser = null;
+    lectureCache = null;
+    progressRows = [];
     showLogin();
   }
 });
