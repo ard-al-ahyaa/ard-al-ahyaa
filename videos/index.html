@@ -657,24 +657,53 @@ const toggleCompleted = i => updateProgress(i, "completed");
 
 /* ---------- إعداد الجودات ---------- */
 function getQualities(lec) {
-  const q = lec.qualities && typeof lec.qualities === "object"
-    ? lec.qualities
-    : {};
+  // يقبل عمود qualities ككائن JSON، أو كنص JSON إن كان محفوظًا بهذه الصورة.
+  let q = lec.qualities;
+  if (typeof q === "string") {
+    try { q = JSON.parse(q); } catch { q = {}; }
+  }
+  if (!q || typeof q !== "object" || Array.isArray(q)) q = {};
+
+  const qualityNames = {
+    "2160": "2160p (4K)", "2160p": "2160p (4K)",
+    "1440": "1440p", "1440p": "1440p",
+    "1080": "1080p", "1080p": "1080p",
+    "720": "720p", "720p": "720p",
+    "480": "480p", "480p": "480p",
+    "360": "360p", "360p": "360p",
+    "240": "240p", "240p": "240p",
+    "original": "الجودة الأصلية", "original_quality": "الجودة الأصلية",
+    "الأصلية": "الجودة الأصلية", "الجودة الأصلية": "الجودة الأصلية",
+    "auto": "تلقائي / الأصلية"
+  };
 
   let list = Object.entries(q)
-    .filter(([, v]) => v)
-    .map(([k, v]) => ({
-      label: /p$/i.test(k) ? k : k + "p",
-      height: parseInt(k, 10) || 0,
-      src: v
-    }))
+    .filter(([key, value]) => typeof value === "string" && value.trim())
+    .map(([key, value]) => {
+      const cleanKey = String(key).trim();
+      const normalized = cleanKey.toLowerCase().replace(/\s+/g, "");
+      const heightMatch = normalized.match(/(2160|1440|1080|720|480|360|240)p?/);
+      const height = heightMatch ? Number(heightMatch[1]) : 0;
+      const label = qualityNames[normalized] || qualityNames[cleanKey] ||
+        (height ? height + "p" : cleanKey);
+      return { label, height, src: value.trim() };
+    })
     .sort((a, b) => b.height - a.height);
 
+  // التوافق مع المحاضرات القديمة التي تحتوي على رابط واحد فقط.
   const single = lec.video_url || lec.videoUrl || lec.url;
-
-  if (!list.length && single) {
-    list = [{ label: "الأصلية", height: 0, src: single }];
+  if (!list.length && typeof single === "string" && single.trim()) {
+    list = [{ label: "الجودة الأصلية", height: 0, src: single.trim() }];
   }
+
+  // منع ظهور خيارات مكررة لو كانت مفاتيح JSON مكتوبة بصيغ مختلفة.
+  const seen = new Set();
+  list = list.filter(item => {
+    const key = item.label + "|" + item.src;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 
   return list;
 }
@@ -725,7 +754,7 @@ async function setSource(i, label) {
 
 async function changeQuality(i, label) {
   if (!(await setSource(i, label))) {
-    alert("تعذر تغيير الجودة. حاول مرة أخرى.");
+    alert("تعذر تغيير الجودة. تأكد أن رابط الجودة مباشر وصحيح، وأن لكل جودة رابط فيديو مستقل.");
     return;
   }
 
