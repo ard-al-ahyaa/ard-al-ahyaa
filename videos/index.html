@@ -424,6 +424,84 @@ function isCanvaLink(raw) {
   }
 }
 
+function mediaEmbedUrl(raw) {
+  const value = String(raw || "").trim();
+  if (!value) return "";
+
+  try {
+    const u = new URL(value);
+    if (u.protocol !== "https:") return "";
+    const host = u.hostname.toLowerCase().replace(/^www\./, "");
+    const parts = u.pathname.split("/").filter(Boolean);
+
+    // Vimeo
+    if (host === "vimeo.com" || host.endsWith(".vimeo.com")) {
+      const id = parts.find(x => /^\d+$/.test(x));
+      return id ? "https://player.vimeo.com/video/" + id : value;
+    }
+
+    // Google Drive: make shared files embeddable where permissions allow.
+    if (host === "drive.google.com") {
+      let id = "";
+      const fileIndex = parts.indexOf("d");
+      if (fileIndex >= 0) id = parts[fileIndex + 1] || "";
+      if (!id) id = u.searchParams.get("id") || "";
+      return id ? "https://drive.google.com/file/d/" + encodeURIComponent(id) + "/preview" : value;
+    }
+
+    // Dropbox: use its preview page in an iframe.
+    if (host === "dropbox.com" || host.endsWith(".dropbox.com")) {
+      u.searchParams.set("raw", "1");
+      return u.href;
+    }
+
+    // Loom
+    if (host === "loom.com" || host.endsWith(".loom.com")) {
+      const id = parts[0] === "share" || parts[0] === "embed" ? parts[1] : "";
+      return id ? "https://www.loom.com/embed/" + encodeURIComponent(id) : value;
+    }
+
+    // Dailymotion
+    if (host === "dai.ly") {
+      const id = parts[0] || "";
+      return id ? "https://www.dailymotion.com/embed/video/" + encodeURIComponent(id) : value;
+    }
+
+    if (host === "dailymotion.com" || host.endsWith(".dailymotion.com")) {
+      let id = "";
+      const videoIndex = parts.indexOf("video");
+      if (videoIndex >= 0) id = (parts[videoIndex + 1] || "").split("_")[0];
+      if (host === "dai.ly") id = parts[0] || "";
+      return id ? "https://www.dailymotion.com/embed/video/" + encodeURIComponent(id) : value;
+    }
+
+    // Canva shared links can redirect; try them as an iframe. Canva may require its official embed URL.
+    if (host === "canva.link" || host.endsWith(".canva.link") || host === "canva.com" || host.endsWith(".canva.com")) {
+      return value;
+    }
+
+    // Other https links are attempted as embedded pages; some websites block iframe embedding.
+    return value;
+  } catch {
+    return "";
+  }
+}
+
+function isDirectMediaUrl(raw) {
+  const value = String(raw || "").trim();
+  if (value && !/^https?:\/\//i.test(value)) return true; // Storage path inside the lectures bucket.
+  try {
+    const u = new URL(value);
+    if (u.protocol !== "https:") return false;
+    if (/\.(mp4|m4v|webm|ogv|ogg|mov|m3u8|mpd|mp3|wav|m4a)(?:$)/i.test(u.pathname)) return true;
+    // Supabase object links are commonly direct files even when the extension is hidden.
+    if (u.hostname.endsWith(".supabase.co") && u.pathname.includes("/storage/v1/object/")) return true;
+    return false;
+  } catch {
+    return false;
+  }
+}
+
 function youtubeEmbed(url) {
   try {
     const p = new URL(url);
@@ -708,26 +786,6 @@ async function buildPlayer(i) {
     return;
   }
 
-  /* Canva: اعرض التصميم أو العرض التقديمي داخل مشغل المحاضرة */
-  if (isCanvaLink(qualities[0].src)) {
-    const canvaUrl = safeHttps(qualities[0].src);
-
-    if (!canvaUrl) {
-      return fail("رابط Canva غير صالح.");
-    }
-
-    box.innerHTML =
-      '<iframe src="' + escapeHtml(canvaUrl) +
-      '" title="عرض Canva للمحاضرة" loading="lazy" ' +
-      'allow="fullscreen; autoplay; clipboard-write" allowfullscreen ' +
-      'referrerpolicy="strict-origin-when-cross-origin"></iframe>' +
-      watermarkHtml() + exitBtn;
-
-    const qualityWrap = $("quality-wrap-" + i);
-    if (qualityWrap) qualityWrap.hidden = true;
-    return;
-  }
-
   /* YouTube */
   if (isYoutube(qualities[0].src)) {
     const embed = youtubeEmbed(qualities[0].src);
@@ -746,7 +804,44 @@ async function buildPlayer(i) {
     return;
   }
 
-  /* الفيديوهات الموجودة في التخزين */
+  /* روابط الخدمات الخارجية وصفحات العرض */
+  if (!isDirectMediaUrl(qualities[0].src)) {
+    const embedUrl = mediaEmbedUrl(qualities[0].src);
+
+    if (!embedUrl) {
+      return fail("الرابط غير صالح. استخدم رابط HTTPS مباشر أو رابط مشاركة صالح.");
+    }
+
+    box.innerHTML =
+      '<iframe src="' + escapeHtml(embedUrl) +
+      '" title="محتوى المحاضرة" loading="lazy" ' +
+      'allow="autoplay; fullscreen; picture-in-picture; encrypted-media; clipboard-write" ' +
+      'allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>' +
+      watermarkHtml() + exitBtn;
+
+    const qualityWrap = $("quality-wrap-" + i);
+    if (qualityWrap) qualityWrap.hidden = true;
+
+    // بعض المواقع تمنع التضمين؛ وفر رابط فتح خارجيًا عند الحاجة.
+    const oldNote = box.parentElement.querySelector(".external-link-note");
+    if (oldNote) oldNote.remove();
+    const note = document.createElement("div");
+    note.className = "external-link-note muted";
+    note.style.cssText = "font-size:12px;line-height:1.9;margin:8px 0 14px";
+    note.textContent = "إذا لم يظهر المحتوى، فقد يمنع الموقع عرضه داخل المنصة. افتح الرابط مباشرةً من الزر التالي.";
+    const openLink = document.createElement("a");
+    openLink.className = "btn-link";
+    openLink.href = embedUrl;
+    openLink.target = "_blank";
+    openLink.rel = "noopener noreferrer";
+    openLink.textContent = "فتح المحتوى في صفحة جديدة";
+    note.appendChild(document.createTextNode(" "));
+    note.appendChild(openLink);
+    box.insertAdjacentElement("afterend", note);
+    return;
+  }
+
+  /* الفيديوهات المباشرة الموجودة في التخزين أو على روابط HTTPS */
   const saved = (() => {
     try {
       return localStorage.getItem(QUALITY_KEY);
