@@ -59,6 +59,28 @@ body.sidebar-collapsed .main{margin-right:var(--sidebar-collapsed-width)}
 .arrow-icon{font-size:18px;transition:transform .3s;flex-shrink:0}.lecture-body{padding:0;max-height:0;overflow:hidden;background:#fafafa}.lecture-body.open{padding:20px 25px;max-height:none;overflow:visible}
 .video-container{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden;margin-bottom:12px;user-select:none;-webkit-user-select:none}
 .video-container iframe,.video-container video{position:absolute;inset:0;width:100%;height:100%;border:none;object-fit:contain;background:#000}
+.video-container video{z-index:1}
+.custom-player-controls{position:absolute;z-index:8;right:0;left:0;bottom:0;padding:36px 12px 10px;background:linear-gradient(transparent,rgba(0,0,0,.88));color:#fff;display:flex;flex-direction:column;gap:7px;direction:ltr;opacity:1;transition:opacity .2s}
+.custom-player-controls button{font-family:'Cairo',sans-serif}
+.custom-progress{width:100%;height:4px;accent-color:#18b981;cursor:pointer;margin:0}
+.custom-controls-row{display:flex;align-items:center;gap:9px;min-height:34px}
+.custom-control-btn{border:0;background:transparent;color:#fff;cursor:pointer;display:grid;place-items:center;min-width:30px;height:32px;border-radius:7px;font-size:20px;line-height:1}
+.custom-control-btn:hover,.custom-control-btn:focus-visible{background:#ffffff26;outline:1px solid #ffffff65}
+.custom-time{font:600 11px Arial,sans-serif;white-space:nowrap;direction:ltr;color:#f8fafc}
+.custom-controls-spacer{flex:1}
+.player-settings-wrap{position:relative;display:flex;align-items:center;gap:3px;direction:ltr}
+.player-settings-wrap .quality-menu-wrap{display:inline-flex!important;position:relative}
+.player-settings-wrap .quality-gear{width:34px;height:34px;border:0;border-radius:7px;background:transparent;color:#fff;box-shadow:none;font-size:19px;padding:0}
+.player-settings-wrap .quality-gear:hover,.player-settings-wrap .quality-gear:focus-visible{background:#ffffff26;border-color:transparent;outline:1px solid #ffffff65}
+.player-settings-wrap .quality-gear small{display:none}
+.player-settings-wrap .quality-menu{bottom:calc(100% + 10px);right:0;left:auto}
+.player-settings-wrap .dots-menu{display:none;position:absolute;right:0;bottom:calc(100% + 10px);width:150px;padding:6px;background:#fff;color:#1f2937;border:1px solid #e2e8f0;border-radius:10px;box-shadow:0 10px 30px #0005;direction:rtl}
+.player-settings-wrap .dots-menu.open{display:block}
+.dots-menu button{display:flex;width:100%;padding:8px;border:0;border-radius:7px;background:#fff;color:#1f2937;text-align:right;font-size:12px;cursor:pointer}
+.dots-menu button:hover{background:#f1f5f9}
+.video-container.pseudo-fs .custom-player-controls{padding:45px 20px 18px}
+.video-container:fullscreen .custom-player-controls{padding:45px 20px 18px}
+@media(max-width:480px){.custom-player-controls{padding:28px 7px 7px;gap:5px}.custom-controls-row{gap:5px}.custom-time{font-size:10px}.custom-control-btn{min-width:27px}.player-settings-wrap .quality-menu{width:155px}}
 .video-container:fullscreen,.video-container.pseudo-fs{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;max-width:none;aspect-ratio:auto;margin:0;border-radius:0;z-index:99999}
 .video-container:-webkit-full-screen{width:100vw;height:100vh;background:#000}
 .player-msg{position:absolute;inset:0;display:grid;place-items:center;padding:20px;color:#fff;text-align:center;font-size:13px;line-height:2}
@@ -193,6 +215,10 @@ function closeQualityMenus(except){document.querySelectorAll(".quality-menu").fo
 async function chooseQuality(i,label){closeQualityMenus();const ok=await setSource(i,label);if(!ok){alert("تعذر تغيير الجودة. تأكد أن رابط الجودة مباشر وصحيح وأن لكل جودة رابط فيديو مستقل.");return}try{localStorage.setItem(QUALITY_KEY,label)}catch{}const qs=getQualities(currentList[i]);renderQualityMenu(i,qs,label)}
 document.addEventListener("click",e=>{if(!e.target.closest(".quality-menu-wrap"))closeQualityMenus()});
 async function setSource(i,label){const lec=currentList[i],box=$("video-container-"+i),video=box&&box.querySelector("video"),q=getQualities(lec).find(x=>x.label===label);if(!video||!q)return false;const t=video.currentTime||0,playing=!video.paused&&!video.ended,url=await resolveVideo(q.src);if(!url)return false;video.dataset.quality=label;video.src=url;video.addEventListener("loadedmetadata",()=>{try{if(t>0&&Number.isFinite(video.duration))video.currentTime=Math.min(t,Math.max(0,video.duration-1))}catch{}if(playing)video.play().catch(()=>{})},{once:true});return true}
+function formatVideoTime(seconds){if(!Number.isFinite(seconds)||seconds<0)return "0:00";const s=Math.floor(seconds),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),r=s%60;return h?`${h}:${String(m).padStart(2,"0")}:${String(r).padStart(2,"0")}`:`${m}:${String(r).padStart(2,"0")}`}
+function setupCustomControls(i,video){const play=$("play-"+i),progressBar=$("progress-"+i),time=$("time-"+i);if(!play||!progressBar||!time)return;const update=()=>{const duration=video.duration||0,current=video.currentTime||0;progressBar.value=duration?Math.round(current/duration*1000):0;time.textContent=formatVideoTime(current)+" / "+formatVideoTime(duration);play.textContent=video.paused?"▶":"Ⅱ";play.setAttribute("aria-label",video.paused?"تشغيل الفيديو":"إيقاف مؤقت")};play.addEventListener("click",()=>{if(video.paused)video.play().catch(()=>{});else video.pause()});progressBar.addEventListener("input",()=>{if(video.duration)video.currentTime=(Number(progressBar.value)/1000)*video.duration});["timeupdate","durationchange","play","pause","loadedmetadata","ended","seeking"].forEach(event=>video.addEventListener(event,update));update()}
+function toggleDotsMenu(i){const menu=$("dots-menu-"+i);if(!menu)return;document.querySelectorAll(".dots-menu").forEach(m=>{if(m!==menu)m.classList.remove("open")});menu.classList.toggle("open")}
+function changePlaybackRate(i,rate){const video=$("video-container-"+i)?.querySelector("video");if(video)video.playbackRate=rate;const menu=$("dots-menu-"+i);if(menu)menu.classList.remove("open")}
 async function buildPlayer(i){
  const lec=currentList[i],box=$("video-container-"+i);if(!box||box.dataset.ready)return;box.dataset.ready="1";
  const qualities=getQualities(lec),fail=text=>{box.innerHTML='<div class="player-msg">'+escapeHtml(text)+"</div>";box.dataset.ready=""};
@@ -204,9 +230,11 @@ async function buildPlayer(i){
  if(!isDirectMediaUrl(qualities[0].src)){const embed=mediaEmbedUrl(qualities[0].src);if(!embed)return fail("الرابط غير صالح. استخدم رابط HTTPS مباشر أو رابط مشاركة صالح.");box.innerHTML='<iframe src="'+escapeHtml(embed)+'" title="محتوى المحاضرة" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; clipboard-write" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>'+watermarkHtml()+exitBtn;const w=$("quality-wrap-"+i);if(w)w.hidden=true;const note=document.createElement("div");note.className="muted";note.style.cssText="font-size:12px;line-height:1.9;margin:8px 0 14px";note.textContent="إذا لم يظهر المحتوى، فقد يمنع الموقع عرضه داخل المنصة. ";const a=document.createElement("a");a.className="btn-link";a.href=embed;a.target="_blank";a.rel="noopener noreferrer";a.textContent="فتح المحتوى في صفحة جديدة";note.appendChild(a);box.insertAdjacentElement("afterend",note);return}
  let saved=null;try{saved=localStorage.getItem(QUALITY_KEY)}catch{}
  const start=qualities.find(q=>q.label===saved)||qualities[0],poster=safeHttps(lec.image_url);
- box.innerHTML='<video controls playsinline preload="metadata" controlsList="nodownload nofullscreen" disablePictureInPicture'+(poster?' poster="'+escapeHtml(poster)+'"':"")+'></video>'+watermarkHtml()+exitBtn;
+ box.innerHTML='<video playsinline preload="metadata" controlsList="nodownload nofullscreen" disablePictureInPicture'+(poster?' poster="'+escapeHtml(poster)+'"':"")+'></video>'+watermarkHtml()+'<div class="custom-player-controls" id="custom-controls-'+i+'"><input class="custom-progress" id="progress-'+i+'" type="range" min="0" max="1000" value="0" aria-label="تقدم الفيديو"><div class="custom-controls-row"><button type="button" class="custom-control-btn" id="play-'+i+'" aria-label="تشغيل الفيديو" title="تشغيل / إيقاف">▶</button><span class="custom-time" id="time-'+i+'">0:00 / 0:00</span><span class="custom-controls-spacer"></span><div class="player-settings-wrap"><button type="button" class="custom-control-btn" id="dots-'+i+'" aria-label="المزيد من الخيارات" title="المزيد من الخيارات" onclick="toggleDotsMenu('+i+')">⋮</button><div class="dots-menu" id="dots-menu-'+i+'"><button type="button" onclick="changePlaybackRate('+i+',1)">سرعة عادية 1×</button><button type="button" onclick="changePlaybackRate('+i+',1.25)">سرعة 1.25×</button><button type="button" onclick="changePlaybackRate('+i+',1.5)">سرعة 1.5×</button><button type="button" onclick="changePlaybackRate('+i+',2)">سرعة 2×</button></div><div class="quality-slot" id="quality-slot-'+i+'"></div><button type="button" class="custom-control-btn" aria-label="ملء الشاشة" title="ملء الشاشة" onclick="enterVideoFullscreen('+i+')">⛶</button></div></div></div>'+exitBtn;
  const video=box.querySelector("video");if(!(await setSource(i,start.label)))return fail("تعذر تجهيز الفيديو. تأكد من تسجيل الدخول ومن صلاحيات قراءة ملفات المحاضرات.");
- renderQualityMenu(i,qualities,start.label);
+ const qualityWrap=$("quality-wrap-"+i), qualitySlot=$("quality-slot-"+i);
+ if(qualityWrap&&qualitySlot){qualitySlot.appendChild(qualityWrap);renderQualityMenu(i,qualities,start.label);}
+ setupCustomControls(i,video);
  video.addEventListener("error",()=>{if(video.dataset.retried)return;video.dataset.retried="1";setSource(i,video.dataset.quality||start.label)});
  video.addEventListener("ended",()=>{if(window.ArdProgress&&!(progress.get(String(lec.id))||{}).completed)updateProgress(i,"completed")});
  video.addEventListener("webkitbeginfullscreen",()=>{video.webkitExitFullscreen();toggleFs(box)})
