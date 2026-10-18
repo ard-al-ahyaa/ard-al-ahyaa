@@ -898,14 +898,23 @@ async function buildPlayer(i) {
     );
   }
 
-  if (qualities.length > 1) {
-    $("quality-" + i).innerHTML = qualities.map(q =>
+  // إظهار قائمة الجودة دائمًا مع الفيديو المباشر؛ وإذا كان له رابط واحد
+  // ستظهر الجودة الأصلية فقط إلى أن تُضاف روابط مستقلة للجودات الأخرى.
+  const qualitySelect = $("quality-" + i);
+  const qualityWrap = $("quality-wrap-" + i);
+  if (qualitySelect && qualityWrap) {
+    qualitySelect.innerHTML = qualities.map(q =>
       '<option value="' + escapeHtml(q.label) + '"' +
       (q.label === start.label ? " selected" : "") +
       ">" + escapeHtml(q.label) + "</option>"
     ).join("");
+    qualityWrap.hidden = false;
 
-    $("quality-wrap-" + i).hidden = false;
+    if (qualities.length === 1) {
+      qualitySelect.title = "لإتاحة جودات متعددة، أضف رابطًا مستقلًا لكل جودة من لوحة الإدارة";
+    } else {
+      qualitySelect.removeAttribute("title");
+    }
   }
 
   video.addEventListener("error", async () => {
