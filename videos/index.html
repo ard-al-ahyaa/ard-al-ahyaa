@@ -410,6 +410,20 @@ const isYoutube = u =>
   /youtube\.com|youtu\.be|youtube-nocookie\.com/i.test(u || "");
 
 /* ---------- تعديل مشغّل YouTube ---------- */
+function isCanvaLink(raw) {
+  const value = String(raw || "").trim();
+  if (!value) return false;
+
+  try {
+    const u = new URL(value);
+    return /^https?:$/.test(u.protocol) &&
+      (u.hostname === "canva.link" || u.hostname.endsWith(".canva.link") ||
+       u.hostname === "canva.com" || u.hostname.endsWith(".canva.com"));
+  } catch {
+    return false;
+  }
+}
+
 function youtubeEmbed(url) {
   try {
     const p = new URL(url);
@@ -691,6 +705,26 @@ async function buildPlayer(i) {
       fail("تعذر تجهيز الفيديو. تأكد من تسجيل الدخول ثم حاول مرة أخرى.");
     }
 
+    return;
+  }
+
+  /* Canva: اعرض التصميم أو العرض التقديمي داخل مشغل المحاضرة */
+  if (isCanvaLink(qualities[0].src)) {
+    const canvaUrl = safeHttps(qualities[0].src);
+
+    if (!canvaUrl) {
+      return fail("رابط Canva غير صالح.");
+    }
+
+    box.innerHTML =
+      '<iframe src="' + escapeHtml(canvaUrl) +
+      '" title="عرض Canva للمحاضرة" loading="lazy" ' +
+      'allow="fullscreen; autoplay; clipboard-write" allowfullscreen ' +
+      'referrerpolicy="strict-origin-when-cross-origin"></iframe>' +
+      watermarkHtml() + exitBtn;
+
+    const qualityWrap = $("quality-wrap-" + i);
+    if (qualityWrap) qualityWrap.hidden = true;
     return;
   }
 
