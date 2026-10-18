@@ -240,6 +240,14 @@ body.sidebar-collapsed .main{margin-right:var(--sidebar-collapsed-width)}
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l3 3v15H5z"></path><path d="M16 3v4h4M8 12h8M8 16h8"></path></svg>
     المذكرات
   </a>
+  <a href="../champion/index.html">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 4-2 4 2 4 1v5c0 5-4 8-8 12-4-4-8-7-8-12V5z"></path></svg>
+    البطل
+  </a>
+  <a href="../forum/index.html">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.3A8.5 8.5 0 1 1 21 11.5Z"></path></svg>
+    المنتدى
+  </a>
   <a href="../account/index.html">
     <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>
     حسابي
@@ -247,3 +255,993 @@ body.sidebar-collapsed .main{margin-right:var(--sidebar-collapsed-width)}
 </nav>
 
 <script>
+"use strict";
+
+if (!window.supabase) {
+  document.getElementById("lecturesList").textContent =
+    "تعذر تحميل مكتبة Supabase. تحقق من الإنترنت ثم أعد تحميل الصفحة.";
+  throw new Error("Missing dependency: supabase-js");
+}
+
+const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+if (window.ArdProgress) ArdProgress.init(supabaseClient);
+
+const MONTHS_TABLE = "lecture_months";
+const LECTURES_TABLE = "lectures";
+const VIDEO_BUCKET = "lectures";
+const HANDOUT_BUCKET = "handouts";
+const SIGNED_URL_SECONDS = 3600;
+const LOGIN_URL = "../login/index.html";
+const QUALITY_KEY = "ardAlahyaaQuality";
+
+let allLectures = [];
+let visibleMonths = [];
+let currentList = [];
+let selectedMonth = null;
+let viewerLabel = "";
+let progress = new Map();
+
+const $ = id => document.getElementById(id);
+
+/* ---------- الشريط الجانبي ---------- */
+const sidebarToggle = $("sidebarToggle");
+const SIDEBAR_KEY = "ardAlahyaaSidebarCollapsed";
+
+function setSidebarCollapsed(collapsed, save = true) {
+  document.body.classList.toggle("sidebar-collapsed", collapsed);
+
+  const text = collapsed
+    ? "توسيع القائمة الجانبية"
+    : "تصغير القائمة الجانبية";
+
+  sidebarToggle.setAttribute("aria-expanded", String(!collapsed));
+  sidebarToggle.setAttribute("aria-label", text);
+  sidebarToggle.title = text;
+
+  document.querySelectorAll(".menu a[data-title]").forEach(a => {
+    if (collapsed) a.title = a.dataset.title;
+    else a.removeAttribute("title");
+  });
+
+  if (save) {
+    try {
+      localStorage.setItem(SIDEBAR_KEY, collapsed ? "true" : "false");
+    } catch (e) {
+      console.warn(e);
+    }
+  }
+}
+
+sidebarToggle.addEventListener("click", () => {
+  setSidebarCollapsed(!document.body.classList.contains("sidebar-collapsed"));
+});
+
+try {
+  setSidebarCollapsed(localStorage.getItem(SIDEBAR_KEY) === "true", false);
+} catch {
+  setSidebarCollapsed(false, false);
+}
+
+/* ---------- أدوات عامة ---------- */
+function escapeHtml(v) {
+  if (v === null || v === undefined) return "";
+
+  return String(v)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function safeHttps(u) {
+  try {
+    const x = new URL(String(u || "").trim());
+    return x.protocol === "https:" ? x.href : "";
+  } catch {
+    return "";
+  }
+}
+
+function showNotice(html) {
+  const n = $("pageNotice");
+  n.innerHTML = html;
+  n.style.display = "block";
+}
+
+function hideNotice() {
+  $("pageNotice").style.display = "none";
+}
+
+function toStoragePath(raw, bucket) {
+  const v = String(raw || "").trim();
+  if (!v) return "";
+
+  if (!/^https?:\/\//i.test(v)) {
+    return v
+      .replace(/^\/+/, "")
+      .replace(/^storage\/v1\/object\/(public|sign|authenticated)\//i, "")
+      .replace(new RegExp("^" + bucket + "/"), "");
+  }
+
+  try {
+    const parts = new URL(v).pathname.split("/").filter(Boolean);
+    const i = parts.indexOf("object");
+
+    if (i === -1) return "";
+
+    const rest = ["public", "sign", "authenticated"].includes(parts[i + 1])
+      ? parts.slice(i + 2)
+      : parts.slice(i + 1);
+
+    if (rest[0] !== bucket) return "";
+
+    return rest.slice(1).map(p => {
+      try {
+        return decodeURIComponent(p);
+      } catch {
+        return p;
+      }
+    }).join("/");
+  } catch {
+    return "";
+  }
+}
+
+async function signedUrl(bucket, path) {
+  if (!path) return "";
+
+  const { data, error } = await supabaseClient.storage
+    .from(bucket)
+    .createSignedUrl(path, SIGNED_URL_SECONDS);
+
+  if (error) {
+    console.error("Signed URL error:", error);
+    return "";
+  }
+
+  return data?.signedUrl || "";
+}
+
+const isYoutube = u =>
+  /youtube\.com|youtu\.be|youtube-nocookie\.com/i.test(u || "");
+
+/* ---------- تعديل مشغّل YouTube ---------- */
+function youtubeEmbed(url) {
+  try {
+    const p = new URL(url);
+    let id = "";
+
+    if (p.hostname.includes("youtu.be")) {
+      id = p.pathname.split("/").filter(Boolean)[0] || "";
+    } else if (p.pathname === "/watch") {
+      id = p.searchParams.get("v") || "";
+    } else {
+      const s = p.pathname.split("/").filter(Boolean);
+
+      if (["embed", "shorts", "live"].includes(s[0])) {
+        id = s[1] || "";
+      }
+    }
+
+    if (!id) return "";
+
+    const params = new URLSearchParams({
+      controls: "1",
+      rel: "0",
+      fs: "0",
+      playsinline: "1"
+    });
+
+    return "https://www.youtube-nocookie.com/embed/"
+      + encodeURIComponent(id)
+      + "?"
+      + params.toString();
+
+  } catch {
+    return "";
+  }
+}
+
+/* رابط الفيديو */
+async function resolveVideo(raw) {
+  const v = String(raw || "").trim();
+  if (!v) return "";
+
+  // روابط الفيديو المباشرة (ومنها روابط Supabase العامة) تعمل كما هي.
+  // لا نحاول إنشاء Signed URL للرابط العام؛ فهذا قد يفشل إذا كان الملف عامًا.
+  if (/^https?:\/\//i.test(v)) {
+    const direct = safeHttps(v);
+    if (!direct) return "";
+
+    try {
+      const u = new URL(direct);
+      const isSupabaseStorage =
+        u.pathname.includes("/storage/v1/object/") &&
+        u.hostname.endsWith("supabase.co");
+      const parts = u.pathname.split("/").filter(Boolean);
+      const objectIndex = parts.indexOf("object");
+      const mode = objectIndex >= 0 ? parts[objectIndex + 1] : "";
+
+      // الروابط العامة تُستخدم مباشرة داخل مشغل MP4.
+      if (isSupabaseStorage && mode === "public") return direct;
+
+      // الروابط الخارجية أو الروابط الموقعة مسبقًا تُستخدم كما هي.
+      if (!isSupabaseStorage || u.searchParams.has("token")) return direct;
+    } catch {
+      return "";
+    }
+  }
+
+  // مسار الملف داخل bucket lectures، مثل: videos/example.mp4
+  return signedUrl(VIDEO_BUCKET, toStoragePath(v, VIDEO_BUCKET));
+}
+
+/* ---------- بيانات المشاهد والعلامة المائية ---------- */
+async function loadViewer(user) {
+  let phone = "";
+
+  try {
+    const { data } = await supabaseClient
+      .from("profiles")
+      .select("phone")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    phone = (data?.phone || "").trim();
+  } catch (e) {
+    console.warn("Viewer profile:", e);
+  }
+
+  viewerLabel =
+    phone ||
+    user.phone ||
+    (user.email ? user.email.split("@")[0] : "") ||
+    ("ID-" + String(user.id).slice(0, 8));
+}
+
+/* ---------- التقدم ---------- */
+async function loadProgress() {
+  if (!window.ArdProgress) return;
+
+  try {
+    progress = new Map(
+      (await ArdProgress.fetchAll()).map(r => [String(r.lecture_id), r])
+    );
+  } catch (e) {
+    console.warn("Progress unavailable:", e);
+  }
+}
+
+function refreshActions(i) {
+  const id = String(currentList[i].id);
+  const row = progress.get(id) || {};
+
+  const save = $("save-" + i);
+  const done = $("done-" + i);
+
+  if (save) {
+    save.classList.toggle("on", !!row.saved);
+    save.textContent = row.saved ? "★ محفوظة" : "☆ حفظ المحاضرة";
+    save.disabled = false;
+  }
+
+  if (done) {
+    done.classList.toggle("on", !!row.completed);
+    done.textContent = row.completed ? "✓ تمت المشاهدة" : "تمت المشاهدة؟";
+    done.disabled = false;
+  }
+}
+
+async function updateProgress(i, field) {
+  const id = String(currentList[i].id);
+  const row = progress.get(id) || { lecture_id: id };
+  const btn = $((field === "saved" ? "save-" : "done-") + i);
+  const next = !row[field];
+
+  if (btn) btn.disabled = true;
+
+  try {
+    if (field === "saved") {
+      await ArdProgress.setSaved(id, next);
+    } else {
+      await ArdProgress.setCompleted(id, next);
+    }
+
+    progress.set(id, { ...row, [field]: next });
+  } catch (e) {
+    console.error(e);
+    alert("تعذر حفظ التقدم. تحقق من الاتصال وسياسات جدول lecture_progress.");
+  }
+
+  refreshActions(i);
+}
+
+const toggleSaved = i => updateProgress(i, "saved");
+const toggleCompleted = i => updateProgress(i, "completed");
+
+/* ---------- إعداد الجودات ---------- */
+function getQualities(lec) {
+  const q = lec.qualities && typeof lec.qualities === "object"
+    ? lec.qualities
+    : {};
+
+  let list = Object.entries(q)
+    .filter(([, v]) => v)
+    .map(([k, v]) => ({
+      label: /p$/i.test(k) ? k : k + "p",
+      height: parseInt(k, 10) || 0,
+      src: v
+    }))
+    .sort((a, b) => b.height - a.height);
+
+  const single = lec.video_url || lec.videoUrl || lec.url;
+
+  if (!list.length && single) {
+    list = [{ label: "الأصلية", height: 0, src: single }];
+  }
+
+  return list;
+}
+
+/* ---------- العلامة المائية ---------- */
+function watermarkHtml() {
+  return '<div class="watermark" aria-hidden="true" style="top:'
+    + (10 + Math.random() * 70)
+    + '%;left:'
+    + (5 + Math.random() * 65)
+    + '%">'
+    + escapeHtml(viewerLabel)
+    + "</div>";
+}
+
+setInterval(function () {
+  document.querySelectorAll(".watermark").forEach(w => {
+    w.style.top = (8 + Math.random() * 78) + "%";
+    w.style.left = (4 + Math.random() * 70) + "%";
+  });
+}, 4000);
+
+/* ---------- تغيير جودة الفيديو ---------- */
+async function setSource(i, label) {
+  const lec = currentList[i];
+  const box = $("video-container-" + i);
+  const video = box && box.querySelector("video");
+
+  const q = getQualities(lec).find(x => x.label === label);
+  if (!video || !q) return false;
+
+  const t = video.currentTime || 0;
+  const wasPlaying = !video.paused && !video.ended;
+  const url = await resolveVideo(q.src);
+
+  if (!url) return false;
+
+  video.src = url;
+
+  video.addEventListener("loadedmetadata", () => {
+    if (t > 0) video.currentTime = t;
+    if (wasPlaying) video.play().catch(() => {});
+  }, { once: true });
+
+  video.dataset.quality = label;
+  return true;
+}
+
+async function changeQuality(i, label) {
+  if (!(await setSource(i, label))) {
+    alert("تعذر تغيير الجودة. حاول مرة أخرى.");
+    return;
+  }
+
+  try {
+    localStorage.setItem(QUALITY_KEY, label);
+  } catch {}
+}
+
+/* ---------- إنشاء مشغل الفيديو ---------- */
+async function buildPlayer(i) {
+  const lec = currentList[i];
+  const box = $("video-container-" + i);
+
+  if (!box || box.dataset.ready) return;
+
+  box.dataset.ready = "1";
+
+  const qualities = getQualities(lec);
+
+  const fail = text => {
+    box.innerHTML = '<div class="player-msg">' + escapeHtml(text) + "</div>";
+    box.dataset.ready = "";
+  };
+
+  if (!qualities.length && !lec.bunny_video_id) {
+    return fail("لا يوجد فيديو لهذه المحاضرة حتى الآن.");
+  }
+
+  box.innerHTML = '<div class="player-msg">جارٍ تجهيز الفيديو...</div>';
+
+  const exitBtn =
+    '<button type="button" class="exit-fs" aria-label="إغلاق ملء الشاشة" onclick="toggleFs(this.parentElement)">✕</button>';
+
+  /* Bunny Stream */
+  if (lec.bunny_video_id) {
+    try {
+      const { data, error } = await supabaseClient.functions.invoke(
+        "bunny-embed",
+        { body: { lectureId: lec.id } }
+      );
+
+      if (error || !data || !data.url) {
+        throw error || new Error("No signed URL");
+      }
+
+      box.innerHTML =
+        '<iframe src="' + escapeHtml(data.url) +
+        '" title="فيديو المحاضرة" loading="lazy" ' +
+        'allow="encrypted-media; picture-in-picture; accelerometer; gyroscope" ' +
+        'referrerpolicy="strict-origin-when-cross-origin"></iframe>' +
+        watermarkHtml() + exitBtn;
+
+    } catch (e) {
+      console.error("Bunny embed error:", e);
+      fail("تعذر تجهيز الفيديو. تأكد من تسجيل الدخول ثم حاول مرة أخرى.");
+    }
+
+    return;
+  }
+
+  /* YouTube */
+  if (isYoutube(qualities[0].src)) {
+    const embed = youtubeEmbed(qualities[0].src);
+
+    if (!embed) {
+      return fail("رابط الفيديو غير صالح.");
+    }
+
+    box.innerHTML =
+      '<iframe src="' + escapeHtml(embed) +
+      '" title="فيديو المحاضرة" loading="lazy" ' +
+      'allow="encrypted-media; picture-in-picture" ' +
+      'referrerpolicy="strict-origin-when-cross-origin"></iframe>' +
+      watermarkHtml() + exitBtn;
+
+    return;
+  }
+
+  /* الفيديوهات الموجودة في التخزين */
+  const saved = (() => {
+    try {
+      return localStorage.getItem(QUALITY_KEY);
+    } catch {
+      return null;
+    }
+  })();
+
+  const start = qualities.find(q => q.label === saved) || qualities[0];
+  const poster = safeHttps(lec.image_url);
+
+  box.innerHTML =
+    '<video controls playsinline preload="metadata" ' +
+    'controlsList="nodownload nofullscreen" disablePictureInPicture' +
+    (poster ? ' poster="' + escapeHtml(poster) + '"' : "") +
+    "></video>" +
+    watermarkHtml() +
+    exitBtn;
+
+  const video = box.querySelector("video");
+
+  if (!(await setSource(i, start.label))) {
+    return fail(
+      "تعذر تجهيز الفيديو. تأكد من تسجيل الدخول ومن صلاحيات قراءة ملفات المحاضرات."
+    );
+  }
+
+  if (qualities.length > 1) {
+    $("quality-" + i).innerHTML = qualities.map(q =>
+      '<option value="' + escapeHtml(q.label) + '"' +
+      (q.label === start.label ? " selected" : "") +
+      ">" + escapeHtml(q.label) + "</option>"
+    ).join("");
+
+    $("quality-wrap-" + i).hidden = false;
+  }
+
+  video.addEventListener("error", async () => {
+    if (video.dataset.retried) return;
+
+    video.dataset.retried = "1";
+    await setSource(i, video.dataset.quality || start.label);
+  });
+
+  video.addEventListener("ended", () => {
+    if (
+      window.ArdProgress &&
+      !(progress.get(String(lec.id)) || {}).completed
+    ) {
+      updateProgress(i, "completed");
+    }
+  });
+
+  video.addEventListener("webkitbeginfullscreen", () => {
+    video.webkitExitFullscreen();
+    toggleFs(box);
+  });
+}
+
+/* ---------- ملء الشاشة ---------- */
+async function toggleFs(box) {
+  if (!box) return;
+
+  if (box.classList.contains("pseudo-fs")) {
+    box.classList.remove("pseudo-fs");
+    document.body.style.overflow = "";
+    return;
+  }
+
+  if (document.fullscreenElement || document.webkitFullscreenElement) {
+    (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    return;
+  }
+
+  const req = box.requestFullscreen || box.webkitRequestFullscreen;
+
+  if (req) {
+    try {
+      await req.call(box);
+      return;
+    } catch (e) {
+      console.warn(e);
+    }
+  }
+
+  box.classList.add("pseudo-fs");
+  document.body.style.overflow = "hidden";
+}
+
+const enterVideoFullscreen = i =>
+  toggleFs($("video-container-" + i));
+
+function onFsChange() {
+  const el = document.fullscreenElement || document.webkitFullscreenElement;
+
+  if (el && el.tagName === "VIDEO") {
+    const box = el.closest(".video-container");
+
+    (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+
+    setTimeout(() => toggleFs(box), 150);
+  }
+}
+
+document.addEventListener("fullscreenchange", onFsChange);
+document.addEventListener("webkitfullscreenchange", onFsChange);
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    document.querySelectorAll("video").forEach(v => v.pause());
+  }
+});
+
+document.addEventListener("contextmenu", e => {
+  if (e.target.closest(".video-container")) e.preventDefault();
+});
+
+/* ---------- فتح المحاضرات والأقسام ---------- */
+async function toggleLecture(i) {
+  const body = $("body-" + i);
+  const arrow = $("arrow-" + i);
+
+  if (!body || !arrow) return;
+
+  const willOpen = !body.classList.contains("open");
+
+  body.classList.toggle("open", willOpen);
+  arrow.style.transform = willOpen ? "rotate(180deg)" : "rotate(0deg)";
+
+  if (body.previousElementSibling) {
+    body.previousElementSibling.setAttribute("aria-expanded", String(willOpen));
+  }
+
+  if (willOpen) {
+    await buildPlayer(i);
+
+    const c = body.querySelector(".video-container");
+
+    if (c) {
+      c.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  } else {
+    const v = body.querySelector("video");
+    if (v) v.pause();
+  }
+}
+
+function toggleSub(header) {
+  const c = header.nextElementSibling;
+  if (c) c.classList.toggle("open");
+}
+
+function section(title, content) {
+  return '<div class="dropdown-section">' +
+    '<div class="dropdown-header" role="button" tabindex="0" ' +
+    'onclick="toggleSub(this)" ' +
+    'onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();toggleSub(this)}">' +
+    '<span>' + title + '</span><span aria-hidden="true">▼</span></div>' +
+    '<div class="dropdown-content">' + content + "</div></div>";
+}
+
+function externalLink(url, text, emptyText) {
+  const href = safeHttps(url);
+
+  return href
+    ? '<a class="btn-link" href="' + escapeHtml(href) +
+      '" target="_blank" rel="noopener noreferrer">' + text + "</a>"
+    : '<p class="muted">' + emptyText + "</p>";
+}
+
+/* ---------- الملازم ---------- */
+function getHandouts(lec) {
+  let h = lec.handouts;
+
+  if (typeof h === "string") {
+    try {
+      h = JSON.parse(h);
+    } catch {
+      h = [];
+    }
+  }
+
+  h = Array.isArray(h)
+    ? h.filter(x => x && x.url).map(x => ({
+        title: String(x.title || "ملزمة"),
+        url: String(x.url)
+      }))
+    : [];
+
+  const legacy = lec.pdf_url || lec.pdfUrl;
+
+  if (!h.length && legacy) {
+    h = [{ title: "ملزمة المحاضرة", url: String(legacy) }];
+  }
+
+  return h;
+}
+
+function handoutsHtml(lec, i) {
+  const list = getHandouts(lec);
+
+  if (!list.length) {
+    return '<p class="muted">لا توجد ملازم لهذه المحاضرة حاليًا.</p>';
+  }
+
+  return list.map((h, n) => {
+    const external =
+      /^https?:\/\//i.test(h.url) &&
+      !h.url.includes("/storage/v1/object/");
+
+    const action = external
+      ? externalLink(h.url, "فتح الملزمة", "الرابط غير صالح")
+      : '<button type="button" class="btn-link" onclick="openHandout(' +
+        i + "," + n + ')">تنزيل الملزمة</button>';
+
+    return '<div class="handout-row"><span>📄 ' +
+      escapeHtml(h.title) + "</span>" + action + "</div>";
+  }).join("");
+}
+
+async function openHandout(i, n) {
+  const item = getHandouts(currentList[i])[n];
+  if (!item) return;
+
+  const w = window.open("about:blank", "_blank");
+
+  const url = await signedUrl(
+    HANDOUT_BUCKET,
+    toStoragePath(item.url, HANDOUT_BUCKET)
+  );
+
+  if (!url) {
+    if (w) w.close();
+
+    alert(
+      "تعذر فتح الملزمة. تأكد من تسجيل الدخول ومن صلاحيات قراءة الملازم."
+    );
+
+    return;
+  }
+
+  if (w) {
+    w.opener = null;
+    w.location.href = url;
+  } else {
+    window.location.href = url;
+  }
+}
+
+/* ---------- الشهور ---------- */
+function getMonthNumber(l) {
+  const n = Number(l.month_number);
+  return Number.isInteger(n) && n >= 1 && n <= 12 ? n : null;
+}
+
+function selectMonth(num) {
+  selectedMonth = num;
+
+  document.querySelectorAll(".month-button").forEach(b => {
+    b.classList.toggle("active", Number(b.dataset.month) === num);
+  });
+
+  renderSelectedMonth();
+}
+
+function renderMonths() {
+  const grid = $("monthsGrid");
+  grid.replaceChildren();
+
+  if (!visibleMonths.length) {
+    grid.style.display = "none";
+    return;
+  }
+
+  grid.style.display = "grid";
+
+  visibleMonths.forEach(month => {
+    const num = Number(month.month_number);
+    const count = allLectures.filter(
+      l => getMonthNumber(l) === num
+    ).length;
+
+    const img = safeHttps(month.image_url);
+    const b = document.createElement("button");
+
+    b.type = "button";
+    b.className = "month-button";
+    b.dataset.month = String(num);
+
+    b.innerHTML =
+      (img
+        ? '<img class="month-cover" src="' + escapeHtml(img) +
+          '" alt="" loading="lazy">'
+        : "") +
+      '<div class="month-button-top"><strong>' +
+      escapeHtml(month.title) +
+      '</strong><span class="month-number">' +
+      num +
+      "</span></div><small>" +
+      count +
+      " محاضرة</small>";
+
+    b.addEventListener("click", () => selectMonth(num));
+    grid.appendChild(b);
+  });
+}
+
+function renderSelectedMonth() {
+  const month = visibleMonths.find(
+    m => Number(m.month_number) === selectedMonth
+  );
+
+  const heading = $("monthHeading");
+  const list = $("lecturesList");
+
+  if (!month) {
+    heading.style.display = "none";
+    list.innerHTML =
+      '<div class="empty"><span class="empty-icon">📚</span>اختر شهرًا لعرض محاضراته.</div>';
+    return;
+  }
+
+  currentList = allLectures.filter(
+    l => getMonthNumber(l) === selectedMonth
+  );
+
+  heading.style.display = "flex";
+
+  $("selectedMonthTitle").textContent = month.title;
+  $("selectedMonthDescription").textContent =
+    "محاضرات الأحياء الخاصة بهذا الشهر.";
+  $("lectureCountBadge").textContent =
+    currentList.length + " محاضرة";
+
+  const mImg = safeHttps(month.image_url);
+  const mEl = $("monthHeadingImg");
+
+  mEl.style.display = mImg ? "" : "none";
+
+  if (mImg) mEl.src = mImg;
+  else mEl.removeAttribute("src");
+
+  if (!currentList.length) {
+    list.innerHTML =
+      '<div class="empty"><span class="empty-icon">📚</span>لا توجد محاضرات مضافة لهذا الشهر حتى الآن.</div>';
+    return;
+  }
+
+  renderLectures(currentList);
+}
+
+/* ---------- بطاقات المحاضرات ---------- */
+function renderLectures(lectures) {
+  const list = $("lecturesList");
+  list.replaceChildren();
+
+  const hasProgress = !!window.ArdProgress;
+
+  lectures.forEach((lec, i) => {
+    const title = lec.title || "محاضرة أحياء";
+    const description = lec.description || "";
+    const details = lec.details || lec.content || "لا توجد تفاصيل نصية إضافية.";
+    const chapter = lec.chapter || lec.lesson || "";
+    const img = safeHttps(lec.image_url);
+
+    const card = document.createElement("div");
+    card.className = "lecture-card";
+
+    card.innerHTML =
+      '<div class="lecture-header" role="button" tabindex="0" aria-expanded="false" ' +
+      'onclick="toggleLecture(' + i + ')" ' +
+      'onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();this.click()}">' +
+
+      (img
+        ? '<img class="lecture-thumb" src="' + escapeHtml(img) +
+          '" alt="" loading="lazy">'
+        : "") +
+
+      '<div class="lecture-title"><h3>' +
+      escapeHtml(title) +
+      "</h3><p>" +
+      escapeHtml(chapter || description) +
+      '</p></div><div class="arrow-icon" id="arrow-' +
+      i +
+      '" aria-hidden="true">▼</div></div>' +
+
+      '<div class="lecture-body" id="body-' + i + '">' +
+      '<div class="video-container" id="video-container-' + i + '"></div>' +
+
+      '<div class="player-bar">' +
+      '<label class="quality-wrap" id="quality-wrap-' + i + '" hidden>' +
+      'الجودة <select id="quality-' + i +
+      '" onchange="changeQuality(' + i + ', this.value)"></select></label>' +
+      '<button type="button" class="video-fullscreen-btn" onclick="enterVideoFullscreen(' +
+      i + ')">⛶ تكبير الفيديو لملء الشاشة</button></div>' +
+
+      (hasProgress
+        ? '<div class="actions-row">' +
+          '<button type="button" class="action-btn" id="save-' + i +
+          '" onclick="toggleSaved(' + i + ')">☆ حفظ المحاضرة</button>' +
+          '<button type="button" class="action-btn" id="done-' + i +
+          '" onclick="toggleCompleted(' + i + ')">تمت المشاهدة؟</button></div>'
+        : "") +
+
+      '<p class="desc">' + escapeHtml(description) + "</p>" +
+
+      section("📖 الشرح التفصيلي", "<p>" + escapeHtml(details) + "</p>") +
+      section("📚 ملازم المحاضرة", handoutsHtml(lec, i)) +
+      section("✍️ واجب المحاضرة", externalLink(
+        lec.homework_url || lec.homeworkUrl,
+        "فتح الواجب",
+        "لا يوجد واجب لهذه المحاضرة حاليًا."
+      )) +
+      section("📝 امتحان المحاضرة", externalLink(
+        lec.exam_url || lec.examUrl,
+        "بدء الامتحان",
+        "لا يوجد امتحان لهذه المحاضرة حاليًا."
+      )) +
+      "</div>";
+
+    list.appendChild(card);
+
+    if (hasProgress) refreshActions(i);
+  });
+}
+
+/* ---------- تحميل البيانات ---------- */
+async function loadLectures() {
+  const list = $("lecturesList");
+
+  list.innerHTML =
+    '<div class="loading">جارٍ تحميل المحاضرات...</div>';
+
+  hideNotice();
+
+  try {
+    const { data: months, error: mErr } = await supabaseClient
+      .from(MONTHS_TABLE)
+      .select("*")
+      .eq("is_visible", true)
+      .order("sort_order", { ascending: true });
+
+    if (mErr) {
+      throw new Error("تعذر قراءة جدول الشهور. " + mErr.message);
+    }
+
+    const { data: lectures, error: lErr } = await supabaseClient
+      .from(LECTURES_TABLE)
+      .select("*")
+      .order("created_at", { ascending: true });
+
+    if (lErr) {
+      throw new Error("تعذر تحميل المحاضرات. " + lErr.message);
+    }
+
+    visibleMonths = months || [];
+
+    const visible = new Set(
+      visibleMonths.map(m => Number(m.month_number))
+    );
+
+    allLectures = (lectures || []).filter(
+      l => visible.has(getMonthNumber(l))
+    );
+
+    renderMonths();
+
+    if (!visibleMonths.length) {
+      list.innerHTML =
+        '<div class="empty"><span class="empty-icon">📅</span>لا توجد شهور متاحة حاليًا.<br>ستظهر الشهور هنا فور إضافتها.</div>';
+
+      $("monthHeading").style.display = "none";
+      return;
+    }
+
+    selectMonth(Number(visibleMonths[0].month_number));
+
+  } catch (error) {
+    console.error("Lectures loading error:", error);
+
+    list.replaceChildren();
+
+    const box = document.createElement("div");
+    const icon = document.createElement("span");
+    const title = document.createElement("strong");
+    const detail = document.createElement("p");
+
+    box.className = "empty";
+    icon.className = "empty-icon";
+    icon.textContent = "⚠️";
+    title.textContent = "تعذر تحميل أقسام المحاضرات";
+
+    detail.style.cssText = "margin-top:8px;font-weight:400";
+    detail.textContent = error.message || "حدث خطأ غير معروف.";
+
+    box.append(icon, title, detail);
+    list.appendChild(box);
+  }
+}
+
+/* ---------- التحقق من تسجيل الدخول ---------- */
+async function init() {
+  const { data, error } = await supabaseClient.auth.getSession();
+  const session = data && data.session;
+
+  if (error || !session) {
+    $("lecturesList").replaceChildren();
+
+    showNotice(
+      'سجّل الدخول لمشاهدة المحاضرات. <a href="' +
+      LOGIN_URL +
+      '">تسجيل الدخول</a>'
+    );
+
+    return;
+  }
+
+  await loadViewer(session.user);
+  await loadProgress();
+  await loadLectures();
+}
+
+supabaseClient.auth.onAuthStateChange(event => {
+  if (event === "SIGNED_OUT") {
+    window.location.href = LOGIN_URL;
+  }
+});
+
+init();
+</script>
+</body>
+</html>
