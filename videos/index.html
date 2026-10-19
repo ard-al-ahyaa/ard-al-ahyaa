@@ -481,14 +481,164 @@ function toggleSaved(i){updateProgress(i,"saved")}
 function toggleCompleted(i){updateProgress(i,"completed")}
 
 async function buildPlayer(i){
- const lec=currentList[i],box=$("video-container-"+i);
- if(!box||box.dataset.ready)return;
- box.dataset.ready="1";
- const qualities=getQualities(lec);
- const fail=msg=>{box.innerHTML='<div class="player-msg">'+escapeHtml(msg)+'</div>';box.dataset.ready="";};
- if(!qualities.length){
-  fail("لا يوجد فيديو مضاف لهذه المحاضرة حتى الآن.");
-  return;
+async function buildPlayer(i) {
+    const lec = allLectures[i];
+    const box = document.getElementById(`player-${i}`);
+    const qualityWrap = document.getElementById(`quality-wrap-${i}`);
+    const qualityBtn = document.getElementById(`quality-btn-${i}`);
+    const qualityMenu = document.getElementById(`quality-menu-${i}`);
+
+    if (!box || !lec) return;
+
+    const qualities = getQualities(lec);
+    const firstQuality = qualities[0];
+
+    if (!firstQuality) {
+        box.innerHTML = `
+            <div class="player-error">
+                لا يوجد فيديو متاح لهذه المحاضرة حاليًا.
+            </div>`;
+        return;
+    }
+
+    const originalUrl = firstQuality.src;
+
+    // إخفاء خيارات الجودة للفيديوهات المضمنة مثل YouTube
+    const isEmbedded =
+        /youtube\.com|youtu\.be|canva\.com|vimeo\.com/i.test(originalUrl);
+
+    if (isEmbedded) {
+        if (qualityWrap) qualityWrap.style.display = "none";
+
+        let embedUrl = originalUrl;
+
+        if (/youtu\.be\//i.test(originalUrl)) {
+            const id = originalUrl.split("youtu.be/")[1]?.split(/[?&]/)[0];
+            if (id) embedUrl = `https://www.youtube.com/embed/${id}`;
+        } else if (/youtube\.com\/watch/i.test(originalUrl)) {
+            try {
+                const parsed = new URL(originalUrl);
+                const id = parsed.searchParams.get("v");
+                if (id) embedUrl = `https://www.youtube.com/embed/${id}`;
+            } catch (e) {}
+        }
+
+        box.innerHTML = `
+            <iframe
+                src="${embedUrl}"
+                title="محاضرة الأحياء"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                allowfullscreen
+                loading="lazy"
+                style="width:100%;aspect-ratio:16/9;border:0;border-radius:12px">
+            </iframe>`;
+        return;
+    }
+
+    // تجهيز مشغل الفيديو المباشر
+    box.innerHTML = `
+        <video
+            id="lecture-video-${i}"
+            controls
+            playsinline
+            preload="metadata"
+            style="width:100%;max-height:75vh;background:#000;border-radius:12px">
+        </video>`;
+
+    const video = document.getElementById(`lecture-video-${i}`);
+
+    async function setVideoSource(source, keepPosition = false) {
+        const oldTime = keepPosition ? video.currentTime : 0;
+        const wasPlaying = !video.paused;
+
+        try {
+            const resolvedUrl = await resolveMedia(source, "lectures");
+
+            if (!resolvedUrl) {
+                alert("تعذر تحميل رابط الفيديو.");
+                return;
+            }
+
+            video.src = resolvedUrl;
+            video.load();
+
+            video.addEventListener("loadedmetadata", function restorePosition() {
+                video.removeEventListener("loadedmetadata", restorePosition);
+
+                if (keepPosition && Number.isFinite(oldTime)) {
+                    try {
+                        video.currentTime = Math.min(
+                            oldTime,
+                            Number.isFinite(video.duration)
+                                ? video.duration
+                                : oldTime
+                        );
+                    } catch (e) {}
+                }
+
+                if (wasPlaying) {
+                    video.play().catch(() => {});
+                }
+            });
+        } catch (error) {
+            console.error("Video loading error:", error);
+            alert("حدث خطأ أثناء تحميل الفيديو.");
+        }
+    }
+
+    // إظهار خيارات الجودة فقط عند وجود أكثر من رابط جودة
+    if (qualities.length > 1 && qualityWrap && qualityBtn && qualityMenu) {
+        qualityWrap.style.display = "inline-block";
+
+        qualityMenu.innerHTML = qualities.map((quality, index) => `
+            <button
+                type="button"
+                class="quality-option ${index === 0 ? "active" : ""}"
+                data-quality-index="${index}">
+                <span>${quality.label}</span>
+                <span>${index === 0 ? "✓" : ""}</span>
+            </button>
+        `).join("");
+
+        qualityBtn.onclick = function (event) {
+            event.stopPropagation();
+            qualityMenu.classList.toggle("open");
+        };
+
+        qualityMenu.querySelectorAll(".quality-option").forEach(button => {
+            button.addEventListener("click", async function (event) {
+                event.stopPropagation();
+
+                const index = Number(this.dataset.qualityIndex);
+                const selectedQuality = qualities[index];
+
+                if (!selectedQuality) return;
+
+                qualityMenu.querySelectorAll(".quality-option").forEach(option => {
+                    option.classList.remove("active");
+                    const check = option.querySelector("span:last-child");
+                    if (check) check.textContent = "";
+                });
+
+                this.classList.add("active");
+                const check = this.querySelector("span:last-child");
+                if (check) check.textContent = "✓";
+
+                qualityBtn.textContent = `⚙ الجودة: ${selectedQuality.label}`;
+                qualityMenu.classList.remove("open");
+
+                await setVideoSource(selectedQuality.src, true);
+            });
+        });
+
+        qualityBtn.textContent = `⚙ الجودة: ${firstQuality.label}`;
+    } else if (qualityWrap) {
+        qualityWrap.style.display = "none";
+    }
+
+    // تشغيل الجودة الأعلى المتاحة افتراضيًا
+    await setVideoSource(firstQuality.src);
+}
  }
  box.innerHTML='<div class="player-msg">جارٍ تجهيز الفيديو...</div>';
  let raw=qualities[0].src;
