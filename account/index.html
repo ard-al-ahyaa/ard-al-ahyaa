@@ -5,410 +5,1257 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>حساب الطالب | منصة أرض الأحياء</title>
 <meta name="description" content="حساب الطالب في منصة أرض الأحياء للثانوية العامة.">
-<meta name="theme-color" content="#026857">
+<meta name="theme-color" content="#004e4d">
 <link rel="icon" href="../favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="../progress.js"></script>
+
 <style>
-:root{--green:#087f5b;--green-dark:#075e54;--green-light:#e8f5ef;--blue:#1e3a8a;--bg:#f4f7fb;--text:#1f2937;--muted:#6b7280;--border:#e5e7eb;--shadow:0 5px 20px rgba(0,0,0,.05);--radius:16px;--sidebar-width:270px;--sidebar-collapsed-width:82px}
+:root{
+  --green:#008866;
+  --green-dark:#006653;
+  --green-light:#e5f6ef;
+  --blue:#2466d8;
+  --text:#142f54;
+  --muted:#7185a4;
+  --bg:#f4f8fd;
+  --border:#e0eaf6;
+  --sidebar-width:272px;
+  --shadow:0 5px 25px rgba(28,65,110,.045);
+  --radius:17px;
+}
+
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:"Cairo",sans-serif}
-button,input{font:inherit}button,a{-webkit-tap-highlight-color:transparent}a{color:inherit;text-decoration:none}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Cairo",sans-serif;
+  overflow-x:hidden
+}
+button,input{font:inherit}
+button,a{-webkit-tap-highlight-color:transparent}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer}
+.ruqaa{font-family:"Aref Ruqaa",serif!important;font-weight:700}
 
 /* الشريط الجانبي */
-.sidebar{width:var(--sidebar-width);background:linear-gradient(180deg,#026857 0%,#075e54 48%,#1e3a8a 100%);color:#fff;position:fixed;right:0;top:0;height:100vh;display:flex;flex-direction:column;justify-content:space-between;z-index:1000;overflow-x:hidden;overflow-y:auto;transition:width .25s ease}
-.sidebar-top{padding:18px;min-width:0}
-.sidebar-control{display:flex;justify-content:flex-start;margin-bottom:18px}
-.sidebar-toggle{width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.23);border-radius:11px;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;padding:0;transition:background .2s,transform .2s}
-.sidebar-toggle:hover{background:rgba(255,255,255,.23);transform:scale(1.04)}
-.sidebar-toggle:focus-visible{outline:2px solid #fff;outline-offset:3px}
-.sidebar-toggle svg,.nav-icon svg{stroke:currentColor;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.sidebar-toggle svg{width:20px;height:20px;stroke-width:2;transition:transform .25s}
-.brand{display:flex;align-items:center;gap:13px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,.16);min-width:0}
-.brand img{width:49px;height:49px;object-fit:contain;border-radius:13px;background:#fff;padding:3px;flex-shrink:0}
-.brand-text{min-width:0;overflow:hidden;white-space:nowrap}
-.brand h2{margin:0;font-size:17px;font-weight:900}
-.brand small{display:block;margin-top:4px;font-size:11px;opacity:.8}
-.nav-title{color:rgba(255,255,255,.62);font-size:10px;font-weight:700;padding:0 12px;margin-bottom:10px;white-space:nowrap}
-.sidebar nav{display:flex;flex-direction:column;gap:7px}
-.nav-link{color:#e2f1ee;padding:12px 13px;border-radius:11px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:12px;width:100%;min-height:46px;white-space:nowrap;transition:background .2s,transform .2s}
-.nav-link:hover,.nav-link.active{background:rgba(255,255,255,.17);color:#fff}
-.nav-link:hover{transform:translateX(-2px)}
-.nav-icon{width:21px;height:21px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center}
-.nav-icon svg{width:20px;height:20px;stroke-width:1.8;transition:transform .2s}
-.nav-link:hover .nav-icon svg{transform:scale(1.08)}
-.nav-link.active .nav-icon svg{stroke-width:2.2}
-.nav-text{min-width:0;overflow:hidden;text-overflow:ellipsis}
-.sidebar-bottom{margin:0 18px 20px;padding:14px;border-radius:12px;background:rgba(255,255,255,.1);font-size:11px;line-height:2;color:rgba(255,255,255,.9);overflow:hidden;white-space:nowrap}
-body.sidebar-collapsed .sidebar{width:var(--sidebar-collapsed-width)}
-body.sidebar-collapsed .sidebar-top{padding:18px 12px}
-body.sidebar-collapsed .sidebar-control,body.sidebar-collapsed .brand{justify-content:center}
-body.sidebar-collapsed .sidebar-toggle svg{transform:rotate(180deg)}
-body.sidebar-collapsed .brand-text,body.sidebar-collapsed .nav-title,body.sidebar-collapsed .nav-text,body.sidebar-collapsed .sidebar-bottom{display:none}
-body.sidebar-collapsed .nav-link{justify-content:center;padding:12px 8px;gap:0}
-body.sidebar-collapsed .nav-link:hover{transform:none}
-body.sidebar-collapsed .nav-icon{width:25px;height:25px}
+.sidebar{
+  width:var(--sidebar-width);
+  background:linear-gradient(180deg,#004e4d 0%,#003d50 62%,#07375b 100%);
+  color:#fff;
+  position:fixed;
+  right:0;
+  top:0;
+  height:100vh;
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+  z-index:1000;
+  overflow-y:auto;
+  overflow-x:hidden;
+  transition:width .25s ease
+}
 
-/* المحتوى */
-.main{margin-right:var(--sidebar-width);min-height:100vh;padding:24px;transition:margin-right .25s ease;min-width:0}
-body.sidebar-collapsed .main{margin-right:var(--sidebar-collapsed-width)}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:16px 20px;margin-bottom:22px;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow)}
-.topbar h1{margin:0;font-size:20px;font-weight:800}
-.topbar p{margin:5px 0 0;color:var(--muted);font-size:12px}
-.student-chip{display:flex;align-items:center;gap:10px;min-width:0}
-.avatar{display:grid;place-items:center;width:43px;height:43px;flex-shrink:0;border-radius:50%;background:var(--green-light);font-size:21px}
-.student-chip strong{display:block;max-width:220px;overflow-wrap:anywhere;font-size:13px}
-.student-chip small{display:block;color:var(--muted);font-size:11px}
-.ruqaa{font-family:"Aref Ruqaa",serif!important;font-size:23px!important;font-weight:700;line-height:1.8}
-.welcome{position:relative;overflow:hidden;padding:25px;margin-bottom:22px;color:#fff;border-radius:18px;background:linear-gradient(120deg,#087f5b,#075e54 58%,#1e3a8a)}
-.welcome h2{margin:0 0 8px;font-size:22px;font-weight:800}
-.welcome p{max-width:650px;margin:0;font-size:13px;line-height:2;color:rgba(255,255,255,.9)}
-.welcome-icon{position:absolute;left:22px;top:50%;transform:translateY(-50%);font-size:58px;opacity:.2}
-.section{min-width:0;padding:21px;margin-bottom:22px;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow)}
-.section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
-.section-heading h3{margin:0;font-size:16px;font-weight:800}
-.section-heading p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.8}
-.section-icon{display:grid;place-items:center;width:40px;height:40px;flex-shrink:0;border-radius:12px;background:var(--green-light);font-size:20px}
-.profile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.sidebar-top{padding:18px 17px 12px}
+.sidebar-control{
+  display:flex;
+  justify-content:flex-start;
+  margin-bottom:13px
+}
+.sidebar-toggle{
+  width:36px;
+  height:36px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:11px;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  transition:.2s
+}
+.sidebar-toggle:hover{background:rgba(255,255,255,.18)}
+.sidebar-toggle i{transition:transform .25s}
+
+.brand{
+  display:flex;
+  align-items:center;
+  flex-direction:column;
+  text-align:center;
+  gap:8px;
+  margin:0 0 23px;
+  padding:0 0 21px;
+  border-bottom:1px solid rgba(255,255,255,.13)
+}
+.brand img{
+  width:78px;
+  height:78px;
+  object-fit:contain;
+  border-radius:19px;
+  padding:5px;
+  background:rgba(255,255,255,.97)
+}
+.brand h2{
+  margin:0;
+  font-size:22px;
+  font-weight:900;
+  color:#fff
+}
+.brand small{
+  display:block;
+  margin-top:3px;
+  color:#c4e6e1;
+  font-size:11px
+}
+
+.nav-title{
+  padding:0 13px;
+  margin:0 0 10px;
+  color:#8fc4c1;
+  font-size:11px;
+  font-weight:800
+}
+.sidebar nav{display:flex;flex-direction:column;gap:7px}
+.nav-link{
+  min-height:50px;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:12px 14px;
+  border-radius:13px;
+  color:#e1f0ee;
+  font-size:13px;
+  font-weight:700;
+  transition:background .2s,transform .2s;
+  white-space:nowrap
+}
+.nav-link:hover{
+  background:rgba(255,255,255,.10);
+  color:#fff;
+  transform:translateX(-2px)
+}
+.nav-link.active{
+  background:linear-gradient(100deg,#13a77c,#159a77);
+  color:#fff;
+  box-shadow:0 5px 16px rgba(0,0,0,.12)
+}
+.nav-icon{
+  width:23px;
+  height:23px;
+  flex-shrink:0;
+  display:grid;
+  place-items:center;
+  font-size:17px
+}
+.nav-text{overflow:hidden;text-overflow:ellipsis}
+
+.sidebar-bottom{
+  margin:auto 16px 17px;
+  padding:14px;
+  text-align:center;
+  border-top:1px solid rgba(255,255,255,.14);
+  color:#c5dfdf;
+  font-size:11px;
+  line-height:2
+}
+.sidebar-bottom strong{color:#fff;font-size:12px}
+
+/* القائمة المصغرة */
+body.sidebar-collapsed{--sidebar-width:82px}
+body.sidebar-collapsed .sidebar-top{padding:15px 10px}
+body.sidebar-collapsed .sidebar-control{justify-content:center}
+body.sidebar-collapsed .sidebar-toggle i{transform:rotate(180deg)}
+body.sidebar-collapsed .brand img{
+  width:49px;height:49px;border-radius:13px
+}
+body.sidebar-collapsed .brand h2,
+body.sidebar-collapsed .brand small,
+body.sidebar-collapsed .nav-title,
+body.sidebar-collapsed .nav-text,
+body.sidebar-collapsed .sidebar-bottom{display:none}
+body.sidebar-collapsed .brand{padding-bottom:17px}
+body.sidebar-collapsed .nav-link{
+  justify-content:center;
+  padding:12px 5px;
+  gap:0
+}
+body.sidebar-collapsed .nav-icon{font-size:19px}
+
+/* المحتوى الرئيسي */
+.main{
+  margin-right:var(--sidebar-width);
+  min-height:100vh;
+  min-width:0;
+  padding:15px 27px 25px;
+  transition:margin-right .25s ease
+}
+
+.topbar{
+  min-height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  padding:12px 20px;
+  margin-bottom:21px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:var(--shadow)
+}
+.topbar-title{min-width:0}
+.topbar h1{
+  margin:0;
+  font-size:20px;
+  font-weight:900;
+  color:var(--text)
+}
+.topbar p{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:11px
+}
+.student-chip{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0
+}
+.avatar{
+  width:43px;
+  height:43px;
+  display:grid;
+  place-items:center;
+  flex-shrink:0;
+  border-radius:14px;
+  background:var(--green-light);
+  color:var(--green-dark);
+  font-size:20px
+}
+.student-chip strong{
+  display:block;
+  max-width:220px;
+  overflow-wrap:anywhere;
+  color:var(--text);
+  font-size:13px
+}
+.student-chip small{
+  display:block;
+  margin-top:2px;
+  color:var(--muted);
+  font-size:10px
+}
+
+/* الترحيب */
+.welcome{
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  min-height:178px;
+  padding:28px 30px;
+  margin-bottom:22px;
+  border:1px solid #d9eee6;
+  border-radius:19px;
+  background:linear-gradient(100deg,#d9f2e8 0%,#f4fbf8 48%,#d8eee8 100%)
+}
+.welcome-content{position:relative;z-index:1;max-width:700px}
+.welcome h2{
+  margin:0 0 9px;
+  color:#006b5a;
+  font-size:25px;
+  font-weight:900
+}
+.welcome p{
+  max-width:650px;
+  margin:0;
+  color:#385f68;
+  font-size:13px;
+  line-height:2
+}
+.welcome-button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  margin-top:16px;
+  padding:11px 18px;
+  border-radius:30px;
+  background:linear-gradient(100deg,#006653,#008866);
+  color:#fff;
+  font-size:12px;
+  font-weight:800;
+  transition:.2s
+}
+.welcome-button:hover{transform:translateY(-2px);box-shadow:0 5px 14px #00665330}
+.welcome-art{
+  position:absolute;
+  left:28px;
+  top:50%;
+  transform:translateY(-50%);
+  display:grid;
+  place-items:center;
+  width:135px;
+  height:135px;
+  border-radius:50%;
+  background:rgba(255,255,255,.45);
+  color:#008866;
+  font-size:65px
+}
+
+/* الإحصائيات */
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:15px;
+  margin-bottom:23px
+}
+.stat-card{
+  min-width:0;
+  padding:17px;
+  border:1px solid var(--border);
+  border-radius:17px;
+  background:#fff;
+  box-shadow:var(--shadow);
+  transition:transform .2s,border-color .2s
+}
+.stat-card:hover{
+  transform:translateY(-3px);
+  border-color:#b9ded3
+}
+.stat-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:13px
+}
+.stat-icon{
+  width:43px;
+  height:43px;
+  display:grid;
+  place-items:center;
+  flex-shrink:0;
+  border-radius:14px;
+  font-size:19px
+}
+.stat-card:nth-child(1){background:linear-gradient(145deg,#fff,#f0faf6)}
+.stat-card:nth-child(1) .stat-icon{background:#d7f4e5;color:#008866}
+.stat-card:nth-child(2){background:linear-gradient(145deg,#fff,#eef6ff)}
+.stat-card:nth-child(2) .stat-icon{background:#dcecff;color:#2466d8}
+.stat-card:nth-child(3){background:linear-gradient(145deg,#fff,#f4f0ff)}
+.stat-card:nth-child(3) .stat-icon{background:#e9e0ff;color:#7554d9}
+.stat-card:nth-child(4){background:linear-gradient(145deg,#fff,#fff8eb)}
+.stat-card:nth-child(4) .stat-icon{background:#ffedca;color:#c88719}
+.stat-label{color:var(--muted);font-size:11px;font-weight:700}
+.stat-value{
+  color:var(--text);
+  font-size:26px;
+  font-weight:900;
+  overflow-wrap:anywhere
+}
+.stat-note{
+  margin-top:3px;
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.8
+}
+
+/* الأقسام */
+.content-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+  align-items:start
+}
+.section{
+  min-width:0;
+  padding:21px;
+  margin-bottom:20px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:#fff;
+  box-shadow:var(--shadow)
+}
+.content-grid .section{margin-bottom:0}
+.section-heading{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding-bottom:15px;
+  margin-bottom:18px;
+  border-bottom:1px solid #edf2f8
+}
+.section-heading h3{
+  margin:0;
+  font-size:15px;
+  font-weight:900;
+  color:var(--text)
+}
+.section-heading p{
+  margin:5px 0 0;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.9
+}
+.section-icon{
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  flex-shrink:0;
+  border-radius:13px;
+  background:var(--green-light);
+  color:var(--green);
+  font-size:18px
+}
+
+/* البيانات */
+.profile-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:15px
+}
 .field{min-width:0}
-.field label{display:block;margin-bottom:7px;color:#4b5563;font-size:12px;font-weight:700}
-.field input{width:100%;min-width:0;padding:12px;color:var(--text);background:#f9fafb;border:1px solid var(--border);border-radius:10px;outline:none;font-size:13px;transition:.2s}
-.field input:focus{border-color:var(--green);background:#fff;box-shadow:0 0 0 3px rgba(8,127,91,.08)}
-.field input[readonly],.field input:disabled{color:#6b7280;cursor:not-allowed;opacity:.9}
-.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border:0;border-radius:10px;font-size:13px;font-weight:700;transition:.2s;cursor:pointer}
-.btn-primary{color:#fff;background:var(--green)}.btn-primary:hover{background:var(--green-dark);transform:translateY(-1px)}
-.btn-light{color:#374151;background:#f3f4f6}.btn-light:hover{background:#e5e7eb}
-.btn-danger{color:#991b1b;background:#fee2e2}
-.btn:disabled{cursor:not-allowed;opacity:.55;transform:none}
-.message{display:none;padding:11px 13px;margin-top:14px;border-radius:10px;font-size:12px;line-height:1.9;overflow-wrap:anywhere}
+.field label{
+  display:block;
+  margin-bottom:7px;
+  color:#526985;
+  font-size:11px;
+  font-weight:800
+}
+.field input{
+  width:100%;
+  min-width:0;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:11px;
+  outline:none;
+  background:#f8fafc;
+  color:var(--text);
+  font-size:12px;
+  transition:.2s
+}
+.field input:focus{
+  border-color:var(--green);
+  background:#fff;
+  box-shadow:0 0 0 3px #00886612
+}
+.field input:disabled,.field input[readonly]{
+  color:#60748d;
+  cursor:not-allowed
+}
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-top:18px
+}
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  padding:10px 15px;
+  border:0;
+  border-radius:11px;
+  font-size:11px;
+  font-weight:800;
+  transition:.2s
+}
+.btn-primary{background:var(--green);color:#fff}
+.btn-primary:hover{background:var(--green-dark);transform:translateY(-1px)}
+.btn-light{background:#edf2f8;color:#36516d}
+.btn-light:hover{background:#e1e9f2}
+.btn-danger{background:#fff0f0;color:#b42323}
+.btn-danger:hover{background:#ffe0e0}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.message{
+  display:none;
+  padding:12px 14px;
+  margin-top:14px;
+  border-radius:11px;
+  font-size:11px;
+  line-height:1.9;
+  overflow-wrap:anywhere
+}
 .message.success{display:block;color:#166534;background:#dcfce7}
 .message.error{display:block;color:#991b1b;background:#fee2e2}
 .message.info{display:block;color:#1d4ed8;background:#eff6ff}
-.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:22px}
-.stat-card{min-width:0;padding:18px;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);border-bottom:3px solid var(--green);transition:.2s}
-.stat-card:hover{transform:translateY(-3px);border-bottom-color:var(--blue)}
-.stat-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}
-.stat-icon{display:grid;place-items:center;width:39px;height:39px;border-radius:11px;background:var(--green-light);font-size:19px}
-.stat-label{color:var(--muted);font-size:12px}
-.stat-value{font-size:24px;font-weight:800;overflow-wrap:anywhere}
-.stat-note{margin-top:3px;color:var(--muted);font-size:11px}
+.notice{
+  padding:12px 14px;
+  margin-top:16px;
+  border:1px solid #d8eee2;
+  border-radius:12px;
+  background:#effaf3;
+  color:#267357;
+  font-size:10px;
+  line-height:2
+}
+
+/* النتائج والمشاركات */
 .list{display:grid;gap:10px}
-.list-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px;border:1px solid var(--border);border-radius:12px}
+.list-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:13px;
+  border:1px solid #e9eff7;
+  border-radius:13px;
+  background:#fff;
+  transition:background .2s,border-color .2s
+}
+.list-item:hover{background:#f8fbff;border-color:#d7e8e5}
 .list-item-main{min-width:0}
-.list-item strong{display:block;font-size:13px;overflow-wrap:anywhere}
-.list-item small{display:block;margin-top:4px;color:var(--muted);font-size:11px;overflow-wrap:anywhere}
-.tag{display:inline-block;padding:5px 9px;color:var(--green-dark);background:var(--green-light);border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap}
-.empty{padding:25px 12px;color:var(--muted);background:#f9fafb;border-radius:12px;font-size:13px;line-height:2;text-align:center}
-.empty span{display:block;margin-bottom:6px;font-size:27px}
-.notice{margin-top:13px;color:var(--muted);font-size:11px;line-height:1.9}
-.loading{padding:30px;color:var(--muted);text-align:center;font-size:13px}
-.login-box{max-width:500px;padding:28px;margin:70px auto;background:#fff;border-radius:18px;box-shadow:var(--shadow);text-align:center}
-.login-box h2{margin-top:0}.login-box p{color:var(--muted);font-size:13px;line-height:2}
-footer{padding:20px 10px 35px;color:var(--muted);text-align:center;font-size:11px}
+.list-item strong{
+  display:block;
+  color:var(--text);
+  font-size:12px;
+  overflow-wrap:anywhere
+}
+.list-item small{
+  display:block;
+  margin-top:5px;
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.8;
+  overflow-wrap:anywhere
+}
+.tag{
+  display:inline-block;
+  flex-shrink:0;
+  padding:6px 9px;
+  border-radius:9px;
+  background:var(--green-light);
+  color:var(--green-dark);
+  font-size:10px;
+  font-weight:800;
+  white-space:nowrap
+}
+.empty{
+  padding:25px 12px;
+  border-radius:13px;
+  background:#f8fafc;
+  color:var(--muted);
+  font-size:12px;
+  line-height:2;
+  text-align:center
+}
+.empty span{display:block;margin-bottom:7px;font-size:25px}
+.loading{padding:27px;color:var(--muted);text-align:center;font-size:12px}
+.login-box{
+  max-width:500px;
+  padding:30px;
+  margin:65px auto;
+  border:1px solid var(--border);
+  border-radius:19px;
+  background:#fff;
+  box-shadow:var(--shadow);
+  text-align:center
+}
+.login-box h2{color:var(--text)}
+.login-box p{color:var(--muted);font-size:12px;line-height:2}
+.login-icon{
+  width:72px;height:72px;
+  display:grid;place-items:center;
+  margin:0 auto 15px;
+  border-radius:22px;
+  background:var(--green-light);
+  color:var(--green);
+  font-size:29px
+}
+footer{
+  padding:25px 10px 15px;
+  color:#8293a9;
+  text-align:center;
+  font-size:10px
+}
+
+/* شريط الموبايل */
 .mobile-nav{display:none}
 
-@media(max-width:1100px){.main{padding:25px}}
-@media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1150px){
+  .main{padding:16px}
+  .stats-grid{gap:11px}
+  .stat-card{padding:14px}
+  .content-grid{gap:13px}
+  .section{padding:17px}
+}
+@media(max-width:900px){
+  .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .content-grid{grid-template-columns:1fr}
+}
 @media(max-width:650px){
-.sidebar{display:none}
-.main,body.sidebar-collapsed .main{margin-right:0;padding:12px 12px 90px}
-.topbar{padding:13px;margin-bottom:15px}.topbar h1{font-size:17px}.topbar p{font-size:11px}
-.student-chip{max-width:48%}.student-chip strong{font-size:11px}.student-chip small{font-size:10px}
-.avatar{width:36px;height:36px;font-size:18px}.ruqaa{font-size:20px!important}
-.welcome{padding:20px 17px;margin-bottom:15px}.welcome h2{font-size:19px}.welcome p{font-size:12px}.welcome-icon{display:none}
-.section{padding:16px;margin-bottom:15px}.section-heading h3{font-size:14px}
-.profile-grid{grid-template-columns:1fr;gap:13px}
-.stats-grid{gap:10px;margin-bottom:15px}.stat-card{padding:13px}.stat-value{font-size:21px}.stat-label{font-size:11px}
-.stat-icon{width:34px;height:34px;font-size:17px}
-.list-item{align-items:flex-start;padding:11px}
-.mobile-nav{position:fixed;right:0;bottom:0;left:0;z-index:200;display:flex;justify-content:space-around;gap:3px;padding:9px 4px calc(9px + env(safe-area-inset-bottom));background:#fff;box-shadow:0 -4px 18px rgba(0,0,0,.08)}
-.mobile-nav a{display:flex;flex:1;flex-direction:column;align-items:center;gap:3px;padding:5px 2px;border-radius:9px;color:var(--muted);font-size:9px;min-width:0}
-.mobile-nav a span{font-size:19px}
-.mobile-nav a.active{color:var(--green);background:var(--green-light);font-weight:800}
-footer{padding-bottom:15px}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}}
+  .sidebar{display:none}
+  .main,body.sidebar-collapsed .main{
+    margin-right:0;
+    padding:11px 11px 91px
+  }
+  .topbar{
+    padding:12px;
+    margin-bottom:14px;
+    border-radius:14px
+  }
+  .topbar h1{font-size:16px}
+  .topbar p{font-size:10px}
+  .student-chip{max-width:52%;gap:7px}
+  .student-chip strong{font-size:11px}
+  .student-chip small{font-size:9px}
+  .avatar{width:36px;height:36px;font-size:17px}
+  .welcome{
+    min-height:auto;
+    padding:22px 17px;
+    margin-bottom:15px;
+    border-radius:16px
+  }
+  .welcome h2{font-size:20px}
+  .welcome p{font-size:11px}
+  .welcome-art{left:-25px;opacity:.15;width:100px;height:100px;font-size:48px}
+  .welcome-button{font-size:10px;padding:10px 13px}
+  .stats-grid{gap:10px;margin-bottom:15px}
+  .stat-card{padding:12px;border-radius:14px}
+  .stat-top{margin-bottom:10px}
+  .stat-icon{width:35px;height:35px;font-size:16px;border-radius:11px}
+  .stat-label{font-size:10px}
+  .stat-value{font-size:22px}
+  .stat-note{font-size:9px}
+  .section{padding:15px;margin-bottom:14px;border-radius:15px}
+  .section-heading{margin-bottom:14px;padding-bottom:12px}
+  .section-heading h3{font-size:13px}
+  .section-heading p{font-size:10px}
+  .section-icon{width:36px;height:36px;font-size:16px}
+  .profile-grid{grid-template-columns:1fr;gap:12px}
+  .field input{padding:11px;font-size:12px}
+  .btn{padding:10px 12px;font-size:10px}
+  .list-item{padding:11px;align-items:flex-start}
+  .list-item strong{font-size:11px}
+  .tag{font-size:9px;padding:5px 7px}
+  .mobile-nav{
+    position:fixed;
+    right:0;bottom:0;left:0;
+    z-index:1200;
+    display:flex;
+    justify-content:space-around;
+    gap:2px;
+    padding:8px 3px calc(8px + env(safe-area-inset-bottom));
+    background:rgba(255,255,255,.97);
+    border-top:1px solid var(--border);
+    box-shadow:0 -5px 20px rgba(28,65,110,.08);
+    backdrop-filter:blur(12px)
+  }
+  .mobile-nav a{
+    display:flex;
+    flex:1;
+    min-width:0;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    padding:5px 1px;
+    border-radius:10px;
+    color:#7185a4;
+    font-size:8px;
+    font-weight:700
+  }
+  .mobile-nav a i{font-size:17px}
+  .mobile-nav a.active{background:var(--green-light);color:var(--green-dark)}
+  footer{padding:16px 5px 10px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    scroll-behavior:auto!important;
+    transition-duration:.01ms!important
+  }
+}
 </style>
 </head>
+
 <body>
 
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-top">
+
     <div class="sidebar-control">
-      <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="تصغير القائمة الجانبية" title="تصغير القائمة الجانبية" aria-expanded="true">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 5-7 7 7 7"></path><path d="M20 5v14"></path></svg>
+      <button type="button" class="sidebar-toggle" id="sidebarToggle"
+        aria-label="تصغير القائمة الجانبية" title="تصغير القائمة الجانبية"
+        aria-expanded="true">
+        <i class="fa-solid fa-angles-right"></i>
       </button>
     </div>
+
     <div class="brand">
-      <img src="../logo.png" alt="شعار أرض الأحياء" onerror="this.style.display='none'">
-      <div class="brand-text"><h2>أرض الأحياء</h2><small>الثانوية العامة</small></div>
+      <img src="../logo.png" alt="شعار أرض الأحياء"
+           onerror="this.style.display='none'">
+      <div>
+        <h2>أرض الأحياء</h2>
+        <small>بناء المستقبل يبدأ من هنا</small>
+      </div>
     </div>
+
     <div class="nav-title">القائمة الرئيسية</div>
+
     <nav aria-label="القائمة الرئيسية">
-      <a class="nav-link" href="../index.html" data-title="الرئيسية" aria-label="الرئيسية">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7"/><path d="M5 9v12h14V9"/><path d="M9 21v-7h6v7"/></svg></span><span class="nav-text">الرئيسية</span></a>
-      <a class="nav-link" href="../videos/index.html" data-title="المحاضرات" aria-label="المحاضرات">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg></span><span class="nav-text">المحاضرات</span></a>
-      <a class="nav-link" href="../notes/index.html" data-title="المذكرات" aria-label="المذكرات">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg></span><span class="nav-text">المذكرات</span></a>
-      <a class="nav-link" href="../champion/index.html" data-title="بطل الفصل" aria-label="بطل الفصل">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span><span class="nav-text">بطل الفصل</span></a>
-      <a class="nav-link" href="../forum/index.html" data-title="المنتدى" aria-label="المنتدى">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg></span><span class="nav-text">المنتدى</span></a>
-      <a class="nav-link active" href="index.html" data-title="حساب الطالب" aria-label="حساب الطالب" aria-current="page">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></span><span class="nav-text">حساب الطالب</span></a>
+
+      <a class="nav-link" href="../index.html" data-title="الرئيسية">
+        <span class="nav-icon"><i class="fa-solid fa-house"></i></span>
+        <span class="nav-text">الرئيسية</span>
+      </a>
+
+      <a class="nav-link" href="../videos/index.html" data-title="المحاضرات">
+        <span class="nav-icon"><i class="fa-solid fa-circle-play"></i></span>
+        <span class="nav-text">المحاضرات</span>
+      </a>
+
+      <a class="nav-link" href="../notes/index.html" data-title="المذكرات">
+        <span class="nav-icon"><i class="fa-solid fa-book-open"></i></span>
+        <span class="nav-text">المذكرات</span>
+      </a>
+
+      <a class="nav-link" href="../champion/index.html" data-title="بطل الفصل">
+        <span class="nav-icon"><i class="fa-solid fa-trophy"></i></span>
+        <span class="nav-text">بطل الفصل</span>
+      </a>
+
+      <a class="nav-link" href="../forum/index.html" data-title="المنتدى">
+        <span class="nav-icon"><i class="fa-solid fa-comments"></i></span>
+        <span class="nav-text">المنتدى</span>
+      </a>
+
+      <a class="nav-link active" href="index.html"
+         data-title="حساب الطالب" aria-current="page">
+        <span class="nav-icon"><i class="fa-solid fa-user-graduate"></i></span>
+        <span class="nav-text">حساب الطالب</span>
+      </a>
+
     </nav>
   </div>
-  <div class="sidebar-bottom"><strong>🌱 أرض الأحياء</strong><br>رحلتك نحو التفوق تبدأ من هنا.<br><span style="opacity:.8">الثانوية العامة</span></div>
+
+  <div class="sidebar-bottom">
+    <strong><i class="fa-solid fa-seedling"></i> أرض الأحياء</strong>
+    <br>
+    رحلتك نحو التفوق تبدأ من هنا.
+    <br>
+    الثانوية العامة
+  </div>
 </aside>
 
 <main class="main">
+
   <header class="topbar">
-    <div><h1>حساب الطالب</h1><p>بياناتك الشخصية ومتابعة تقدمك</p></div>
+    <div class="topbar-title">
+      <h1>حساب الطالب</h1>
+      <p>كل بياناتك التعليمية في مكان واحد</p>
+    </div>
+
     <div class="student-chip">
-      <div class="avatar">👨‍🎓</div>
-      <div><strong id="topStudentName" class="ruqaa">جارٍ التحميل...</strong><small>طالب أرض الأحياء</small></div>
+      <div class="avatar"><i class="fa-solid fa-user-graduate"></i></div>
+      <div>
+        <strong id="topStudentName" class="ruqaa">جارٍ التحميل...</strong>
+        <small>طالب أرض الأحياء</small>
+      </div>
     </div>
   </header>
 
-  <div id="pageLoading" class="section loading">جارٍ تحميل بيانات حسابك...</div>
+  <div id="pageLoading" class="section loading">
+    <i class="fa-solid fa-spinner fa-spin"></i>
+    جارٍ تحميل بيانات حسابك...
+  </div>
 
   <div id="loginRequired" style="display:none">
     <div class="login-box">
-      <div style="font-size:45px">🔐</div>
+      <div class="login-icon"><i class="fa-solid fa-lock"></i></div>
       <h2>سجّل الدخول أولًا</h2>
-      <p>يجب تسجيل الدخول إلى المنصة لعرض بيانات حسابك.</p>
-      <a class="btn btn-primary" href="../login/index.html">تسجيل الدخول</a>
+      <p>يجب تسجيل الدخول إلى المنصة حتى تتمكن من عرض بيانات حسابك.</p>
+      <a class="btn btn-primary" href="../login/index.html">
+        <i class="fa-solid fa-right-to-bracket"></i>
+        تسجيل الدخول
+      </a>
     </div>
   </div>
 
   <div id="accountContent" style="display:none">
+
     <section class="welcome">
-      <h2>أهلًا بك يا <span id="welcomeName" class="ruqaa">طالبنا المتميز</span> 🌱</h2>
-      <p>تابع بياناتك التعليمية ودرجاتك، وحافظ على تحديث بيانات التواصل الخاصة بك.</p>
-      <div class="welcome-icon">🎓</div>
+      <div class="welcome-content">
+        <h2>مرحبًا بك يا <span id="welcomeName" class="ruqaa">طالبنا المتميز</span> 🌱</h2>
+        <p>
+          يسعدنا وجودك معنا في منصة أرض الأحياء.
+          تابع تقدمك التعليمي ونتائجك، واستمر في رحلتك نحو التفوق والنجاح.
+        </p>
+        <a class="welcome-button" href="../videos/index.html">
+          ابدأ مشاهدة محاضراتك
+          <i class="fa-solid fa-circle-play"></i>
+        </a>
+      </div>
+      <div class="welcome-art" aria-hidden="true">
+        <i class="fa-solid fa-graduation-cap"></i>
+      </div>
     </section>
 
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-top"><span class="stat-label">المحاضرات المتاحة</span><div class="stat-icon">🎥</div></div>
-        <div class="stat-value" id="totalLectures">—</div><div class="stat-note">إجمالي المحاضرات بالمنصة</div></div>
-      <div class="stat-card"><div class="stat-top"><span class="stat-label">المحاضرات المكتملة</span><div class="stat-icon">✅</div></div>
-        <div class="stat-value" id="completedLectures">—</div><div class="stat-note" id="completedNote">تقدمك في المحاضرات</div></div>
-      <div class="stat-card"><div class="stat-top"><span class="stat-label">نتائج الامتحانات</span><div class="stat-icon">📝</div></div>
-        <div class="stat-value" id="examCount">—</div><div class="stat-note">النتائج المسجلة لحسابك</div></div>
-      <div class="stat-card"><div class="stat-top"><span class="stat-label">الواجبات</span><div class="stat-icon">📋</div></div>
-        <div class="stat-value" id="homeworkCount">—</div><div class="stat-note">الواجبات المسجلة لحسابك</div></div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span class="stat-label">إجمالي المحاضرات</span>
+          <div class="stat-icon"><i class="fa-solid fa-book-open"></i></div>
+        </div>
+        <div class="stat-value" id="totalLectures">—</div>
+        <div class="stat-note">المحاضرات المنشورة على المنصة</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span class="stat-label">المحاضرات المكتملة</span>
+          <div class="stat-icon"><i class="fa-solid fa-circle-play"></i></div>
+        </div>
+        <div class="stat-value" id="completedLectures">—</div>
+        <div class="stat-note" id="completedNote">تقدمك في المحاضرات</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span class="stat-label">الامتحانات</span>
+          <div class="stat-icon"><i class="fa-solid fa-file-circle-check"></i></div>
+        </div>
+        <div class="stat-value" id="examCount">—</div>
+        <div class="stat-note">النتائج المسجلة لحسابك</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span class="stat-label">الواجبات</span>
+          <div class="stat-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+        </div>
+        <div class="stat-value" id="homeworkCount">—</div>
+        <div class="stat-note">الواجبات المسجلة لحسابك</div>
+      </div>
+
     </div>
 
-    <section class="section">
-      <div class="section-heading">
-        <div><h3>👤 البيانات الشخصية</h3><p>اسمك ثابت، ويمكنك تعديل رقم الهاتف أو البريد الإلكتروني وفقًا للمهلة.</p></div>
-        <div class="section-icon">🪪</div>
-      </div>
-      <form id="profileForm" onsubmit="return false">
-        <div class="profile-grid">
-          <div class="field"><label for="fullName">اسم الطالب — غير قابل للتعديل</label><input type="text" id="fullName" class="ruqaa" readonly disabled></div>
-          <div class="field"><label for="email">البريد الإلكتروني</label><input type="email" id="email" readonly disabled autocomplete="email"></div>
-          <div class="field"><label for="phone">رقم الهاتف</label><input type="tel" id="phone" readonly disabled autocomplete="tel" placeholder="غير مسجل"></div>
+    <div class="content-grid">
+
+      <section class="section">
+        <div class="section-heading">
+          <div>
+            <h3><i class="fa-solid fa-user-pen"></i> البيانات الشخصية</h3>
+            <p>بياناتك الأساسية ووسائل التواصل الخاصة بك.</p>
+          </div>
+          <div class="section-icon"><i class="fa-solid fa-id-card"></i></div>
+        </div>
+
+        <form id="profileForm" onsubmit="return false">
+          <div class="profile-grid">
+
+            <div class="field">
+              <label for="fullName">اسم الطالب — غير قابل للتعديل</label>
+              <input type="text" id="fullName" class="ruqaa" readonly disabled>
+            </div>
+
+            <div class="field">
+              <label for="email">البريد الإلكتروني</label>
+              <input type="email" id="email" readonly disabled autocomplete="email">
+            </div>
+
+            <div class="field">
+              <label for="phone">رقم الهاتف</label>
+              <input type="tel" id="phone" readonly disabled
+                     autocomplete="tel" placeholder="غير مسجل">
+            </div>
+
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn btn-primary" id="editPhoneBtn">
+              <i class="fa-solid fa-phone"></i> تعديل الهاتف
+            </button>
+
+            <button type="button" class="btn btn-primary" id="editEmailBtn">
+              <i class="fa-solid fa-envelope"></i> تعديل البريد
+            </button>
+
+            <button type="button" class="btn btn-primary" id="saveBtn" style="display:none">
+              <i class="fa-solid fa-floppy-disk"></i> حفظ التعديل
+            </button>
+
+            <button type="button" class="btn btn-light" id="cancelBtn" style="display:none">
+              إلغاء
+            </button>
+
+            <button type="button" class="btn btn-danger" id="logoutBtn">
+              <i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج
+            </button>
+          </div>
+
+          <div id="profileMessage" class="message" role="status" aria-live="polite"></div>
+
+          <div class="notice" id="cooldownNotice">
+            يمكنك تعديل رقم الهاتف أو البريد الإلكتروني مرة واحدة كل 30 يومًا.
+            اسم الطالب غير قابل للتعديل من هذه الصفحة.
+          </div>
+        </form>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <div>
+            <h3><i class="fa-solid fa-chart-column"></i> درجات الامتحانات</h3>
+            <p>آخر النتائج المسجلة لحسابك.</p>
+          </div>
+          <div class="section-icon"><i class="fa-solid fa-file-circle-check"></i></div>
+        </div>
+        <div id="examResults" class="list">
+          <div class="loading">جارٍ تحميل النتائج...</div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <div>
+            <h3><i class="fa-solid fa-clipboard-list"></i> درجات الواجبات</h3>
+            <p>تابع درجات الواجبات المسجلة لك.</p>
+          </div>
+          <div class="section-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+        </div>
+        <div id="homeworkResults" class="list">
+          <div class="loading">جارٍ تحميل الواجبات...</div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <div>
+            <h3><i class="fa-solid fa-comments"></i> مشاركات المنتدى</h3>
+            <p>المشاركات المسجلة باسم حسابك.</p>
+          </div>
+          <div class="section-icon"><i class="fa-solid fa-seedling"></i></div>
+        </div>
+        <div id="forumPosts" class="list">
+          <div class="loading">جارٍ تحميل المشاركات...</div>
         </div>
         <div class="actions">
-          <button type="button" class="btn btn-primary" id="editPhoneBtn">✏️ تعديل رقم الهاتف</button>
-          <button type="button" class="btn btn-primary" id="editEmailBtn">✉️ تعديل البريد الإلكتروني</button>
-          <button type="button" class="btn btn-primary" id="saveBtn" style="display:none">💾 حفظ التعديل</button>
-          <button type="button" class="btn btn-light" id="cancelBtn" style="display:none">إلغاء</button>
-          <button type="button" class="btn btn-danger" id="logoutBtn">تسجيل الخروج</button>
+          <a href="../forum/index.html" class="btn btn-primary">
+            <i class="fa-solid fa-arrow-left"></i> الانتقال إلى المنتدى
+          </a>
         </div>
-        <div id="profileMessage" class="message" role="status"></div>
-        <div class="notice" id="cooldownNotice">يمكنك تغيير رقم الهاتف أو البريد الإلكتروني مرة واحدة كل 30 يومًا. الاسم غير قابل للتعديل من صفحة حساب الطالب.</div>
-      </form>
-    </section>
+      </section>
 
-    <section class="section">
-      <div class="section-heading">
-        <div><h3>📝 درجات الامتحانات</h3><p>النتائج المسجلة في قاعدة البيانات لحسابك.</p></div>
-        <div class="section-icon">📊</div>
-      </div>
-      <div id="examResults" class="list"><div class="loading">جارٍ تحميل النتائج...</div></div>
-    </section>
-
-    <section class="section">
-      <div class="section-heading">
-        <div><h3>📋 درجات الواجبات</h3><p>متابعة الواجبات المسجلة لك.</p></div>
-        <div class="section-icon">✍️</div>
-      </div>
-      <div id="homeworkResults" class="list"><div class="loading">جارٍ تحميل الواجبات...</div></div>
-    </section>
-
-    <section class="section">
-      <div class="section-heading">
-        <div><h3>💬 مشاركات المنتدى</h3><p>المشاركات المسجلة لحسابك.</p></div>
-        <div class="section-icon">🌱</div>
-      </div>
-      <div id="forumPosts" class="list"><div class="loading">جارٍ تحميل المشاركات...</div></div>
-      <div class="actions"><a href="../forum/index.html" class="btn btn-primary">الانتقال إلى المنتدى</a></div>
-    </section>
+    </div>
   </div>
 
   <footer>© 2026 منصة أرض الأحياء — جميع الحقوق محفوظة</footer>
 </main>
 
 <nav class="mobile-nav" aria-label="التنقل السريع">
-  <a href="../index.html"><span>🏠</span>الرئيسية</a>
-  <a href="../videos/index.html"><span>🎥</span>المحاضرات</a>
-  <a href="../notes/index.html"><span>📄</span>المذكرات</a>
-  <a href="../champion/index.html"><span>🏆</span>البطل</a>
-  <a href="../forum/index.html"><span>💬</span>المنتدى</a>
-  <a href="index.html" class="active" aria-current="page"><span>👤</span>حسابي</a>
+
+  <a href="../index.html">
+    <i class="fa-solid fa-house"></i>
+    الرئيسية
+  </a>
+
+  <a href="../videos/index.html">
+    <i class="fa-solid fa-circle-play"></i>
+    المحاضرات
+  </a>
+
+  <a href="../notes/index.html">
+    <i class="fa-solid fa-book-open"></i>
+    المذكرات
+  </a>
+
+  <a href="../champion/index.html">
+    <i class="fa-solid fa-trophy"></i>
+    البطل
+  </a>
+
+  <a href="../forum/index.html">
+    <i class="fa-solid fa-comments"></i>
+    المنتدى
+  </a>
+
+  <a href="index.html" class="active" aria-current="page">
+    <i class="fa-solid fa-user"></i>
+    حسابي
+  </a>
+
 </nav>
 
 <script>
 "use strict";
 
-/* لو ملف أساسي لم يُحمَّل نعرض السبب بدل البقاء على شاشة التحميل */
+/* التحقق من تحميل الملفات الأساسية */
 if (!window.supabase || !window.ArdProgress) {
   document.getElementById("pageLoading").textContent =
-    "تعذر تحميل ملفات الموقع. تأكد من وجود progress.js في الصفحة الرئيسية للموقع ثم أعد تحميل الصفحة.";
-  throw new Error("Missing dependency: " + (!window.supabase ? "supabase-js" : "progress.js"));
+    "تعذر تحميل ملفات الموقع. تأكد من وجود progress.js وإمكانية الاتصال بالإنترنت.";
+  throw new Error(
+    "Missing dependency: " +
+    (!window.supabase ? "supabase-js" : "progress.js")
+  );
 }
 
+/* إعداد Supabase */
 const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 ArdProgress.init(db);
 
-const TABLES = { exams: "exam_results", homework: "homework_results", forum: "forum_posts" };
+const TABLES = {
+  exams: "exam_results",
+  homework: "homework_results",
+  forum: "forum_posts"
+};
+
 const COOLDOWN_MS = 30 * 24 * 60 * 60 * 1000;
 const LOGIN_URL = "../login/index.html";
 
-let currentUser = null, profile = {}, editMode = null, savedPhone = "", savedEmail = "";
+let currentUser = null;
+let profile = {};
+let editMode = null;
+let savedPhone = "";
+let savedEmail = "";
+
 const $ = id => document.getElementById(id);
 
-/* الشريط الجانبي — نفس مفتاح التخزين المستخدم في لوحة الطالب */
+/* القائمة الجانبية */
 const sidebarToggle = $("sidebarToggle");
 const SIDEBAR_KEY = "ardAlahyaaSidebarCollapsed";
 
 function setSidebarCollapsed(collapsed, save = true) {
   document.body.classList.toggle("sidebar-collapsed", collapsed);
-  const text = collapsed ? "توسيع القائمة الجانبية" : "تصغير القائمة الجانبية";
-  sidebarToggle.setAttribute("aria-expanded", String(!collapsed));
-  sidebarToggle.setAttribute("aria-label", text);
-  sidebarToggle.title = text;
 
-  // الاسم يظهر كتلميح عادي في الوضع المصغر فقط
-  document.querySelectorAll(".nav-link[data-title]").forEach(a => {
-    if (collapsed) a.title = a.dataset.title; else a.removeAttribute("title");
+  const label = collapsed
+    ? "توسيع القائمة الجانبية"
+    : "تصغير القائمة الجانبية";
+
+  sidebarToggle.setAttribute("aria-expanded", String(!collapsed));
+  sidebarToggle.setAttribute("aria-label", label);
+  sidebarToggle.title = label;
+
+  document.querySelectorAll(".nav-link[data-title]").forEach(link => {
+    if (collapsed) {
+      link.title = link.dataset.title;
+    } else {
+      link.removeAttribute("title");
+    }
   });
 
   if (save) {
-    try { localStorage.setItem(SIDEBAR_KEY, collapsed ? "true" : "false"); }
-    catch (e) { console.warn("تعذر حفظ حالة القائمة:", e); }
+    try {
+      localStorage.setItem(SIDEBAR_KEY, collapsed ? "true" : "false");
+    } catch (error) {
+      console.warn("تعذر حفظ حالة القائمة الجانبية", error);
+    }
   }
 }
 
-sidebarToggle.addEventListener("click", () => setSidebarCollapsed(!document.body.classList.contains("sidebar-collapsed")));
-try { setSidebarCollapsed(localStorage.getItem(SIDEBAR_KEY) === "true", false); }
-catch { setSidebarCollapsed(false, false); }
+sidebarToggle.addEventListener("click", () => {
+  setSidebarCollapsed(
+    !document.body.classList.contains("sidebar-collapsed")
+  );
+});
 
-/* أدوات الواجهة */
-function message(text, type = "info") { $("profileMessage").textContent = text; $("profileMessage").className = "message " + type; }
-function clearMessage() { $("profileMessage").textContent = ""; $("profileMessage").className = "message"; }
+try {
+  setSidebarCollapsed(localStorage.getItem(SIDEBAR_KEY) === "true", false);
+} catch {
+  setSidebarCollapsed(false, false);
+}
 
-function displayEmpty(id, text, icon = "📭") {
-  const box = document.createElement("div"), i = document.createElement("span"), t = document.createElement("div");
-  box.className = "empty"; i.textContent = icon; t.textContent = text;
-  box.append(i, t);
+/* رسائل الصفحة */
+function message(text, type = "info") {
+  $("profileMessage").textContent = text;
+  $("profileMessage").className = "message " + type;
+}
+
+function clearMessage() {
+  $("profileMessage").textContent = "";
+  $("profileMessage").className = "message";
+}
+
+/* عرض الحالة الفارغة */
+function displayEmpty(id, text, icon = "fa-inbox") {
+  const box = document.createElement("div");
+  const iconElement = document.createElement("span");
+  const textElement = document.createElement("div");
+
+  box.className = "empty";
+  iconElement.innerHTML = '<i class="fa-solid ' + icon + '"></i>';
+  textElement.textContent = text;
+
+  box.append(iconElement, textElement);
   $(id).replaceChildren(box);
 }
 
+/* إضافة عنصر للنتائج */
 function addItem(id, title, subtitle, badge) {
-  const item = document.createElement("div"), main = document.createElement("div");
-  const t = document.createElement("strong"), s = document.createElement("small");
-  item.className = "list-item"; main.className = "list-item-main";
-  t.textContent = title || "بدون عنوان"; s.textContent = subtitle || "";
-  main.append(t, s); item.appendChild(main);
-  if (badge) { const tag = document.createElement("span"); tag.className = "tag"; tag.textContent = badge; item.appendChild(tag); }
+  const item = document.createElement("div");
+  const main = document.createElement("div");
+  const titleElement = document.createElement("strong");
+  const subtitleElement = document.createElement("small");
+
+  item.className = "list-item";
+  main.className = "list-item-main";
+
+  titleElement.textContent = title || "بدون عنوان";
+  subtitleElement.textContent = subtitle || "";
+
+  main.append(titleElement, subtitleElement);
+  item.appendChild(main);
+
+  if (badge) {
+    const tag = document.createElement("span");
+    tag.className = "tag";
+    tag.textContent = badge;
+    item.appendChild(tag);
+  }
+
   $(id).appendChild(item);
 }
 
+/* تنسيق التاريخ */
 function fmtDate(value) {
   if (!value) return "";
-  const d = new Date(value);
-  return Number.isNaN(d.getTime()) ? "" : d.toLocaleDateString("ar-EG");
+
+  const date = new Date(value);
+
+  return Number.isNaN(date.getTime())
+    ? ""
+    : date.toLocaleDateString("ar-EG");
 }
 
-/* مهلة تعديل بيانات التواصل (العرض فقط — الإلزام الحقيقي في trigger قاعدة البيانات) */
+/* حساب المهلة المتبقية */
 function remainingDays() {
   if (!profile.contact_updated_at) return 0;
+
   const last = new Date(profile.contact_updated_at).getTime();
+
   if (!Number.isFinite(last)) return 0;
-  return Math.max(0, Math.ceil((last + COOLDOWN_MS - Date.now()) / 86400000));
+
+  return Math.max(
+    0,
+    Math.ceil((last + COOLDOWN_MS - Date.now()) / 86400000)
+  );
 }
 
 function updateCooldownUI() {
-  const days = remainingDays(), locked = days > 0;
+  const days = remainingDays();
+  const locked = days > 0;
+
   $("editPhoneBtn").disabled = locked;
   $("editEmailBtn").disabled = locked;
+
   $("cooldownNotice").textContent = locked
-    ? "تم تعديل بيانات التواصل مؤخرًا. يمكنك تعديل رقم الهاتف أو البريد الإلكتروني بعد " + days + " يومًا تقريبًا."
-    : "يمكنك تعديل رقم الهاتف أو البريد الإلكتروني مرة واحدة كل 30 يومًا. الاسم غير قابل للتعديل من صفحة حساب الطالب.";
+    ? "يمكنك تعديل بيانات التواصل مرة أخرى بعد " + days + " يومًا تقريبًا."
+    : "يمكنك تعديل رقم الهاتف أو البريد الإلكتروني مرة واحدة كل 30 يومًا. اسم الطالب غير قابل للتعديل.";
 }
 
-function lockField(id, locked) { $(id).readOnly = locked; $(id).disabled = locked; }
+function lockField(id, locked) {
+  $(id).readOnly = locked;
+  $(id).disabled = locked;
+}
 
+/* إعادة نموذج البيانات */
 function resetForm() {
   editMode = null;
-  $("fullName").value = profile.full_name || "";
-  $("email").value = currentUser.email || profile.email || "";
+
+  $("fullName").value =
+    profile.full_name || currentUser?.user_metadata?.full_name || "";
+
+  $("email").value =
+    currentUser?.email || profile.email || "";
+
   $("phone").value = profile.phone || "";
+
   ["fullName", "email", "phone"].forEach(id => lockField(id, true));
+
   $("editPhoneBtn").style.display = "";
   $("editEmailBtn").style.display = "";
   $("saveBtn").style.display = "none";
   $("cancelBtn").style.display = "none";
+
   updateCooldownUI();
 }
 
+/* بدء التعديل */
 function beginEdit(mode) {
   clearMessage();
+
   if (remainingDays() > 0) {
-    message("لا يمكنك تعديل بيانات التواصل الآن. انتظر حتى تنتهي مهلة الـ30 يومًا.", "error");
+    message(
+      "لا يمكنك تعديل بيانات التواصل الآن. انتظر حتى تنتهي مهلة الـ30 يومًا.",
+      "error"
+    );
     return;
   }
+
   editMode = mode;
+
   $("editPhoneBtn").style.display = "none";
   $("editEmailBtn").style.display = "none";
   $("saveBtn").style.display = "";
   $("cancelBtn").style.display = "";
+
   lockField("phone", mode !== "phone");
   lockField("email", mode !== "email");
   lockField("fullName", true);
+
   $(mode).focus();
-  message(mode === "phone"
-    ? "عدّل رقم الهاتف فقط، ثم اضغط حفظ. لن تستطيع تعديل بيانات التواصل مرة أخرى لمدة 30 يومًا."
-    : "عدّل البريد الإلكتروني فقط. قد يرسل Supabase رسالة لتأكيد البريد الجديد.", "info");
+
+  message(
+    mode === "phone"
+      ? "عدّل رقم الهاتف فقط ثم اضغط حفظ."
+      : "عدّل البريد الإلكتروني فقط. قد يطلب النظام تأكيد البريد الجديد.",
+    "info"
+  );
 }
 
 /* تحميل الحساب */
 async function init() {
   try {
     const { data, error } = await db.auth.getSession();
+
     if (error) throw error;
-    if (!data.session) { $("pageLoading").style.display = "none"; $("loginRequired").style.display = "block"; return; }
+
+    if (!data.session) {
+      $("pageLoading").style.display = "none";
+      $("loginRequired").style.display = "block";
+      return;
+    }
 
     currentUser = data.session.user;
 
-    const { data: row, error: profileError } = await db.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
+    const {
+      data: row,
+      error: profileError
+    } = await db
+      .from("profiles")
+      .select("*")
+      .eq("id", currentUser.id)
+      .maybeSingle();
+
     if (profileError) throw profileError;
+
     profile = row || {};
 
-    const name = profile.full_name || currentUser.user_metadata?.full_name || "طالب أرض الأحياء";
+    const name =
+      profile.full_name ||
+      currentUser.user_metadata?.full_name ||
+      "طالب أرض الأحياء";
+
     $("topStudentName").textContent = name;
     $("welcomeName").textContent = name;
+
     savedPhone = profile.phone || "";
     savedEmail = currentUser.email || profile.email || "";
+
     resetForm();
 
     $("pageLoading").style.display = "none";
@@ -420,170 +1267,331 @@ async function init() {
       loadResults(TABLES.homework, "homeworkResults", "homeworkCount", "الواجبات"),
       loadForumPosts()
     ]);
-  } catch (err) {
-    console.error(err);
-    $("pageLoading").textContent = "تعذر تحميل بيانات الحساب. تحقق من اتصال Supabase وصلاحيات جدول profiles.";
+
+  } catch (error) {
+    console.error("Account initialization:", error);
+
+    $("pageLoading").textContent =
+      "تعذر تحميل بيانات الحساب. تحقق من اتصال الإنترنت وصلاحيات جدول profiles في Supabase.";
   }
 }
 
+/* أحداث تعديل البيانات */
 $("editPhoneBtn").addEventListener("click", () => beginEdit("phone"));
 $("editEmailBtn").addEventListener("click", () => beginEdit("email"));
-$("cancelBtn").addEventListener("click", () => { clearMessage(); resetForm(); });
 
+$("cancelBtn").addEventListener("click", () => {
+  clearMessage();
+  resetForm();
+});
+
+/* حفظ التعديلات */
 $("saveBtn").addEventListener("click", async () => {
   if (!currentUser || !editMode) return;
+
   clearMessage();
 
   if (remainingDays() > 0) {
-    message("انتهت إمكانية التعديل لهذه الفترة. انتظر انتهاء مهلة الـ30 يومًا.", "error");
+    message(
+      "لا يمكن تعديل بيانات التواصل حتى تنتهي مهلة الـ30 يومًا.",
+      "error"
+    );
     resetForm();
     return;
   }
 
-  const btn = $("saveBtn");
-  btn.disabled = true;
-  btn.textContent = "جارٍ الحفظ...";
+  const button = $("saveBtn");
+  button.disabled = true;
+  button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جارٍ الحفظ...';
 
   try {
     if (editMode === "phone") {
       const newPhone = $("phone").value.replace(/[\s-]/g, "");
-      if (!newPhone) throw new Error("اكتب رقم الهاتف أولًا.");
-      if (!/^\+?\d{8,15}$/.test(newPhone)) throw new Error("رقم الهاتف غير صحيح. اكتب أرقامًا فقط (من 8 إلى 15 رقمًا).");
-      if (newPhone === savedPhone) throw new Error("لم تغيّر رقم الهاتف.");
 
-      const { data, error } = await db.from("profiles")
-        .update({ phone: newPhone, contact_updated_at: new Date().toISOString() })
+      if (!newPhone) {
+        throw new Error("اكتب رقم الهاتف أولًا.");
+      }
+
+      if (!/^\+?\d{8,15}$/.test(newPhone)) {
+        throw new Error("رقم الهاتف غير صحيح. اكتب من 8 إلى 15 رقمًا.");
+      }
+
+      if (newPhone === savedPhone) {
+        throw new Error("لم تغيّر رقم الهاتف.");
+      }
+
+      const { data, error } = await db
+        .from("profiles")
+        .update({
+          phone: newPhone,
+          contact_updated_at: new Date().toISOString()
+        })
         .eq("id", currentUser.id)
         .select("id,full_name,phone,email,contact_updated_at")
         .maybeSingle();
 
       if (error) throw error;
-      if (!data) throw new Error("لم يتم حفظ الرقم. تحقق من صلاحيات UPDATE في جدول profiles.");
+
+      if (!data) {
+        throw new Error(
+          "لم يتم حفظ الرقم. تحقق من صلاحيات التحديث في جدول profiles."
+        );
+      }
 
       profile = { ...profile, ...data };
       savedPhone = newPhone;
+
       resetForm();
-      message("تم تحديث رقم الهاتف. لن تتمكن من تعديل بيانات التواصل مرة أخرى لمدة 30 يومًا.", "success");
 
-    } else {
+      message(
+        "تم تحديث رقم الهاتف. ستحتاج إلى الانتظار 30 يومًا قبل تعديل بيانات التواصل مجددًا.",
+        "success"
+      );
+
+    } else if (editMode === "email") {
       const newEmail = $("email").value.trim();
-      if (!newEmail) throw new Error("اكتب البريد الإلكتروني الجديد.");
-      if (newEmail.toLowerCase() === savedEmail.toLowerCase()) throw new Error("البريد الإلكتروني لم يتغير.");
 
-      const { error } = await db.auth.updateUser({ email: newEmail });
+      if (!newEmail) {
+        throw new Error("اكتب البريد الإلكتروني الجديد.");
+      }
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
+        throw new Error("صيغة البريد الإلكتروني غير صحيحة.");
+      }
+
+      if (newEmail.toLowerCase() === savedEmail.toLowerCase()) {
+        throw new Error("البريد الإلكتروني لم يتغير.");
+      }
+
+      const { error } = await db.auth.updateUser({
+        email: newEmail
+      });
+
       if (error) throw error;
 
       resetForm();
-      message("تم إرسال طلب تغيير البريد الإلكتروني. إذا طلب Supabase التأكيد، افتح رسالة البريد واتبع التعليمات.", "success");
+
+      message(
+        "تم إرسال طلب تغيير البريد الإلكتروني. إذا طلب النظام التأكيد، افتح رسالة البريد واتبع التعليمات.",
+        "success"
+      );
     }
-  } catch (err) {
-    console.error(err);
-    message(err.message || "حدث خطأ أثناء الحفظ.", "error");
+
+  } catch (error) {
+    console.error("Save profile:", error);
+    message(error.message || "حدث خطأ أثناء الحفظ.", "error");
+
   } finally {
-    btn.disabled = false;
-    btn.textContent = "💾 حفظ التعديل";
+    button.disabled = false;
+    button.innerHTML =
+      '<i class="fa-solid fa-floppy-disk"></i> حفظ التعديل';
   }
 });
 
-/* المحاضرات والتقدم (من جدول lecture_progress عبر ArdProgress) */
+/* المحاضرات والتقدم */
 async function loadLectures() {
   try {
-    const [lecRes, rows] = await Promise.all([db.from("lectures").select("id"), ArdProgress.fetchAll()]);
-    if (lecRes.error) throw lecRes.error;
+    const [lectureResult, rows] = await Promise.all([
+      db.from("lectures").select("id"),
+      ArdProgress.fetchAll()
+    ]);
 
-    const ids = new Set((lecRes.data || []).map(l => String(l.id)));
-    const done = rows.filter(r => r.completed && ids.has(String(r.lecture_id))).length;
-    const percent = ids.size ? Math.round(done / ids.size * 100) : 0;
+    if (lectureResult.error) throw lectureResult.error;
+
+    const ids = new Set(
+      (lectureResult.data || []).map(lecture => String(lecture.id))
+    );
+
+    const done = (rows || []).filter(row =>
+      row.completed && ids.has(String(row.lecture_id))
+    ).length;
+
+    const percent = ids.size
+      ? Math.round(done / ids.size * 100)
+      : 0;
 
     $("totalLectures").textContent = ids.size;
     $("completedLectures").textContent = done + " / " + ids.size;
     $("completedNote").textContent = percent + "% من المحاضرات المنشورة";
-  } catch (err) {
-    console.error("Lectures/progress:", err);
+
+  } catch (error) {
+    console.error("Lectures/progress:", error);
+
     $("totalLectures").textContent = "—";
     $("completedLectures").textContent = "—";
     $("completedNote").textContent = "تعذر تحميل التقدم";
   }
 }
 
-/* الامتحانات والواجبات */
+/* تحميل نتائج الامتحانات والواجبات */
 async function loadResults(table, containerId, countId, label) {
   try {
-    const { data, error, count } = await db.from(table)
+    const { data, error, count } = await db
+      .from(table)
       .select("*", { count: "exact" })
       .eq("user_id", currentUser.id)
       .order("created_at", { ascending: false })
       .limit(20);
+
     if (error) throw error;
 
     const rows = data || [];
+
     $(countId).textContent = count ?? rows.length;
     $(containerId).replaceChildren();
 
-    if (!rows.length) { displayEmpty(containerId, "لا توجد " + label + " مسجلة لحسابك حتى الآن."); return; }
+    if (!rows.length) {
+      displayEmpty(
+        containerId,
+        "لا توجد " + label + " مسجلة لحسابك حتى الآن.",
+        "fa-inbox"
+      );
+      return;
+    }
 
     rows.forEach(row => {
-      const title = row.title || row.exam_title || row.homework_title || row.name || label;
-      const score = row.score ?? row.grade ?? row.mark ?? row.student_score;
-      const total = row.total_marks ?? row.max_score ?? row.total_score ?? row.out_of;
+      const title =
+        row.title ||
+        row.exam_title ||
+        row.homework_title ||
+        row.name ||
+        label;
+
+      const score =
+        row.score ??
+        row.grade ??
+        row.mark ??
+        row.student_score;
+
+      const total =
+        row.total_marks ??
+        row.max_score ??
+        row.total_score ??
+        row.out_of;
+
       const hasScore = score !== null && score !== undefined;
 
       let scoreText = "لم تُرصد الدرجة بعد";
+
       if (hasScore) {
         scoreText = "الدرجة: " + score;
-        if (total !== null && total !== undefined) scoreText += " / " + total;
+
+        if (total !== null && total !== undefined) {
+          scoreText += " / " + total;
+        }
       }
 
-      const date = fmtDate(row.created_at || row.date || row.submitted_at);
-      addItem(containerId, String(title), date ? scoreText + " • " + date : scoreText, hasScore ? "تم الرصد" : "قيد التصحيح");
+      const date = fmtDate(
+        row.created_at || row.date || row.submitted_at
+      );
+
+      addItem(
+        containerId,
+        String(title),
+        date ? scoreText + " • " + date : scoreText,
+        hasScore ? "تم الرصد" : "قيد التصحيح"
+      );
     });
-  } catch (err) {
-    console.warn("Results table:", table, err);
+
+  } catch (error) {
+    console.warn("Results table:", table, error);
+
     $(countId).textContent = "—";
-    displayEmpty(containerId, "تعذر تحميل البيانات. قد يحتاج اسم الجدول أو عمود ربط الطالب إلى تعديل.", "ℹ️");
+
+    displayEmpty(
+      containerId,
+      "تعذر تحميل البيانات. تحقق من اسم الجدول وصلاحيات الوصول.",
+      "fa-circle-info"
+    );
   }
 }
 
-/* المنتدى */
+/* مشاركات المنتدى */
 async function loadForumPosts() {
   try {
-    const { data, error } = await db.from(TABLES.forum).select("*").eq("user_id", currentUser.id)
-      .order("created_at", { ascending: false }).limit(10);
+    const { data, error } = await db
+      .from(TABLES.forum)
+      .select("*")
+      .eq("user_id", currentUser.id)
+      .order("created_at", { ascending: false })
+      .limit(10);
+
     if (error) throw error;
 
     const posts = data || [];
+
     $("forumPosts").replaceChildren();
-    if (!posts.length) { displayEmpty("forumPosts", "لا توجد مشاركات مسجلة لك في المنتدى حتى الآن.", "💬"); return; }
+
+    if (!posts.length) {
+      displayEmpty(
+        "forumPosts",
+        "لا توجد مشاركات مسجلة لك في المنتدى حتى الآن.",
+        "fa-comments"
+      );
+      return;
+    }
 
     posts.forEach(post => {
-      const title = post.title || post.subject || post.content || post.body || "مشاركة في المنتدى";
+      const title =
+        post.title ||
+        post.subject ||
+        post.content ||
+        post.body ||
+        "مشاركة في المنتدى";
+
       const date = fmtDate(post.created_at);
-      addItem("forumPosts", String(title), date ? "تاريخ المشاركة: " + date : "مشاركة بالمنتدى", "مشاركة");
+
+      addItem(
+        "forumPosts",
+        String(title),
+        date ? "تاريخ المشاركة: " + date : "مشاركة بالمنتدى",
+        "مشاركة"
+      );
     });
-  } catch (err) {
-    console.warn("Forum loading:", err);
-    displayEmpty("forumPosts", "تعذر تحميل المشاركات. قد يحتاج اسم جدول المنتدى أو عمود ربط الطالب إلى تعديل.", "ℹ️");
+
+  } catch (error) {
+    console.warn("Forum loading:", error);
+
+    displayEmpty(
+      "forumPosts",
+      "تعذر تحميل المشاركات. تحقق من جدول المنتدى وصلاحياته.",
+      "fa-circle-info"
+    );
   }
 }
 
 /* تسجيل الخروج */
 $("logoutBtn").addEventListener("click", async () => {
-  const btn = $("logoutBtn");
-  btn.disabled = true;
+  const button = $("logoutBtn");
+
+  button.disabled = true;
+
   try {
     const { error } = await db.auth.signOut();
+
     if (error) throw error;
+
     window.location.href = LOGIN_URL;
-  } catch (err) {
-    console.error(err);
+
+  } catch (error) {
+    console.error("Logout:", error);
+
     message("تعذر تسجيل الخروج. حاول مرة أخرى.", "error");
-    btn.disabled = false;
+
+    button.disabled = false;
   }
 });
 
-db.auth.onAuthStateChange(event => { if (event === "SIGNED_OUT") window.location.href = LOGIN_URL; });
+/* متابعة حالة تسجيل الدخول */
+db.auth.onAuthStateChange(event => {
+  if (event === "SIGNED_OUT") {
+    window.location.href = LOGIN_URL;
+  }
+});
 
+/* بدء الصفحة */
 init();
 </script>
+
 </body>
 </html>
