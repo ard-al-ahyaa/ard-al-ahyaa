@@ -1,1050 +1,1036 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <nav class="side-menu" aria-label="القائمة الرئيسية">
-
-  <a href="../index.html" class="side-link">
-    <i class="fa-solid fa-house"></i>
-    <span class="side-link-text">الرئيسية</span>
-  </a>
-
-  <a href="../videos/index.html" class="side-link">
-    <i class="fa-regular fa-circle-play"></i>
-    <span class="side-link-text">المحاضرات</span>
-  </a>
-
-  <a href="../notes/index.html" class="side-link">
-    <i class="fa-regular fa-book-open"></i>
-    <span class="side-link-text">المذكرات</span>
-  </a>
-
-  <a href="../champion/index.html" class="side-link">
-    <i class="fa-solid fa-trophy"></i>
-    <span class="side-link-text">بطل الفصل</span>
-  </a>
-
-  <a href="../forum/index.html" class="side-link">
-    <i class="fa-regular fa-comments"></i>
-    <span class="side-link-text">المنتدى</span>
-  </a>
-
-  <a href="index.html" class="side-link active">
-    <i class="fa-regular fa-user"></i>
-    <span class="side-link-text">حساب الطالب</span>
-  </a>
-
-</nav>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>حساب الطالب | منصة أرض الأحياء</title>
-<meta name="description" content="حساب الطالب ومتابعة النتائج والتقدم التعليمي في منصة أرض الأحياء.">
+<meta name="description" content="حساب الطالب في منصة أرض الأحياء للصف الثالث الثانوي.">
 <meta name="theme-color" content="#004e4d">
 
-<link rel="icon" href="../favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-:root{
-  --green:#008866;
-  --green-dark:#006653;
-  --green-light:#e5f6ef;
-  --blue:#2466d8;
-  --text:#142f54;
-  --muted:#7185a4;
-  --bg:#f4f8fd;
-  --border:#e0eaf6;
-  --sidebar-width:272px;
-  --shadow:0 5px 25px rgba(28,65,110,.045);
-  --radius:18px;
+:root {
+  --green: #07966e;
+  --green-dark: #006653;
+  --blue: #2466d8;
+  --navy: #102e55;
+  --bg: #f4f8fd;
+  --text: #15345d;
+  --muted: #6680a7;
+  --border: #dfebfa;
+  --sidebar-width: 272px;
 }
 
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-body{
-  font-family:"Cairo",sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
+body {
+  font-family: 'Cairo', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
 }
 
-button,input{
-  font:inherit;
+button, input {
+  font: inherit;
 }
 
-button,a{
-  -webkit-tap-highlight-color:transparent;
+button, a {
+  -webkit-tap-highlight-color: transparent;
 }
 
-a{
-  color:inherit;
-  text-decoration:none;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-button{
-  cursor:pointer;
+button {
+  cursor: pointer;
 }
 
-.sidebar{
-  position:fixed;
-  right:0;
-  top:0;
-  bottom:0;
-  width:var(--sidebar-width);
-  background:linear-gradient(
+.sidebar {
+  position: fixed;
+  z-index: 1000;
+  right: 0;
+  top: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: linear-gradient(
     180deg,
     #004e4d 0%,
     #003d50 62%,
     #07375b 100%
   );
-  color:white;
-  z-index:1000;
-  padding:23px 15px;
-  overflow-y:auto;
-  transition:width .25s ease,transform .25s ease;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: width .25s ease, transform .25s ease;
 }
 
-.brand{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  gap:10px;
-  padding:7px 5px 25px;
-  text-align:center;
+.sidebar-inner {
+  padding: 17px 15px;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-.brand img{
-  width:83px;
-  height:83px;
-  object-fit:contain;
-  border-radius:20px;
+.sidebar-toggle {
+  width: 39px;
+  height: 39px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,.09);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 17px;
+  margin-bottom: 8px;
 }
 
-.brand h2{
-  font-size:22px;
-  font-weight:900;
+.sidebar-toggle:hover {
+  background: rgba(255,255,255,.18);
 }
 
-.brand p{
-  font-size:11px;
-  color:#bde5db;
-  margin-top:3px;
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  text-align: center;
+  padding: 0 5px 23px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255,255,255,.12);
 }
 
-.nav-heading{
-  color:#9dc8c5;
-  font-size:11px;
-  font-weight:800;
-  padding:9px 13px 12px;
+.brand-logo {
+  width: 87px;
+  height: 87px;
+  object-fit: contain;
 }
 
-.nav-links{
-  display:flex;
-  flex-direction:column;
-  gap:7px;
+.brand h2 {
+  font-size: 22px;
+  line-height: 1.6;
+  font-weight: 900;
+  color: white;
 }
 
-.nav-link{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  min-height:51px;
-  padding:12px 14px;
-  border-radius:14px;
-  color:#d6e9ec;
-  font-size:13px;
-  font-weight:700;
-  transition:.2s;
+.brand small {
+  font-size: 13px;
+  color: #d2e8e5;
 }
 
-.nav-link .icon{
-  width:25px;
-  min-width:25px;
-  text-align:center;
-  font-size:19px;
+.menu-label {
+  color: rgba(255,255,255,.55);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 0 12px;
+  margin-bottom: 10px;
 }
 
-.nav-link:hover,
-.nav-link.active{
-  background:linear-gradient(100deg,#13a77c,#159a77);
-  color:white;
-  box-shadow:0 5px 15px rgba(0,0,0,.1);
+.side-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.sidebar-bottom{
-  margin-top:28px;
-  padding:14px 12px;
-  border-top:1px solid rgba(255,255,255,.12);
+.side-link {
+  min-height: 54px;
+  padding: 12px 15px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: #f4fbfa;
+  font-size: 14px;
+  font-weight: 800;
+  white-space: nowrap;
+  transition: background .2s, transform .2s;
 }
 
-.sidebar-bottom p{
-  font-size:11px;
-  color:#b3d2d4;
-  line-height:1.9;
+.side-link i {
+  width: 27px;
+  min-width: 27px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 23px;
 }
 
-.sidebar-toggle{
-  position:absolute;
-  top:20px;
-  left:15px;
-  border:1px solid rgba(255,255,255,.2);
-  color:white;
-  background:rgba(255,255,255,.1);
-  border-radius:10px;
-  width:34px;
-  height:34px;
-  font-size:18px;
+.side-link:hover,
+.side-link.active {
+  background: linear-gradient(100deg, #20aa7d, #159b77);
+  color: white;
 }
 
-.main{
-  margin-right:var(--sidebar-width);
-  padding:25px;
-  transition:margin-right .25s ease;
-  min-height:100vh;
+.side-link:hover {
+  transform: translateX(-2px);
 }
 
-body.sidebar-collapsed .sidebar{
-  width:82px;
+.sidebar-bottom {
+  padding: 14px 8px 20px;
+  text-align: center;
+  font-size: 11px;
+  color: #e5f3f1;
+  border-top: 1px solid rgba(255,255,255,.1);
+  margin: 0 15px;
 }
 
-body.sidebar-collapsed .main{
-  margin-right:82px;
+.sidebar-bottom i {
+  color: #20c38a;
+  margin-left: 5px;
+}
+
+body.sidebar-collapsed {
+  --sidebar-width: 82px;
 }
 
 body.sidebar-collapsed .brand h2,
-body.sidebar-collapsed .brand p,
-body.sidebar-collapsed .nav-heading,
-body.sidebar-collapsed .nav-link .label,
-body.sidebar-collapsed .sidebar-bottom,
-body.sidebar-collapsed .brand img{
-  display:none;
+body.sidebar-collapsed .brand small,
+body.sidebar-collapsed .menu-label,
+body.sidebar-collapsed .side-link span,
+body.sidebar-collapsed .sidebar-bottom span {
+  display: none;
 }
 
-body.sidebar-collapsed .brand{
-  padding:45px 0 25px;
+body.sidebar-collapsed .brand {
+  padding-bottom: 15px;
 }
 
-body.sidebar-collapsed .nav-link{
-  justify-content:center;
-  padding:12px 5px;
+body.sidebar-collapsed .brand-logo {
+  width: 52px;
+  height: 52px;
 }
 
-body.sidebar-collapsed .nav-link .icon{
-  font-size:22px;
+body.sidebar-collapsed .side-link {
+  justify-content: center;
+  padding: 13px 5px;
 }
 
-.topbar{
-  min-height:72px;
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:16px;
-  box-shadow:var(--shadow);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-  padding:15px 21px;
-  margin-bottom:22px;
+body.sidebar-collapsed .side-link i {
+  font-size: 22px;
 }
 
-.topbar-title h1{
-  font-size:20px;
-  font-weight:900;
-}
-
-.topbar-title p{
-  color:var(--muted);
-  font-size:12px;
-  margin-top:3px;
+body.sidebar-collapsed .sidebar-bottom {
+  margin: 0 5px;
 }
-
-.topbar-actions{
-  display:flex;
-  align-items:center;
-  gap:10px;
+
+body.sidebar-collapsed .sidebar-toggle i {
+  transform: rotate(180deg);
+}
+
+/* المحتوى الرئيسي */
+
+.main {
+  margin-right: var(--sidebar-width);
+  min-height: 100vh;
+  transition: margin-right .25s ease;
+}
+
+.topbar {
+  min-height: 76px;
+  background: rgba(255,255,255,.92);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 27px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-.status-pill{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  background:var(--green-light);
-  color:var(--green-dark);
-  padding:8px 12px;
-  border-radius:30px;
-  font-size:11px;
-  font-weight:800;
-}
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
 
-.status-dot{
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:#0aaf7d;
+.mobile-menu {
+  display: none;
+  background: none;
+  border: 0;
+  color: var(--navy);
+  font-size: 24px;
 }
 
-.icon-button{
-  width:40px;
-  height:40px;
-  border-radius:12px;
-  border:1px solid var(--border);
-  background:white;
-  color:var(--text);
-  font-size:19px;
+.topbar-title {
+  font-size: 17px;
+  font-weight: 900;
 }
 
-.welcome{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:20px;
-  padding:25px 27px;
-  border-radius:20px;
-  border:1px solid #d7eee4;
-  background:linear-gradient(120deg,#e9faf2 0%,#f1f7ff 100%);
-  margin-bottom:23px;
-  overflow:hidden;
+.topbar-subtitle {
+  color: var(--muted);
+  font-size: 11px;
 }
 
-.welcome h2{
-  font-size:23px;
-  font-weight:900;
-  line-height:1.7;
+.topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.student-name{
-  font-family:"Aref Ruqaa",serif;
-  color:var(--green-dark);
-  font-size:28px;
-}
-
-.welcome p{
-  color:#627995;
-  font-size:13px;
-  margin-top:5px;
-  line-height:1.9;
+.avatar {
+  width: 43px;
+  height: 43px;
+  border-radius: 50%;
+  background: #e2f3ee;
+  color: var(--green-dark);
+  display: grid;
+  place-items: center;
+  font-size: 21px;
+  flex-shrink: 0;
 }
 
-.welcome-icon{
-  width:76px;
-  height:76px;
-  min-width:76px;
-  display:grid;
-  place-items:center;
-  border-radius:22px;
-  background:#fff;
-  box-shadow:var(--shadow);
-  font-size:38px;
+.topbar-user strong {
+  display: block;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.topbar-user small {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.page {
+  max-width: 1600px;
+  margin: auto;
+  padding: 25px 27px 35px;
+}
+
+.welcome-banner {
+  min-height: 160px;
+  padding: 26px 32px;
+  border-radius: 19px;
+  background: linear-gradient(115deg, #e4f7f0, #fff 57%, #eaf2ff);
+  border: 1px solid #d9eae6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  overflow: hidden;
+  position: relative;
+}
+
+.welcome-banner::after {
+  content: "\f06c";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  position: absolute;
+  left: 35px;
+  bottom: -35px;
+  font-size: 160px;
+  color: rgba(0,132,94,.07);
+  transform: rotate(-25deg);
+  pointer-events: none;
 }
 
-.stats-grid{
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:16px;
-  margin-bottom:25px;
+.welcome-content {
+  position: relative;
+  z-index: 1;
 }
 
-.stat-card{
-  padding:20px;
-  background:white;
-  border:1px solid var(--border);
-  border-radius:17px;
-  box-shadow:var(--shadow);
-  min-width:0;
+.welcome-tag {
+  display: inline-block;
+  background: #078967;
+  color: white;
+  padding: 5px 13px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 9px;
 }
 
-.stat-top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:8px;
-  margin-bottom:15px;
+.welcome-banner h1 {
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 900;
+  color: #00795e;
+  margin-bottom: 5px;
 }
 
-.stat-icon{
-  width:43px;
-  height:43px;
-  display:grid;
-  place-items:center;
-  border-radius:13px;
-  font-size:21px;
+.welcome-banner p {
+  color: #315d70;
+  font-size: 14px;
 }
 
-.stat-icon.green{background:#e2f7ee}
-.stat-icon.blue{background:#e8f0ff}
-.stat-icon.orange{background:#fff2df}
-.stat-icon.purple{background:#f1eaff}
+.banner-icon {
+  width: 105px;
+  height: 105px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,.65);
+  color: #0b9874;
+  font-size: 52px;
+  flex-shrink: 0;
+}
 
-.stat-label{
-  color:var(--muted);
-  font-size:12px;
-  font-weight:700;
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 13px;
+  margin: 18px 0;
 }
 
-.stat-number{
-  font-size:27px;
-  font-weight:900;
-  line-height:1.5;
+.stat-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  padding: 19px;
+  min-height: 130px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 5px 20px rgba(30,76,125,.025);
 }
 
-.stat-note{
-  font-size:11px;
-  color:#8798ae;
-  margin-top:4px;
+.stat-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  flex-shrink: 0;
 }
 
-.content-grid{
-  display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-  gap:20px;
-  align-items:start;
+.icon-green {
+  background: #d9f3e9;
+  color: #07875f;
 }
 
-.panel{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  margin-bottom:21px;
-  min-width:0;
-  overflow:hidden;
+.icon-blue {
+  background: #e0edff;
+  color: #2367d5;
 }
 
-.panel-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  padding:19px 21px;
-  border-bottom:1px solid #edf2f8;
+.icon-purple {
+  background: #ece4ff;
+  color: #7650de;
+}
+
+.icon-orange {
+  background: #fff0d9;
+  color: #e99510;
+}
+
+.stat-text {
+  min-width: 0;
 }
 
-.panel-header h2{
-  font-size:15px;
-  font-weight:900;
+.stat-text span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 5px;
 }
 
-.panel-header p{
-  color:var(--muted);
-  font-size:11px;
-  margin-top:3px;
+.stat-text strong {
+  display: block;
+  font-size: 25px;
+  color: var(--navy);
+  font-weight: 900;
 }
 
-.panel-icon{
-  width:39px;
-  height:39px;
-  border-radius:12px;
-  display:grid;
-  place-items:center;
-  background:var(--green-light);
-  font-size:19px;
+.stat-text small {
+  display: block;
+  color: #8195b3;
+  font-size: 10px;
+  margin-top: 3px;
 }
 
-.panel-body{
-  padding:20px;
+.content-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr);
+  gap: 17px;
+  align-items: start;
 }
 
-.profile-row{
-  display:flex;
-  align-items:center;
-  gap:13px;
-  padding:13px 0;
-  border-bottom:1px solid #edf2f8;
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 19px;
+  padding: 22px;
+  margin-bottom: 17px;
+  box-shadow: 0 6px 22px rgba(30,76,125,.025);
+  min-width: 0;
 }
 
-.profile-row:last-child{
-  border-bottom:0;
+.card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 22px;
 }
 
-.profile-avatar{
-  width:46px;
-  height:46px;
-  min-width:46px;
-  display:grid;
-  place-items:center;
-  background:linear-gradient(135deg,#dff7ed,#e5edff);
-  color:var(--green-dark);
-  font-size:21px;
-  border-radius:14px;
+.card-heading h2 {
+  font-size: 18px;
+  font-weight: 900;
 }
 
-.profile-detail{
-  min-width:0;
-  flex:1;
+.card-heading p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 3px;
 }
 
-.profile-detail label{
-  display:block;
-  font-size:11px;
-  color:var(--muted);
-  margin-bottom:3px;
+.heading-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 15px;
+  background: #e2f5ee;
+  color: #07966e;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  flex-shrink: 0;
 }
 
-.profile-detail strong{
-  font-size:13px;
-  overflow-wrap:anywhere;
+.profile-head {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #edf2f9;
 }
 
-.small-button{
-  padding:7px 10px;
-  border:1px solid var(--border);
-  background:#f8fbff;
-  color:var(--blue);
-  border-radius:9px;
-  font-size:11px;
-  font-weight:800;
-  white-space:nowrap;
+.profile-avatar {
+  width: 76px;
+  height: 76px;
+  border-radius: 22px;
+  background: linear-gradient(145deg, #d7f5e8, #e2edff);
+  color: #087d65;
+  display: grid;
+  place-items: center;
+  font-size: 34px;
+  flex-shrink: 0;
 }
 
-.small-button:hover{
-  background:#eaf2ff;
+.profile-head h3 {
+  font-size: 20px;
+  font-weight: 900;
+  overflow-wrap: anywhere;
 }
 
-.result-list,
-.forum-list{
-  display:flex;
-  flex-direction:column;
-  gap:11px;
+.profile-head p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 5px;
 }
 
-.result-card{
-  border:1px solid #e7eef7;
-  border-radius:13px;
-  padding:14px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 17px;
 }
 
-.result-info{
-  min-width:0;
+.field {
+  margin-bottom: 3px;
+  min-width: 0;
 }
 
-.result-info h3{
-  font-size:13px;
-  font-weight:800;
-  overflow-wrap:anywhere;
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 8px;
 }
 
-.result-info p{
-  color:var(--muted);
-  font-size:10px;
-  margin-top:5px;
+.input-wrap {
+  position: relative;
 }
 
-.result-score{
-  text-align:center;
-  background:#eaf8f1;
-  color:var(--green-dark);
-  border-radius:11px;
-  padding:9px 12px;
-  min-width:88px;
+.input-wrap i {
+  position: absolute;
+  right: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8094b0;
+  font-size: 14px;
 }
 
-.result-score strong{
-  display:block;
-  font-size:14px;
+.field input {
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  border: 1px solid #dfe9f5;
+  border-radius: 11px;
+  padding: 10px 39px 10px 12px;
+  outline: none;
+  background: #fbfdff;
+  color: var(--text);
+  font-size: 12px;
+  transition: border-color .2s, box-shadow .2s;
 }
 
-.result-score span{
-  font-size:11px;
+.field input:focus {
+  border-color: #0b9b74;
+  box-shadow: 0 0 0 3px rgba(11,155,116,.08);
 }
 
-.progress-summary{
-  background:#f7fbff;
-  border:1px solid #e7eef7;
-  border-radius:13px;
-  padding:16px;
-  margin-bottom:15px;
+.field input[readonly] {
+  background: #f2f6fb;
+  color: #637b9b;
+  cursor: not-allowed;
 }
 
-.progress-summary-top{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  font-size:12px;
-  font-weight:800;
-  margin-bottom:10px;
+.field-note {
+  display: block;
+  color: #8294ae;
+  font-size: 10px;
+  margin-top: 6px;
 }
 
-.progress-track{
-  width:100%;
-  height:9px;
-  background:#e5edf6;
-  border-radius:20px;
-  overflow:hidden;
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 23px;
 }
 
-.progress-fill{
-  height:100%;
-  width:0;
-  border-radius:20px;
-  background:linear-gradient(90deg,#08a579,#2474dd);
-  transition:width .5s ease;
+.btn {
+  min-height: 43px;
+  padding: 10px 18px;
+  border-radius: 11px;
+  border: 0;
+  font-size: 12px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: .2s;
 }
 
-.progress-description{
-  color:var(--muted);
-  font-size:11px;
-  margin-top:10px;
-  line-height:1.8;
+.btn-primary {
+  background: linear-gradient(110deg, #0ba477, #07865f);
+  color: white;
 }
 
-.forum-item{
-  border:1px solid #e7eef7;
-  padding:13px;
-  border-radius:12px;
+.btn-primary:hover {
+  filter: brightness(.96);
+  transform: translateY(-1px);
 }
 
-.forum-item h3{
-  font-size:13px;
-  margin-bottom:5px;
+.btn-light {
+  background: #edf4fc;
+  color: #34577e;
 }
 
-.forum-item p{
-  font-size:11px;
-  color:var(--muted);
-  line-height:1.8;
-  overflow-wrap:anywhere;
+.btn-danger {
+  background: #fff0f0;
+  color: #d83e4c;
 }
 
-.empty-state{
-  padding:25px 12px;
-  text-align:center;
-  color:var(--muted);
-  line-height:2;
+.btn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  transform: none;
 }
 
-.empty-state .empty-icon{
-  font-size:29px;
-  margin-bottom:8px;
+.message {
+  display: none;
+  padding: 12px 14px;
+  margin-top: 15px;
+  border-radius: 11px;
+  font-size: 12px;
+  line-height: 1.8;
 }
 
-.empty-state h3{
-  font-size:13px;
-  color:var(--text);
+.message.success {
+  display: block;
+  background: #e8f8f0;
+  color: #087b50;
 }
 
-.empty-state p{
-  font-size:11px;
+.message.error {
+  display: block;
+  background: #fff0f0;
+  color: #b52b3c;
 }
 
-.loading{
-  padding:22px;
-  text-align:center;
-  color:var(--muted);
-  font-size:12px;
+.message.info {
+  display: block;
+  background: #edf5ff;
+  color: #245a9d;
 }
 
-.notice{
-  display:none;
-  margin-bottom:17px;
-  border-radius:12px;
-  padding:13px 15px;
-  font-size:12px;
-  line-height:1.8;
+.info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.notice.success{
-  display:block;
-  color:#006653;
-  background:#e5f6ef;
-  border:1px solid #c7ebdc;
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid #e8eff8;
+  border-radius: 13px;
 }
 
-.notice.error{
-  display:block;
-  color:#a12b35;
-  background:#fff0f0;
-  border:1px solid #f6d0d0;
+.info-item-icon {
+  width: 39px;
+  height: 39px;
+  border-radius: 12px;
+  background: #e7f6f0;
+  color: #078b66;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
 }
 
-.footer{
-  text-align:center;
-  padding:20px 10px 8px;
-  color:#8b9bb1;
-  font-size:11px;
-  line-height:2;
+.info-item strong {
+  display: block;
+  font-size: 12px;
 }
 
-.footer strong{
-  color:var(--green-dark);
+.info-item small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+  overflow-wrap: anywhere;
 }
 
-.logout-button{
-  width:100%;
-  margin-top:12px;
-  padding:12px;
-  border:1px solid #f2d9db;
-  background:#fff5f5;
-  color:#b32e3b;
-  border-radius:12px;
-  font-weight:800;
-  font-size:12px;
+.progress-track {
+  width: 100%;
+  height: 10px;
+  border-radius: 20px;
+  background: #e8f0fa;
+  overflow: hidden;
+  margin: 15px 0 8px;
 }
 
-.logout-button:hover{
-  background:#ffe8e8;
+.progress-bar {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #16b581, #078762);
+  border-radius: inherit;
+  transition: width .4s ease;
 }
 
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:2000;
-  background:rgba(12,34,57,.55);
-  align-items:center;
-  justify-content:center;
-  padding:18px;
+.progress-caption {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 11px;
 }
 
-.modal.show{
-  display:flex;
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 30px;
+  padding: 6px 10px;
+  background: #e6f7ef;
+  color: #07835b;
+  font-size: 10px;
+  font-weight: 800;
 }
 
-.modal-card{
-  background:white;
-  border-radius:19px;
-  padding:23px;
-  width:100%;
-  max-width:420px;
-  box-shadow:0 15px 50px rgba(0,0,0,.18);
+.empty-state {
+  text-align: center;
+  padding: 24px 10px;
+  color: var(--muted);
+  font-size: 12px;
 }
 
-.modal-card h2{
-  font-size:18px;
-  margin-bottom:8px;
+.empty-state i {
+  display: block;
+  font-size: 29px;
+  color: #a6bbd4;
+  margin-bottom: 10px;
 }
 
-.modal-card>p{
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.9;
-  margin-bottom:17px;
+.footer {
+  text-align: center;
+  color: #8095b1;
+  font-size: 11px;
+  padding: 15px 0 5px;
 }
 
-.form-group{
-  margin-bottom:14px;
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(244,248,253,.94);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  color: var(--green-dark);
+  font-weight: 800;
+  font-size: 13px;
 }
 
-.form-group label{
-  display:block;
-  font-size:12px;
-  font-weight:800;
-  margin-bottom:7px;
+.spinner {
+  width: 42px;
+  height: 42px;
+  border: 4px solid #dceee8;
+  border-top-color: #078b66;
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
 }
 
-.form-group input{
-  width:100%;
-  padding:12px;
-  border:1px solid var(--border);
-  border-radius:11px;
-  outline:none;
-  background:#fbfdff;
-  direction:rtl;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-.form-group input:focus{
-  border-color:var(--green);
-  box-shadow:0 0 0 3px rgba(0,136,102,.09);
+.auth-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 1900;
+  background: var(--bg);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
-.modal-actions{
-  display:flex;
-  gap:10px;
-  margin-top:18px;
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 15px 50px rgba(20,60,100,.08);
 }
 
-.primary-button,
-.secondary-button{
-  flex:1;
-  padding:11px;
-  border-radius:11px;
-  font-size:12px;
-  font-weight:800;
+.auth-logo {
+  width: 85px;
+  height: 85px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 12px;
 }
 
-.primary-button{
-  color:white;
-  background:var(--green);
-  border:1px solid var(--green);
+.auth-card h1 {
+  font-size: 22px;
+  text-align: center;
+  margin-bottom: 8px;
 }
 
-.primary-button:disabled{
-  opacity:.6;
-  cursor:not-allowed;
+.auth-card > p {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 22px;
+  line-height: 1.9;
 }
 
-.secondary-button{
-  background:white;
-  border:1px solid var(--border);
-  color:var(--text);
+.auth-card .field {
+  margin-bottom: 15px;
 }
 
-.mobile-bottom{
-  display:none;
+.auth-card .btn {
+  width: 100%;
+  margin-top: 5px;
 }
 
-.auth-loading{
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  gap:12px;
-  color:var(--muted);
+.auth-error {
+  font-size: 12px;
+  color: #bf2d3b;
+  margin-top: 12px;
+  line-height: 1.8;
 }
 
-.auth-loading .logo{
-  width:65px;
-  height:65px;
-  object-fit:contain;
+.overlay {
+  display: none;
 }
 
-@media(max-width:1150px){
-  .stats-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr));
+@media (max-width: 1100px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .content-grid{
-    grid-template-columns:minmax(0,1fr);
-    gap:0;
+  .content-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
-@media(max-width:760px){
-  .sidebar{
-    width:272px;
-    transform:translateX(100%);
-    box-shadow:none;
+@media (max-width: 760px) {
+  :root {
+    --sidebar-width: 0px;
   }
 
-  body.mobile-sidebar-open .sidebar{
-    transform:translateX(0);
-    box-shadow:-10px 0 35px rgba(0,0,0,.16);
+  .sidebar {
+    width: 272px;
+    transform: translateX(100%);
+    box-shadow: none;
   }
 
-  body.sidebar-collapsed .sidebar{
-    width:272px;
+  body.mobile-sidebar-open .sidebar {
+    transform: translateX(0);
+    box-shadow: -10px 0 35px rgba(0,0,0,.2);
+  }
+
+  body.sidebar-collapsed .sidebar {
+    width: 272px;
   }
 
   body.sidebar-collapsed .brand h2,
-  body.sidebar-collapsed .brand p,
-  body.sidebar-collapsed .nav-heading,
-  body.sidebar-collapsed .nav-link .label,
-  body.sidebar-collapsed .sidebar-bottom,
-  body.sidebar-collapsed .brand img{
-    display:initial;
+  body.sidebar-collapsed .brand small,
+  body.sidebar-collapsed .menu-label,
+  body.sidebar-collapsed .side-link span,
+  body.sidebar-collapsed .sidebar-bottom span {
+    display: initial;
   }
 
-  body.sidebar-collapsed .brand{
-    padding:7px 5px 25px;
+  body.sidebar-collapsed .brand-logo {
+    width: 87px;
+    height: 87px;
   }
 
-  body.sidebar-collapsed .brand img{
-    display:block;
+  body.sidebar-collapsed .side-link {
+    justify-content: flex-start;
+    padding: 12px 15px;
   }
 
-  body.sidebar-collapsed .nav-link{
-    justify-content:flex-start;
-    padding:12px 14px;
+  body.sidebar-collapsed .sidebar-bottom {
+    margin: 0 15px;
   }
 
-  body.sidebar-collapsed .main{
-    margin-right:0;
+  .main {
+    margin-right: 0;
   }
 
-  .main{
-    margin-right:0;
-    padding:13px;
-    padding-bottom:90px;
+  .topbar {
+    min-height: 67px;
+    padding: 10px 15px;
+    gap: 10px;
   }
 
-  .topbar{
-    min-height:62px;
-    padding:12px;
-    margin-bottom:14px;
+  .mobile-menu {
+    display: block;
   }
 
-  .topbar-title h1{
-    font-size:16px;
+  .topbar-title {
+    font-size: 14px;
   }
 
-  .topbar-title p{
-    font-size:10px;
+  .topbar-user strong {
+    max-width: 125px;
+    font-size: 11px;
   }
 
-  .status-pill{
-    font-size:10px;
-    padding:7px 9px;
+  .topbar-user small {
+    font-size: 10px;
   }
 
-  .welcome{
-    padding:19px 16px;
-    border-radius:16px;
-    margin-bottom:15px;
+  .page {
+    padding: 16px 13px 25px;
   }
 
-  .welcome h2{
-    font-size:18px;
+  .welcome-banner {
+    min-height: 145px;
+    padding: 20px;
   }
 
-  .student-name{
-    font-size:25px;
+  .banner-icon {
+    width: 65px;
+    height: 65px;
+    font-size: 32px;
   }
 
-  .welcome p{
-    font-size:11px;
+  .welcome-banner p {
+    font-size: 12px;
   }
 
-  .welcome-icon{
-    width:55px;
-    height:55px;
-    min-width:55px;
-    font-size:28px;
-    border-radius:16px;
+  .stats-grid {
+    gap: 10px;
   }
 
-  .stats-grid{
-    gap:10px;
-    margin-bottom:17px;
+  .stat-card {
+    min-height: 105px;
+    padding: 12px;
+    gap: 9px;
   }
 
-  .stat-card{
-    padding:14px;
-    border-radius:14px;
+  .stat-icon {
+    width: 43px;
+    height: 43px;
+    font-size: 18px;
   }
 
-  .stat-top{
-    margin-bottom:10px;
+  .stat-text span {
+    font-size: 10px;
   }
 
-  .stat-icon{
-    width:36px;
-    height:36px;
-    font-size:18px;
+  .stat-text strong {
+    font-size: 21px;
   }
 
-  .stat-number{
-    font-size:23px;
+  .stat-text small {
+    font-size: 9px;
   }
 
-  .stat-label{
-    font-size:11px;
+  .card {
+    padding: 17px;
   }
 
-  .panel{
-    margin-bottom:15px;
+  .form-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 13px;
   }
 
-  .panel-header{
-    padding:15px;
+  .profile-head h3 {
+    font-size: 17px;
   }
 
-  .panel-header h2{
-    font-size:13px;
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    background: rgba(8,28,50,.4);
   }
 
-  .panel-body{
-    padding:14px;
-  }
-
-  .profile-row{
-    gap:9px;
-  }
-
-  .profile-avatar{
-    width:39px;
-    height:39px;
-    min-width:39px;
-  }
-
-  .profile-detail strong{
-    font-size:11px;
-  }
-
-  .small-button{
-    font-size:10px;
-    padding:7px;
-  }
-
-  .result-card{
-    padding:11px;
-  }
-
-  .result-info h3{
-    font-size:12px;
-  }
-
-  .result-score{
-    min-width:75px;
-    padding:8px;
-  }
-
-  .result-score strong{
-    font-size:12px;
-  }
-
-  .mobile-bottom{
-    position:fixed;
-    display:flex;
-    align-items:center;
-    justify-content:space-around;
-    bottom:0;
-    right:0;
-    left:0;
-    z-index:900;
-    background:rgba(255,255,255,.97);
-    border-top:1px solid var(--border);
-    padding:9px 5px calc(9px + env(safe-area-inset-bottom));
-    backdrop-filter:blur(12px);
-  }
-
-  .mobile-bottom a{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:3px;
-    color:#7a8ca5;
-    font-size:9px;
-    font-weight:800;
-  }
-
-  .mobile-bottom a span{
-    font-size:19px;
-  }
-
-  .mobile-bottom a.active{
-    color:var(--green);
-  }
-
-  .footer{
-    padding-bottom:12px;
+  body.mobile-sidebar-open .overlay {
+    display: block;
   }
 }
 
-@media(max-width:370px){
-  .stats-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr));
+@media (max-width: 380px) {
+  .topbar-user .avatar {
+    display: none;
   }
 
-  .welcome-icon{
-    display:none;
+  .stats-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .topbar-actions .status-pill{
-    display:none;
+  .welcome-banner {
+    padding: 16px;
+  }
+
+  .banner-icon {
+    display: none;
   }
 }
 </style>
@@ -1052,434 +1038,575 @@ body.sidebar-collapsed .nav-link .icon{
 
 <body>
 
-<div class="auth-loading" id="pageLoading">
-  <img src="../logo.png" class="logo" alt="أرض الأحياء">
-  <strong>جاري فتح حساب الطالب...</strong>
-  <span>منصة أرض الأحياء التعليمية</span>
+<div class="loading-screen" id="loadingScreen">
+  <div class="spinner"></div>
+  <span>جاري تحميل حساب الطالب...</span>
 </div>
+
+<div class="auth-screen" id="authScreen">
+  <div class="auth-card">
+    <img src="../logo.png" alt="أرض الأحياء" class="auth-logo"
+         onerror="this.style.display='none'">
+
+    <h1>أهلًا بك في أرض الأحياء</h1>
+    <p>سجّل الدخول باستخدام البريد الإلكتروني وكلمة المرور لعرض حسابك الدراسي.</p>
+
+    <form id="loginForm">
+      <div class="field">
+        <label for="loginEmail">البريد الإلكتروني</label>
+        <div class="input-wrap">
+          <i class="fa-regular fa-envelope"></i>
+          <input id="loginEmail" type="email" autocomplete="email"
+                 placeholder="أدخل بريدك الإلكتروني" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="loginPassword">كلمة المرور</label>
+        <div class="input-wrap">
+          <i class="fa-solid fa-lock"></i>
+          <input id="loginPassword" type="password"
+                 autocomplete="current-password"
+                 placeholder="أدخل كلمة المرور" required>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" type="submit" id="loginButton">
+        <i class="fa-solid fa-right-to-bracket"></i>
+        تسجيل الدخول
+      </button>
+
+      <div id="authError" class="auth-error"></div>
+    </form>
+  </div>
+</div>
+
+<div class="overlay" id="sidebarOverlay"></div>
 
 <aside class="sidebar" id="sidebar" style="display:none">
 
-  <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="طي القائمة">☰</button>
+  <div class="sidebar-inner">
 
-  <div class="brand">
-    <img src="../logo.png" alt="شعار أرض الأحياء"
-         onerror="this.style.display='none'">
-    <div>
-      <h2>أرض الأحياء</h2>
-      <p>رحلتك نحو التفوق تبدأ هنا 🌱</p>
+    <button type="button" class="sidebar-toggle" id="sidebarToggle"
+            aria-label="تصغير القائمة">
+      <i class="fa-solid fa-angles-right"></i>
+    </button>
+
+    <div class="brand">
+      <img src="../logo.png" class="brand-logo" alt="شعار أرض الأحياء"
+           onerror="this.style.display='none'">
+
+      <div>
+        <h2>أرض الأحياء</h2>
+        <small>الثانوية العامة</small>
+      </div>
     </div>
+
+    <div class="menu-label">القائمة الرئيسية</div>
+
+    <nav class="side-menu" aria-label="القائمة الرئيسية">
+
+      <a href="../index.html" class="side-link">
+        <i class="fa-solid fa-house"></i>
+        <span>الرئيسية</span>
+      </a>
+
+      <a href="../videos/index.html" class="side-link">
+        <i class="fa-regular fa-circle-play"></i>
+        <span>المحاضرات</span>
+      </a>
+
+      <a href="../notes/index.html" class="side-link">
+        <i class="fa-solid fa-book-open"></i>
+        <span>المذكرات</span>
+      </a>
+
+      <a href="../champion/index.html" class="side-link">
+        <i class="fa-solid fa-trophy"></i>
+        <span>بطل الفصل</span>
+      </a>
+
+      <a href="../forum/index.html" class="side-link">
+        <i class="fa-regular fa-comments"></i>
+        <span>المنتدى</span>
+      </a>
+
+      <a href="index.html" class="side-link active" aria-current="page">
+        <i class="fa-regular fa-user"></i>
+        <span>حساب الطالب</span>
+      </a>
+
+    </nav>
   </div>
 
-  <div class="nav-heading">القائمة الرئيسية</div>
-
-  <nav class="nav-links">
-    <a class="nav-link" href="../index.html">
-      <span class="icon">🏠</span>
-      <span class="label">الرئيسية</span>
-    </a>
-
-    <a class="nav-link" href="../videos/index.html">
-      <span class="icon">🎬</span>
-      <span class="label">المحاضرات</span>
-    </a>
-
-    <a class="nav-link" href="../notes/index.html">
-      <span class="icon">📚</span>
-      <span class="label">المذكرات</span>
-    </a>
-
-    <a class="nav-link" href="../champion/index.html">
-      <span class="icon">🏆</span>
-      <span class="label">بطل الفصل</span>
-    </a>
-
-    <a class="nav-link" href="../forum/index.html">
-      <span class="icon">💬</span>
-      <span class="label">المنتدى</span>
-    </a>
-
-    <a class="nav-link active" href="index.html">
-      <span class="icon">👤</span>
-      <span class="label">حساب الطالب</span>
-    </a>
-  </nav>
-
   <div class="sidebar-bottom">
-    <p>🌱 أرض الأحياء</p>
-    <p>الصف الثالث الثانوي</p>
-    <p>معًا نحو التفوق والنجاح</p>
+    <i class="fa-solid fa-leaf"></i>
+    <span>جميع الحقوق محفوظة © 2026</span>
   </div>
 </aside>
 
-<main class="main" id="mainContent" style="display:none">
+<div class="main" id="mainContent" style="display:none">
 
   <header class="topbar">
-    <div class="topbar-title">
-      <h1>حساب الطالب</h1>
-      <p>تابع مستواك وتقدمك التعليمي</p>
+    <div class="topbar-right">
+      <button class="mobile-menu" id="mobileMenuButton"
+              type="button" aria-label="فتح القائمة">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <div>
+        <div class="topbar-title">حساب الطالب</div>
+        <div class="topbar-subtitle">تابع بياناتك وتقدمك الدراسي</div>
+      </div>
     </div>
 
-    <div class="topbar-actions">
-      <div class="status-pill">
-        <span class="status-dot"></span>
-        الحساب متصل
+    <div class="topbar-user">
+      <div class="avatar"><i class="fa-solid fa-user-graduate"></i></div>
+      <div>
+        <strong id="headerStudentName">الطالب</strong>
+        <small>الصف الثالث الثانوي</small>
       </div>
-
-      <button class="icon-button" id="mobileMenuButton"
-              type="button" aria-label="فتح القائمة">☰</button>
     </div>
   </header>
 
-  <div id="notice" class="notice" role="status"></div>
+  <main class="page">
 
-  <section class="welcome">
-    <div>
-      <h2>أهلًا بك يا بطل الأحياء 👋</h2>
-      <div class="student-name" id="topStudentName">الطالب</div>
-      <p>استمر في التعلم والمراجعة، فكل خطوة تقربك من التفوق.</p>
-    </div>
-
-    <div class="welcome-icon">🌱</div>
-  </section>
-
-  <section class="stats-grid">
-
-    <article class="stat-card">
-      <div class="stat-top">
-        <span class="stat-label">إجمالي المحاضرات</span>
-        <span class="stat-icon green">🎬</span>
+    <section class="welcome-banner">
+      <div class="welcome-content">
+        <span class="welcome-tag">مرحبًا بك في</span>
+        <h1>حسابك في أرض الأحياء</h1>
+        <p>تابع بياناتك التعليمية، ونظّم رحلتك نحو التفوق.</p>
       </div>
-      <div class="stat-number" id="totalLectures">—</div>
-      <div class="stat-note">المحاضرات المسجلة بالمنصة</div>
-    </article>
 
-    <article class="stat-card">
-      <div class="stat-top">
-        <span class="stat-label">المحاضرات المكتملة</span>
-        <span class="stat-icon blue">✅</span>
+      <div class="banner-icon">
+        <i class="fa-solid fa-leaf"></i>
       </div>
-      <div class="stat-number" id="completedLectures">—</div>
-      <div class="stat-note">المحاضرات التي أنهيتها</div>
-    </article>
+    </section>
 
-    <article class="stat-card">
-      <div class="stat-top">
-        <span class="stat-label">عدد الاختبارات</span>
-        <span class="stat-icon orange">📝</span>
-      </div>
-      <div class="stat-number" id="examCount">—</div>
-      <div class="stat-note">الاختبارات المتاحة بالمنصة</div>
-    </article>
+    <section class="stats-grid">
 
-    <article class="stat-card">
-      <div class="stat-top">
-        <span class="stat-label">نتائجي المسجلة</span>
-        <span class="stat-icon purple">🏅</span>
-      </div>
-      <div class="stat-number" id="resultCount">—</div>
-      <div class="stat-note">نتائج الاختبارات الخاصة بك</div>
-    </article>
-
-  </section>
-
-  <section class="content-grid">
-
-    <div>
-
-      <article class="panel">
-        <div class="panel-header">
-          <div>
-            <h2>👤 البيانات الشخصية</h2>
-            <p>بيانات حسابك المسجل في المنصة</p>
-          </div>
-          <div class="panel-icon">👤</div>
+      <div class="stat-card">
+        <div class="stat-icon icon-green">
+          <i class="fa-regular fa-bookmark"></i>
         </div>
+        <div class="stat-text">
+          <span>المحاضرات المحفوظة</span>
+          <strong id="savedCount">—</strong>
+          <small>المحاضرات المحفوظة في حسابك</small>
+        </div>
+      </div>
 
-        <div class="panel-body">
+      <div class="stat-card">
+        <div class="stat-icon icon-purple">
+          <i class="fa-solid fa-circle-play"></i>
+        </div>
+        <div class="stat-text">
+          <span>إجمالي المحاضرات</span>
+          <strong id="totalLectures">—</strong>
+          <small>المحاضرات المتاحة على المنصة</small>
+        </div>
+      </div>
 
-          <div class="profile-row">
-            <div class="profile-avatar">🧑‍🎓</div>
-            <div class="profile-detail">
-              <label>اسم الطالب</label>
-              <strong id="profileName">جاري التحميل...</strong>
+      <div class="stat-card">
+        <div class="stat-icon icon-blue">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <div class="stat-text">
+          <span>المحاضرات المكتملة</span>
+          <strong id="completedCount">—</strong>
+          <small>المحاضرات التي أنهيتها</small>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon icon-orange">
+          <i class="fa-solid fa-trophy"></i>
+        </div>
+        <div class="stat-text">
+          <span>الاختبارات المسجلة</span>
+          <strong id="resultsCount">—</strong>
+          <small>عدد النتائج المسجلة لحسابك</small>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="content-grid">
+
+      <div>
+
+        <section class="card">
+          <div class="card-heading">
+            <div>
+              <h2>البيانات الشخصية</h2>
+              <p>راجع بياناتك وحدّث معلومات التواصل الخاصة بك.</p>
             </div>
-            <span class="small-button" style="color:#7185a4">ثابت</span>
+            <div class="heading-icon">
+              <i class="fa-regular fa-id-card"></i>
+            </div>
           </div>
 
-          <div class="profile-row">
-            <div class="profile-avatar">✉️</div>
-            <div class="profile-detail">
-              <label>البريد الإلكتروني</label>
-              <strong id="profileEmail">—</strong>
+          <div class="profile-head">
+            <div class="profile-avatar">
+              <i class="fa-solid fa-user-graduate"></i>
             </div>
-            <button class="small-button" id="editEmailButton" type="button">
-              تعديل
-            </button>
+            <div>
+              <h3 id="profileStudentName">جاري التحميل...</h3>
+              <p>طالب بالصف الثالث الثانوي</p>
+              <span class="status-pill">
+                <i class="fa-solid fa-circle-check"></i>
+                حساب طالب
+              </span>
+            </div>
           </div>
 
-          <div class="profile-row">
-            <div class="profile-avatar">📱</div>
-            <div class="profile-detail">
-              <label>رقم الهاتف</label>
-              <strong id="profilePhone">غير مسجل</strong>
+          <form id="profileForm">
+
+            <div class="form-grid">
+
+              <div class="field">
+                <label for="fullName">اسم الطالب</label>
+                <div class="input-wrap">
+                  <i class="fa-regular fa-user"></i>
+                  <input id="fullName" type="text" readonly
+                         aria-describedby="nameNote">
+                </div>
+                <small class="field-note" id="nameNote">
+                  الاسم للعرض فقط ولا يمكن تعديله من هذه الصفحة.
+                </small>
+              </div>
+
+              <div class="field">
+                <label for="studentEmail">البريد الإلكتروني</label>
+                <div class="input-wrap">
+                  <i class="fa-regular fa-envelope"></i>
+                  <input id="studentEmail" type="email"
+                         autocomplete="email" required>
+                </div>
+                <small class="field-note">
+                  تعديل هذا الحقل في ملف الطالب لا يغيّر بالضرورة بريد تسجيل الدخول في نظام المصادقة.
+                </small>
+              </div>
+
+              <div class="field">
+                <label for="studentPhone">رقم الهاتف</label>
+                <div class="input-wrap">
+                  <i class="fa-solid fa-phone"></i>
+                  <input id="studentPhone" type="tel"
+                         autocomplete="tel" maxlength="25"
+                         placeholder="أدخل رقم الهاتف">
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="accountRole">نوع الحساب</label>
+                <div class="input-wrap">
+                  <i class="fa-solid fa-shield-halved"></i>
+                  <input id="accountRole" type="text" readonly>
+                </div>
+              </div>
+
             </div>
-            <button class="small-button" id="editPhoneButton" type="button">
-              تعديل
-            </button>
+
+            <div id="profileMessage" class="message" role="status"></div>
+
+            <div class="actions">
+              <button class="btn btn-primary" id="saveProfileButton"
+                      type="submit">
+                <i class="fa-solid fa-floppy-disk"></i>
+                حفظ التعديلات
+              </button>
+
+              <button class="btn btn-light" id="reloadProfileButton"
+                      type="button">
+                <i class="fa-solid fa-rotate"></i>
+                إعادة تحميل البيانات
+              </button>
+            </div>
+
+          </form>
+        </section>
+
+        <section class="card">
+          <div class="card-heading">
+            <div>
+              <h2>تقدمك التعليمي</h2>
+              <p>ملخص المحاضرات المسجلة في حسابك.</p>
+            </div>
+            <div class="heading-icon">
+              <i class="fa-solid fa-chart-simple"></i>
+            </div>
           </div>
 
-          <button class="logout-button" id="logoutButton" type="button">
-            تسجيل الخروج ←
+          <div class="progress-caption">
+            <span>نسبة إنجاز المحاضرات</span>
+            <strong id="progressPercentage">0%</strong>
+          </div>
+
+          <div class="progress-track">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+
+          <div class="progress-caption">
+            <span>المحاضرات المكتملة</span>
+            <strong id="progressDetails">0 من 0</strong>
+          </div>
+
+          <div class="actions">
+            <a class="btn btn-primary" href="../videos/index.html">
+              <i class="fa-solid fa-play"></i>
+              متابعة المحاضرات
+            </a>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-heading">
+            <div>
+              <h2>نتائج الاختبارات</h2>
+              <p>النتائج المرتبطة بحسابك إذا كانت متاحة.</p>
+            </div>
+            <div class="heading-icon">
+              <i class="fa-solid fa-award"></i>
+            </div>
+          </div>
+
+          <div id="resultsList">
+            <div class="empty-state">
+              <i class="fa-solid fa-spinner fa-spin"></i>
+              جاري تحميل النتائج...
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <div>
+
+        <section class="card">
+          <div class="card-heading">
+            <div>
+              <h2>ملخص الحساب</h2>
+              <p>معلومات حسابك على المنصة.</p>
+            </div>
+            <div class="heading-icon">
+              <i class="fa-solid fa-user-check"></i>
+            </div>
+          </div>
+
+          <div class="info-list">
+
+            <div class="info-item">
+              <div class="info-item-icon">
+                <i class="fa-regular fa-envelope"></i>
+              </div>
+              <div>
+                <strong>البريد الإلكتروني</strong>
+                <small id="summaryEmail">—</small>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="info-item-icon">
+                <i class="fa-solid fa-phone"></i>
+              </div>
+              <div>
+                <strong>رقم الهاتف</strong>
+                <small id="summaryPhone">غير مسجل</small>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="info-item-icon">
+                <i class="fa-solid fa-calendar-check"></i>
+              </div>
+              <div>
+                <strong>تاريخ إنشاء الحساب</strong>
+                <small id="accountCreated">—</small>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="info-item-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+              </div>
+              <div>
+                <strong>حالة الحساب</strong>
+                <small>تم تسجيل الدخول بنجاح</small>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-heading">
+            <div>
+              <h2>اختصارات سريعة</h2>
+              <p>انتقل مباشرة إلى أقسام المنصة.</p>
+            </div>
+            <div class="heading-icon">
+              <i class="fa-solid fa-bolt"></i>
+            </div>
+          </div>
+
+          <div class="info-list">
+
+            <a class="info-item" href="../videos/index.html">
+              <div class="info-item-icon">
+                <i class="fa-solid fa-circle-play"></i>
+              </div>
+              <div>
+                <strong>المحاضرات</strong>
+                <small>شاهد محاضرات الأحياء.</small>
+              </div>
+            </a>
+
+            <a class="info-item" href="../notes/index.html">
+              <div class="info-item-icon">
+                <i class="fa-solid fa-book-open"></i>
+              </div>
+              <div>
+                <strong>المذكرات</strong>
+                <small>تصفح المذكرات التعليمية.</small>
+              </div>
+            </a>
+
+            <a class="info-item" href="../champion/index.html">
+              <div class="info-item-icon">
+                <i class="fa-solid fa-trophy"></i>
+              </div>
+              <div>
+                <strong>بطل الفصل</strong>
+                <small>تابع المنافسة التعليمية.</small>
+              </div>
+            </a>
+
+            <a class="info-item" href="../forum/index.html">
+              <div class="info-item-icon">
+                <i class="fa-regular fa-comments"></i>
+              </div>
+              <div>
+                <strong>المنتدى</strong>
+                <small>شارك في مناقشات الطلاب.</small>
+              </div>
+            </a>
+
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-heading">
+            <div>
+              <h2>تسجيل الخروج</h2>
+              <p>إنهاء جلستك الحالية بأمان.</p>
+            </div>
+            <div class="heading-icon">
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-danger"
+                  id="logoutButton" style="width:100%">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            تسجيل الخروج من الحساب
           </button>
+        </section>
 
-        </div>
-      </article>
+      </div>
 
-      <article class="panel">
-        <div class="panel-header">
-          <div>
-            <h2>📈 تقدمي في المحاضرات</h2>
-            <p>ملخص إنجازك التعليمي</p>
-          </div>
-          <div class="panel-icon">📊</div>
-        </div>
+    </section>
 
-        <div class="panel-body">
+    <footer class="footer">
+      أرض الأحياء — منصة تعليمية للصف الثالث الثانوي © 2026
+    </footer>
 
-          <div class="progress-summary">
-            <div class="progress-summary-top">
-              <span>نسبة إكمال المحاضرات</span>
-              <span id="progressPercent">0%</span>
-            </div>
-
-            <div class="progress-track">
-              <div class="progress-fill" id="progressBar"></div>
-            </div>
-
-            <p class="progress-description" id="progressDescription">
-              جاري تحميل تقدمك التعليمي...
-            </p>
-          </div>
-
-          <div id="progressMessage" class="empty-state">
-            <p>سيظهر تقدمك هنا بعد تحميل البيانات.</p>
-          </div>
-
-        </div>
-      </article>
-
-    </div>
-
-    <div>
-
-      <article class="panel">
-        <div class="panel-header">
-          <div>
-            <h2>🏆 نتائج الاختبارات</h2>
-            <p>آخر النتائج المسجلة لحسابك</p>
-          </div>
-          <div class="panel-icon">🏆</div>
-        </div>
-
-        <div class="panel-body">
-          <div id="examResults" class="result-list">
-            <div class="loading">جاري تحميل النتائج...</div>
-          </div>
-        </div>
-      </article>
-
-      <article class="panel">
-        <div class="panel-header">
-          <div>
-            <h2>📝 درجات الواجبات</h2>
-            <p>متابعة الواجبات التعليمية</p>
-          </div>
-          <div class="panel-icon">📝</div>
-        </div>
-
-        <div class="panel-body">
-          <div class="empty-state">
-            <div class="empty-icon">📋</div>
-            <h3>قسم الواجبات</h3>
-            <p>
-              لا يوجد جدول مستقل لنتائج الواجبات في قاعدة البيانات الحالية.
-              ستظهر الدرجات هنا بعد ربط نظام الواجبات.
-            </p>
-          </div>
-        </div>
-      </article>
-
-      <article class="panel">
-        <div class="panel-header">
-          <div>
-            <h2>💬 منشوراتي في المنتدى</h2>
-            <p>آخر مشاركاتك التعليمية</p>
-          </div>
-          <div class="panel-icon">💬</div>
-        </div>
-
-        <div class="panel-body">
-          <div id="forumPosts" class="forum-list">
-            <div class="loading">جاري تحميل المنشورات...</div>
-          </div>
-        </div>
-      </article>
-
-    </div>
-
-  </section>
-
-  <footer class="footer">
-    <strong>منصة أرض الأحياء</strong><br>
-    جميع الحقوق محفوظة © 2026<br>
-    معًا نحو التفوق في الأحياء 🌱
-  </footer>
-
-</main>
-
-<nav class="mobile-bottom" id="mobileBottom" style="display:none">
-  <a href="../index.html">
-    <span>🏠</span>
-    الرئيسية
-  </a>
-
-  <a href="../videos/index.html">
-    <span>🎬</span>
-    المحاضرات
-  </a>
-
-  <a href="../notes/index.html">
-    <span>📚</span>
-    المذكرات
-  </a>
-
-  <a href="../forum/index.html">
-    <span>💬</span>
-    المنتدى
-  </a>
-
-  <a href="index.html" class="active">
-    <span>👤</span>
-    حسابي
-  </a>
-</nav>
-
-<div class="modal" id="editModal" role="dialog" aria-modal="true"
-     aria-labelledby="modalTitle">
-  <div class="modal-card">
-    <h2 id="modalTitle">تعديل بيانات التواصل</h2>
-    <p id="modalDescription">
-      أدخل البيانات الجديدة ثم اضغط حفظ.
-    </p>
-
-    <div class="form-group">
-      <label id="modalInputLabel" for="modalInput">البيانات الجديدة</label>
-      <input id="modalInput" type="text" autocomplete="off">
-    </div>
-
-    <div id="modalMessage" class="notice"></div>
-
-    <div class="modal-actions">
-      <button class="primary-button" id="saveChangesButton" type="button">
-        حفظ التعديلات
-      </button>
-
-      <button class="secondary-button" id="cancelModalButton" type="button">
-        إلغاء
-      </button>
-    </div>
-  </div>
+  </main>
 </div>
 
 <script>
 "use strict";
 
-/* إعدادات مشروع Supabase */
+/* إعدادات Supabase الخاصة بمشروع أرض الأحياء */
 const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
 
-const db = window.supabase.createClient(
+const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
 
-let currentUser = null;
-let profileData = null;
-let modalMode = null;
-
-/* عناصر الصفحة */
 const $ = id => document.getElementById(id);
 
-function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, character => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[character]);
-}
+let currentUser = null;
+let currentProfile = null;
 
-function showNotice(message, type = "success") {
-  const element = $("notice");
+function showMessage(id, message, type = "info") {
+  const element = $(id);
+  if (!element) return;
 
+  element.className = "message " + type;
   element.textContent = message;
-  element.className = "notice " + type;
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
 }
 
-function hideNotice() {
-  $("notice").className = "notice";
-  $("notice").textContent = "";
+function hideMessage(id) {
+  const element = $(id);
+  if (!element) return;
+
+  element.className = "message";
+  element.textContent = "";
 }
 
-function showPage() {
-  $("pageLoading").style.display = "none";
-  $("sidebar").style.display = "";
-  $("mainContent").style.display = "";
-  $("mobileBottom").style.display = "";
+function setLoading(visible) {
+  $("loadingScreen").style.display = visible ? "flex" : "none";
 }
 
-function showEmpty(container, title, message, icon = "📭") {
-  if (!container) return;
+function showDashboard() {
+  $("authScreen").style.display = "none";
+  $("mainContent").style.display = "block";
+  $("sidebar").style.display = "flex";
+}
 
-  container.innerHTML = `
-    <div class="empty-state">
-      <div class="empty-icon">${icon}</div>
-      <h3>${escapeHTML(title)}</h3>
-      <p>${escapeHTML(message)}</p>
-    </div>
-  `;
+function showLogin() {
+  $("loadingScreen").style.display = "none";
+  $("mainContent").style.display = "none";
+  $("sidebar").style.display = "none";
+  $("authScreen").style.display = "flex";
+}
+
+function safeText(value, fallback = "غير مسجل") {
+  if (value === null || value === undefined || value === "") {
+    return fallback;
+  }
+  return String(value);
 }
 
 function formatDate(value) {
-  if (!value) return "غير محدد";
+  if (!value) return "غير متاح";
 
   const date = new Date(value);
 
-  if (Number.isNaN(date.getTime())) {
-    return "غير محدد";
-  }
+  if (Number.isNaN(date.getTime())) return "غير متاح";
 
-  return date.toLocaleDateString("ar-EG", {
+  return new Intl.DateTimeFormat("ar-EG", {
     year: "numeric",
-    month: "short",
+    month: "long",
     day: "numeric"
-  });
+  }).format(date);
 }
 
-/* إعداد الشريط الجانبي */
-function setupSidebar() {
-  const collapsed = localStorage.getItem(
-    "ardAlahyaaSidebarCollapsed"
-  ) === "true";
+function displayName(profile, user) {
+  return profile?.full_name ||
+         user?.user_metadata?.full_name ||
+         user?.user_metadata?.name ||
+         "الطالب";
+}
 
-  if (collapsed && window.innerWidth > 760) {
+function setupSidebar() {
+  const savedState =
+    localStorage.getItem("ardAlahyaaSidebarCollapsed") === "true";
+
+  if (savedState && window.innerWidth > 760) {
     document.body.classList.add("sidebar-collapsed");
   }
 
@@ -1494,8 +1621,6 @@ function setupSidebar() {
     localStorage.setItem(
       "ardAlahyaaSidebarCollapsed",
       document.body.classList.contains("sidebar-collapsed")
-        ? "true"
-        : "false"
     );
   });
 
@@ -1503,565 +1628,429 @@ function setupSidebar() {
     document.body.classList.toggle("mobile-sidebar-open");
   });
 
-  document.addEventListener("click", event => {
-    if (
-      window.innerWidth <= 760 &&
-      document.body.classList.contains("mobile-sidebar-open") &&
-      !$("sidebar").contains(event.target) &&
-      !$("mobileMenuButton").contains(event.target)
-    ) {
+  $("sidebarOverlay").addEventListener("click", () => {
+    document.body.classList.remove("mobile-sidebar-open");
+  });
+
+  document.querySelectorAll(".side-link").forEach(link => {
+    link.addEventListener("click", () => {
+      if (window.innerWidth <= 760) {
+        document.body.classList.remove("mobile-sidebar-open");
+      }
+    });
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 760) {
       document.body.classList.remove("mobile-sidebar-open");
     }
   });
 }
 
-/* تحميل بيانات الطالب */
 async function loadProfile() {
-  const { data, error } = await db
+  const { data, error } = await supabaseClient
     .from("profiles")
     .select("id, full_name, phone, email, role")
     .eq("id", currentUser.id)
     .maybeSingle();
 
   if (error) {
-    console.error("Profile error:", error);
+    console.error("Profile loading error:", error);
     throw new Error(
-      "تعذر تحميل بيانات الطالب. تحقق من صلاحيات جدول profiles."
+      "تعذر تحميل بيانات الطالب من جدول profiles. تحقق من صلاحيات Supabase."
     );
   }
 
-  profileData = data || {};
+  currentProfile = data || {};
 
-  const authEmail = currentUser.email || "";
-  const email = profileData.email || authEmail;
-  const name = profileData.full_name || "الطالب";
+  const name = displayName(currentProfile, currentUser);
+  const email = currentProfile.email || currentUser.email || "";
+  const phone = currentProfile.phone || "";
+  const role = currentProfile.role || "student";
 
-  $("topStudentName").textContent = name;
-  $("profileName").textContent = name;
-  $("profileEmail").textContent = email || "غير مسجل";
-  $("profilePhone").textContent = profileData.phone || "غير مسجل";
+  $("headerStudentName").textContent = name;
+  $("profileStudentName").textContent = name;
 
-  $("editEmailButton").disabled = !authEmail;
-  $("editEmailButton").title = authEmail
-    ? "تعديل البريد الإلكتروني"
-    : "البريد الإلكتروني غير متاح في حساب الدخول";
+  $("fullName").value = name;
+  $("studentEmail").value = email;
+  $("studentPhone").value = phone;
 
-  $("editPhoneButton").disabled = false;
+  $("accountRole").value =
+    role === "admin" ? "مسؤول" : "طالب";
+
+  $("summaryEmail").textContent = safeText(email);
+  $("summaryPhone").textContent = safeText(phone);
+
+  $("accountCreated").textContent =
+    formatDate(currentUser.created_at);
 }
 
-/* تحميل عدد المحاضرات */
-async function loadLectures() {
-  const totalElement = $("totalLectures");
+async function saveProfile(event) {
+  event.preventDefault();
+  hideMessage("profileMessage");
 
-  const { count, error } = await db
-    .from("lectures")
-    .select("*", { count: "exact", head: true });
+  const button = $("saveProfileButton");
+  const originalText = button.innerHTML;
 
-  if (error) {
-    console.error("Lectures error:", error);
-    totalElement.textContent = "—";
+  const email = $("studentEmail").value.trim();
+  const phone = $("studentPhone").value.trim();
+
+  if (!email) {
+    showMessage(
+      "profileMessage",
+      "من فضلك أدخل البريد الإلكتروني.",
+      "error"
+    );
     return;
   }
 
-  totalElement.textContent = count ?? 0;
+  if (email.length > 254) {
+    showMessage(
+      "profileMessage",
+      "البريد الإلكتروني طويل أكثر من اللازم.",
+      "error"
+    );
+    return;
+  }
+
+  if (phone.length > 25) {
+    showMessage(
+      "profileMessage",
+      "رقم الهاتف طويل أكثر من اللازم.",
+      "error"
+    );
+    return;
+  }
+
+  button.disabled = true;
+  button.innerHTML =
+    '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
+
+  try {
+    /*
+      يتم تحديث الهاتف والبريد داخل جدول profiles فقط.
+      اسم الطالب غير قابل للتعديل من هذه الصفحة.
+    */
+    const { data, error } = await supabaseClient
+      .from("profiles")
+      .update({
+        email: email,
+        phone: phone || null
+      })
+      .eq("id", currentUser.id)
+      .select("id, full_name, phone, email, role")
+      .maybeSingle();
+
+    if (error) {
+      console.error("Profile update error:", error);
+      throw new Error(
+        "تعذر حفظ البيانات. تحقق من سياسات RLS في Supabase."
+      );
+    }
+
+    if (!data) {
+      throw new Error(
+        "لم يتم تحديث البيانات. قد تحتاج إلى مراجعة صلاحيات التعديل على جدول profiles."
+      );
+    }
+
+    currentProfile = data;
+
+    $("studentEmail").value = data.email || "";
+    $("studentPhone").value = data.phone || "";
+
+    $("summaryEmail").textContent =
+      safeText(data.email);
+
+    $("summaryPhone").textContent =
+      safeText(data.phone);
+
+    showMessage(
+      "profileMessage",
+      "تم حفظ بيانات التواصل في حسابك بنجاح.",
+      "success"
+    );
+
+  } catch (error) {
+    showMessage(
+      "profileMessage",
+      error.message || "حدث خطأ أثناء حفظ البيانات.",
+      "error"
+    );
+  } finally {
+    button.disabled = false;
+    button.innerHTML = originalText;
+  }
 }
 
-/* تحميل الاختبارات المتاحة */
-async function loadExamCount() {
-  const { count, error } = await db
-    .from("exams")
+async function loadLectureStats() {
+  /*
+    تُقرأ أسماء الجداول والحقول المستخدمة في إحصاءات المحاضرات
+    وفق البنية المعروفة للمشروع.
+  */
+  const totalElement = $("totalLectures");
+  const savedElement = $("savedCount");
+  const completedElement = $("completedCount");
+
+  totalElement.textContent = "—";
+  savedElement.textContent = "—";
+  completedElement.textContent = "—";
+
+  let total = null;
+  let saved = null;
+  let completed = null;
+
+  const lecturesResponse = await supabaseClient
+    .from("lectures")
     .select("id", { count: "exact", head: true });
 
-  if (error) {
-    console.error("Exam count error:", error);
-    $("examCount").textContent = "—";
-    return;
+  if (!lecturesResponse.error) {
+    total = lecturesResponse.count ?? 0;
+    totalElement.textContent = total;
   }
 
-  $("examCount").textContent = count ?? 0;
-}
-
-/* تحميل تقدم الطالب */
-async function loadProgress() {
-  const container = $("progressMessage");
-
-  const { data, error } = await db
+  const progressResponse = await supabaseClient
     .from("lecture_progress")
-    .select("lecture_id, completed, saved")
+    .select("saved, completed")
     .eq("user_id", currentUser.id);
 
-  if (error) {
-    console.error("Progress error:", error);
+  if (!progressResponse.error) {
+    const rows = progressResponse.data || [];
 
-    $("completedLectures").textContent = "—";
-    $("progressPercent").textContent = "—";
-    $("progressDescription").textContent =
-      "تعذر تحميل تقدم المحاضرات. تحقق من صلاحيات جدول lecture_progress.";
+    saved = rows.filter(row => row.saved === true).length;
+    completed = rows.filter(row => row.completed === true).length;
 
-    $("progressBar").style.width = "0%";
-
-    showEmpty(
-      container,
-      "تعذر تحميل التقدم",
-      "تحقق من صلاحيات قراءة بيانات تقدم الطالب.",
-      "⚠️"
-    );
-
-    return;
+    savedElement.textContent = saved;
+    completedElement.textContent = completed;
   }
 
-  const rows = data || [];
+  if (total !== null && completed !== null) {
+    const percentage = total > 0
+      ? Math.min(100, Math.round((completed / total) * 100))
+      : 0;
+
+    $("progressPercentage").textContent = percentage + "%";
+    $("progressBar").style.width = percentage + "%";
+    $("progressDetails").textContent =
+      completed + " من " + total;
+  } else {
+    $("progressPercentage").textContent = "—";
+    $("progressBar").style.width = "0%";
+    $("progressDetails").textContent =
+      "تعذر تحميل بيانات التقدم";
+  }
+}
+
+async function loadResults() {
+  const container = $("resultsList");
 
   /*
-    نحسب المحاضرات المكتملة من السجلات الخاصة بالطالب.
-    عدد المحاضرات الكلي يظهر منفصلًا من جدول lectures.
+    لا تُعرض نتائج افتراضية. إذا لم يكن جدول النتائج موجودًا
+    أو كانت صلاحيات القراءة غير متاحة، تظهر رسالة توضيحية.
   */
-  const completedRows = rows.filter(row => row.completed === true);
-
-  const uniqueCompleted = new Set(
-    completedRows
-      .map(row => row.lecture_id)
-      .filter(Boolean)
-  );
-
-  const completed = uniqueCompleted.size;
-
-  $("completedLectures").textContent = completed;
-
-  const totalText = $("totalLectures").textContent;
-  const total = Number(totalText);
-
-  let percentage = 0;
-
-  if (Number.isFinite(total) && total > 0) {
-    percentage = Math.min(100, (completed / total) * 100);
-  }
-
-  $("progressPercent").textContent =
-    percentage.toFixed(1) + "%";
-
-  $("progressBar").style.width = percentage + "%";
-
-  $("progressDescription").textContent =
-    `أكملت ${completed} محاضرة من أصل ${
-      Number.isFinite(total) ? total : "عدد المحاضرات المتاحة"
-    }.`;
-
-  if (rows.length === 0) {
-    showEmpty(
-      container,
-      "ابدأ رحلتك التعليمية",
-      "لم تُسجل بيانات تقدمك بعد. ابدأ مشاهدة المحاضرات لتتبع تقدمك.",
-      "🌱"
-    );
-    return;
-  }
-
-  container.innerHTML = `
-    <div class="progress-summary">
-      <div class="progress-summary-top">
-        <span>المحاضرات المسجلة في تقدمك</span>
-        <span>${rows.length}</span>
-      </div>
-      <p class="progress-description">
-        عدد المحاضرات المكتملة: ${completed}.
-        استمر في التعلم لتحقيق تقدم أكبر.
-      </p>
-    </div>
-  `;
-}
-
-/* تحميل نتائج الاختبارات من الجدول الصحيح */
-async function loadResults() {
-  const container = $("examResults");
-
-  container.innerHTML =
-    '<div class="loading">جاري تحميل نتائج الاختبارات...</div>';
-
-  const { data, error } = await db
+  const { data, error } = await supabaseClient
     .from("results")
-    .select("id, user_id, exam_name, score, total, percentage, created_at")
-    .eq("user_id", currentUser.id)
-    .order("created_at", { ascending: false })
-    .limit(20);
-
-  if (error) {
-    console.error("Results error:", error);
-
-    $("resultCount").textContent = "—";
-
-    showEmpty(
-      container,
-      "تعذر تحميل النتائج",
-      "تحقق من صلاحيات قراءة جدول results في Supabase.",
-      "⚠️"
-    );
-
-    return;
-  }
-
-  const results = data || [];
-
-  $("resultCount").textContent = results.length;
-
-  if (results.length === 0) {
-    showEmpty(
-      container,
-      "لا توجد نتائج حتى الآن",
-      "ستظهر نتائجك هنا بعد أداء الاختبارات وتسجيل درجاتك.",
-      "🏆"
-    );
-    return;
-  }
-
-  container.innerHTML = results.map(result => {
-    const score = Number(result.score) || 0;
-    const total = Number(result.total) || 0;
-
-    let percentage;
-
-    if (result.percentage !== null &&
-        result.percentage !== undefined &&
-        result.percentage !== "") {
-      percentage = Number(result.percentage);
-    } else {
-      percentage = total > 0
-        ? (score / total) * 100
-        : 0;
-    }
-
-    if (!Number.isFinite(percentage)) {
-      percentage = 0;
-    }
-
-    const safePercentage = Math.max(
-      0,
-      Math.min(100, percentage)
-    );
-
-    return `
-      <div class="result-card">
-        <div class="result-info">
-          <h3>${escapeHTML(result.exam_name || "اختبار")}</h3>
-          <p>📅 ${escapeHTML(formatDate(result.created_at))}</p>
-        </div>
-
-        <div class="result-score">
-          <strong>${escapeHTML(score)} / ${escapeHTML(total)}</strong>
-          <span>${safePercentage.toFixed(1)}%</span>
-        </div>
-      </div>
-    `;
-  }).join("");
-}
-
-/* تحميل منشورات الطالب */
-async function loadForumPosts() {
-  const container = $("forumPosts");
-
-  container.innerHTML =
-    '<div class="loading">جاري تحميل المنشورات...</div>';
-
-  const { data, error } = await db
-    .from("forum_posts")
-    .select("id, title, content, created_at")
+    .select("*")
     .eq("user_id", currentUser.id)
     .order("created_at", { ascending: false })
     .limit(10);
 
   if (error) {
-    console.error("Forum posts error:", error);
+    console.warn("Results unavailable:", error.message);
 
-    showEmpty(
-      container,
-      "تعذر تحميل المنشورات",
-      "تحقق من صلاحيات قراءة جدول forum_posts.",
-      "⚠️"
-    );
+    $("resultsCount").textContent = "—";
 
+    container.innerHTML = `
+      <div class="empty-state">
+        <i class="fa-solid fa-circle-info"></i>
+        لا يمكن عرض النتائج حاليًا. تحقق من وجود جدول
+        <b>results</b> وصلاحيات القراءة في Supabase.
+      </div>
+    `;
     return;
   }
 
-  const posts = data || [];
+  const results = data || [];
+  $("resultsCount").textContent = results.length;
 
-  if (posts.length === 0) {
-    showEmpty(
-      container,
-      "لم تنشر أي مشاركة بعد",
-      "يمكنك المشاركة وطرح أسئلتك من قسم المنتدى.",
-      "💬"
-    );
+  if (!results.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <i class="fa-solid fa-clipboard-check"></i>
+        لا توجد نتائج مسجلة لهذا الحساب حتى الآن.
+      </div>
+    `;
     return;
   }
 
-  container.innerHTML = posts.map(post => `
-    <article class="forum-item">
-      <h3>${escapeHTML(post.title || "مشاركة في المنتدى")}</h3>
-      <p>${escapeHTML(post.content || "")}</p>
-      <p style="margin-top:7px">
-        📅 ${escapeHTML(formatDate(post.created_at))}
-      </p>
-    </article>
-  `).join("");
+  container.replaceChildren();
+
+  results.forEach(result => {
+    const item = document.createElement("div");
+    item.className = "info-item";
+
+    const icon = document.createElement("div");
+    icon.className = "info-item-icon";
+    icon.innerHTML = '<i class="fa-solid fa-award"></i>';
+
+    const content = document.createElement("div");
+
+    const title = document.createElement("strong");
+    title.textContent =
+      result.exam_name || result.title || "اختبار";
+
+    const detail = document.createElement("small");
+
+    const score = result.score ?? "—";
+    const total = result.total ?? "—";
+
+    detail.textContent =
+      "الدرجة: " + score + " من " + total +
+      " • " + formatDate(result.created_at);
+
+    content.append(title, detail);
+    item.append(icon, content);
+    container.appendChild(item);
+  });
 }
 
-/* نافذة تعديل بيانات التواصل */
-function openEditModal(mode) {
-  hideNotice();
-
-  modalMode = mode;
-
-  $("modalMessage").className = "notice";
-  $("modalMessage").textContent = "";
-  $("saveChangesButton").disabled = false;
-
-  if (mode === "phone") {
-    $("modalTitle").textContent = "تعديل رقم الهاتف";
-    $("modalDescription").textContent =
-      "أدخل رقم الهاتف الجديد. سيتم حفظه في ملفك الشخصي.";
-    $("modalInputLabel").textContent = "رقم الهاتف الجديد";
-    $("modalInput").type = "tel";
-    $("modalInput").inputMode = "tel";
-    $("modalInput").value = profileData?.phone || "";
-    $("modalInput").placeholder = "أدخل رقم الهاتف";
-  } else {
-    $("modalTitle").textContent = "تعديل البريد الإلكتروني";
-    $("modalDescription").textContent =
-      "سيطلب Supabase تأكيد البريد الجديد إذا كانت خاصية التأكيد مفعلة.";
-    $("modalInputLabel").textContent = "البريد الإلكتروني الجديد";
-    $("modalInput").type = "email";
-    $("modalInput").inputMode = "email";
-    $("modalInput").value = currentUser.email || "";
-    $("modalInput").placeholder = "example@email.com";
-  }
-
-  $("editModal").classList.add("show");
-  $("modalInput").focus();
-}
-
-function closeEditModal() {
-  $("editModal").classList.remove("show");
-  modalMode = null;
-}
-
-function showModalMessage(message, type = "error") {
-  $("modalMessage").textContent = message;
-  $("modalMessage").className = "notice " + type;
-}
-
-async function saveContactChanges() {
-  const value = $("modalInput").value.trim();
-
-  if (!value) {
-    showModalMessage("من فضلك أدخل البيانات المطلوبة.");
-    return;
-  }
-
-  if (modalMode === "email") {
-    const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-
-    if (!validEmail) {
-      showModalMessage("البريد الإلكتروني غير صحيح.");
-      return;
-    }
-
-    if (value === (currentUser.email || "")) {
-      showModalMessage("هذا هو بريدك الإلكتروني الحالي.");
-      return;
-    }
-  }
-
-  if (modalMode === "phone" && value.length < 7) {
-    showModalMessage("رقم الهاتف يبدو غير مكتمل.");
-    return;
-  }
-
-  $("saveChangesButton").disabled = true;
-  $("saveChangesButton").textContent = "جاري الحفظ...";
+async function loadDashboard() {
+  setLoading(true);
 
   try {
-    if (modalMode === "phone") {
-      /*
-        لا نفترض وجود contact_updated_at؛
-        العمود غير موجود ضمن الأعمدة التي تأكدنا منها.
-      */
-      const { data, error } = await db
-        .from("profiles")
-        .update({ phone: value })
-        .eq("id", currentUser.id)
-        .select("id, phone")
-        .maybeSingle();
+    const { data, error } = await supabaseClient.auth.getUser();
 
-      if (error) throw error;
-
-      if (!data) {
-        throw new Error(
-          "لم يتم تحديث رقم الهاتف. تحقق من صلاحية UPDATE في profiles."
-        );
-      }
-
-      profileData = {
-        ...profileData,
-        phone: data.phone
-      };
-
-      $("profilePhone").textContent = data.phone || "غير مسجل";
-
-      closeEditModal();
-
-      showNotice(
-        "تم تحديث رقم الهاتف بنجاح.",
-        "success"
-      );
-
-    } else if (modalMode === "email") {
-      const { error } = await db.auth.updateUser({
-        email: value
-      });
-
-      if (error) throw error;
-
-      closeEditModal();
-
-      showNotice(
-        "تم إرسال طلب تحديث البريد الإلكتروني. تحقق من بريدك إذا طُلب منك التأكيد.",
-        "success"
-      );
-    }
-
-  } catch (error) {
-    console.error("Contact update error:", error);
-
-    showModalMessage(
-      error.message ||
-      "تعذر حفظ التعديلات. تحقق من الاتصال والصلاحيات."
-    );
-
-  } finally {
-    $("saveChangesButton").disabled = false;
-    $("saveChangesButton").textContent = "حفظ التعديلات";
-  }
-}
-
-/* تسجيل الخروج */
-async function logout() {
-  const confirmed = confirm("هل تريد تسجيل الخروج من حسابك؟");
-
-  if (!confirmed) return;
-
-  const { error } = await db.auth.signOut();
-
-  if (error) {
-    console.error("Logout error:", error);
-    showNotice("تعذر تسجيل الخروج. حاول مرة أخرى.", "error");
-    return;
-  }
-
-  window.location.href = "../index.html";
-}
-
-/* تشغيل الصفحة */
-async function init() {
-  try {
-    const { data, error } = await db.auth.getSession();
-
-    if (error) throw error;
-
-    const session = data?.session;
-
-    if (!session?.user) {
-      window.location.replace("../index.html");
+    if (error || !data.user) {
+      showLogin();
       return;
     }
 
-    currentUser = session.user;
-
-    setupSidebar();
-
-    showPage();
+    currentUser = data.user;
 
     await loadProfile();
 
+    showDashboard();
+
     /*
-      تحميل الأقسام بشكل مستقل:
-      تعطل قسم لا يمنع تحميل بقية الصفحة.
+      الإحصاءات مستقلة عن تحميل الملف الشخصي؛ فشل أحدها
+      لا يمنع الطالب من فتح صفحة حسابه.
     */
     await Promise.allSettled([
-      loadLectures(),
-      loadExamCount(),
-      loadResults(),
-      loadForumPosts()
+      loadLectureStats(),
+      loadResults()
     ]);
 
-    /*
-      تحميل التقدم بعد عدد المحاضرات
-      حتى تكون نسبة الإنجاز أدق.
-    */
-    await loadProgress();
-
   } catch (error) {
-    console.error("Account initialization error:", error);
+    console.error("Dashboard error:", error);
 
-    $("pageLoading").innerHTML = `
-      <div style="text-align:center;padding:25px;max-width:420px">
-        <div style="font-size:38px;margin-bottom:12px">⚠️</div>
-        <strong>تعذر فتح حساب الطالب</strong>
-        <p style="margin-top:10px;font-size:13px;line-height:2">
-          ${escapeHTML(error.message || "حدث خطأ غير متوقع.")}
-        </p>
-        <button
-          onclick="location.reload()"
-          style="margin-top:15px;padding:10px 20px;border:0;border-radius:10px;background:#008866;color:white;font-family:Cairo,sans-serif">
-          إعادة المحاولة
-        </button>
-      </div>
-    `;
+    showLogin();
+
+    $("authError").textContent =
+      error.message ||
+      "تعذر تحميل الحساب. تحقق من اتصال Supabase وصلاحيات الجداول.";
+  } finally {
+    setLoading(false);
   }
 }
 
-/* أحداث الصفحة */
-$("editPhoneButton").addEventListener(
-  "click",
-  () => openEditModal("phone")
-);
+async function handleLogin(event) {
+  event.preventDefault();
 
-$("editEmailButton").addEventListener(
-  "click",
-  () => openEditModal("email")
-);
+  const email = $("loginEmail").value.trim();
+  const password = $("loginPassword").value;
+  const button = $("loginButton");
 
-$("saveChangesButton").addEventListener(
-  "click",
-  saveContactChanges
-);
+  $("authError").textContent = "";
 
-$("cancelModalButton").addEventListener(
-  "click",
-  closeEditModal
-);
+  button.disabled = true;
+  button.innerHTML =
+    '<i class="fa-solid fa-spinner fa-spin"></i> جاري تسجيل الدخول...';
 
-$("logoutButton").addEventListener(
-  "click",
-  logout
-);
+  try {
+    const { error } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
 
-$("editModal").addEventListener("click", event => {
-  if (event.target === $("editModal")) {
-    closeEditModal();
+    if (error) {
+      throw error;
+    }
+
+    await loadDashboard();
+
+  } catch (error) {
+    $("authError").textContent =
+      error.message ||
+      "تعذر تسجيل الدخول. تحقق من البريد الإلكتروني وكلمة المرور.";
+
+  } finally {
+    button.disabled = false;
+    button.innerHTML =
+      '<i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول';
+  }
+}
+
+async function handleLogout() {
+  const confirmed = window.confirm(
+    "هل تريد تسجيل الخروج من حسابك؟"
+  );
+
+  if (!confirmed) return;
+
+  setLoading(true);
+
+  const { error } = await supabaseClient.auth.signOut();
+
+  if (error) {
+    setLoading(false);
+    alert("تعذر تسجيل الخروج. حاول مرة أخرى.");
+    return;
+  }
+
+  currentUser = null;
+  currentProfile = null;
+
+  showLogin();
+  setLoading(false);
+}
+
+$("profileForm").addEventListener("submit", saveProfile);
+
+$("loginForm").addEventListener("submit", handleLogin);
+
+$("logoutButton").addEventListener("click", handleLogout);
+
+$("reloadProfileButton").addEventListener("click", async () => {
+  hideMessage("profileMessage");
+
+  try {
+    await loadProfile();
+
+    showMessage(
+      "profileMessage",
+      "تم تحديث البيانات المعروضة من قاعدة البيانات.",
+      "success"
+    );
+  } catch (error) {
+    showMessage(
+      "profileMessage",
+      error.message,
+      "error"
+    );
   }
 });
 
-$("modalInput").addEventListener("keydown", event => {
-  if (event.key === "Enter") {
-    saveContactChanges();
-  }
+setupSidebar();
 
-  if (event.key === "Escape") {
-    closeEditModal();
+supabaseClient.auth.onAuthStateChange((event, session) => {
+  if (event === "SIGNED_OUT") {
+    currentUser = null;
+    currentProfile = null;
+    showLogin();
   }
 });
 
-init();
+loadDashboard();
 </script>
 
 </body>
