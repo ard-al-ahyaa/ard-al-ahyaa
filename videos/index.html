@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -478,9 +478,8 @@ async function updateProgress(i,field){
  }catch(e){console.error(e);alert("تعذر حفظ التقدم. تحقق من الاتصال وصلاحيات جدول lecture_progress.")}
 }
 function toggleSaved(i){updateProgress(i,"saved")}
-function toggleCompleted(i){updateProgress(i,"completed")}
-
-async function buildPlayer(i){
+function toggleCompleted(i){updateProgress(i,"completed"
+                                           
 async function buildPlayer(i) {
     const lec = allLectures[i];
     const box = document.getElementById(`player-${i}`);
