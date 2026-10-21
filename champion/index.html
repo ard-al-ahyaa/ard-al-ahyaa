@@ -3,18 +3,15 @@ html
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>بطل الفصل | منصة أرض الأحياء</title>
-<meta name="description" content="لوحة شرف الطلاب المتميزين في منصة أرض الأحياء للصف الثالث الثانوي.">
-<meta name="theme-color" content="#004e4d">
+<meta name="description" content="ترتيب أبطال الأحياء ودرجات الطلاب في منصة أرض الأحياء للصف الثالث الثانوي.">
+<meta name="theme-color" content="#026857">
 <link rel="icon" href="../favicon.png">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 
 <style>
 :root{
@@ -23,7 +20,6 @@ html
   --green-light:#e3f5ee;
   --blue:#07375b;
   --bg:#f4f7fb;
-  --white:#fff;
   --text:#142f50;
   --muted:#6b7f98;
   --border:#e2eaf3;
@@ -31,486 +27,470 @@ html
   --sidebar-width:272px;
   --sidebar-small:82px;
 }
-
-*{box-sizing:border-box;margin:0;padding:0;font-family:"Cairo",sans-serif}
-body{background:var(--bg);color:var(--text);min-height:100vh}
-button{font:inherit}
-a{-webkit-tap-highlight-color:transparent}
-button:focus-visible,a:focus-visible{outline:3px solid #8be0c5;outline-offset:3px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Cairo",sans-serif;
+  min-height:100vh;
+}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit}
+.icon{
+  width:22px;height:22px;display:block;flex-shrink:0;
+  fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;
+}
 
 /* الشريط الجانبي */
 .sidebar{
-  position:fixed;right:0;top:0;bottom:0;width:var(--sidebar-width);
-  z-index:1000;display:flex;flex-direction:column;justify-content:space-between;
-  overflow-y:auto;overflow-x:hidden;color:#fff;
-  background:linear-gradient(180deg,#004e4d 0%,#075e54 48%,#07375b 100%);
-  transition:width .25s ease;scrollbar-width:thin;
+  position:fixed;top:0;right:0;width:var(--sidebar-width);
+  height:100vh;overflow-x:hidden;overflow-y:auto;
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:0;color:#fff;
+  background:linear-gradient(180deg,#004e4d 0%,#003d50 62%,#07375b 100%);
+  z-index:1000;box-shadow:none;
+  transition:width .25s;
 }
-.sidebar-top{padding:22px 18px}
+.sidebar-top{padding:18px 15px;min-width:0}
+.sidebar-toggle-wrap{display:flex;justify-content:flex-start;margin-bottom:16px}
 .sidebar-toggle{
-  display:flex;align-items:center;justify-content:center;width:39px;height:39px;
-  margin-bottom:20px;border:1px solid #ffffff30;border-radius:11px;
-  background:#ffffff14;color:white;cursor:pointer;transition:.2s;
+  width:39px;height:39px;border:1px solid #ffffff30;border-radius:50%;
+  background:#ffffff15;color:#fff;display:grid;place-items:center;
 }
-.sidebar-toggle:hover{background:#ffffff2b}
-.sidebar-toggle i{font-size:17px;transition:transform .25s}
-.logo-box{
-  display:flex;align-items:center;gap:12px;min-width:0;overflow:hidden;
-  padding-bottom:21px;margin-bottom:25px;border-bottom:1px solid #ffffff26;
+.sidebar-toggle:hover{background:#ffffff25}
+.sidebar-toggle .icon{width:24px;height:24px}
+.brand{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0;text-align:center;margin:0 0 27px;padding:0 0 23px;
+  border-bottom:1px solid #ffffff20;min-width:0;
 }
-.logo-box img{
-  width:49px;height:49px;flex-shrink:0;object-fit:contain;padding:3px;
-  border-radius:13px;background:#fff;
+.brand-logo{width:75px;height:75px;object-fit:contain;margin-bottom:7px}
+.brand-text{min-width:0;overflow:hidden;white-space:nowrap}
+.brand h2{font-size:23px;line-height:1.5;font-weight:900;margin:0;color:#fff}
+.brand small{font-size:12px;opacity:.85;font-weight:500}
+.nav-title{font-size:11px;color:#ffffff88;font-weight:700;margin:0 10px 12px;padding:0}
+.sidebar nav{display:flex;flex-direction:column;gap:7px}
+.nav-link{
+  display:flex;align-items:center;gap:15px;min-height:48px;
+  padding:12px 15px;margin:0;border-radius:12px;
+  color:#f2fbff;text-decoration:none;font-size:14px;
+  font-weight:700;white-space:nowrap;transition:.2s;
 }
-.logo-box h2{font-size:17px;font-weight:900;white-space:nowrap;color:#fff}
-.logo-box p{font-size:11px;margin-top:4px;color:#d8eee9;white-space:nowrap}
-.menu-title{font-size:10px;font-weight:800;color:#ffffff91;padding:0 12px;margin-bottom:12px}
-.menu{display:flex;flex-direction:column;gap:7px}
-.menu a,.logout-btn{
-  position:relative;display:flex;align-items:center;gap:13px;width:100%;
-  min-width:0;padding:12px 13px;border:0;border-radius:11px;
-  background:transparent;color:#e2f1ee;text-decoration:none;text-align:right;
-  font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;transition:.2s;
+.nav-link:hover{background:#ffffff18;transform:translateX(-2px)}
+.nav-link.active{
+  background:linear-gradient(110deg,#1da77b,#159b78);
+  box-shadow:0 5px 15px #001f3020;color:#fff;
 }
-.menu a:hover,.menu a.active,.logout-btn:hover{background:#ffffff1c;color:#fff}
-.menu a:hover{transform:translateX(-2px)}
-.menu a.active{border-right:3px solid #b9f6df;font-weight:900;background:#ffffff20}
-.menu-icon{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
-.menu-icon i{font-size:18px}
-.logout-btn:disabled{opacity:.6;cursor:wait}
+.nav-icon{width:27px;height:27px;min-width:27px;display:flex;align-items:center;justify-content:center}
+.nav-icon .icon{width:24px;height:24px}
+.nav-text{overflow:hidden}
 .sidebar-bottom{
-  margin:0 18px 20px;padding:14px;border-radius:12px;
-  background:#ffffff12;color:#ffffffd9;font-size:11px;line-height:2;
+  margin:0 15px 18px;padding:13px 10px;border-top:1px solid #ffffff20;
+  text-align:center;font-size:11px;line-height:2;color:#ffffffc9;
 }
+.sidebar-bottom .icon{display:none}
+.sidebar-bottom-text{white-space:normal}
 
-/* الشريط المصغر */
-body.sidebar-collapsed .sidebar{width:var(--sidebar-small)}
-body.sidebar-collapsed .sidebar-top{padding:20px 10px}
-body.sidebar-collapsed .sidebar-toggle{margin-right:auto;margin-left:auto}
-body.sidebar-collapsed .sidebar-toggle i{transform:rotate(180deg)}
-body.sidebar-collapsed .logo-box{justify-content:center;margin-bottom:23px;padding-bottom:18px}
-body.sidebar-collapsed .logo-box img{width:43px;height:43px}
-body.sidebar-collapsed .logo-box>div,
-body.sidebar-collapsed .menu-title,
-body.sidebar-collapsed .menu a>span:not(.menu-icon),
-body.sidebar-collapsed .logout-btn>span:not(.menu-icon),
+body.sidebar-collapsed{--sidebar-width:82px}
+body.sidebar-collapsed .sidebar{padding:0}
+body.sidebar-collapsed .sidebar-top{padding:18px 10px}
+body.sidebar-collapsed .brand{padding-bottom:18px}
+body.sidebar-collapsed .brand-logo{width:48px;height:48px}
+body.sidebar-collapsed .brand-text,
+body.sidebar-collapsed .nav-title,
+body.sidebar-collapsed .nav-text,
 body.sidebar-collapsed .sidebar-bottom{display:none}
-body.sidebar-collapsed .menu{align-items:center}
-body.sidebar-collapsed .menu a,
-body.sidebar-collapsed .logout-btn{
-  width:48px;height:46px;padding:0;justify-content:center;gap:0
-}
-body.sidebar-collapsed .menu a.active{border-right:0;box-shadow:inset -3px 0 #b9f6df}
-body.sidebar-collapsed .menu a:hover{transform:none}
-body.sidebar-collapsed .menu a::after,
-body.sidebar-collapsed .logout-btn::after{
-  position:absolute;right:calc(100% + 10px);top:50%;transform:translateY(-50%);
-  padding:7px 12px;border-radius:8px;background:#102f49;color:#fff;
-  font-size:11px;font-weight:700;white-space:nowrap;opacity:0;visibility:hidden;
-  pointer-events:none;z-index:5000;
-}
-body.sidebar-collapsed .menu a:hover::after,
-body.sidebar-collapsed .logout-btn:hover::after{opacity:1;visibility:visible}
-body.sidebar-collapsed .menu a:nth-of-type(1)::after{content:"الرئيسية"}
-body.sidebar-collapsed .menu a:nth-of-type(2)::after{content:"المحاضرات"}
-body.sidebar-collapsed .menu a:nth-of-type(3)::after{content:"المذكرات"}
-body.sidebar-collapsed .menu a:nth-of-type(4)::after{content:"بطل الفصل"}
-body.sidebar-collapsed .menu a:nth-of-type(5)::after{content:"المنتدى"}
-body.sidebar-collapsed .menu a:nth-of-type(6)::after{content:"حساب الطالب"}
-body.sidebar-collapsed .logout-btn::after{content:"تسجيل الخروج"}
+body.sidebar-collapsed .nav-link{justify-content:center;padding:13px 5px}
+body.sidebar-collapsed .nav-link:hover{transform:none}
+body.sidebar-collapsed .sidebar-toggle-wrap{justify-content:center}
 
-/* المحتوى */
+/* المحتوى الرئيسي */
 .main{
-  min-height:100vh;min-width:0;margin-right:var(--sidebar-width);
-  padding:28px 32px;transition:margin-right .25s ease;
+  margin-right:var(--sidebar-width);
+  padding:27px 28px 40px;
+  min-width:0;min-height:100vh;
+  transition:margin-right .25s;
 }
 body.sidebar-collapsed .main{margin-right:var(--sidebar-small)}
 .topbar{
-  display:flex;align-items:center;justify-content:space-between;gap:20px;
-  padding:21px 25px;margin-bottom:22px;border:1px solid var(--border);
-  border-radius:17px;background:#fff;box-shadow:var(--shadow);
-}
-.topbar h1{font-size:23px;font-weight:900;color:var(--blue);margin-bottom:4px}
-.topbar p{font-size:12px;color:var(--muted);line-height:1.9}
-.user-chip{
-  display:flex;align-items:center;gap:10px;max-width:250px;min-width:0;
-  padding:8px 12px;border:1px solid #e1eee9;border-radius:13px;background:#f6faf9;
-}
-.user-avatar{
-  width:42px;height:42px;display:grid;place-items:center;flex-shrink:0;
-  border-radius:12px;background:var(--green-light);color:var(--green-dark);font-size:19px;
-}
-.user-details{min-width:0}
-.user-details strong{display:block;color:var(--green-dark);font-size:12px;overflow-wrap:anywhere}
-.user-details small{font-size:10px;color:var(--muted)}
-
-/* مقدمة الصفحة */
-.champion-hero{
-  position:relative;overflow:hidden;display:flex;align-items:center;
-  min-height:210px;padding:30px 32px;margin-bottom:22px;border-radius:19px;
-  background:linear-gradient(120deg,#004e4d 0%,#008866 48%,#07375b 100%);
-  color:#fff;box-shadow:0 12px 30px #07375b18;
-}
-.hero-content{position:relative;z-index:2;max-width:650px}
-.hero-badge{
-  display:inline-flex;align-items:center;gap:8px;padding:6px 13px;
-  margin-bottom:13px;border:1px solid #ffffff35;border-radius:30px;
-  background:#ffffff18;font-size:11px;font-weight:700;
-}
-.champion-hero h2{font-size:26px;font-weight:900;line-height:1.7;margin-bottom:8px}
-.champion-hero p{font-size:13px;line-height:2;color:#ffffffed;max-width:570px}
-.hero-decoration{
-  position:absolute;left:38px;top:50%;transform:translateY(-50%) rotate(-12deg);
-  font-size:135px;color:#fff;opacity:.12;pointer-events:none;
-}
-
-/* الإحصائيات */
-.stats-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-bottom:27px}
-.stat-card{
-  position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;
-  min-width:0;padding:20px;border:1px solid var(--border);border-radius:16px;
-  background:#fff;box-shadow:var(--shadow);transition:transform .2s,border-color .2s;
-}
-.stat-card:hover{transform:translateY(-3px);border-color:#b7dcd0}
-.stat-card::after{
-  content:"";position:absolute;right:0;top:0;bottom:0;width:4px;background:var(--green)
-}
-.stat-card:nth-child(2)::after{background:#d9a727}
-.stat-card:nth-child(3)::after{background:#3979c5}
-.stat-icon{
-  width:49px;height:49px;display:grid;place-items:center;flex-shrink:0;
-  border-radius:14px;font-size:20px;
-}
-.stat-icon.green{background:#e3f5ee;color:#008866}
-.stat-icon.gold{background:#fff4d7;color:#b38313}
-.stat-icon.blue{background:#eaf2ff;color:#2866b2}
-.stat-info{min-width:0}
-.stat-info span{display:block;font-size:11px;color:var(--muted);margin-bottom:5px}
-.stat-info strong{display:block;font-size:20px;font-weight:900;color:var(--blue);overflow-wrap:anywhere}
-
-/* عناوين الأقسام */
-.section-heading{
   display:flex;align-items:center;justify-content:space-between;gap:15px;
-  margin:27px 0 15px;
+  background:#fff;border:1px solid var(--border);border-radius:17px;
+  padding:21px 24px;margin-bottom:23px;box-shadow:var(--shadow);
 }
-.section-title{display:flex;align-items:center;gap:12px;min-width:0}
-.section-title-icon{
-  width:43px;height:43px;display:grid;place-items:center;flex-shrink:0;
-  border-radius:13px;background:var(--green-light);color:var(--green-dark);font-size:17px;
+.page-heading h1{font-size:22px;font-weight:900;color:var(--green-dark);margin:0 0 5px}
+.page-heading p{font-size:12px;color:var(--muted);margin:0;line-height:1.9}
+.student-badge{
+  display:flex;align-items:center;gap:9px;background:#f4f8fb;
+  border-radius:12px;padding:9px 13px;max-width:250px;
 }
-.section-heading h2{font-size:18px;color:var(--blue);font-weight:900}
-.section-heading p{font-size:11px;color:var(--muted);margin-top:3px}
-.refresh-btn{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  padding:10px 14px;border:1px solid #dce8e3;border-radius:11px;
-  background:#fff;color:var(--green-dark);font-size:11px;font-weight:800;
-  cursor:pointer;white-space:nowrap;transition:.2s;
+.student-avatar{
+  width:38px;height:38px;display:grid;place-items:center;flex-shrink:0;
+  border-radius:12px;background:#e3f5ee;color:var(--green);
 }
-.refresh-btn:hover{background:var(--green-light);border-color:#b8dcd0}
-.refresh-btn:disabled{opacity:.6;cursor:wait}
+.student-info{min-width:0}
+.student-info strong{display:block;font-size:12px;overflow-wrap:anywhere}
+.student-info small{color:var(--muted);font-size:10px}
 
-/* منصة الفائزين */
-.podium{
+.welcome-card{
+  position:relative;overflow:hidden;padding:26px 27px;
+  border-radius:16px;margin-bottom:23px;color:#fff;
+  background:linear-gradient(110deg,#004e4d,#008866 65%,#07375b);
+  box-shadow:0 8px 25px rgba(2,104,87,.12);
+}
+.welcome-card h2{margin:0 0 8px;font-size:21px;font-weight:900;position:relative;z-index:1}
+.welcome-card p{margin:0;font-size:13px;line-height:2;max-width:650px;position:relative;z-index:1;color:#ffffffed}
+.welcome-decoration{position:absolute;left:25px;top:-28px;opacity:.12;transform:rotate(-15deg);pointer-events:none}
+.welcome-decoration .icon{width:145px;height:145px;stroke-width:1.1}
+
+.section-title{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:10px;margin:27px 0 15px;
+}
+.section-title h2{margin:0;font-size:18px;font-weight:900}
+.section-title span{color:var(--muted);font-size:12px}
+
+.refresh-button{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  border:1px solid #dce8ef;border-radius:10px;padding:9px 14px;
+  background:#fff;color:var(--green-dark);font-size:12px;font-weight:800;
+  transition:.2s;
+}
+.refresh-button:hover{background:#f1fbf6;border-color:#75c6a9}
+.refresh-button:disabled{opacity:.6;cursor:wait}
+.refresh-button .icon{width:18px;height:18px}
+
+.stats-grid{
   display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-  align-items:stretch;gap:15px;margin-bottom:28px;
+  gap:15px;margin-bottom:25px;
+}
+.stat-card{
+  position:relative;overflow:hidden;min-width:0;
+  background:#fff;border:1px solid var(--border);
+  border-radius:16px;padding:19px;box-shadow:var(--shadow);
+  display:flex;align-items:center;gap:14px;
+  transition:transform .2s,border-color .2s;
+}
+.stat-card:hover{transform:translateY(-3px);border-color:#b6dfd1}
+.stat-icon{
+  width:51px;height:51px;min-width:51px;
+  display:grid;place-items:center;border-radius:15px;
+  background:#e3f5ee;color:#008866;
+}
+.stat-icon .icon{width:27px;height:27px}
+.stat-card:nth-child(2) .stat-icon{background:#fff4d8;color:#bb8414}
+.stat-card:nth-child(3) .stat-icon{background:#eaf0ff;color:#3158a7}
+.stat-info{min-width:0}
+.stat-info span{display:block;color:var(--muted);font-size:11px;font-weight:700;margin-bottom:4px}
+.stat-info strong{display:block;font-size:21px;font-weight:900;color:var(--green-dark);overflow-wrap:anywhere}
+.stat-info small{display:block;color:var(--muted);font-size:10px;margin-top:2px;overflow-wrap:anywhere}
+
+.panel{
+  background:#fff;border:1px solid var(--border);
+  border-radius:16px;box-shadow:var(--shadow);padding:20px;
+}
+.podium-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  align-items:end;gap:14px;
 }
 .podium-card{
-  position:relative;overflow:hidden;display:flex;flex-direction:column;
-  align-items:center;min-width:0;padding:23px 15px 20px;
-  border:1px solid var(--border);border-radius:17px;background:#fff;
-  box-shadow:var(--shadow);text-align:center;transition:transform .2s,box-shadow .2s;
+  min-width:0;position:relative;text-align:center;
+  border:1px solid var(--border);border-radius:15px;
+  padding:23px 12px 18px;background:linear-gradient(180deg,#fff,#f8fbfc);
+  transition:transform .2s,border-color .2s;
 }
-.podium-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px #12375b12}
+.podium-card:hover{transform:translateY(-4px);border-color:#9bd5c2}
 .podium-card.first{
-  border:1px solid #eed99a;border-top:4px solid #e7b326;
-  background:linear-gradient(180deg,#fff9e7 0%,#fff 65%);
+  padding-top:32px;padding-bottom:25px;
+  border-color:#ead8a1;
+  background:linear-gradient(180deg,#fffdf5,#fff);
+  box-shadow:0 7px 22px rgba(191,149,39,.09);
 }
-.podium-card.second{border-top:4px solid #a7b0bd}
-.podium-card.third{border-top:4px solid #c58b58}
+.podium-card.second{background:linear-gradient(180deg,#fff,#f7f9fc)}
+.podium-card.third{background:linear-gradient(180deg,#fff,#fff9f4)}
 .podium-medal{
-  display:grid;place-items:center;width:75px;height:75px;margin-bottom:12px;
-  border-radius:50%;background:#f4f7fb;font-size:39px;
+  width:60px;height:60px;margin:0 auto 11px;
+  display:grid;place-items:center;border-radius:50%;
+  color:#b98412;background:#fff0bd;border:4px solid #ffdf7a;
 }
-.podium-card.first .podium-medal{background:#fff0c4}
-.podium-card.second .podium-medal{background:#edf0f4}
-.podium-card.third .podium-medal{background:#f9e8d9}
-.podium-position{font-size:11px;color:var(--muted);margin-bottom:7px}
-.podium-name{font-size:14px;font-weight:900;color:var(--blue);line-height:1.9;margin-bottom:12px;overflow-wrap:anywhere}
-.podium-score{
-  display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  max-width:100%;padding:7px 13px;border-radius:30px;
-  background:var(--green-light);color:var(--green-dark);font-size:11px;font-weight:900;
-  overflow-wrap:anywhere;
+.podium-medal .icon{width:31px;height:31px}
+.second .podium-medal{color:#65778a;background:#edf1f5;border-color:#d4dce5}
+.third .podium-medal{color:#a96936;background:#ffeadc;border-color:#f5c9a7}
+.podium-rank{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:77px;padding:5px 11px;border-radius:30px;
+  background:#fff0bd;color:#93670c;font-size:11px;font-weight:900;margin-bottom:10px;
 }
-.podium-card.first .podium-score{background:#fff0c4;color:#8a6300}
+.second .podium-rank{background:#edf1f5;color:#58697b}
+.third .podium-rank{background:#ffeadc;color:#965b2d}
+.podium-name{
+  font-size:14px;font-weight:900;color:var(--text);
+  overflow-wrap:anywhere;line-height:1.8;margin:0 0 7px;
+}
+.podium-score{font-size:23px;font-weight:900;color:var(--green-dark);line-height:1.5}
+.podium-score small{font-size:11px;font-weight:700;color:var(--muted)}
+.podium-date{margin-top:7px;font-size:10px;color:var(--muted)}
 
-/* ترتيب الطلاب */
-.ranking{display:grid;gap:11px}
-.student-card{
-  display:flex;align-items:center;gap:14px;min-width:0;padding:15px 18px;
-  border:1px solid var(--border);border-radius:14px;background:#fff;
-  box-shadow:0 4px 15px #1e3a8a06;transition:transform .2s,border-color .2s;
+.ranking-panel{padding:0;overflow:hidden}
+.ranking-header{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;padding:19px 21px;border-bottom:1px solid var(--border);
 }
-.student-card:hover{border-color:#b9dcd2;transform:translateY(-2px)}
-.rank{
-  width:44px;height:44px;display:grid;place-items:center;flex-shrink:0;
-  border-radius:13px;background:#e3f5ee;color:#008866;font-size:15px;font-weight:900;
+.ranking-header h3{margin:0;font-size:16px;font-weight:900}
+.ranking-header span{font-size:11px;color:var(--muted)}
+.ranking-list{display:flex;flex-direction:column}
+.rank-row{
+  display:grid;grid-template-columns:45px minmax(0,1fr) auto;
+  align-items:center;gap:13px;padding:14px 20px;
+  border-bottom:1px solid #edf1f5;transition:background .2s;
 }
-.student-card.top-one .rank{background:#fff1c5;color:#8a6300}
-.student-card.top-two .rank{background:#edf0f4;color:#64748b}
-.student-card.top-three .rank{background:#f9e8d9;color:#955b2d}
-.student-info{flex:1;min-width:0}
-.student-info h3{font-size:13px;color:var(--blue);font-weight:900;margin-bottom:3px;overflow-wrap:anywhere}
-.student-info p{font-size:10px;color:var(--muted)}
-.points{color:var(--green-dark);font-size:12px;font-weight:900;white-space:nowrap;text-align:left}
-.points small{display:block;margin-top:3px;color:var(--muted);font-size:9px;font-weight:500}
+.rank-row:last-child{border-bottom:0}
+.rank-row:hover{background:#f8fbfc}
+.rank-number{
+  width:39px;height:39px;display:grid;place-items:center;
+  border-radius:12px;background:#f0f5f8;color:#62778d;
+  font-size:13px;font-weight:900;
+}
+.rank-row:nth-child(1) .rank-number{background:#fff0bd;color:#956a0d}
+.rank-row:nth-child(2) .rank-number{background:#edf1f5;color:#53687d}
+.rank-row:nth-child(3) .rank-number{background:#ffeadc;color:#9a5f31}
+.rank-student{min-width:0}
+.rank-student strong{display:block;font-size:13px;font-weight:800;overflow-wrap:anywhere}
+.rank-student small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.rank-score{
+  min-width:78px;text-align:center;padding:8px 12px;
+  background:#e3f5ee;color:#006d56;border-radius:10px;
+  font-size:13px;font-weight:900;white-space:nowrap;
+}
+.rank-score small{font-size:10px;font-weight:700}
 
-/* الحالات */
 .state-box{
-  padding:35px 20px;border:1px solid var(--border);border-radius:16px;
-  background:#fff;box-shadow:var(--shadow);color:var(--muted);line-height:2;text-align:center;
+  background:#fff;border:1px solid var(--border);
+  border-radius:16px;box-shadow:var(--shadow);
+  padding:35px 18px;text-align:center;color:var(--muted);
+  font-size:13px;line-height:2;
 }
-.state-icon{display:block;margin-bottom:10px;font-size:38px;color:var(--green)}
-.state-box h3{font-size:15px;color:var(--blue);margin-bottom:5px}
-.state-box p{max-width:500px;margin:auto;font-size:11px;overflow-wrap:anywhere}
-.state-box.error h3{color:#b42332}
-.retry-btn{
-  padding:9px 17px;margin-top:14px;border:0;border-radius:9px;
-  background:var(--green);color:#fff;font-size:11px;font-weight:800;cursor:pointer;
+.state-icon{display:grid;place-items:center;color:var(--green);margin-bottom:10px}
+.state-icon .icon{width:43px;height:43px}
+.state-box strong{display:block;color:var(--text);font-size:15px;margin-bottom:5px}
+.state-box p{margin:0}
+.state-box button{
+  border:1px solid var(--border);background:#fff;border-radius:9px;
+  padding:8px 14px;margin-top:12px;color:var(--green-dark);font-weight:800;
 }
-.hidden{display:none!important}
+.error-box{color:#a7212f;background:#fffafa;border-color:#ffd5d9}
+.error-box .state-icon{color:#dc3545}
+.footer{text-align:center;padding:25px 10px 5px;color:#8998a8;font-size:11px}
+.mobile-nav{display:none}
 
-.telegram-floating{
-  position:fixed;left:20px;bottom:20px;z-index:2000;
-  width:49px;height:49px;display:grid;place-items:center;border-radius:50%;
-  background:#229ed9;color:#fff;text-decoration:none;font-size:21px;
-  box-shadow:0 5px 15px #0002;transition:transform .2s;
-}
-.telegram-floating:hover{transform:scale(1.07)}
-footer{padding:15px 10px;margin-top:27px;color:var(--muted);font-size:10px;line-height:2;text-align:center}
-.bottom-nav{display:none}
-
-@media(max-width:1100px){
-  .main{padding:23px}
+/* استجابة الشاشات */
+@media(max-width:1000px){
+  .main{padding:22px}
   .stats-grid{gap:10px}
-  .stat-card{padding:16px 13px}
+  .stat-card{padding:15px;gap:10px}
+  .stat-icon{width:44px;height:44px;min-width:44px}
 }
-@media(max-width:768px){
+@media(max-width:760px){
   .sidebar{display:none}
-  .main,body.sidebar-collapsed .main{margin-right:0;padding:13px 12px 96px}
-  .topbar{align-items:flex-start;gap:9px;padding:15px;margin-bottom:14px;border-radius:14px}
-  .topbar h1{font-size:18px}
-  .topbar p{font-size:10px}
-  .user-chip{gap:6px;max-width:145px;padding:6px}
-  .user-avatar{width:32px;height:32px;font-size:15px}
-  .user-details strong{font-size:10px}
-  .user-details small{font-size:9px}
-  .champion-hero{min-height:0;padding:23px 18px;margin-bottom:16px;border-radius:15px}
-  .champion-hero h2{font-size:20px}
-  .champion-hero p{font-size:11px}
-  .hero-decoration{left:-10px;font-size:94px}
-  .hero-badge{font-size:10px}
-  .stats-grid{gap:7px;margin-bottom:22px}
-  .stat-card{flex-direction:column;align-items:flex-start;gap:8px;padding:12px 9px;border-radius:12px}
-  .stat-card::after{width:3px}
-  .stat-icon{width:34px;height:34px;border-radius:10px;font-size:15px}
-  .stat-info span{font-size:9px}
-  .stat-info strong{font-size:15px}
-  .section-heading{align-items:flex-start;margin:21px 0 12px}
-  .section-title{gap:8px}
-  .section-title-icon{width:35px;height:35px;border-radius:10px;font-size:14px}
-  .section-heading h2{font-size:14px}
-  .section-heading p{font-size:9px}
-  .refresh-btn{gap:5px;padding:8px;font-size:9px}
-  .podium{gap:7px;margin-bottom:22px}
-  .podium-card{padding:14px 6px;border-radius:12px}
-  .podium-medal{width:49px;height:49px;font-size:27px;margin-bottom:8px}
-  .podium-position{font-size:9px;margin-bottom:5px}
-  .podium-name{font-size:10px;line-height:1.8;margin-bottom:9px}
-  .podium-score{gap:3px;padding:6px;font-size:9px}
-  .student-card{gap:9px;padding:12px;border-radius:12px}
-  .rank{width:36px;height:36px;border-radius:10px;font-size:12px}
-  .student-info h3{font-size:11px}
-  .student-info p{font-size:9px}
-  .points{font-size:10px}
-  .points small{font-size:8px}
-  .telegram-floating{left:12px;bottom:79px;width:42px;height:42px;font-size:18px}
-  body{padding-bottom:72px}
-  .bottom-nav{
-    position:fixed;right:0;left:0;bottom:0;z-index:3000;
-    display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
-    min-height:65px;padding:5px 4px calc(5px + env(safe-area-inset-bottom));
-    background:#fff;border-top:1px solid var(--border);box-shadow:0 -4px 15px #0000000d;
+  .main,body.sidebar-collapsed .main{margin-right:0;padding:14px 13px 95px}
+  .topbar{padding:15px;margin-bottom:17px;align-items:center}
+  .page-heading h1{font-size:18px}
+  .page-heading p{font-size:11px}
+  .student-badge{padding:6px 8px;gap:6px;max-width:145px}
+  .student-avatar{width:32px;height:32px}
+  .student-info strong{font-size:10px}
+  .student-info small{font-size:9px}
+  .welcome-card{padding:19px 16px;margin-bottom:19px}
+  .welcome-card h2{font-size:16px}
+  .welcome-card p{font-size:11px}
+  .welcome-decoration{left:7px}
+  .welcome-decoration .icon{width:105px;height:105px}
+  .section-title{margin:22px 0 13px}
+  .section-title h2{font-size:16px}
+  .stats-grid{grid-template-columns:1fr;gap:10px;margin-bottom:20px}
+  .stat-card{padding:13px 15px}
+  .stat-icon{width:45px;height:45px;min-width:45px}
+  .stat-info strong{font-size:19px}
+  .panel{padding:13px}
+  .podium-grid{gap:7px}
+  .podium-card{padding:16px 5px 13px;border-radius:12px}
+  .podium-card.first{padding-top:22px;padding-bottom:18px}
+  .podium-medal{width:43px;height:43px;border-width:3px;margin-bottom:8px}
+  .podium-medal .icon{width:23px;height:23px}
+  .podium-rank{min-width:0;padding:4px 7px;font-size:9px}
+  .podium-name{font-size:11px;line-height:1.7}
+  .podium-score{font-size:18px}
+  .podium-score small{font-size:9px}
+  .podium-date{font-size:9px}
+  .ranking-header{padding:15px 13px}
+  .ranking-header h3{font-size:14px}
+  .ranking-header span{font-size:10px}
+  .rank-row{grid-template-columns:35px minmax(0,1fr) auto;gap:9px;padding:12px 11px}
+  .rank-number{width:34px;height:34px;border-radius:10px;font-size:12px}
+  .rank-student strong{font-size:11px}
+  .rank-student small{font-size:9px}
+  .rank-score{min-width:61px;padding:7px 8px;font-size:11px}
+  .rank-score small{font-size:9px}
+  .mobile-nav{
+    display:flex;position:fixed;z-index:1100;bottom:0;right:0;left:0;
+    justify-content:space-around;gap:3px;padding:8px 4px calc(8px + env(safe-area-inset-bottom));
+    background:#fff;border-top:1px solid #e6edf4;box-shadow:0 -4px 20px #12375b12;
   }
-  .bottom-nav-item{
-    display:flex;align-items:center;justify-content:center;flex-direction:column;
-    gap:4px;min-width:0;border-radius:9px;color:#64748b;text-decoration:none;
+  .mobile-nav a{
+    display:flex;flex:1;flex-direction:column;align-items:center;
+    justify-content:center;gap:3px;min-width:0;padding:4px 1px;
+    color:#6b7f98;text-decoration:none;font-size:9px;font-weight:700;
   }
-  .bottom-nav-item i{font-size:17px}
-  .bottom-nav-item small{font-size:9px;font-weight:800}
-  .bottom-nav-item.active{background:var(--green-light);color:var(--green-dark)}
-  footer{margin-top:20px}
-}
-@media(max-width:370px){
-  .topbar{padding:11px}
-  .topbar h1{font-size:16px}
-  .user-chip{max-width:110px}
-  .stats-grid{gap:5px}
-  .stat-card{padding:9px 6px}
-  .stat-info span{font-size:8px}
-  .stat-info strong{font-size:13px}
-  .podium-name{font-size:9px}
-  .points{font-size:9px}
+  .mobile-nav a .icon{width:21px;height:21px}
+  .mobile-nav a.active{color:#008866;font-weight:900}
 }
 @media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+  *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}
 }
 </style>
 </head>
 
 <body>
 
-<aside class="sidebar">
-  <div class="sidebar-top">
-    <button type="button" class="sidebar-toggle" id="sidebarToggle"
-      aria-label="تصغير الشريط الجانبي" aria-expanded="true" title="تصغير أو توسيع القائمة">
-      <i class="fa-solid fa-angles-right" aria-hidden="true"></i>
-    </button>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="icon-plant" viewBox="0 0 24 24"><path d="M12 21v-9"/><path d="M12 14C5 14 3 9 3 4c6 0 9 3 9 10"/><path d="M12 17c0-6 3-10 9-11 0 6-2 10-9 11"/><path d="M7 21h10"/></symbol>
+  <symbol id="icon-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7"/><path d="M5 9v12h14V9"/><path d="M9 21v-7h6v7"/></symbol>
+  <symbol id="icon-video" viewBox="0 0 24 24"><rect x="3" y="5" width="13" height="14" rx="2"/><path d="m16 10 5-3v10l-5-3"/><path d="m8 9 4 3-4 3z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="icon-notes" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5"/><path d="M8 12h8M8 16h8"/></symbol>
+  <symbol id="icon-trophy" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4"/><path d="M7 4h10v6a5 5 0 0 1-10 0z"/><path d="M7 6H3v2a5 5 0 0 0 5 5"/><path d="M17 6h4v2a5 5 0 0 1-5 5"/></symbol>
+  <symbol id="icon-forum" viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l-2 2v-7.5A7.5 7.5 0 0 1 10.5 6H12"/><path d="M16 3v7M12.5 6.5h7"/><path d="M7 12h6M7 15h4"/></symbol>
+  <symbol id="icon-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2z"/></symbol>
+  <symbol id="icon-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="icon-medal" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="m8.2 13-1.2 9 5-3 5 3-1.2-9"/><path d="m9.5 8 1.7 1.7L15 6"/></symbol>
+  <symbol id="icon-star" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"/></symbol>
+  <symbol id="icon-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5"/><path d="M4 17v-5h5"/><path d="M5.6 9a7 7 0 0 1 11.8-2L20 12M4 12l2.6 5a7 7 0 0 0 11.8-2"/></symbol>
+  <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="icon-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 2.2 18a2 2 0 0 0 1.7 3h16.2a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+  <symbol id="icon-leaf" viewBox="0 0 24 24"><path d="M20 4c-9 0-15 4-15 11a5 5 0 0 0 5 5c7 0 11-7 10-16z"/><path d="M3 21c4-6 8-9 14-12"/></symbol>
+  <symbol id="icon-crown" viewBox="0 0 24 24"><path d="m2 7 5 4 5-7 5 7 5-4-2 13H4z"/><path d="M4 22h16"/></symbol>
+</svg>
 
-    <div class="logo-box">
-      <img src="../logo.png" alt="شعار منصة أرض الأحياء">
-      <div>
-        <h2>أرض الأحياء</h2>
-        <p>الصف الثالث الثانوي</p>
-      </div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-top">
+    <div class="sidebar-toggle-wrap">
+      <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="تصغير القائمة الجانبية" aria-expanded="true" title="تصغير القائمة">
+        <svg class="icon"><use href="#icon-chevron"></use></svg>
+      </button>
     </div>
 
-    <div class="menu-title">القائمة الرئيسية</div>
-    <nav class="menu" aria-label="القائمة الرئيسية">
-      <a href="../index.html" aria-label="الرئيسية">
-        <span class="menu-icon"><i class="fa-solid fa-house"></i></span><span>الرئيسية</span>
-      </a>
-      <a href="../videos/index.html" aria-label="المحاضرات">
-        <span class="menu-icon"><i class="fa-regular fa-circle-play"></i></span><span>المحاضرات</span>
-      </a>
-      <a href="../notes/index.html" aria-label="المذكرات">
-        <span class="menu-icon"><i class="fa-regular fa-file-lines"></i></span><span>المذكرات</span>
-      </a>
-      <a href="index.html" class="active" aria-current="page" aria-label="بطل الفصل">
-        <span class="menu-icon"><i class="fa-solid fa-trophy"></i></span><span>بطل الفصل</span>
-      </a>
-      <a href="../forum/index.html" aria-label="المنتدى">
-        <span class="menu-icon"><i class="fa-regular fa-comments"></i></span><span>المنتدى</span>
-      </a>
-      <a href="../account/index.html" aria-label="حساب الطالب">
-        <span class="menu-icon"><i class="fa-regular fa-user"></i></span><span>حساب الطالب</span>
-      </a>
-      <button type="button" class="logout-btn" id="logoutBtn" aria-label="تسجيل الخروج">
-        <span class="menu-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
-        <span>تسجيل الخروج</span>
-      </button>
+    <div class="brand">
+      <img class="brand-logo" src="../logo.png" alt="شعار أرض الأحياء" onerror="this.style.display='none'">
+      <div class="brand-text"><h2>أرض الأحياء</h2><small>الثانوية العامة</small></div>
+    </div>
+
+    <div class="nav-title">القائمة الرئيسية</div>
+    <nav>
+      <a class="nav-link" href="../index.html" data-title="الرئيسية"><span class="nav-icon"><svg class="icon"><use href="#icon-home"></use></svg></span><span class="nav-text">الرئيسية</span></a>
+      <a class="nav-link" href="../videos/index.html" data-title="المحاضرات"><span class="nav-icon"><svg class="icon"><use href="#icon-video"></use></svg></span><span class="nav-text">المحاضرات</span></a>
+      <a class="nav-link" href="../notes/index.html" data-title="المذكرات"><span class="nav-icon"><svg class="icon"><use href="#icon-notes"></use></svg></span><span class="nav-text">المذكرات</span></a>
+      <a class="nav-link active" href="./index.html" data-title="بطل الفصل" aria-current="page"><span class="nav-icon"><svg class="icon"><use href="#icon-trophy"></use></svg></span><span class="nav-text">بطل الفصل</span></a>
+      <a class="nav-link" href="../forum/index.html" data-title="المنتدى"><span class="nav-icon"><svg class="icon"><use href="#icon-forum"></use></svg></span><span class="nav-text">المنتدى</span></a>
+      <a class="nav-link" href="../account/index.html" data-title="حساب الطالب"><span class="nav-icon"><svg class="icon"><use href="#icon-user"></use></svg></span><span class="nav-text">حساب الطالب</span></a>
     </nav>
   </div>
 
   <div class="sidebar-bottom">
-    <i class="fa-solid fa-seedling"></i>
-    رحلتك نحو التفوق تبدأ من هنا.
-    <br>منصة أرض الأحياء © 2026
+    <div class="sidebar-bottom-text">معًا نحو التفوق في الأحياء<br>منصة أرض الأحياء © 2026</div>
   </div>
 </aside>
 
 <main class="main">
   <header class="topbar">
-    <div>
-      <h1><i class="fa-solid fa-trophy" style="color:#d6a51d"></i> بطل الفصل</h1>
-      <p id="welcomeText">لوحة التميز لطلاب منصة أرض الأحياء</p>
+    <div class="page-heading">
+      <h1>بطل الفصل</h1>
+      <p>لوحة شرف الطلاب المتفوقين في منصة أرض الأحياء</p>
     </div>
-    <div class="user-chip">
-      <div class="user-avatar"><i class="fa-solid fa-user-graduate"></i></div>
-      <div class="user-details">
-        <strong id="headerStudentName">جارٍ التحقق...</strong>
+
+    <div class="student-badge">
+      <div class="student-avatar"><svg class="icon"><use href="#icon-user"></use></svg></div>
+      <div class="student-info">
+        <strong id="studentName">جارٍ التحقق...</strong>
         <small>طالب بالمنصة</small>
       </div>
     </div>
   </header>
 
-  <section class="champion-hero">
-    <div class="hero-content">
-      <div class="hero-badge"><i class="fa-solid fa-star"></i> التميز يبدأ بالاجتهاد</div>
-      <h2>لوحة شرف أبطال الأحياء</h2>
-      <p>
-        هنا نحتفي بالطلاب المتميزين في منصة أرض الأحياء.
-        استمر في المذاكرة والتدريب، واجعل هدفك دائمًا تحقيق أفضل النتائج.
-      </p>
-    </div>
-    <div class="hero-decoration" aria-hidden="true"><i class="fa-solid fa-trophy"></i></div>
+  <section class="welcome-card">
+    <div class="welcome-decoration"><svg class="icon"><use href="#icon-trophy"></use></svg></div>
+    <h2>🏆 مين هيكون بطل الفصل؟</h2>
+    <p>هنا بنحتفي بأبطال الأحياء! تابع ترتيب الطلاب وأعلى الدرجات، واجتهد علشان يكون اسمك في مقدمة لوحة الشرف.</p>
   </section>
 
   <section class="stats-grid" aria-label="إحصائيات لوحة الشرف">
     <article class="stat-card">
-      <div class="stat-icon green"><i class="fa-solid fa-users"></i></div>
-      <div class="stat-info"><span>عدد الأبطال</span><strong id="totalStudents">—</strong></div>
+      <div class="stat-icon"><svg class="icon"><use href="#icon-users"></use></svg></div>
+      <div class="stat-info">
+        <span>عدد المشاركين</span>
+        <strong id="totalStudents">—</strong>
+        <small>طالب في لوحة الشرف</small>
+      </div>
     </article>
+
     <article class="stat-card">
-      <div class="stat-icon gold"><i class="fa-solid fa-medal"></i></div>
-      <div class="stat-info"><span>المركز الأول</span><strong id="firstPlaceName">—</strong></div>
+      <div class="stat-icon"><svg class="icon"><use href="#icon-crown"></use></svg></div>
+      <div class="stat-info">
+        <span>بطل الفصل الحالي</span>
+        <strong id="firstPlaceName">—</strong>
+        <small>صاحب أعلى درجة</small>
+      </div>
     </article>
+
     <article class="stat-card">
-      <div class="stat-icon blue"><i class="fa-solid fa-chart-line"></i></div>
-      <div class="stat-info"><span>أعلى نتيجة</span><strong id="highestScore">—</strong></div>
+      <div class="stat-icon"><svg class="icon"><use href="#icon-star"></use></svg></div>
+      <div class="stat-info">
+        <span>أعلى درجة</span>
+        <strong id="highestScore">—</strong>
+        <small>درجة المركز الأول</small>
+      </div>
     </article>
   </section>
 
-  <section id="podiumSection" class="hidden">
-    <div class="section-heading">
-      <div class="section-title">
-        <div class="section-title-icon"><i class="fa-solid fa-award"></i></div>
-        <div><h2>الأبطال الثلاثة الأوائل</h2><p>أصحاب أعلى النتائج المسجلة</p></div>
-      </div>
-    </div>
-    <div id="podium" class="podium"></div>
-  </section>
+  <div class="section-title">
+    <h2>🥇 منصة التتويج</h2>
+    <span>أصحاب المراكز الثلاثة الأولى</span>
+  </div>
 
-  <section>
-    <div class="section-heading">
-      <div class="section-title">
-        <div class="section-title-icon"><i class="fa-solid fa-ranking-star"></i></div>
-        <div><h2>ترتيب الطلاب</h2><p>الترتيب وفقًا للدرجات المسجلة</p></div>
-      </div>
-      <button type="button" class="refresh-btn" id="refreshBtn">
-        <i class="fa-solid fa-rotate"></i> تحديث النتائج
-      </button>
-    </div>
-
-    <div id="ranking" class="ranking">
-      <div class="state-box">
-        <span class="state-icon"><i class="fa-solid fa-spinner fa-spin"></i></span>
-        <h3>جارٍ تحميل لوحة الشرف</h3><p>لحظات من فضلك...</p>
-      </div>
+  <section class="panel">
+    <div id="podium" class="podium-grid">
+      <div class="state-box" style="grid-column:1/-1">جارٍ تحميل أبطال الفصل...</div>
     </div>
   </section>
 
-  <footer>© 2026 منصة أرض الأحياء — جميع الحقوق محفوظة</footer>
+  <div class="section-title">
+    <h2>ترتيب الطلاب</h2>
+    <button type="button" class="refresh-button" id="refreshBtn">
+      <svg class="icon"><use href="#icon-refresh"></use></svg>
+      <span>تحديث الترتيب</span>
+    </button>
+  </div>
+
+  <section class="panel ranking-panel">
+    <div class="ranking-header">
+      <h3>لوحة الشرف</h3>
+      <span id="rankingCount">جارٍ تحميل الترتيب...</span>
+    </div>
+    <div id="rankingList" class="ranking-list" aria-live="polite">
+      <div class="state-box">جارٍ تحميل الترتيب...</div>
+    </div>
+  </section>
+
+  <div class="footer">جميع الحقوق محفوظة © 2026 منصة أرض الأحياء</div>
 </main>
 
-<a class="telegram-floating" href="https://t.me/+KB1Z0dws0f01YjNk"
-  target="_blank" rel="noopener noreferrer" aria-label="مجموعة تليجرام" title="مجموعة تليجرام">
-  <i class="fa-brands fa-telegram"></i>
-</a>
-
-<nav class="bottom-nav" aria-label="التنقل الرئيسي">
-  <a href="../index.html" class="bottom-nav-item">
-    <i class="fa-solid fa-house"></i><small>الرئيسية</small>
-  </a>
-  <a href="../videos/index.html" class="bottom-nav-item">
-    <i class="fa-regular fa-circle-play"></i><small>المحاضرات</small>
-  </a>
-  <a href="../forum/index.html" class="bottom-nav-item">
-    <i class="fa-regular fa-comments"></i><small>المنتدى</small>
-  </a>
-  <a href="index.html" class="bottom-nav-item active" aria-current="page">
-    <i class="fa-solid fa-trophy"></i><small>بطل الفصل</small>
-  </a>
+<nav class="mobile-nav" aria-label="التنقل الرئيسي">
+  <a href="../index.html"><svg class="icon"><use href="#icon-home"></use></svg><span>الرئيسية</span></a>
+  <a href="../videos/index.html"><svg class="icon"><use href="#icon-video"></use></svg><span>المحاضرات</span></a>
+  <a href="../notes/index.html"><svg class="icon"><use href="#icon-notes"></use></svg><span>المذكرات</span></a>
+  <a href="./index.html" class="active" aria-current="page"><svg class="icon"><use href="#icon-trophy"></use></svg><span>البطل</span></a>
+  <a href="../forum/index.html"><svg class="icon"><use href="#icon-forum"></use></svg><span>المنتدى</span></a>
+  <a href="../account/index.html"><svg class="icon"><use href="#icon-user"></use></svg><span>حسابي</span></a>
 </nav>
 
 <script>
@@ -518,338 +498,411 @@ footer{padding:15px 10px;margin-top:27px;color:var(--muted);font-size:10px;line-
 
 const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+const LOGIN_URL = "../login/index.html";
+const SIDEBAR_KEY = "ardAlahyaaSidebarCollapsed";
 
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
 
-const sidebarToggle = document.getElementById("sidebarToggle");
+const studentNameElement = $("studentName");
+const totalStudentsElement = $("totalStudents");
+const firstPlaceNameElement = $("firstPlaceName");
+const highestScoreElement = $("highestScore");
+const podiumElement = $("podium");
+const rankingListElement = $("rankingList");
+const rankingCountElement = $("rankingCount");
+const refreshBtn = $("refreshBtn");
+const sidebarToggle = $("sidebarToggle");
 
-function setSidebarState(collapsed) {
+let supabaseClient = null;
+let currentUser = null;
+let isLoading = false;
+
+/* الشريط الجانبي */
+function applySidebarState(collapsed, save = true) {
   document.body.classList.toggle("sidebar-collapsed", collapsed);
-  sidebarToggle.setAttribute("aria-expanded", String(!collapsed));
-  sidebarToggle.setAttribute("aria-label", collapsed ? "توسيع الشريط الجانبي" : "تصغير الشريط الجانبي");
-  sidebarToggle.title = collapsed ? "توسيع القائمة" : "تصغير القائمة";
-  try {
-    localStorage.setItem("ardAlahyaaSidebarCollapsed", String(collapsed));
-  } catch (error) {
-    console.warn("تعذر حفظ حالة الشريط الجانبي:", error);
-  }
-}
 
-try {
-  const savedSidebarState = localStorage.getItem("ardAlahyaaSidebarCollapsed");
-  if (savedSidebarState === "true") {
-    document.body.classList.add("sidebar-collapsed");
-    sidebarToggle.setAttribute("aria-expanded", "false");
-    sidebarToggle.setAttribute("aria-label", "توسيع الشريط الجانبي");
-    sidebarToggle.title = "توسيع القائمة";
+  const label = collapsed ? "توسيع الشريط الجانبي" : "تصغير الشريط الجانبي";
+  sidebarToggle.setAttribute("aria-expanded", String(!collapsed));
+  sidebarToggle.setAttribute("aria-label", label);
+  sidebarToggle.title = label;
+
+  document.querySelectorAll(".nav-link[data-title]").forEach(link => {
+    if (collapsed) link.title = link.dataset.title;
+    else link.removeAttribute("title");
+  });
+
+  if (save) {
+    try {
+      localStorage.setItem(SIDEBAR_KEY, collapsed ? "true" : "false");
+    } catch (error) {
+      console.warn("تعذر حفظ حالة القائمة الجانبية.");
+    }
   }
-} catch (error) {
-  console.warn("تعذر استرجاع حالة الشريط الجانبي:", error);
 }
 
 sidebarToggle.addEventListener("click", () => {
-  setSidebarState(!document.body.classList.contains("sidebar-collapsed"));
+  applySidebarState(!document.body.classList.contains("sidebar-collapsed"));
 });
 
-const rankingElement = document.getElementById("ranking");
-const podiumElement = document.getElementById("podium");
-const podiumSection = document.getElementById("podiumSection");
-const totalStudentsElement = document.getElementById("totalStudents");
-const firstPlaceNameElement = document.getElementById("firstPlaceName");
-const highestScoreElement = document.getElementById("highestScore");
-const welcomeTextElement = document.getElementById("welcomeText");
-const headerStudentNameElement = document.getElementById("headerStudentName");
-const refreshBtn = document.getElementById("refreshBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-
-let loadingChampions = false;
-
-function showState(container, icon, title, description, isError = false) {
-  container.replaceChildren();
-
-  const box = document.createElement("div");
-  box.className = "state-box" + (isError ? " error" : "");
-
-  const iconElement = document.createElement("span");
-  iconElement.className = "state-icon";
-  iconElement.textContent = icon;
-
-  const titleElement = document.createElement("h3");
-  titleElement.textContent = title;
-
-  const descriptionElement = document.createElement("p");
-  descriptionElement.textContent = description;
-
-  box.append(iconElement, titleElement, descriptionElement);
-
-  if (isError) {
-    const retryButton = document.createElement("button");
-    retryButton.type = "button";
-    retryButton.className = "retry-btn";
-    retryButton.textContent = "إعادة المحاولة";
-    retryButton.addEventListener("click", loadChampions);
-    box.appendChild(retryButton);
-  }
-
-  container.appendChild(box);
+try {
+  applySidebarState(localStorage.getItem(SIDEBAR_KEY) === "true", false);
+} catch {
+  applySidebarState(false, false);
 }
 
-async function checkUser() {
-  try {
-    const { data, error } = await supabaseClient.auth.getSession();
-    if (error) throw error;
+/* أدوات عامة */
+function makeIcon(symbolId) {
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  const use = document.createElementNS(ns, "use");
+  svg.setAttribute("class", "icon");
+  svg.setAttribute("aria-hidden", "true");
+  use.setAttribute("href", "#" + symbolId);
+  svg.appendChild(use);
+  return svg;
+}
 
-    const session = data?.session;
-    if (!session) {
-      window.location.replace("../login/index.html");
-      return false;
-    }
+function makeElement(tag, className, text) {
+  const el = document.createElement(tag);
+  if (className) el.className = className;
+  if (text !== undefined && text !== null) el.textContent = String(text);
+  return el;
+}
 
-    const user = session.user;
-    let studentName = user.user_metadata?.full_name || user.user_metadata?.name || "";
-
-    const { data: profile, error: profileError } = await supabaseClient
-      .from("profiles")
-      .select("full_name")
-      .eq("id", user.id)
-      .maybeSingle();
-
-    if (!profileError && profile?.full_name) studentName = profile.full_name;
-
-    studentName = String(studentName || "").trim() || user.email || "الطالب";
-    headerStudentNameElement.textContent = studentName;
-    welcomeTextElement.textContent = "أهلًا بك يا " + studentName + " في قسم بطل الفصل 🏆";
-    return true;
-  } catch (error) {
-    console.error("خطأ التحقق من المستخدم:", error);
-    showState(rankingElement, "⚠️", "تعذر التحقق من تسجيل الدخول",
-      "تأكد من اتصال الإنترنت ثم أعد تحميل الصفحة.", true);
-    return false;
-  }
+function formatNumber(value) {
+  return Number(value || 0).toLocaleString("ar-EG");
 }
 
 function getNumericScore(value) {
-  if (value === null || value === undefined || value === "") return null;
-  if (typeof value === "number") return Number.isFinite(value) ? value : null;
+  if (typeof value === "number") return Number.isFinite(value) ? value : 0;
 
-  const normalized = String(value)
-    .replace(/[٠-٩]/g, digit => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)))
-    .replace(/[۰-۹]/g, digit => String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)))
+  const arabicDigits = "٠١٢٣٤٥٦٧٨٩";
+  const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
+
+  let normalized = String(value ?? "")
+    .replace(/[٠-٩]/g, digit => String(arabicDigits.indexOf(digit)))
+    .replace(/[۰-۹]/g, digit => String(persianDigits.indexOf(digit)))
+    .replace(/[٬،]/g, "")
+    .replace(/٫/g, ".")
     .replace(/,/g, "")
+    .replace(/[^\d.+-]/g, "")
     .trim();
 
-  if (!normalized) return null;
-  const match = normalized.match(/-?\d+(\.\d+)?/);
-  if (!match) return null;
-
-  const number = Number(match[0]);
-  return Number.isFinite(number) ? number : null;
+  const result = Number(normalized);
+  return Number.isFinite(result) ? result : 0;
 }
 
-function getScoreLabel(value) {
-  if (value === null || value === undefined || String(value).trim() === "") return "لم تسجل";
-  const numeric = getNumericScore(value);
-
-  if (numeric !== null) {
-    return Number.isInteger(numeric)
-      ? numeric.toLocaleString("ar-EG")
-      : numeric.toLocaleString("ar-EG", { maximumFractionDigits: 2 });
-  }
-
-  return String(value);
+function getScoreLabel(score) {
+  return formatNumber(score);
 }
 
-function sortStudents(students) {
-  return [...students].sort((a, b) => {
-    const scoreA = getNumericScore(a.score);
-    const scoreB = getNumericScore(b.score);
+function formatDate(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
 
-    if (scoreA !== null && scoreB !== null) return scoreB - scoreA;
-    if (scoreA !== null) return -1;
-    if (scoreB !== null) return 1;
-
-    const dateA = new Date(a.created_at || 0).getTime();
-    const dateB = new Date(b.created_at || 0).getTime();
-    return dateB - dateA;
+  return date.toLocaleDateString("ar-EG", {
+    year: "numeric",
+    month: "short",
+    day: "numeric"
   });
 }
 
-function getMedal(position) {
-  if (position === 1) return "🥇";
-  if (position === 2) return "🥈";
-  if (position === 3) return "🥉";
-  return String(position);
+function showState(container, title, details, isError = false, retry = null) {
+  const box = makeElement("div", "state-box" + (isError ? " error-box" : ""));
+  const iconWrap = makeElement("div", "state-icon");
+  iconWrap.appendChild(makeIcon(isError ? "icon-alert" : "icon-plant"));
+  box.appendChild(iconWrap);
+
+  if (title) box.appendChild(makeElement("strong", "", title));
+  box.appendChild(makeElement("p", "", details));
+
+  if (retry) {
+    const button = makeElement("button", "", "إعادة المحاولة");
+    button.addEventListener("click", retry);
+    box.appendChild(button);
+  }
+
+  container.replaceChildren(box);
 }
 
-function createPodiumCard(student, position) {
-  const classes = { 1: "first", 2: "second", 3: "third" };
-  const card = document.createElement("article");
-  card.className = "podium-card " + classes[position];
+/* التحقق من تسجيل الدخول */
+async function checkUser() {
+  if (!window.supabase) {
+    showState(
+      rankingListElement,
+      "تعذر الاتصال",
+      "مكتبة Supabase لم يتم تحميلها. تحقق من الإنترنت وأعد تحميل الصفحة.",
+      true
+    );
+    return false;
+  }
 
-  const medal = document.createElement("div");
-  medal.className = "podium-medal";
-  medal.textContent = getMedal(position);
+  if (!supabaseClient) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
 
-  const positionLabel = document.createElement("div");
-  positionLabel.className = "podium-position";
-  positionLabel.textContent = position === 1 ? "المركز الأول" :
-    position === 2 ? "المركز الثاني" : "المركز الثالث";
+  const { data, error } = await supabaseClient.auth.getSession();
 
-  const name = document.createElement("h3");
-  name.className = "podium-name";
-  name.textContent = String(student.student_name || "").trim() || "طالب بالمنصة";
+  if (error || !data?.session?.user) {
+    currentUser = null;
+    studentNameElement.textContent = "غير مسجل الدخول";
 
-  const score = document.createElement("div");
-  score.className = "podium-score";
-  score.textContent = "⭐ " + getScoreLabel(student.score);
+    showState(
+      rankingListElement,
+      "سجّل الدخول أولًا",
+      "يجب تسجيل الدخول إلى حسابك لمتابعة لوحة الشرف.",
+      false
+    );
 
-  card.append(medal, positionLabel, name, score);
+    const loginButton = makeElement("button", "", "تسجيل الدخول");
+    loginButton.addEventListener("click", () => {
+      window.location.href = LOGIN_URL;
+    });
+    rankingListElement.firstElementChild.appendChild(loginButton);
+
+    podiumElement.replaceChildren();
+    totalStudentsElement.textContent = "—";
+    firstPlaceNameElement.textContent = "—";
+    highestScoreElement.textContent = "—";
+    rankingCountElement.textContent = "يلزم تسجيل الدخول";
+    return false;
+  }
+
+  currentUser = data.session.user;
+
+  let name =
+    currentUser.user_metadata?.full_name ||
+    currentUser.user_metadata?.name ||
+    currentUser.user_metadata?.fullName ||
+    "";
+
+  try {
+    const { data: profile, error: profileError } = await supabaseClient
+      .from("profiles")
+      .select("full_name")
+      .eq("id", currentUser.id)
+      .maybeSingle();
+
+    if (!profileError && profile?.full_name) {
+      name = profile.full_name;
+    }
+  } catch (error) {
+    console.warn("تعذر تحميل اسم الطالب:", error);
+  }
+
+  studentNameElement.textContent = String(name || "").trim() || "طالب بالمنصة";
+  return true;
+}
+
+/* ترتيب الدرجات */
+function sortStudents(students) {
+  return [...students].sort((a, b) => {
+    const scoreDifference = getNumericScore(b.score) - getNumericScore(a.score);
+    if (scoreDifference !== 0) return scoreDifference;
+
+    const dateA = new Date(a.created_at || 0).getTime();
+    const dateB = new Date(b.created_at || 0).getTime();
+    return dateA - dateB;
+  });
+}
+
+/* بطاقة منصة التتويج */
+function createPodiumCard(student, rank) {
+  const classes = {
+    1: "podium-card first",
+    2: "podium-card second",
+    3: "podium-card third"
+  };
+
+  const labels = {
+    1: "المركز الأول",
+    2: "المركز الثاني",
+    3: "المركز الثالث"
+  };
+
+  const card = makeElement("article", classes[rank]);
+  const medal = makeElement("div", "podium-medal");
+  medal.appendChild(makeIcon(rank === 1 ? "icon-crown" : "icon-medal"));
+
+  const rankLabel = makeElement("div", "podium-rank", labels[rank]);
+  const name = makeElement("h3", "podium-name", student.student_name || "طالب بالمنصة");
+  const score = makeElement("div", "podium-score");
+  score.appendChild(document.createTextNode(getScoreLabel(student.score) + " "));
+  score.appendChild(makeElement("small", "", "درجة"));
+
+  card.append(medal, rankLabel, name, score);
+
+  const dateText = formatDate(student.created_at);
+  if (dateText) {
+    card.appendChild(makeElement("div", "podium-date", "تاريخ التسجيل: " + dateText));
+  }
+
   return card;
 }
 
+/* بطاقة طالب في الترتيب */
 function createStudentCard(student, index) {
-  const position = index + 1;
-  const card = document.createElement("article");
-  card.className = "student-card";
+  const row = makeElement("article", "rank-row");
+  const number = makeElement("div", "rank-number", formatNumber(index + 1));
 
-  if (position === 1) card.classList.add("top-one");
-  else if (position === 2) card.classList.add("top-two");
-  else if (position === 3) card.classList.add("top-three");
+  const studentInfo = makeElement("div", "rank-student");
+  studentInfo.appendChild(
+    makeElement("strong", "", student.student_name || "طالب بالمنصة")
+  );
 
-  const rank = document.createElement("div");
-  rank.className = "rank";
-  rank.textContent = getMedal(position);
+  const date = formatDate(student.created_at);
+  studentInfo.appendChild(
+    makeElement("small", "", date ? "تاريخ التسجيل: " + date : "من أبطال أرض الأحياء")
+  );
 
-  const info = document.createElement("div");
-  info.className = "student-info";
+  const score = makeElement("div", "rank-score");
+  score.appendChild(document.createTextNode(getScoreLabel(student.score) + " "));
+  score.appendChild(makeElement("small", "", "درجة"));
 
-  const name = document.createElement("h3");
-  name.textContent = String(student.student_name || "").trim() || "طالب بالمنصة";
-
-  const subtitle = document.createElement("p");
-  subtitle.textContent = position <= 3 ? "من أبطال منصة أرض الأحياء" : "المركز " + position;
-  info.append(name, subtitle);
-
-  const points = document.createElement("div");
-  points.className = "points";
-  points.appendChild(document.createTextNode("⭐ " + getScoreLabel(student.score)));
-
-  const pointsNote = document.createElement("small");
-  pointsNote.textContent = "النتيجة المسجلة";
-  points.appendChild(pointsNote);
-
-  card.append(rank, info, points);
-  return card;
+  row.append(number, studentInfo, score);
+  return row;
 }
 
+/* تحديث الإحصائيات ومنصة التتويج */
 function updateStats(students) {
-  totalStudentsElement.textContent = students.length.toLocaleString("ar-EG");
+  totalStudentsElement.textContent = formatNumber(students.length);
 
   if (!students.length) {
     firstPlaceNameElement.textContent = "—";
     highestScoreElement.textContent = "—";
+    podiumElement.replaceChildren();
+
+    showState(
+      podiumElement,
+      "لسه البداية!",
+      "لم تتم إضافة نتائج للطلاب حتى الآن. ستظهر الأسماء هنا بمجرد توفرها."
+    );
+
     return;
   }
 
-  firstPlaceNameElement.textContent =
-    String(students[0].student_name || "").trim() || "طالب";
+  const first = students[0];
+  firstPlaceNameElement.textContent = first.student_name || "طالب";
+  highestScoreElement.textContent = getScoreLabel(first.score);
 
-  const numericScores = students
-    .map(student => getNumericScore(student.score))
-    .filter(score => score !== null);
+  const podiumStudents = students.slice(0, 3);
+  const order = podiumStudents.length === 3
+    ? [podiumStudents[1], podiumStudents[0], podiumStudents[2]]
+    : podiumStudents;
 
-  if (numericScores.length) {
-    const highest = Math.max(...numericScores);
-    highestScoreElement.textContent = Number.isInteger(highest)
-      ? highest.toLocaleString("ar-EG")
-      : highest.toLocaleString("ar-EG", { maximumFractionDigits: 2 });
-  } else {
-    highestScoreElement.textContent = "—";
-  }
+  const ranks = podiumStudents.length === 3
+    ? [2, 1, 3]
+    : podiumStudents.map((_, index) => index + 1);
+
+  podiumElement.replaceChildren(
+    ...order.map((student, index) => createPodiumCard(student, ranks[index]))
+  );
 }
 
+/* تحميل النتائج */
 async function loadChampions() {
-  if (loadingChampions) return;
-
-  loadingChampions = true;
+  if (isLoading) return;
+  isLoading = true;
   refreshBtn.disabled = true;
-  refreshBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جارٍ التحديث...';
+  refreshBtn.querySelector("span").textContent = "جارٍ التحديث...";
 
-  showState(rankingElement, "⏳", "جارٍ تحميل لوحة الشرف", "يتم الآن جلب النتائج المسجلة.");
-  podiumSection.classList.add("hidden");
+  rankingListElement.replaceChildren(
+    makeElement("div", "state-box", "جارٍ تحميل ترتيب الطلاب...")
+  );
 
   try {
+    const loggedIn = await checkUser();
+    if (!loggedIn) return;
+
     const { data, error } = await supabaseClient
       .from("champions")
       .select("student_name, score, created_at")
       .order("created_at", { ascending: false })
       .limit(500);
 
-    if (error) throw error;
+    if (error) {
+      console.error("خطأ تحميل أبطال الفصل:", error);
 
-    const students = sortStudents(data || []);
-    updateStats(students);
+      showState(
+        rankingListElement,
+        "تعذر تحميل الترتيب",
+        "تحقق من جدول champions وصلاحيات القراءة في Supabase، ثم حاول مجددًا.",
+        true,
+        loadChampions
+      );
 
-    if (!students.length) {
-      showState(rankingElement, "🏆", "لم تتم إضافة أبطال بعد",
-        "ستظهر أسماء الطلاب هنا بعد إضافة نتائجهم إلى جدول champions في قاعدة البيانات.");
+      showState(
+        podiumElement,
+        "تعذر تحميل النتائج",
+        "لم نتمكن من جلب بيانات منصة التتويج.",
+        true,
+        loadChampions
+      );
+
+      rankingCountElement.textContent = "تعذر التحميل";
       return;
     }
 
-    podiumElement.replaceChildren();
-    students.slice(0, 3).forEach((student, index) => {
-      podiumElement.appendChild(createPodiumCard(student, index + 1));
-    });
+    const students = sortStudents(Array.isArray(data) ? data : []);
 
-    podiumSection.classList.remove("hidden");
-    rankingElement.replaceChildren();
+    updateStats(students);
+    rankingCountElement.textContent = formatNumber(students.length) + " طالب";
 
-    students.forEach((student, index) => {
-      rankingElement.appendChild(createStudentCard(student, index));
-    });
+    if (!students.length) {
+      showState(
+        rankingListElement,
+        "لا توجد نتائج حتى الآن",
+        "عندما تتوفر درجات الطلاب ستظهر هنا مرتبة من الأعلى إلى الأقل."
+      );
+      return;
+    }
+
+    rankingListElement.replaceChildren(
+      ...students.map((student, index) => createStudentCard(student, index))
+    );
+
   } catch (error) {
-    console.error("خطأ تحميل الأبطال:", error);
+    console.error("حدث خطأ أثناء تحميل الترتيب:", error);
 
-    const message = error?.code === "42P01"
-      ? "جدول champions غير موجود في قاعدة البيانات."
-      : error?.code === "42703"
-        ? "هناك عمود غير موجود في جدول champions. راجع أسماء الأعمدة."
-        : error?.code === "42501"
-          ? "لا توجد صلاحية لقراءة النتائج. راجع سياسات RLS."
-          : "تعذر تحميل النتائج من قاعدة البيانات. تأكد من الجدول والصلاحيات واتصال الإنترنت.";
-
-    showState(rankingElement, "⚠️", "تعذر تحميل النتائج", message, true);
+    showState(
+      rankingListElement,
+      "حدث خطأ",
+      "تعذر الاتصال بالخادم. تحقق من الإنترنت وحاول مرة أخرى.",
+      true,
+      loadChampions
+    );
   } finally {
-    loadingChampions = false;
+    isLoading = false;
     refreshBtn.disabled = false;
-    refreshBtn.innerHTML = '<i class="fa-solid fa-rotate"></i> تحديث النتائج';
+    refreshBtn.querySelector("span").textContent = "تحديث الترتيب";
   }
 }
 
 refreshBtn.addEventListener("click", loadChampions);
 
-logoutBtn.addEventListener("click", async function() {
-  logoutBtn.disabled = true;
-  const label = logoutBtn.querySelector("span:not(.menu-icon)");
-  const originalText = label ? label.textContent : "تسجيل الخروج";
-
-  if (label) label.textContent = "جارٍ تسجيل الخروج...";
-
-  try {
-    const { error } = await supabaseClient.auth.signOut();
-    if (error) throw error;
-    window.location.replace("../login/index.html");
-  } catch (error) {
-    console.error("خطأ تسجيل الخروج:", error);
-    alert("تعذر تسجيل الخروج. حاول مرة أخرى.");
-    logoutBtn.disabled = false;
-    if (label) label.textContent = originalText;
-  }
-});
-
+/* بدء الصفحة */
 async function initPage() {
-  const loggedIn = await checkUser();
-  if (!loggedIn) return;
+  if (!window.supabase) {
+    showState(
+      rankingListElement,
+      "تعذر تحميل المكتبة",
+      "تحقق من اتصال الإنترنت ثم أعد تحميل الصفحة.",
+      true
+    );
+    showState(podiumElement, "تعذر الاتصال", "لم يتم تحميل مكتبة Supabase.", true);
+    refreshBtn.disabled = true;
+    return;
+  }
+
+  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  supabaseClient.auth.onAuthStateChange((event) => {
+    if (event === "SIGNED_OUT") {
+      window.location.href = LOGIN_URL;
+    }
+  });
+
   await loadChampions();
 }
 
