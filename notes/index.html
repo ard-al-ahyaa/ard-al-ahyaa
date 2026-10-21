@@ -1,1533 +1,963 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>المذكرات | منصة أرض الأحياء</title>
-
-  <meta name="description"
-    content="مذكرات ومراجعات الأحياء للصف الثالث الثانوي على منصة أرض الأحياء.">
-
-  <meta name="theme-color" content="#087f5b">
-
-  <link rel="icon" href="../favicon.png">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet">
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    :root {
-      --green: #087f5b;
-      --green-dark: #066747;
-      --green-light: #e8f7f0;
-      --blue: #1e3a8a;
-      --bg: #f4f8f7;
-      --white: #ffffff;
-      --text: #17352d;
-      --muted: #71817c;
-      --border: #e3ece8;
-      --shadow: 0 8px 28px rgba(15, 75, 55, 0.07);
-      --sidebar-width: 270px;
-      --sidebar-collapsed-width: 82px;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: "Cairo", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    button,
-    input {
-      font-family: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    /* الشريط الجانبي */
-
-    .sidebar {
-      position: fixed;
-      top: 0;
-      right: 0;
-      width: var(--sidebar-width);
-      height: 100vh;
-      background: linear-gradient(180deg, #026857 0%, #087f5b 48%, #1e3a8a 100%);
-      color: #fff;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      padding: 20px 14px;
-      transition: width 0.25s ease, transform 0.25s ease;
-      overflow-x: hidden;
-      overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
-    }
-
-    .sidebar-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 5px 7px 22px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-      margin-bottom: 20px;
-      min-height: 76px;
-    }
-
-    .logo-box {
-      width: 48px;
-      height: 48px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 15px;
-      background: rgba(255, 255, 255, 0.14);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      overflow: hidden;
-    }
-
-    .logo-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      padding: 4px;
-    }
-
-    .logo-fallback {
-      font-size: 26px;
-    }
-
-    .brand-text {
-      min-width: 0;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-
-    .brand-text h2 {
-      font-size: 17px;
-      font-weight: 900;
-      line-height: 1.6;
-    }
-
-    .brand-text p {
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.78);
-      white-space: nowrap;
-    }
-
-    .sidebar-section-title {
-      color: rgba(255, 255, 255, 0.65);
-      font-size: 11px;
-      font-weight: 700;
-      padding: 0 13px;
-      margin-bottom: 10px;
-      white-space: nowrap;
-    }
-
-    .sidebar-nav {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .nav-link {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      min-height: 49px;
-      padding: 10px 13px;
-      border-radius: 12px;
-      color: rgba(255, 255, 255, 0.91);
-      font-size: 13px;
-      font-weight: 700;
-      white-space: nowrap;
-      transition: background 0.2s ease, transform 0.2s ease;
-    }
-
-    .nav-link:hover {
-      background: rgba(255, 255, 255, 0.13);
-      transform: translateX(-2px);
-    }
-
-    .nav-link.active {
-      background: #fff;
-      color: var(--green-dark);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.09);
-    }
-
-    .nav-icon {
-      width: 28px;
-      height: 28px;
-      flex-shrink: 0;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-    }
-
-    .nav-label {
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .sidebar-bottom {
-      margin-top: auto;
-      padding-top: 22px;
-    }
-
-    .telegram-link {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-height: 45px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.13);
-      border: 1px solid rgba(255, 255, 255, 0.17);
-      font-size: 12px;
-      font-weight: 800;
-      white-space: nowrap;
-      transition: 0.2s;
-    }
-
-    .telegram-link:hover {
-      background: rgba(255, 255, 255, 0.22);
-    }
-
-    .sidebar-footer {
-      color: rgba(255, 255, 255, 0.66);
-      text-align: center;
-      font-size: 10px;
-      padding-top: 13px;
-      white-space: nowrap;
-    }
-
-    .sidebar-toggle {
-      position: fixed;
-      top: 18px;
-      right: calc(var(--sidebar-width) - 17px);
-      z-index: 1002;
-      width: 34px;
-      height: 34px;
-      border: 1px solid var(--border);
-      border-radius: 50%;
-      background: #fff;
-      color: var(--green-dark);
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: right 0.25s ease;
-    }
-
-    body.sidebar-collapsed .sidebar {
-      width: var(--sidebar-collapsed-width);
-      padding-right: 10px;
-      padding-left: 10px;
-    }
-
-    body.sidebar-collapsed .sidebar-header {
-      justify-content: center;
-      padding-right: 0;
-      padding-left: 0;
-    }
-
-    body.sidebar-collapsed .brand-text,
-    body.sidebar-collapsed .nav-label,
-    body.sidebar-collapsed .sidebar-section-title,
-    body.sidebar-collapsed .telegram-text,
-    body.sidebar-collapsed .sidebar-footer {
-      display: none;
-    }
-
-    body.sidebar-collapsed .nav-link {
-      justify-content: center;
-      padding: 9px 5px;
-    }
-
-    body.sidebar-collapsed .telegram-link {
-      font-size: 19px;
-    }
-
-    body.sidebar-collapsed .sidebar-toggle {
-      right: calc(var(--sidebar-collapsed-width) - 17px);
-    }
-
-    /* المحتوى الرئيسي */
-
-    .main {
-      margin-right: var(--sidebar-width);
-      min-height: 100vh;
-      padding: 30px;
-      transition: margin-right 0.25s ease;
-    }
-
-    body.sidebar-collapsed .main {
-      margin-right: var(--sidebar-collapsed-width);
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 27px;
-    }
-
-    .page-heading h1 {
-      font-size: 27px;
-      font-weight: 900;
-      color: #123e30;
-      line-height: 1.6;
-    }
-
-    .page-heading p {
-      color: var(--muted);
-      font-size: 13px;
-      margin-top: 3px;
-    }
-
-    .student-badge {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      padding: 9px 14px;
-      border: 1px solid var(--border);
-      background: #fff;
-      border-radius: 13px;
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.025);
-      white-space: nowrap;
-    }
-
-    .student-badge .avatar {
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--green-light);
-      color: var(--green-dark);
-      border-radius: 11px;
-      font-size: 19px;
-    }
-
-    .student-badge strong {
-      display: block;
-      font-size: 12px;
-    }
-
-    .student-badge small {
-      display: block;
-      color: var(--muted);
-      font-size: 10px;
-    }
-
-    /* مقدمة الصفحة */
-
-    .welcome-card {
-      position: relative;
-      overflow: hidden;
-      padding: 27px;
-      border-radius: 20px;
-      background: linear-gradient(115deg, #087f5b 0%, #066747 65%, #1e3a8a 125%);
-      color: #fff;
-      margin-bottom: 25px;
-      box-shadow: 0 12px 28px rgba(8, 127, 91, 0.13);
-    }
-
-    .welcome-card::after {
-      content: "📚";
-      position: absolute;
-      left: 30px;
-      top: 50%;
-      transform: translateY(-50%) rotate(-10deg);
-      font-size: 68px;
-      opacity: 0.16;
-      pointer-events: none;
-    }
-
-    .welcome-card h2 {
-      font-size: 22px;
-      font-weight: 900;
-      margin-bottom: 7px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .welcome-card p {
-      font-size: 13px;
-      line-height: 2;
-      color: rgba(255, 255, 255, 0.88);
-      max-width: 650px;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* البحث */
-
-    .search-area {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 23px;
-    }
-
-    .search-box {
-      flex: 1;
-      position: relative;
-    }
-
-    .search-box span {
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 18px;
-      pointer-events: none;
-    }
-
-    .search-box input {
-      width: 100%;
-      height: 50px;
-      padding: 0 47px 0 15px;
-      border: 1px solid var(--border);
-      background: #fff;
-      border-radius: 13px;
-      outline: none;
-      font-size: 13px;
-      color: var(--text);
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .search-box input:focus {
-      border-color: var(--green);
-      box-shadow: 0 0 0 3px rgba(8, 127, 91, 0.08);
-    }
-
-    .notes-count {
-      padding: 12px 15px;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 800;
-      color: var(--green-dark);
-      white-space: nowrap;
-    }
-
-    /* عناوين الأقسام */
-
-    .section-heading {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin: 28px 0 17px;
-    }
-
-    .section-heading h2 {
-      font-size: 18px;
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      gap: 9px;
-    }
-
-    .section-heading h2::before {
-      content: "";
-      width: 4px;
-      height: 25px;
-      background: var(--green);
-      border-radius: 5px;
-    }
-
-    .section-heading span {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    /* شبكة المذكرات */
-
-    .notes-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-      gap: 20px;
-    }
-
-    .note-card {
-      min-width: 0;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 17px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.22s ease, box-shadow 0.22s ease,
-        border-color 0.22s ease;
-      animation: fadeIn 0.35s ease both;
-    }
-
-    .note-card:hover {
-      transform: translateY(-5px);
-      border-color: #82c8ad;
-      box-shadow: 0 14px 30px rgba(15, 75, 55, 0.12);
-    }
-
-    .note-cover {
-      height: 190px;
-      position: relative;
-      background: linear-gradient(135deg, #e3f6ed, #e7edff);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .note-cover img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.3s ease;
-    }
-
-    .note-card:hover .note-cover img {
-      transform: scale(1.035);
-    }
-
-    .cover-placeholder {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      color: var(--green-dark);
-    }
-
-    .cover-placeholder span {
-      font-size: 48px;
-    }
-
-    .cover-placeholder small {
-      font-size: 11px;
-      font-weight: 800;
-    }
-
-    .note-type {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      padding: 5px 10px;
-      background: rgba(255, 255, 255, 0.94);
-      color: var(--green-dark);
-      border-radius: 8px;
-      font-size: 10px;
-      font-weight: 900;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
-    }
-
-    .note-body {
-      padding: 17px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-
-    .note-title {
-      font-size: 15px;
-      font-weight: 900;
-      line-height: 1.8;
-      margin-bottom: 7px;
-      overflow-wrap: anywhere;
-    }
-
-    .note-date {
-      color: var(--muted);
-      font-size: 11px;
-      margin-bottom: 16px;
-    }
-
-    .note-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: auto;
-    }
-
-    .note-btn {
-      min-height: 41px;
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      border-radius: 10px;
-      font-size: 11px;
-      font-weight: 800;
-      border: 1px solid var(--border);
-      transition: 0.2s;
-    }
-
-    .note-btn.open {
-      background: var(--green);
-      color: #fff;
-      border-color: var(--green);
-    }
-
-    .note-btn.open:hover {
-      background: var(--green-dark);
-    }
-
-    .note-btn.download {
-      background: #f5f9f7;
-      color: var(--green-dark);
-    }
-
-    .note-btn.download:hover {
-      background: var(--green-light);
-      border-color: #b8dfcf;
-    }
-
-    /* حالات التحميل والفراغ */
-
-    .state-box {
-      grid-column: 1 / -1;
-      padding: 42px 20px;
-      text-align: center;
-      background: #fff;
-      border: 1px dashed #cbded5;
-      border-radius: 17px;
-      color: var(--muted);
-    }
-
-    .state-box .state-icon {
-      font-size: 42px;
-      margin-bottom: 12px;
-    }
-
-    .state-box h3 {
-      font-size: 16px;
-      color: var(--text);
-      margin-bottom: 6px;
-    }
-
-    .state-box p {
-      font-size: 12px;
-      line-height: 2;
-    }
-
-    .loader {
-      width: 34px;
-      height: 34px;
-      border: 3px solid #dceee6;
-      border-top-color: var(--green);
-      border-radius: 50%;
-      margin: 0 auto 14px;
-      animation: spin 0.8s linear infinite;
-    }
-
-    .error-message {
-      color: #b42318;
-      font-size: 12px;
-      margin-top: 8px;
-      overflow-wrap: anywhere;
-    }
-
-    /* تذييل الصفحة */
-
-    .page-footer {
-      text-align: center;
-      padding: 35px 10px 18px;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 2;
-    }
-
-    /* شريط الموبايل */
-
-    .mobile-nav {
-      display: none;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* الشاشات المتوسطة */
-
-    @media (max-width: 1050px) {
-      .main {
-        padding: 24px 20px;
-      }
-
-      .notes-grid {
-        grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-      }
-    }
-
-    /* الموبايل */
-
-    @media (max-width: 768px) {
-      .sidebar {
-        display: none;
-      }
-
-      .sidebar-toggle {
-        display: none;
-      }
-
-      .main,
-      body.sidebar-collapsed .main {
-        margin-right: 0;
-        padding: 20px 14px 100px;
-      }
-
-      .topbar {
-        align-items: flex-start;
-        margin-bottom: 20px;
-      }
-
-      .page-heading h1 {
-        font-size: 22px;
-      }
-
-      .page-heading p {
-        font-size: 11px;
-      }
-
-      .student-badge {
-        padding: 7px;
-      }
-
-      .student-badge .avatar {
-        width: 32px;
-        height: 32px;
-      }
-
-      .student-badge strong {
-        font-size: 10px;
-      }
-
-      .student-badge small {
-        font-size: 9px;
-      }
-
-      .welcome-card {
-        padding: 21px 18px;
-        border-radius: 16px;
-      }
-
-      .welcome-card h2 {
-        font-size: 18px;
-      }
-
-      .welcome-card p {
-        font-size: 12px;
-      }
-
-      .welcome-card::after {
-        left: 10px;
-        font-size: 48px;
-      }
-
-      .search-area {
-        gap: 8px;
-      }
-
-      .search-box input {
-        height: 46px;
-      }
-
-      .notes-count {
-        padding: 11px 9px;
-        font-size: 10px;
-      }
-
-      .section-heading h2 {
-        font-size: 16px;
-      }
-
-      .notes-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-      }
-
-      .note-cover {
-        height: 140px;
-      }
-
-      .note-body {
-        padding: 12px;
-      }
-
-      .note-title {
-        font-size: 12px;
-      }
-
-      .note-date {
-        font-size: 10px;
-        margin-bottom: 12px;
-      }
-
-      .note-actions {
-        flex-direction: column;
-      }
-
-      .note-btn {
-        min-height: 36px;
-        font-size: 10px;
-      }
-
-      .mobile-nav {
-        position: fixed;
-        right: 10px;
-        left: 10px;
-        bottom: 10px;
-        z-index: 1100;
-        min-height: 66px;
-        padding: 7px 4px;
-        display: flex;
-        align-items: center;
-        justify-content: space-around;
-        gap: 3px;
-        background: rgba(255, 255, 255, 0.97);
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
-        backdrop-filter: blur(12px);
-      }
-
-      .mobile-nav a {
-        flex: 1;
-        min-width: 0;
-        min-height: 49px;
-        padding: 5px 2px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 2px;
-        border-radius: 11px;
-        color: #72827c;
-        font-size: 9px;
-        font-weight: 800;
-        white-space: nowrap;
-      }
-
-      .mobile-nav a span:first-child {
-        font-size: 19px;
-        line-height: 1.3;
-      }
-
-      .mobile-nav a.active {
-        color: var(--green-dark);
-        background: var(--green-light);
-      }
-
-      .page-footer {
-        padding-top: 25px;
-      }
-    }
-
-    @media (max-width: 360px) {
-      .notes-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .note-cover {
-        height: 190px;
-      }
-
-      .student-badge small {
-        display: none;
-      }
-    }
-
-    /* توحيد الهوية البصرية مع صفحة المنتدى والمحاضرات */
-    :root {
-      --green: #026857;
-      --green-dark: #075e54;
-      --green-light: #e8f5f1;
-      --blue: #1e3a8a;
-      --bg: #f4f7f8;
-      --text: #24313f;
-      --muted: #73808c;
-      --border: #e5ebee;
-      --shadow: 0 5px 22px rgba(15,48,55,.07);
-      --sidebar-width: 270px;
-      --sidebar-collapsed-width: 78px;
-    }
-    body { background: var(--bg); color: var(--text); }
-    .sidebar {
-      padding: 22px 15px;
-      background: linear-gradient(165deg,#026857,#075e54 48%,#1e3a8a);
-      box-shadow: -4px 0 18px rgba(0,0,0,.08);
-      transition: width .3s ease, padding .3s ease;
-    }
-    .sidebar-header {
-      gap: 12px;
-      padding: 7px 8px 22px;
-      border-bottom-color: rgba(255,255,255,.18);
-      margin-bottom: 15px;
-    }
-    .logo-box {
-      width: 48px; height: 48px; border-radius: 15px;
-      background: rgba(255,255,255,.16);
-      border: 0;
-    }
-    .brand-text h2 { font-size: 15px; line-height: 1.7; }
-    .brand-text p { font-size: 10px; opacity: .8; }
-    .sidebar-section-title {
-      font-size: 11px; opacity: .68; padding: 0 13px;
-      margin: 18px 0 10px;
-    }
-    .sidebar-nav { gap: 5px; }
-    .nav-link {
-      gap: 12px; min-height: 48px; padding: 11px 12px;
-      margin: 0; border-radius: 12px;
-      color: rgba(255,255,255,.9); font-size: 13px; font-weight: 600;
-    }
-    .nav-link:hover, .nav-link.active {
-      background: rgba(255,255,255,.17); color: #fff;
-      box-shadow: none;
-    }
-    .nav-link:hover { transform: translateX(-2px); }
-    .nav-icon { width: 25px; height: 25px; font-size: 19px; }
-    .sidebar-bottom {
-      margin-top: 25px; padding: 15px 5px;
-      border-top: 1px solid rgba(255,255,255,.16);
-    }
-    .telegram-link {
-      min-height: 42px; background: rgba(255,255,255,.12);
-      border-color: rgba(255,255,255,.16); border-radius: 10px;
-    }
-    .sidebar-footer { padding-top: 10px; }
-    .sidebar-toggle {
-      position: static; flex-shrink: 0; width: 43px; height: 43px;
-      border: 1px solid rgba(255,255,255,.19); border-radius: 13px;
-      color: #fff; background: rgba(255,255,255,.12);
-      box-shadow: none; font-size: 18px; transition: background .2s;
-    }
-    .sidebar-toggle:hover { background: rgba(255,255,255,.23); }
-    .sidebar-toggle-wrap {
-      display: flex; justify-content: flex-start; margin-bottom: 18px;
-    }
-    body.sidebar-collapsed .sidebar { padding: 18px 10px; }
-    body.sidebar-collapsed .sidebar-header {
-      justify-content: center; padding: 7px 0 18px;
-    }
-    body.sidebar-collapsed .sidebar-toggle-wrap { justify-content: center; }
-    body.sidebar-collapsed .nav-link { justify-content: center; padding: 12px 0; gap: 0; }
-    body.sidebar-collapsed .nav-link:hover { transform: none; }
-    .main { padding: 25px 30px 50px; }
-    .page-heading h1 { margin: 0 0 4px; font-size: 25px; color: var(--green-dark); }
-    .page-heading p { margin: 0; font-size: 13px; color: var(--muted); }
-    .student-badge { box-shadow: var(--shadow); }
-    .welcome-card {
-      padding: 23px 25px; border-radius: 17px;
-      background: linear-gradient(115deg,#026857,#0b806f 58%,#1e3a8a);
-      box-shadow: 0 8px 25px rgba(2,104,87,.14);
-    }
-    .welcome-card h2 { font-size: 20px; }
-    .welcome-card p { font-size: 13px; line-height: 2; }
-    .section-heading h2 { font-size: 18px; }
-    .section-heading h2::before { background: #026857; }
-    .note-card { box-shadow: var(--shadow); }
-    .note-card:hover { border-color: #0b806f; box-shadow: 0 12px 28px rgba(15,48,55,.10); }
-    .note-btn.open { background: #026857; border-color: #026857; }
-    .note-btn.open:hover { background: #075e54; }
-    @media (max-width: 1050px) {
-      .main { padding: 24px 20px 50px; }
-    }
-    @media (max-width: 768px) {
-      .main, body.sidebar-collapsed .main { padding: 20px 14px 100px; }
-      .welcome-card { padding: 21px 18px; border-radius: 16px; }
-      .welcome-card h2 { font-size: 18px; }
-      .welcome-card p { font-size: 12px; }
-    }
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>المذكرات | منصة أرض الأحياء</title>
+<meta name="description" content="مذكرات ومراجعات الأحياء للصف الثالث الثانوي على منصة أرض الأحياء.">
+<meta name="theme-color" content="#004e4d">
+<link rel="icon" href="../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+
+<style>
+:root{
+  --green:#008866;
+  --green-dark:#004e4d;
+  --green-light:#e3f5ee;
+  --blue:#07375b;
+  --bg:#f4f7fb;
+  --white:#fff;
+  --text:#142f50;
+  --muted:#6b7f98;
+  --border:#e2eaf3;
+  --shadow:0 5px 22px rgba(18,55,91,.06);
+  --sidebar-width:272px;
+  --sidebar-small:82px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:"Cairo",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+a{color:inherit;text-decoration:none}
+button,input{font-family:inherit}
+button{cursor:pointer}
+.icon{
+  width:22px;height:22px;display:block;flex-shrink:0;
+  fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+
+/* الشريط الجانبي — نفس تصميم المنتدى */
+.sidebar{
+  position:fixed;top:0;right:0;width:var(--sidebar-width);
+  height:100vh;overflow-x:hidden;overflow-y:auto;
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:0;color:#fff;
+  background:linear-gradient(180deg,#004e4d 0%,#003d50 62%,#07375b 100%);
+  z-index:1000;box-shadow:none;
+  transition:width .25s ease;
+}
+.sidebar-top{padding:18px 15px;min-width:0}
+.sidebar-toggle-wrap{
+  display:flex;justify-content:flex-start;margin-bottom:16px;
+}
+.sidebar-toggle{
+  width:39px;height:39px;border:1px solid #ffffff30;
+  border-radius:50%;background:#ffffff15;color:#fff;
+  display:grid;place-items:center;transition:background .2s;
+}
+.sidebar-toggle:hover{background:#ffffff25}
+.sidebar-toggle .icon{width:24px;height:24px}
+.brand{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:0;text-align:center;
+  margin:0 0 27px;padding:0 0 23px;
+  border-bottom:1px solid #ffffff20;min-width:0;
+}
+.brand-logo{
+  width:75px;height:75px;object-fit:contain;margin-bottom:7px;
+}
+.brand-text{min-width:0;overflow:hidden;white-space:nowrap}
+.brand h2{font-size:23px;line-height:1.5;font-weight:900;margin:0;color:#fff}
+.brand small{display:block;font-size:12px;opacity:.85;font-weight:500}
+.nav-title{
+  font-size:11px;color:#ffffff88;font-weight:700;
+  margin:0 10px 12px;padding:0;white-space:nowrap;
+}
+.sidebar nav{display:flex;flex-direction:column;gap:7px}
+.nav-link{
+  display:flex;align-items:center;gap:15px;min-height:48px;
+  padding:12px 15px;margin:0;border-radius:12px;
+  color:#f2fbff;text-decoration:none;font-size:14px;
+  font-weight:700;white-space:nowrap;transition:.2s;
+}
+.nav-link:hover{background:#ffffff18;transform:translateX(-2px)}
+.nav-link.active{
+  background:linear-gradient(110deg,#1da77b,#159b78);
+  box-shadow:0 5px 15px #001f3020;color:#fff;
+}
+.nav-icon{
+  width:27px;height:27px;min-width:27px;
+  display:flex;align-items:center;justify-content:center;
+}
+.nav-icon .icon{width:24px;height:24px}
+.nav-text{overflow:hidden}
+.sidebar-bottom{
+  margin:0 15px 18px;padding:13px 10px;
+  border-top:1px solid #ffffff20;text-align:center;
+  font-size:11px;line-height:2;color:#ffffffc9;
+}
+.sidebar-bottom .icon{display:none}
+.sidebar-bottom-text{white-space:normal}
+body.sidebar-collapsed{--sidebar-width:82px}
+body.sidebar-collapsed .sidebar-top{padding:18px 10px}
+body.sidebar-collapsed .brand{padding-bottom:18px}
+body.sidebar-collapsed .brand-logo{width:48px;height:48px}
+body.sidebar-collapsed .brand-text,
+body.sidebar-collapsed .nav-title,
+body.sidebar-collapsed .nav-text,
+body.sidebar-collapsed .sidebar-bottom{display:none}
+body.sidebar-collapsed .nav-link{justify-content:center;padding:13px 5px}
+body.sidebar-collapsed .nav-link:hover{transform:none}
+body.sidebar-collapsed .sidebar-toggle-wrap{justify-content:center}
+body.sidebar-collapsed .sidebar-toggle .icon{transform:rotate(180deg)}
+
+/* المحتوى الرئيسي */
+.main{
+  margin-right:var(--sidebar-width);
+  min-height:100vh;
+  padding:27px 28px 40px;
+  min-width:0;
+  transition:margin-right .25s ease;
+}
+body.sidebar-collapsed .main{margin-right:var(--sidebar-small)}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:15px;background:#fff;border:1px solid var(--border);
+  border-radius:17px;padding:21px 24px;margin-bottom:23px;
+  box-shadow:0 5px 22px #12375b08;
+}
+.page-heading h1{
+  margin:0 0 5px;font-size:22px;font-weight:900;
+  color:var(--green-dark);
+}
+.page-heading p{font-size:12px;color:var(--muted);margin:0;line-height:1.9}
+.student-badge{
+  display:flex;align-items:center;gap:9px;
+  background:#f4f8fb;border:0;border-radius:12px;
+  padding:9px 13px;max-width:230px;min-width:0;
+}
+.student-avatar{
+  width:38px;height:38px;display:grid;place-items:center;
+  flex-shrink:0;border-radius:12px;background:var(--green-light);
+  color:var(--green);
+}
+.student-info{min-width:0}
+.student-info strong{
+  display:block;font-size:12px;overflow-wrap:anywhere;
+}
+.student-info small{color:var(--muted);font-size:10px}
+
+/* بطاقة الترحيب */
+.welcome-card{
+  position:relative;overflow:hidden;padding:23px 25px;
+  border-radius:16px;margin-bottom:23px;color:#fff;
+  background:linear-gradient(110deg,#004e4d,#008866 65%,#07375b);
+  box-shadow:0 8px 25px rgba(2,104,87,.12);
+}
+.welcome-card h2{
+  margin:0 0 8px;font-size:20px;font-weight:900;
+  position:relative;z-index:1;
+}
+.welcome-card p{
+  margin:0;font-size:13px;line-height:2;
+  color:#ffffffeb;max-width:650px;position:relative;z-index:1;
+}
+.welcome-decoration{
+  position:absolute;left:25px;top:-28px;
+  opacity:.12;transform:rotate(-15deg);pointer-events:none;
+}
+.welcome-decoration .icon{width:145px;height:145px;stroke-width:1.1}
+
+/* البحث */
+.search-area{
+  display:flex;align-items:center;gap:12px;margin-bottom:23px;
+}
+.search-box{flex:1;position:relative;min-width:0}
+.search-icon{
+  position:absolute;right:15px;top:50%;
+  transform:translateY(-50%);color:var(--muted);
+  pointer-events:none;
+}
+.search-box input{
+  width:100%;height:49px;padding:0 47px 0 15px;
+  border:1px solid var(--border);background:#fff;
+  border-radius:12px;outline:none;font-size:13px;
+  color:var(--text);transition:border-color .2s,box-shadow .2s;
+}
+.search-box input:focus{
+  border-color:var(--green);
+  box-shadow:0 0 0 3px #00886612;
+}
+.notes-count{
+  padding:12px 15px;background:#fff;
+  border:1px solid var(--border);border-radius:12px;
+  font-size:12px;font-weight:800;color:var(--green-dark);
+  white-space:nowrap;
+}
+
+/* عناوين الأقسام */
+.section-heading{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;margin:26px 0 15px;
+}
+.section-heading h2{
+  margin:0;font-size:18px;font-weight:900;
+  display:flex;align-items:center;gap:9px;
+}
+.section-heading h2:before{
+  content:"";width:4px;height:24px;
+  background:var(--green);border-radius:5px;
+}
+.section-heading span{font-size:12px;color:var(--muted)}
+
+/* شبكة المذكرات */
+.notes-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+  gap:18px;
+}
+.note-card{
+  min-width:0;background:#fff;border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+  animation:fadeIn .35s ease both;
+}
+.note-card:hover{
+  transform:translateY(-4px);border-color:#6fc6a9;
+  box-shadow:0 12px 28px rgba(18,55,91,.09);
+}
+.note-cover{
+  height:190px;position:relative;
+  background:linear-gradient(135deg,#e3f5ee,#eaf0ff);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+.note-cover img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .3s ease;
+}
+.note-card:hover .note-cover img{transform:scale(1.035)}
+.cover-placeholder{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:8px;color:var(--green-dark);
+}
+.cover-placeholder .icon{width:48px;height:48px}
+.cover-placeholder small{font-size:11px;font-weight:800}
+.note-type{
+  position:absolute;top:12px;right:12px;
+  padding:5px 10px;background:#ffffffef;color:var(--green-dark);
+  border-radius:8px;font-size:10px;font-weight:900;
+  box-shadow:0 3px 10px #0000000a;
+}
+.note-body{padding:17px;display:flex;flex-direction:column;flex:1}
+.note-title{
+  font-size:15px;font-weight:900;line-height:1.8;
+  margin-bottom:7px;overflow-wrap:anywhere;
+}
+.note-date{color:var(--muted);font-size:11px;margin-bottom:16px}
+.note-actions{display:flex;gap:8px;margin-top:auto}
+.note-btn{
+  min-height:41px;flex:1;display:flex;align-items:center;
+  justify-content:center;gap:6px;border-radius:10px;
+  font-size:11px;font-weight:800;border:1px solid var(--border);
+  transition:.2s;cursor:pointer;
+}
+.note-btn .icon{width:17px;height:17px}
+.note-btn.open{
+  background:var(--green);color:#fff;border-color:var(--green);
+}
+.note-btn.open:hover{background:#006e65}
+.note-btn.download{background:#f5f9fc;color:var(--green-dark)}
+.note-btn.download:hover{background:var(--green-light);border-color:#75c6a9}
+.note-unavailable{
+  display:flex;align-items:center;justify-content:center;
+  width:100%;min-height:41px;border-radius:10px;
+  background:#f5f7fa;color:var(--muted);font-size:11px;
+  font-weight:700;padding:8px;text-align:center;
+}
+
+/* حالات التحميل والفراغ */
+.state-box{
+  grid-column:1/-1;padding:38px 20px;text-align:center;
+  background:#fff;border:1px solid var(--border);
+  border-radius:16px;color:var(--muted);
+}
+.state-box .state-icon{
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:12px;color:var(--green);
+}
+.state-box .state-icon .icon{width:43px;height:43px}
+.state-box h3{font-size:16px;color:var(--text);margin-bottom:6px}
+.state-box p{font-size:12px;line-height:2}
+.loader{
+  width:34px;height:34px;border:3px solid #dceee6;
+  border-top-color:var(--green);border-radius:50%;
+  margin:0 auto 14px;animation:spin .8s linear infinite;
+}
+.error-message{
+  color:#b42318;font-size:12px;margin-top:8px;overflow-wrap:anywhere;
+}
+
+/* التذييل */
+.page-footer{
+  text-align:center;padding:25px 10px 5px;
+  color:#8998a9;font-size:11px;line-height:2;
+}
+
+/* شريط الموبايل */
+.mobile-nav{display:none}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@media(max-width:1000px){
+  .main{padding:22px}
+  .notes-grid{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+}
+@media(max-width:760px){
+  .sidebar{display:none}
+  .main,body.sidebar-collapsed .main{
+    margin-right:0;padding:14px 13px 95px;
+  }
+  .topbar{
+    padding:15px;margin-bottom:17px;align-items:center;
+    gap:8px;
+  }
+  .page-heading h1{font-size:18px}
+  .page-heading p{font-size:11px}
+  .student-badge{padding:6px 8px;gap:6px;max-width:145px}
+  .student-avatar{width:32px;height:32px}
+  .student-info strong{font-size:10px}
+  .student-info small{font-size:9px}
+  .welcome-card{padding:18px 16px;margin-bottom:19px}
+  .welcome-card h2{font-size:16px}
+  .welcome-card p{font-size:11px}
+  .welcome-decoration{left:7px}
+  .welcome-decoration .icon{width:105px;height:105px}
+  .search-area{gap:8px}
+  .search-box input{height:44px;font-size:12px}
+  .search-icon{right:12px}
+  .notes-count{padding:10px 8px;font-size:10px}
+  .section-heading{margin:22px 0 13px}
+  .section-heading h2{font-size:16px}
+  .section-heading span{font-size:10px}
+  .notes-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .note-cover{height:140px}
+  .note-body{padding:12px}
+  .note-title{font-size:12px}
+  .note-date{font-size:10px;margin-bottom:12px}
+  .note-actions{flex-direction:column;gap:7px}
+  .note-btn{min-height:36px;font-size:10px}
+  .mobile-nav{
+    display:flex;position:fixed;z-index:1100;bottom:0;right:0;left:0;
+    justify-content:space-around;gap:3px;
+    padding:8px 4px calc(8px + env(safe-area-inset-bottom));
+    background:rgba(255,255,255,.97);
+    border-top:1px solid var(--border);
+    box-shadow:0 -4px 20px #12375b12;
+  }
+  .mobile-nav a{
+    display:flex;flex:1;flex-direction:column;
+    align-items:center;justify-content:center;gap:3px;
+    min-width:0;padding:4px 1px;color:var(--muted);
+    text-decoration:none;font-size:9px;font-weight:700;
+  }
+  .mobile-nav a .icon{width:21px;height:21px}
+  .mobile-nav a.active{color:var(--green);font-weight:900}
+}
+@media(max-width:360px){
+  .notes-grid{grid-template-columns:1fr}
+  .note-cover{height:190px}
+  .student-info small{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    scroll-behavior:auto!important;transition-duration:.01ms!important;
+    animation-duration:.01ms!important;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <!-- الشريط الجانبي -->
-  <aside class="sidebar" id="sidebar">
+<!-- أيقونات المنصة -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="icon-plant" viewBox="0 0 24 24"><path d="M12 21v-9"/><path d="M12 14C5 14 3 9 3 4c6 0 9 3 9 10"/><path d="M12 17c0-6 3-10 9-11 0 6-2 10-9 11"/><path d="M7 21h10"/></symbol>
+  <symbol id="icon-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7"/><path d="M5 9v12h14V9"/><path d="M9 21v-7h6v7"/></symbol>
+  <symbol id="icon-video" viewBox="0 0 24 24"><rect x="3" y="5" width="13" height="14" rx="2"/><path d="m16 10 5-3v10l-5-3"/><path d="m8 9 4 3-4 3z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="icon-notes" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5"/><path d="M8 12h8M8 16h8"/></symbol>
+  <symbol id="icon-trophy" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4"/><path d="M7 4h10v6a5 5 0 0 1-10 0z"/><path d="M7 6H3v2a5 5 0 0 0 5 5"/><path d="M17 6h4v2a5 5 0 0 1-5 5"/></symbol>
+  <symbol id="icon-forum" viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l-2 2v-7.5A7.5 7.5 0 0 1 10.5 6H12"/><path d="M16 3v7M12.5 6.5h7"/><path d="M7 12h6M7 15h4"/></symbol>
+  <symbol id="icon-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2z"/></symbol>
+  <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+  <symbol id="icon-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></symbol>
+  <symbol id="icon-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+  <symbol id="icon-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></symbol>
+  <symbol id="icon-open" viewBox="0 0 24 24"><path d="M14 3h7v7M10 14 21 3"/><path d="M19 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6"/></symbol>
+  <symbol id="icon-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 2.2 18a2 2 0 0 0 1.7 3h16.2a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+  <symbol id="icon-empty" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+</svg>
 
-    <div class="sidebar-header">
-      <div class="logo-box">
-        <img src="../logo.png" alt="شعار أرض الأحياء"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-        <span class="logo-fallback" style="display:none;">🌱</span>
-      </div>
+<!-- الشريط الجانبي -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-top">
+    <div class="sidebar-toggle-wrap">
+      <button type="button" class="sidebar-toggle" id="sidebarToggle"
+        aria-label="تصغير القائمة الجانبية" aria-expanded="true" title="تصغير القائمة">
+        <svg class="icon"><use href="#icon-chevron"></use></svg>
+      </button>
+    </div>
 
+    <div class="brand">
+      <img class="brand-logo" src="../logo.png" alt="شعار أرض الأحياء"
+        onerror="this.style.display='none'">
       <div class="brand-text">
         <h2>أرض الأحياء</h2>
-        <p>رحلتك نحو التفوق تبدأ هنا</p>
+        <small>الثانوية العامة</small>
       </div>
     </div>
 
-    <div class="sidebar-toggle-wrap">
-      <button class="sidebar-toggle" id="sidebarToggle"
-        type="button" aria-label="طي أو توسيع القائمة" title="طي أو توسيع القائمة">❯</button>
-    </div>
+    <div class="nav-title">القائمة الرئيسية</div>
 
-    <div class="sidebar-section-title">القائمة الرئيسية</div>
-
-    <nav class="sidebar-nav">
-
-      <a class="nav-link" href="../index.html" title="الرئيسية">
-        <span class="nav-icon">🏠</span>
-        <span class="nav-label">الرئيسية</span>
+    <nav>
+      <a class="nav-link" href="../index.html" data-title="الرئيسية" aria-label="الرئيسية">
+        <span class="nav-icon"><svg class="icon"><use href="#icon-home"></use></svg></span>
+        <span class="nav-text">الرئيسية</span>
       </a>
 
-      <!-- تم تصحيح الرابط إلى مجلد videos -->
-      <a class="nav-link" href="../videos/index.html" title="المحاضرات">
-        <span class="nav-icon">🎬</span>
-        <span class="nav-label">المحاضرات</span>
+      <a class="nav-link" href="../videos/index.html" data-title="المحاضرات" aria-label="المحاضرات">
+        <span class="nav-icon"><svg class="icon"><use href="#icon-video"></use></svg></span>
+        <span class="nav-text">المحاضرات</span>
       </a>
 
-      <a class="nav-link active" href="index.html" title="المذكرات">
-        <span class="nav-icon">📚</span>
-        <span class="nav-label">المذكرات</span>
+      <a class="nav-link active" href="./index.html" data-title="المذكرات"
+        aria-label="المذكرات" aria-current="page">
+        <span class="nav-icon"><svg class="icon"><use href="#icon-notes"></use></svg></span>
+        <span class="nav-text">المذكرات</span>
       </a>
 
-      <a class="nav-link" href="../champion/index.html" title="بطل الفصل">
-        <span class="nav-icon">🏆</span>
-        <span class="nav-label">بطل الفصل</span>
+      <a class="nav-link" href="../champion/index.html" data-title="بطل الفصل" aria-label="بطل الفصل">
+        <span class="nav-icon"><svg class="icon"><use href="#icon-trophy"></use></svg></span>
+        <span class="nav-text">بطل الفصل</span>
       </a>
 
-      <a class="nav-link" href="../forum/index.html" title="المنتدى">
-        <span class="nav-icon">💬</span>
-        <span class="nav-label">المنتدى</span>
+      <a class="nav-link" href="../forum/index.html" data-title="المنتدى" aria-label="المنتدى">
+        <span class="nav-icon"><svg class="icon"><use href="#icon-forum"></use></svg></span>
+        <span class="nav-text">المنتدى</span>
       </a>
 
-      <a class="nav-link" href="../account/index.html" title="حساب الطالب">
-        <span class="nav-icon">👤</span>
-        <span class="nav-label">حساب الطالب</span>
+      <a class="nav-link" href="../account/index.html" data-title="حساب الطالب" aria-label="حساب الطالب">
+        <span class="nav-icon"><svg class="icon"><use href="#icon-user"></use></svg></span>
+        <span class="nav-text">حساب الطالب</span>
       </a>
-
     </nav>
+  </div>
 
-    <div class="sidebar-bottom">
-      <a class="telegram-link" href="https://t.me/+KB1Z0dws0f01YjNk"
-        target="_blank" rel="noopener noreferrer" title="قناة التليجرام">
-        <span>✈️</span>
-        <span class="telegram-text">انضم لقناة التليجرام</span>
-      </a>
+  <div class="sidebar-bottom">
+    <svg class="icon"><use href="#icon-plant"></use></svg>
+    <div class="sidebar-bottom-text">
+      معًا نحو التفوق في الأحياء<br>
+      منصة أرض الأحياء © 2026
+    </div>
+  </div>
+</aside>
 
-      <div class="sidebar-footer">
-        © 2026 منصة أرض الأحياء
-      </div>
+<!-- المحتوى الرئيسي -->
+<main class="main">
+  <header class="topbar">
+    <div class="page-heading">
+      <h1>المذكرات</h1>
+      <p>كل مذكرات ومراجعات الأحياء في مكان واحد.</p>
     </div>
 
-  </aside>
-
-  <!-- المحتوى الرئيسي -->
-  <main class="main">
-
-    <header class="topbar">
-      <div class="page-heading">
-        <h1>المذكرات 📚</h1>
-        <p>كل مذكرات ومراجعات الأحياء في مكان واحد.</p>
+    <div class="student-badge">
+      <div class="student-avatar">
+        <svg class="icon"><use href="#icon-user"></use></svg>
       </div>
-
-      <div class="student-badge">
-        <div class="avatar">🎓</div>
-        <div>
-          <strong id="studentName">طالب أرض الأحياء</strong>
-          <small>الصف الثالث الثانوي</small>
-        </div>
+      <div class="student-info">
+        <strong id="studentName">جارٍ التحقق...</strong>
+        <small>الصف الثالث الثانوي</small>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <section class="welcome-card">
-      <h2>ذاكر بذكاء، وتفوّق في الأحياء 🌱</h2>
-      <p>
-        هتلاقي هنا المذكرات والمراجعات اللي بتساعدك تفهم المنهج وتراجع أهم النقاط.
-        اختار المذكرة المناسبة ليك، وافتحها أو حمّلها بسهولة.
-      </p>
-    </section>
+  <section class="welcome-card">
+    <div class="welcome-decoration">
+      <svg class="icon"><use href="#icon-plant"></use></svg>
+    </div>
+    <h2>ذاكر بذكاء، وتفوّق في الأحياء!</h2>
+    <p>
+      هتلاقي هنا المذكرات والمراجعات اللي بتساعدك تفهم المنهج وتراجع أهم النقاط.
+      اختار المذكرة المناسبة ليك، وافتحها أو حمّلها بسهولة.
+    </p>
+  </section>
 
-    <section class="search-area">
-      <div class="search-box">
-        <span>🔎</span>
-        <input id="searchInput" type="search"
-          placeholder="ابحث عن مذكرة أو مراجعة..."
-          aria-label="البحث في المذكرات">
+  <section class="search-area">
+    <div class="search-box">
+      <span class="search-icon">
+        <svg class="icon"><use href="#icon-search"></use></svg>
+      </span>
+      <input id="searchInput" type="search"
+        placeholder="ابحث عن مذكرة أو مراجعة..."
+        aria-label="البحث في المذكرات">
+    </div>
+    <div class="notes-count" id="notesCount">جاري التحميل...</div>
+  </section>
+
+  <section>
+    <div class="section-heading">
+      <h2>مكتبة المذكرات</h2>
+      <span>اختر المذكرة وابدأ المراجعة</span>
+    </div>
+
+    <div class="notes-grid" id="notesGrid" aria-live="polite">
+      <div class="state-box">
+        <div class="loader"></div>
+        <h3>جاري تحميل المذكرات</h3>
+        <p>لحظات ونجهز لك المحتوى.</p>
       </div>
+    </div>
+  </section>
 
-      <div class="notes-count" id="notesCount">جاري التحميل...</div>
-    </section>
+  <footer class="page-footer">
+    <p>منصة أرض الأحياء</p>
+    <p>معًا نحو التفوق في الأحياء — الصف الثالث الثانوي © 2026</p>
+  </footer>
+</main>
 
-    <section>
-      <div class="section-heading">
-        <h2>مكتبة المذكرات</h2>
-        <span>اختر المذكرة وابدأ المراجعة</span>
-      </div>
+<!-- شريط التنقل للموبايل -->
+<nav class="mobile-nav" aria-label="التنقل الرئيسي">
+  <a href="../index.html">
+    <svg class="icon"><use href="#icon-home"></use></svg>
+    <span>الرئيسية</span>
+  </a>
+  <a href="../videos/index.html">
+    <svg class="icon"><use href="#icon-video"></use></svg>
+    <span>المحاضرات</span>
+  </a>
+  <a href="./index.html" class="active" aria-current="page">
+    <svg class="icon"><use href="#icon-notes"></use></svg>
+    <span>المذكرات</span>
+  </a>
+  <a href="../champion/index.html">
+    <svg class="icon"><use href="#icon-trophy"></use></svg>
+    <span>البطل</span>
+  </a>
+  <a href="../forum/index.html">
+    <svg class="icon"><use href="#icon-forum"></use></svg>
+    <span>المنتدى</span>
+  </a>
+  <a href="../account/index.html">
+    <svg class="icon"><use href="#icon-user"></use></svg>
+    <span>حسابي</span>
+  </a>
+</nav>
 
-      <div class="notes-grid" id="notesGrid">
-        <div class="state-box">
-          <div class="loader"></div>
-          <h3>جاري تحميل المذكرات</h3>
-          <p>لحظات ونجهز لك المحتوى.</p>
-        </div>
-      </div>
-    </section>
+<script>
+"use strict";
 
-    <footer class="page-footer">
-      <p>منصة أرض الأحياء 🌱</p>
-      <p>معًا نحو التفوق في الأحياء — الصف الثالث الثانوي © 2026</p>
-    </footer>
+/* إعدادات Supabase */
+const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+const STORAGE_BUCKET = "lectures";
 
-  </main>
+if (!window.supabase) {
+  document.getElementById("notesGrid").textContent =
+    "تعذر تحميل مكتبة Supabase. تحقق من الإنترنت ثم أعد تحميل الصفحة.";
+  throw new Error("Missing dependency: supabase-js");
+}
 
-  <!-- شريط التنقل للموبايل -->
-  <nav class="mobile-nav" aria-label="التنقل الرئيسي">
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const notesGrid = document.getElementById("notesGrid");
+const searchInput = document.getElementById("searchInput");
+const notesCount = document.getElementById("notesCount");
+const studentName = document.getElementById("studentName");
+const sidebarToggle = document.getElementById("sidebarToggle");
 
-    <a href="../index.html">
-      <span>🏠</span>
-      <span>الرئيسية</span>
-    </a>
+let allNotes = [];
 
-    <!-- تم تصحيح الرابط إلى مجلد videos -->
-    <a href="../videos/index.html">
-      <span>🎬</span>
-      <span>المحاضرات</span>
-    </a>
+/* الشريط الجانبي — نفس مفتاح التخزين المستخدم في بقية الصفحات */
+const SIDEBAR_KEY = "ardAlahyaaSidebarCollapsed";
 
-    <a href="index.html" class="active">
-      <span>📚</span>
-      <span>المذكرات</span>
-    </a>
+function applySidebarState(collapsed, save = true) {
+  document.body.classList.toggle("sidebar-collapsed", collapsed);
 
-    <a href="../forum/index.html">
-      <span>💬</span>
-      <span>المنتدى</span>
-    </a>
+  const label = collapsed ? "توسيع الشريط الجانبي" : "تصغير الشريط الجانبي";
+  sidebarToggle.setAttribute("aria-expanded", String(!collapsed));
+  sidebarToggle.setAttribute("aria-label", label);
+  sidebarToggle.title = label;
 
-    <a href="../account/index.html">
-      <span>👤</span>
-      <span>حسابي</span>
-    </a>
+  document.querySelectorAll(".nav-link[data-title]").forEach(link => {
+    if (collapsed) {
+      link.title = link.dataset.title;
+    } else {
+      link.removeAttribute("title");
+    }
+  });
 
-  </nav>
+  if (save) {
+    try {
+      localStorage.setItem(SIDEBAR_KEY, String(collapsed));
+    } catch (error) {
+      console.warn("تعذر حفظ وضع الشريط الجانبي.");
+    }
+  }
+}
 
-  <script>
-    /* إعدادات Supabase */
+sidebarToggle.addEventListener("click", () => {
+  applySidebarState(!document.body.classList.contains("sidebar-collapsed"));
+});
 
-    const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+try {
+  applySidebarState(localStorage.getItem(SIDEBAR_KEY) === "true", false);
+} catch {
+  applySidebarState(false, false);
+}
 
-    const SUPABASE_KEY =
-      "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+/* إنشاء أيقونة SVG */
+function createIcon(symbolId) {
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  const use = document.createElementNS(ns, "use");
 
-    const STORAGE_BUCKET = "lectures";
+  svg.setAttribute("class", "icon");
+  svg.setAttribute("aria-hidden", "true");
+  use.setAttribute("href", "#" + symbolId);
+  svg.appendChild(use);
 
-    const db = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
+  return svg;
+}
+
+/* عرض حالات التحميل والخطأ والفراغ */
+function showState(iconId, title, message, error = "") {
+  notesGrid.replaceChildren();
+
+  const box = document.createElement("div");
+  box.className = "state-box";
+
+  if (iconId === "loading") {
+    const loader = document.createElement("div");
+    loader.className = "loader";
+    box.appendChild(loader);
+  } else {
+    const icon = document.createElement("div");
+    icon.className = "state-icon";
+    icon.appendChild(createIcon(iconId || "icon-empty"));
+    box.appendChild(icon);
+  }
+
+  const heading = document.createElement("h3");
+  heading.textContent = title;
+  box.appendChild(heading);
+
+  const description = document.createElement("p");
+  description.textContent = message;
+  box.appendChild(description);
+
+  if (error) {
+    const errorBox = document.createElement("div");
+    errorBox.className = "error-message";
+    errorBox.textContent = error;
+    box.appendChild(errorBox);
+  }
+
+  notesGrid.appendChild(box);
+}
+
+/* تحويل مسار Storage إلى رابط */
+async function getStorageURL(path) {
+  if (!path) return "";
+
+  const value = String(path).trim();
+
+  if (/^https?:\/\//i.test(value)) {
+    return value;
+  }
+
+  let cleanPath = value;
+  const publicMarker = `/storage/v1/object/public/${STORAGE_BUCKET}/`;
+  const signedMarker = `/storage/v1/object/sign/${STORAGE_BUCKET}/`;
+
+  if (cleanPath.includes(publicMarker)) {
+    cleanPath = cleanPath.split(publicMarker).pop();
+  } else if (cleanPath.includes(signedMarker)) {
+    cleanPath = cleanPath.split(signedMarker).pop().split("?")[0];
+  }
+
+  cleanPath = cleanPath
+    .replace(/^\/+/, "")
+    .split("/")
+    .map(part => {
+      try {
+        return decodeURIComponent(part);
+      } catch {
+        return part;
+      }
+    })
+    .join("/");
+
+  if (!cleanPath) return "";
+
+  const { data, error } = await db.storage
+    .from(STORAGE_BUCKET)
+    .createSignedUrl(cleanPath, 3600);
+
+  if (error) {
+    console.error("خطأ إنشاء رابط الملف:", error);
+    return "";
+  }
+
+  return data?.signedUrl || "";
+}
+
+/* تحديد نوع الملف */
+function isPDF(path) {
+  return /\.pdf(?:$|[?#])/i.test(String(path || ""));
+}
+
+function formatDate(dateValue) {
+  if (!dateValue) return "مذكرة تعليمية";
+
+  const date = new Date(dateValue);
+
+  if (Number.isNaN(date.getTime())) {
+    return "مذكرة تعليمية";
+  }
+
+  return date.toLocaleDateString("ar-EG", {
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+}
+
+/* إنشاء زر فتح أو تحميل */
+function createActionLink(className, iconId, label, url, download = false) {
+  const link = document.createElement("a");
+  link.className = "note-btn " + className;
+  link.href = url;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+
+  if (download) {
+    link.setAttribute("download", "");
+  }
+
+  link.appendChild(createIcon(iconId));
+  link.appendChild(document.createTextNode(label));
+
+  return link;
+}
+
+/* تحميل المذكرات من Supabase */
+async function loadNotes() {
+  showState("loading", "جاري تحميل المذكرات", "لحظات من فضلك...");
+  notesCount.textContent = "جاري التحميل...";
+
+  try {
+    const { data, error } = await db
+      .from("notes")
+      .select("id,title,file_path,cover_path,created_at")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    allNotes = data || [];
+    await renderNotes(allNotes);
+
+  } catch (error) {
+    console.error("خطأ تحميل المذكرات:", error);
+    notesCount.textContent = "تعذر التحميل";
+
+    showState(
+      "icon-alert",
+      "تعذر تحميل المذكرات",
+      "راجع اتصال الإنترنت وصلاحيات قراءة جدول notes وملفات Storage.",
+      error.message || "حدث خطأ غير معروف."
     );
+  }
+}
 
-    const notesGrid = document.getElementById("notesGrid");
-    const searchInput = document.getElementById("searchInput");
-    const notesCount = document.getElementById("notesCount");
-    const studentName = document.getElementById("studentName");
+/* عرض المذكرات */
+async function renderNotes(notes) {
+  notesCount.textContent = `عدد المذكرات: ${notes.length}`;
 
-    let allNotes = [];
+  if (!notes.length) {
+    showState(
+      "icon-empty",
+      "لا توجد مذكرات حاليًا",
+      "المذكرات التي تضيفها لوحة الإدارة ستظهر هنا تلقائيًا."
+    );
+    return;
+  }
 
-    /* الشريط الجانبي: حفظ حالة الطي */
+  notesGrid.replaceChildren();
 
-    const sidebarToggle = document.getElementById("sidebarToggle");
+  for (const note of notes) {
+    const title = note.title || "مذكرة أحياء";
 
-    function applySidebarState(collapsed) {
-      document.body.classList.toggle("sidebar-collapsed", collapsed);
+    const card = document.createElement("article");
+    card.className = "note-card";
 
-      if (sidebarToggle) {
-        sidebarToggle.textContent = collapsed ? "❮" : "❯";
-        sidebarToggle.setAttribute(
-          "aria-label",
-          collapsed ? "توسيع القائمة" : "طي القائمة"
-        );
-      }
-    }
+    const cover = document.createElement("div");
+    cover.className = "note-cover";
 
-    const savedSidebarState =
-      localStorage.getItem("ardAlahyaaNotesSidebarCollapsed") === "true";
+    const placeholder = document.createElement("div");
+    placeholder.className = "cover-placeholder";
+    placeholder.appendChild(createIcon("icon-book"));
 
-    applySidebarState(savedSidebarState);
+    const placeholderText = document.createElement("small");
+    placeholderText.textContent = "مذكرة أحياء";
+    placeholder.appendChild(placeholderText);
+    cover.appendChild(placeholder);
 
-    sidebarToggle.addEventListener("click", function () {
-      const collapsed =
-        !document.body.classList.contains("sidebar-collapsed");
+    const coverURL = await getStorageURL(note.cover_path);
+    const fileURL = await getStorageURL(note.file_path);
 
-      applySidebarState(collapsed);
+    if (coverURL) {
+      const img = document.createElement("img");
+      img.src = coverURL;
+      img.alt = `غلاف ${title}`;
+      img.loading = "lazy";
+      img.decoding = "async";
 
-      localStorage.setItem(
-        "ardAlahyaaNotesSidebarCollapsed",
-        String(collapsed)
-      );
-    });
-
-    /* عرض رسالة داخل شبكة المذكرات */
-
-    function showState(icon, title, message, error = "") {
-      notesGrid.innerHTML = `
-        <div class="state-box">
-          <div class="state-icon">${icon}</div>
-          <h3>${escapeHTML(title)}</h3>
-          <p>${escapeHTML(message)}</p>
-          ${
-            error
-              ? `<div class="error-message">${escapeHTML(error)}</div>`
-              : ""
-          }
-        </div>
-      `;
-    }
-
-    /* حماية النصوص المعروضة */
-
-    function escapeHTML(value) {
-      return String(value ?? "").replace(/[&<>"']/g, function (char) {
-        const entities = {
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#039;"
-        };
-
-        return entities[char];
+      img.addEventListener("load", () => {
+        placeholder.remove();
       });
-    }
 
-    /* تحويل مسار Storage إلى رابط قابل للفتح */
-
-    async function getStorageURL(path) {
-      if (!path) return "";
-
-      const value = String(path).trim();
-
-      if (/^https?:\/\//i.test(value)) {
-        return value;
-      }
-
-      let cleanPath = value;
-
-      const marker = `/storage/v1/object/public/${STORAGE_BUCKET}/`;
-
-      if (cleanPath.includes(marker)) {
-        cleanPath = cleanPath.split(marker).pop();
-      }
-
-      const signedMarker =
-        `/storage/v1/object/sign/${STORAGE_BUCKET}/`;
-
-      if (cleanPath.includes(signedMarker)) {
-        cleanPath = cleanPath.split(signedMarker).pop().split("?")[0];
-      }
-
-      cleanPath = cleanPath
-        .replace(/^\/+/, "")
-        .split("/")
-        .map(part => {
-          try {
-            return decodeURIComponent(part);
-          } catch {
-            return part;
-          }
-        })
-        .join("/");
-
-      if (!cleanPath) return "";
-
-      const { data, error } = await db.storage
-        .from(STORAGE_BUCKET)
-        .createSignedUrl(cleanPath, 3600);
-
-      if (error) {
-        console.error("خطأ إنشاء رابط الملف:", error);
-        return "";
-      }
-
-      return data?.signedUrl || "";
-    }
-
-    /* تحديد نوع الملف */
-
-    function isPDF(path) {
-      return /\.pdf(?:$|[?#])/i.test(String(path || ""));
-    }
-
-    function formatDate(dateValue) {
-      if (!dateValue) return "مذكرة تعليمية";
-
-      const date = new Date(dateValue);
-
-      if (Number.isNaN(date.getTime())) {
-        return "مذكرة تعليمية";
-      }
-
-      return date.toLocaleDateString("ar-EG", {
-        year: "numeric",
-        month: "long",
-        day: "numeric"
+      img.addEventListener("error", () => {
+        img.remove();
       });
+
+      cover.insertBefore(img, cover.firstChild);
     }
 
-    /* جلب المذكرات من قاعدة البيانات */
+    const typeBadge = document.createElement("span");
+    typeBadge.className = "note-type";
+    typeBadge.textContent = fileURL
+      ? (isPDF(note.file_path) ? "PDF" : "ملف تعليمي")
+      : "مذكرة";
 
-    async function loadNotes() {
-      showState("📚", "جاري تحميل المذكرات", "لحظات من فضلك...");
+    cover.appendChild(typeBadge);
 
-      notesCount.textContent = "جاري التحميل...";
+    const body = document.createElement("div");
+    body.className = "note-body";
 
-      try {
-        const { data, error } = await db
-          .from("notes")
-          .select("id,title,file_path,cover_path,created_at")
-          .order("created_at", { ascending: false });
+    const heading = document.createElement("h3");
+    heading.className = "note-title";
+    heading.textContent = title;
 
-        if (error) {
-          throw error;
-        }
+    const date = document.createElement("div");
+    date.className = "note-date";
+    date.appendChild(createIcon("icon-calendar"));
+    date.appendChild(document.createTextNode(" " + formatDate(note.created_at)));
+    date.style.display = "flex";
+    date.style.alignItems = "center";
+    date.style.gap = "5px";
+    date.querySelector("svg").style.width = "16px";
+    date.querySelector("svg").style.height = "16px";
 
-        allNotes = data || [];
+    const actions = document.createElement("div");
+    actions.className = "note-actions";
 
-        await renderNotes(allNotes);
-
-      } catch (error) {
-        console.error("خطأ تحميل المذكرات:", error);
-
-        notesCount.textContent = "تعذر التحميل";
-
-        showState(
-          "⚠️",
-          "تعذر تحميل المذكرات",
-          "راجع اتصال الإنترنت وصلاحيات قراءة جدول notes وملفات Storage.",
-          error.message || "حدث خطأ غير معروف."
-        );
-      }
-    }
-
-    /* عرض المذكرات */
-
-    async function renderNotes(notes) {
-      notesCount.textContent = `عدد المذكرات: ${notes.length}`;
-
-      if (!notes.length) {
-        showState(
-          "📭",
-          "لا توجد مذكرات حاليًا",
-          "المذكرات التي تضيفها لوحة الإدارة ستظهر هنا تلقائيًا."
-        );
-
-        return;
-      }
-
-      notesGrid.innerHTML = "";
-
-      for (const note of notes) {
-        const title = note.title || "مذكرة أحياء";
-        const fileURL = await getStorageURL(note.file_path);
-        const coverURL = await getStorageURL(note.cover_path);
-
-        const card = document.createElement("article");
-        card.className = "note-card";
-
-        const cover = document.createElement("div");
-        cover.className = "note-cover";
-
-        if (coverURL) {
-          const img = document.createElement("img");
-
-          img.src = coverURL;
-          img.alt = `غلاف ${title}`;
-          img.loading = "lazy";
-
-          img.onerror = function () {
-            cover.innerHTML = `
-              <div class="cover-placeholder">
-                <span>📚</span>
-                <small>مذكرة أحياء</small>
-              </div>
-            `;
-
-            const type = document.createElement("span");
-            type.className = "note-type";
-            type.textContent = "مذكرة";
-            cover.appendChild(type);
-          };
-
-          cover.appendChild(img);
-        } else {
-          cover.innerHTML = `
-            <div class="cover-placeholder">
-              <span>📚</span>
-              <small>مذكرة أحياء</small>
-            </div>
-          `;
-        }
-
-        const typeBadge = document.createElement("span");
-        typeBadge.className = "note-type";
-        typeBadge.textContent = fileURL
-          ? (isPDF(note.file_path) ? "PDF" : "ملف تعليمي")
-          : "مذكرة";
-
-        cover.appendChild(typeBadge);
-
-        const body = document.createElement("div");
-        body.className = "note-body";
-
-        const heading = document.createElement("h3");
-        heading.className = "note-title";
-        heading.textContent = title;
-
-        const date = document.createElement("div");
-        date.className = "note-date";
-        date.textContent = `📅 ${formatDate(note.created_at)}`;
-
-        const actions = document.createElement("div");
-        actions.className = "note-actions";
-
-        if (fileURL) {
-          const openLink = document.createElement("a");
-          openLink.className = "note-btn open";
-          openLink.href = fileURL;
-          openLink.target = "_blank";
-          openLink.rel = "noopener noreferrer";
-          openLink.innerHTML = "📖 فتح المذكرة";
-
-          const downloadLink = document.createElement("a");
-          downloadLink.className = "note-btn download";
-          downloadLink.href = fileURL;
-          downloadLink.target = "_blank";
-          downloadLink.rel = "noopener noreferrer";
-          downloadLink.download = "";
-          downloadLink.innerHTML = "⬇️ تحميل";
-
-          actions.appendChild(openLink);
-          actions.appendChild(downloadLink);
-        } else {
-          const unavailable = document.createElement("div");
-          unavailable.className = "note-btn download";
-          unavailable.style.width = "100%";
-          unavailable.textContent = "الملف غير متاح حاليًا";
-
-          actions.appendChild(unavailable);
-        }
-
-        body.appendChild(heading);
-        body.appendChild(date);
-        body.appendChild(actions);
-
-        card.appendChild(cover);
-        card.appendChild(body);
-
-        notesGrid.appendChild(card);
-      }
-    }
-
-    /* البحث في المذكرات */
-
-    searchInput.addEventListener("input", function () {
-      const query = this.value.trim().toLowerCase();
-
-      const filteredNotes = allNotes.filter(note =>
-        String(note.title || "").toLowerCase().includes(query)
+    if (fileURL) {
+      actions.appendChild(
+        createActionLink("open", "icon-open", "فتح المذكرة", fileURL)
       );
 
-      renderNotes(filteredNotes);
-    });
-
-    /* التحقق من جلسة الطالب */
-
-    async function initializePage() {
-      try {
-        const { data, error } = await db.auth.getSession();
-
-        if (error) {
-          throw error;
-        }
-
-        const session = data?.session;
-
-        if (!session) {
-          window.location.href = "../index.html";
-          return;
-        }
-
-        const { data: profile, error: profileError } = await db
-          .from("profiles")
-          .select("full_name")
-          .eq("id", session.user.id)
-          .maybeSingle();
-
-        if (profileError) {
-          console.warn("تعذر تحميل اسم الطالب:", profileError.message);
-        }
-
-        if (profile?.full_name) {
-          studentName.textContent = profile.full_name;
-        }
-
-        await loadNotes();
-
-      } catch (error) {
-        console.error("خطأ التحقق من الجلسة:", error);
-
-        showState(
-          "⚠️",
-          "تعذر الاتصال",
-          "تأكد من اتصال الإنترنت وإعدادات تسجيل الدخول في المنصة.",
-          error.message || ""
-        );
-
-        notesCount.textContent = "خطأ في الاتصال";
-      }
+      actions.appendChild(
+        createActionLink("download", "icon-download", "تحميل", fileURL, true)
+      );
+    } else {
+      const unavailable = document.createElement("div");
+      unavailable.className = "note-unavailable";
+      unavailable.textContent = "الملف غير متاح حاليًا";
+      actions.appendChild(unavailable);
     }
 
-    initializePage();
-  </script>
+    body.append(heading, date, actions);
+    card.append(cover, body);
+    notesGrid.appendChild(card);
+  }
+}
+
+/* البحث في المذكرات */
+searchInput.addEventListener("input", function () {
+  const query = this.value.trim().toLocaleLowerCase("ar");
+
+  const filteredNotes = allNotes.filter(note =>
+    String(note.title || "").toLocaleLowerCase("ar").includes(query)
+  );
+
+  renderNotes(filteredNotes);
+});
+
+/* التحقق من جلسة الطالب */
+async function initializePage() {
+  try {
+    const { data, error } = await db.auth.getSession();
+
+    if (error) throw error;
+
+    const session = data?.session;
+
+    if (!session) {
+      window.location.href = "../index.html";
+      return;
+    }
+
+    const { data: profile, error: profileError } = await db
+      .from("profiles")
+      .select("full_name")
+      .eq("id", session.user.id)
+      .maybeSingle();
+
+    if (profileError) {
+      console.warn("تعذر تحميل اسم الطالب:", profileError.message);
+    }
+
+    if (profile?.full_name) {
+      studentName.textContent = profile.full_name;
+    } else {
+      const fallbackName =
+        session.user.user_metadata?.full_name ||
+        session.user.user_metadata?.name;
+
+      if (fallbackName) studentName.textContent = fallbackName;
+    }
+
+    await loadNotes();
+
+  } catch (error) {
+    console.error("خطأ التحقق من الجلسة:", error);
+
+    notesCount.textContent = "خطأ في الاتصال";
+
+    showState(
+      "icon-alert",
+      "تعذر الاتصال",
+      "تأكد من اتصال الإنترنت وإعدادات تسجيل الدخول في المنصة.",
+      error.message || ""
+    );
+  }
+}
+
+initializePage();
+</script>
 
 </body>
 </html>
