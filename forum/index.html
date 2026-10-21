@@ -151,6 +151,79 @@ body.sidebar-collapsed .sidebar-toggle .icon{transform:rotate(180deg)}
 .mobile-nav a.active{color:var(--green)}
 .section-title h2{font-size:16px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
+/* توحيد تصميم المنتدى مع صفحة المحاضرات والرئيسية */
+:root{--green:#008866;--green-dark:#004e4d;--green-light:#e3f5ee;--blue:#07375b;--bg:#f4f7fb;--text:#142f50;--muted:#6b7f98;--border:#e2eaf3;--shadow:0 5px 22px rgba(18,55,91,.06);--sidebar-width:272px;--sidebar-small:82px}
+body{background:var(--bg);color:var(--text)}
+.sidebar{display:flex;flex-direction:column;justify-content:space-between;padding:0;background:linear-gradient(180deg,#004e4d 0%,#003d50 62%,#07375b 100%);box-shadow:none;transition:width .25s}
+.sidebar-top{padding:18px 15px;min-width:0}
+.sidebar-toggle-wrap{display:flex;justify-content:flex-start;margin-bottom:16px}
+.sidebar-toggle{width:39px;height:39px;border:1px solid #ffffff30;border-radius:50%;background:#ffffff15;color:#fff;display:grid;place-items:center}
+.sidebar-toggle:hover{background:#ffffff25}
+.sidebar-toggle .icon{width:24px;height:24px}
+.brand{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;text-align:center;margin:0 0 27px;padding:0 0 23px;border-bottom:1px solid #ffffff20;min-width:0}
+.brand-logo{width:75px;height:75px;object-fit:contain;margin-bottom:7px}
+.brand-icon{display:none}
+.brand-text{min-width:0;overflow:hidden;white-space:nowrap}
+.brand h2{font-size:23px;line-height:1.5;font-weight:900;margin:0;color:#fff}
+.brand small{font-size:12px;opacity:.85;font-weight:500}
+.nav-title{font-size:11px;color:#ffffff88;font-weight:700;margin:0 10px 12px;padding:0;opacity:1}
+.sidebar nav{display:flex;flex-direction:column;gap:7px}
+.nav-link{display:flex;align-items:center;gap:15px;min-height:48px;padding:12px 15px;margin:0;border-radius:12px;color:#f2fbff;font-size:14px;font-weight:700;white-space:nowrap}
+.nav-link:hover{background:#ffffff18;transform:translateX(-2px)}
+.nav-link.active{background:linear-gradient(110deg,#1da77b,#159b78);box-shadow:0 5px 15px #001f3020;color:#fff}
+.nav-icon{width:27px;height:27px;min-width:27px;display:flex;align-items:center;justify-content:center}
+.nav-icon .icon{width:24px;height:24px}
+.sidebar-bottom{margin:0 15px 18px;padding:13px 10px;border-top:1px solid #ffffff20;text-align:center;font-size:11px;line-height:2;color:#ffffffc9;opacity:1}
+.sidebar-bottom .icon{display:none}
+.sidebar-bottom-text{white-space:normal}
+body.sidebar-collapsed{--sidebar-width:82px}
+body.sidebar-collapsed .sidebar{padding:0}
+body.sidebar-collapsed .sidebar-top{padding:18px 10px}
+body.sidebar-collapsed .brand{padding-bottom:18px}
+body.sidebar-collapsed .brand-logo{width:48px;height:48px}
+body.sidebar-collapsed .brand-text,body.sidebar-collapsed .nav-title,body.sidebar-collapsed .nav-text,body.sidebar-collapsed .sidebar-bottom{display:none}
+body.sidebar-collapsed .nav-link{justify-content:center;padding:13px 5px}
+body.sidebar-collapsed .nav-link:hover{transform:none}
+body.sidebar-collapsed .sidebar-toggle-wrap{justify-content:center}
+.main{margin-right:var(--sidebar-width);padding:27px 28px 40px;min-width:0;transition:margin-right .25s}
+body.sidebar-collapsed .main{margin-right:var(--sidebar-small)}
+.topbar{align-items:center;justify-content:space-between;gap:15px;background:#fff;border:1px solid var(--border);border-radius:17px;padding:21px 24px;margin-bottom:23px;box-shadow:0 5px 22px #12375b08}
+.page-heading h1{font-size:22px;font-weight:900;color:var(--green-dark);margin:0 0 5px}
+.page-heading p{font-size:12px;color:var(--muted);margin:0;line-height:1.9}
+.student-badge{border:0;box-shadow:none;background:#f4f8fb;border-radius:12px}
+.student-avatar{background:#e3f5ee;color:var(--green)}
+.welcome-card{background:linear-gradient(110deg,#004e4d,#008866 65%,#07375b);border-radius:16px}
+.composer,.post-card,.empty-state,.loading-state{border-color:var(--border);box-shadow:0 4px 18px #12375b07;border-radius:16px}
+.composer textarea:focus{border-color:#008866;box-shadow:0 0 0 3px #00886612}
+.tool-button{color:#004e4d;border-color:#dce8ef;background:#fff}
+.tool-button:hover{background:#f1fbf6;border-color:#75c6a9}
+.publish-button{background:linear-gradient(110deg,#008866,#006e65);box-shadow:none}
+.post-card:hover{border-color:#6fc6a9}
+.reply-card{border-color:#dcefe8;border-right-color:#008866;background:#f5fbf8}
+.replies-heading,.reply-author{color:#004e4d}
+.post-footer .icon{color:#008866}
+.mobile-nav{background:#fff;border-top:1px solid #e6edf4;box-shadow:0 -4px 20px #12375b12}
+.mobile-nav a{color:#6b7f98;font-weight:700}
+.mobile-nav a.active{color:#008866;font-weight:900}
+@media(max-width:1000px){.main{padding:22px}}
+@media(max-width:760px){
+ .sidebar{display:none}
+ .main,body.sidebar-collapsed .main{margin-right:0;padding:14px 13px 95px}
+ .topbar{padding:15px;margin-bottom:17px;align-items:center}
+ .page-heading h1{font-size:18px}.page-heading p{font-size:11px}
+ .student-badge{padding:6px 8px;gap:6px;max-width:145px}
+ .student-avatar{width:32px;height:32px}
+ .student-info strong{font-size:10px}.student-info small{font-size:9px}
+ .welcome-card{padding:18px 16px;margin-bottom:19px}
+ .welcome-card h2{font-size:16px}.welcome-card p{font-size:11px}
+ .welcome-decoration{left:7px}.welcome-decoration .icon{width:105px;height:105px}
+ .composer{padding:14px}.composer textarea{min-height:105px;font-size:13px}
+ .composer-footer{align-items:stretch}.composer-tools{width:100%}.tool-button{flex:1}.publish-button{width:100%}
+ .post-card{padding:14px}.post-content{font-size:13px}
+ .section-title h2{font-size:16px}
+}
+
 </style>
 </head>
 <body>
@@ -172,16 +245,17 @@ body.sidebar-collapsed .sidebar-toggle .icon{transform:rotate(180deg)}
 </svg>
 
 <aside class="sidebar" id="sidebar">
-  <div class="brand">
-    <div class="brand-icon"><svg class="icon"><use href="#icon-plant"></use></svg></div>
-    <div class="brand-text"><h2>منصة أرض الأحياء</h2><small>الثانوية العامة</small></div>
-  </div>
-  <div class="sidebar-toggle-wrap">
-    <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="تصغير الشريط الجانبي" aria-expanded="true" title="تصغير القائمة">
-      <svg class="icon"><use href="#icon-chevron"></use></svg>
-    </button>
-  </div>
-  <div class="nav-title">القائمة الرئيسية</div>
+  <div class="sidebar-top">
+    <div class="sidebar-toggle-wrap">
+      <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="تصغير القائمة الجانبية" aria-expanded="true" title="تصغير القائمة">
+        <svg class="icon"><use href="#icon-chevron"></use></svg>
+      </button>
+    </div>
+    <div class="brand">
+      <img class="brand-logo" src="../logo.png" alt="شعار أرض الأحياء" onerror="this.style.display='none'">
+      <div class="brand-text"><h2>أرض الأحياء</h2><small>الثانوية العامة</small></div>
+    </div>
+    <div class="nav-title">القائمة الرئيسية</div>
   <nav>
     <a class="nav-link" href="../index.html" data-title="الرئيسية" aria-label="الرئيسية"><span class="nav-icon"><svg class="icon"><use href="#icon-home"></use></svg></span><span class="nav-text">الرئيسية</span></a>
     <a class="nav-link" href="../videos/index.html" data-title="المحاضرات" aria-label="المحاضرات"><span class="nav-icon"><svg class="icon"><use href="#icon-video"></use></svg></span><span class="nav-text">المحاضرات</span></a>
@@ -190,6 +264,7 @@ body.sidebar-collapsed .sidebar-toggle .icon{transform:rotate(180deg)}
     <a class="nav-link active" href="./index.html" data-title="المنتدى" aria-label="المنتدى" aria-current="page"><span class="nav-icon"><svg class="icon"><use href="#icon-forum"></use></svg></span><span class="nav-text">المنتدى</span></a>
     <a class="nav-link" href="../account/index.html" data-title="حساب الطالب" aria-label="حساب الطالب"><span class="nav-icon"><svg class="icon"><use href="#icon-user"></use></svg></span><span class="nav-text">حساب الطالب</span></a>
   </nav>
+  </div>
   <div class="sidebar-bottom">
     <svg class="icon"><use href="#icon-plant"></use></svg>
     <div class="sidebar-bottom-text">معًا نحو التفوق في الأحياء<br>منصة أرض الأحياء © 2026</div>
