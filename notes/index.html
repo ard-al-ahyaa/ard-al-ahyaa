@@ -880,6 +880,110 @@
         display: none;
       }
     }
+
+    /* توحيد الهوية البصرية مع صفحة المنتدى والمحاضرات */
+    :root {
+      --green: #026857;
+      --green-dark: #075e54;
+      --green-light: #e8f5f1;
+      --blue: #1e3a8a;
+      --bg: #f4f7f8;
+      --text: #24313f;
+      --muted: #73808c;
+      --border: #e5ebee;
+      --shadow: 0 5px 22px rgba(15,48,55,.07);
+      --sidebar-width: 270px;
+      --sidebar-collapsed-width: 78px;
+    }
+    body { background: var(--bg); color: var(--text); }
+    .sidebar {
+      padding: 22px 15px;
+      background: linear-gradient(165deg,#026857,#075e54 48%,#1e3a8a);
+      box-shadow: -4px 0 18px rgba(0,0,0,.08);
+      transition: width .3s ease, padding .3s ease;
+    }
+    .sidebar-header {
+      gap: 12px;
+      padding: 7px 8px 22px;
+      border-bottom-color: rgba(255,255,255,.18);
+      margin-bottom: 15px;
+    }
+    .logo-box {
+      width: 48px; height: 48px; border-radius: 15px;
+      background: rgba(255,255,255,.16);
+      border: 0;
+    }
+    .brand-text h2 { font-size: 15px; line-height: 1.7; }
+    .brand-text p { font-size: 10px; opacity: .8; }
+    .sidebar-section-title {
+      font-size: 11px; opacity: .68; padding: 0 13px;
+      margin: 18px 0 10px;
+    }
+    .sidebar-nav { gap: 5px; }
+    .nav-link {
+      gap: 12px; min-height: 48px; padding: 11px 12px;
+      margin: 0; border-radius: 12px;
+      color: rgba(255,255,255,.9); font-size: 13px; font-weight: 600;
+    }
+    .nav-link:hover, .nav-link.active {
+      background: rgba(255,255,255,.17); color: #fff;
+      box-shadow: none;
+    }
+    .nav-link:hover { transform: translateX(-2px); }
+    .nav-icon { width: 25px; height: 25px; font-size: 19px; }
+    .sidebar-bottom {
+      margin-top: 25px; padding: 15px 5px;
+      border-top: 1px solid rgba(255,255,255,.16);
+    }
+    .telegram-link {
+      min-height: 42px; background: rgba(255,255,255,.12);
+      border-color: rgba(255,255,255,.16); border-radius: 10px;
+    }
+    .sidebar-footer { padding-top: 10px; }
+    .sidebar-toggle {
+      position: static; flex-shrink: 0; width: 43px; height: 43px;
+      border: 1px solid rgba(255,255,255,.19); border-radius: 13px;
+      color: #fff; background: rgba(255,255,255,.12);
+      box-shadow: none; font-size: 18px; transition: background .2s;
+    }
+    .sidebar-toggle:hover { background: rgba(255,255,255,.23); }
+    .sidebar-toggle-wrap {
+      display: flex; justify-content: flex-start; margin-bottom: 18px;
+    }
+    body.sidebar-collapsed .sidebar { padding: 18px 10px; }
+    body.sidebar-collapsed .sidebar-header {
+      justify-content: center; padding: 7px 0 18px;
+    }
+    body.sidebar-collapsed .sidebar-toggle-wrap { justify-content: center; }
+    body.sidebar-collapsed .nav-link { justify-content: center; padding: 12px 0; gap: 0; }
+    body.sidebar-collapsed .nav-link:hover { transform: none; }
+    .main { padding: 25px 30px 50px; }
+    .page-heading h1 { margin: 0 0 4px; font-size: 25px; color: var(--green-dark); }
+    .page-heading p { margin: 0; font-size: 13px; color: var(--muted); }
+    .student-badge { box-shadow: var(--shadow); }
+    .welcome-card {
+      padding: 23px 25px; border-radius: 17px;
+      background: linear-gradient(115deg,#026857,#0b806f 58%,#1e3a8a);
+      box-shadow: 0 8px 25px rgba(2,104,87,.14);
+    }
+    .welcome-card h2 { font-size: 20px; }
+    .welcome-card p { font-size: 13px; line-height: 2; }
+    .section-heading h2 { font-size: 18px; }
+    .section-heading h2::before { background: #026857; }
+    .note-card { box-shadow: var(--shadow); }
+    .note-card:hover { border-color: #0b806f; box-shadow: 0 12px 28px rgba(15,48,55,.10); }
+    .note-btn.open { background: #026857; border-color: #026857; }
+    .note-btn.open:hover { background: #075e54; }
+    @media (max-width: 1050px) {
+      .main { padding: 24px 20px 50px; }
+    }
+    @media (max-width: 768px) {
+      .main, body.sidebar-collapsed .main { padding: 20px 14px 100px; }
+      .welcome-card { padding: 21px 18px; border-radius: 16px; }
+      .welcome-card h2 { font-size: 18px; }
+      .welcome-card p { font-size: 12px; }
+    }
+
   </style>
 </head>
 
@@ -899,6 +1003,11 @@
         <h2>أرض الأحياء</h2>
         <p>رحلتك نحو التفوق تبدأ هنا</p>
       </div>
+    </div>
+
+    <div class="sidebar-toggle-wrap">
+      <button class="sidebar-toggle" id="sidebarToggle"
+        type="button" aria-label="طي أو توسيع القائمة" title="طي أو توسيع القائمة">❯</button>
     </div>
 
     <div class="sidebar-section-title">القائمة الرئيسية</div>
@@ -951,11 +1060,6 @@
     </div>
 
   </aside>
-
-  <button class="sidebar-toggle" id="sidebarToggle"
-    type="button" aria-label="طي أو توسيع القائمة" title="طي أو توسيع القائمة">
-    ❯
-  </button>
 
   <!-- المحتوى الرئيسي -->
   <main class="main">
