@@ -7,28 +7,28 @@
 
   <title>بطل الفصل | منصة أرض الأحياء</title>
   <meta name="description" content="لوحة شرف الطلاب المتميزين في منصة أرض الأحياء للصف الثالث الثانوي.">
-  <meta name="theme-color" content="#026857">
+  <meta name="theme-color" content="#004e4d">
   <link rel="icon" href="../favicon.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
-      --green: #026857;
-      --green-dark: #075e54;
-      --green-light: #e8f5f1;
-      --blue: #1e3a8a;
-      --background: #f0f4f8;
-      --white: #fff;
-      --text: #2c3e50;
-      --muted: #64748b;
-      --border: #e2e8f0;
-      --shadow: 0 4px 20px rgba(30,58,138,.05);
-      --sidebar-width: 270px;
-      --sidebar-collapsed-width: 82px;
+      --green: #008866;
+      --green-dark: #004e4d;
+      --green-light: #e3f5ee;
+      --blue: #07375b;
+      --bg: #f4f7fb;
+      --text: #142f50;
+      --muted: #6b7f98;
+      --border: #e2eaf3;
+      --shadow: 0 5px 22px rgba(18,55,91,.06);
+      --sidebar-width: 272px;
+      --sidebar-small: 82px;
     }
 
     * {
@@ -39,49 +39,48 @@
     }
 
     body {
-      background: var(--background);
-      color: var(--text);
       min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
     }
 
-    button { font-family: inherit; }
+    button { font: inherit; }
     a { -webkit-tap-highlight-color: transparent; }
+    .hidden { display: none !important; }
 
     /* الشريط الجانبي */
     .sidebar {
-      width: var(--sidebar-width);
       position: fixed;
-      right: 0;
       top: 0;
-      height: 100vh;
+      right: 0;
       z-index: 1000;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      width: var(--sidebar-width);
+      height: 100vh;
       overflow-x: hidden;
       overflow-y: auto;
       color: #fff;
-      background: linear-gradient(180deg,#026857 0%,#075e54 48%,#1e3a8a 100%);
+      background: linear-gradient(180deg,#008866 0%,#004e4d 48%,#07375b 100%);
       transition: width .25s ease;
       scrollbar-width: thin;
-      scrollbar-color: rgba(255,255,255,.3) transparent;
     }
 
-    .sidebar-top { padding: 22px 18px; min-width: 0; }
+    .sidebar-top { padding: 22px 18px; }
 
     .sidebar-toggle {
-      width: 38px;
-      height: 38px;
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 38px;
+      height: 38px;
       margin-bottom: 18px;
       border: 1px solid rgba(255,255,255,.22);
       border-radius: 11px;
       background: rgba(255,255,255,.12);
       color: #fff;
       cursor: pointer;
-      transition: background .2s;
     }
 
     .sidebar-toggle:hover { background: rgba(255,255,255,.23); }
@@ -102,9 +101,9 @@
       align-items: center;
       gap: 13px;
       min-width: 0;
-      overflow: hidden;
       margin-bottom: 28px;
       padding-bottom: 20px;
+      overflow: hidden;
       border-bottom: 1px solid rgba(255,255,255,.16);
     }
 
@@ -112,10 +111,10 @@
       width: 49px;
       height: 49px;
       flex-shrink: 0;
-      object-fit: contain;
       padding: 3px;
       border-radius: 13px;
       background: #fff;
+      object-fit: contain;
     }
 
     .logo-box h2 {
@@ -133,8 +132,8 @@
     }
 
     .menu-title {
-      padding: 0 12px;
       margin-bottom: 10px;
+      padding: 0 12px;
       color: rgba(255,255,255,.65);
       font-size: 10px;
       font-weight: 700;
@@ -210,8 +209,8 @@
       line-height: 2;
     }
 
-    /* تصغير الشريط */
-    body.sidebar-collapsed .sidebar { width: var(--sidebar-collapsed-width); }
+    /* الشريط المصغّر */
+    body.sidebar-collapsed .sidebar { width: var(--sidebar-small); }
     body.sidebar-collapsed .sidebar-top { padding: 20px 10px; }
 
     body.sidebar-collapsed .sidebar-toggle {
@@ -227,13 +226,18 @@
       padding-bottom: 18px;
     }
 
-    body.sidebar-collapsed .logo-box img { width: 43px; height: 43px; }
+    body.sidebar-collapsed .logo-box img {
+      width: 43px;
+      height: 43px;
+    }
 
     body.sidebar-collapsed .logo-box > div,
     body.sidebar-collapsed .menu-title,
     body.sidebar-collapsed .menu a > span:not(.menu-icon),
     body.sidebar-collapsed .logout-btn > span:not(.menu-icon),
-    body.sidebar-collapsed .sidebar-bottom { display: none; }
+    body.sidebar-collapsed .sidebar-bottom {
+      display: none;
+    }
 
     body.sidebar-collapsed .menu { align-items: center; }
 
@@ -258,8 +262,9 @@
       position: absolute;
       right: calc(100% + 10px);
       top: 50%;
-      transform: translateY(-50%);
+      z-index: 5000;
       padding: 7px 12px;
+      transform: translateY(-50%);
       border-radius: 8px;
       background: #102f49;
       color: #fff;
@@ -269,7 +274,6 @@
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
-      z-index: 5000;
       content: "";
     }
 
@@ -287,7 +291,7 @@
     body.sidebar-collapsed .menu a:nth-of-type(6)::after { content: "حساب الطالب"; }
     body.sidebar-collapsed .logout-btn::after { content: "تسجيل الخروج"; }
 
-    /* المحتوى */
+    /* المحتوى الرئيسي */
     .main {
       min-width: 0;
       min-height: 100vh;
@@ -296,7 +300,9 @@
       transition: margin-right .25s ease;
     }
 
-    body.sidebar-collapsed .main { margin-right: var(--sidebar-collapsed-width); }
+    body.sidebar-collapsed .main {
+      margin-right: var(--sidebar-small);
+    }
 
     .topbar {
       display: flex;
@@ -318,7 +324,11 @@
       font-weight: 900;
     }
 
-    .topbar p { color: var(--muted); font-size: 13px; line-height: 1.9; }
+    .topbar p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.9;
+    }
 
     .user-chip {
       display: flex;
@@ -344,27 +354,36 @@
     }
 
     .user-details { min-width: 0; }
+
     .user-details strong {
       display: block;
       color: var(--green-dark);
       font-size: 12px;
       overflow-wrap: anywhere;
     }
-    .user-details small { color: var(--muted); font-size: 10px; }
 
-    /* بطاقة الترحيب */
+    .user-details small {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    /* الترحيب */
     .champion-hero {
       position: relative;
       overflow: hidden;
       padding: 32px 30px;
       margin-bottom: 23px;
       border-radius: 18px;
-      background: linear-gradient(120deg,#026857 0%,#0b806f 48%,#1e3a8a 100%);
+      background: linear-gradient(120deg,#008866 0%,#006d65 48%,#07375b 100%);
       color: #fff;
-      box-shadow: 0 10px 30px rgba(30,58,138,.12);
+      box-shadow: 0 10px 30px rgba(18,55,91,.12);
     }
 
-    .hero-content { position: relative; z-index: 2; max-width: 650px; }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 650px;
+    }
 
     .hero-badge {
       display: inline-flex;
@@ -420,6 +439,12 @@
       border-radius: 15px;
       background: #fff;
       box-shadow: var(--shadow);
+      transition: transform .2s,border-color .2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      border-color: #b9dcd2;
     }
 
     .stat-icon {
@@ -432,11 +457,12 @@
       font-size: 23px;
     }
 
-    .stat-icon.green { background: #e8f5f1; }
+    .stat-icon.green { background: #e3f5ee; }
     .stat-icon.blue { background: #eff4ff; }
     .stat-icon.gold { background: #fff6df; }
 
     .stat-info { min-width: 0; }
+
     .stat-info span {
       display: block;
       margin-bottom: 4px;
@@ -460,8 +486,17 @@
       margin: 25px 0 15px;
     }
 
-    .section-heading h2 { color: var(--blue); font-size: 19px; font-weight: 900; }
-    .section-heading p { margin-top: 3px; color: var(--muted); font-size: 12px; }
+    .section-heading h2 {
+      color: var(--blue);
+      font-size: 19px;
+      font-weight: 900;
+    }
+
+    .section-heading p {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+    }
 
     .refresh-btn {
       padding: 9px 13px;
@@ -479,18 +514,15 @@
     .refresh-btn:hover { background: var(--green-light); }
     .refresh-btn:disabled { opacity: .6; cursor: wait; }
 
-    /* المراكز الأولى */
+    /* المراكز الثلاثة */
     .podium {
       display: grid;
       grid-template-columns: repeat(3,minmax(0,1fr));
-      align-items: stretch;
       gap: 15px;
       margin-bottom: 30px;
     }
 
     .podium-card {
-      position: relative;
-      overflow: hidden;
       min-width: 0;
       padding: 24px 15px;
       border: 1px solid var(--border);
@@ -498,7 +530,10 @@
       background: #fff;
       box-shadow: var(--shadow);
       text-align: center;
+      transition: transform .2s;
     }
+
+    .podium-card:hover { transform: translateY(-3px); }
 
     .podium-card.first {
       border-top: 4px solid #e7b326;
@@ -509,7 +544,12 @@
     .podium-card.third { border-top: 4px solid #c58b58; }
 
     .podium-medal { margin-bottom: 11px; font-size: 43px; }
-    .podium-position { margin-bottom: 10px; color: var(--muted); font-size: 11px; }
+
+    .podium-position {
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 11px;
+    }
 
     .podium-name {
       margin-bottom: 10px;
@@ -535,9 +575,12 @@
       overflow-wrap: anywhere;
     }
 
-    .podium-card.first .podium-score { background: #fff1c5; color: #8a6300; }
+    .podium-card.first .podium-score {
+      background: #fff1c5;
+      color: #8a6300;
+    }
 
-    /* ترتيب الطلاب */
+    /* قائمة الترتيب */
     .ranking { display: grid; gap: 11px; }
 
     .student-card {
@@ -549,11 +592,14 @@
       border: 1px solid var(--border);
       border-radius: 14px;
       background: #fff;
-      box-shadow: 0 4px 15px rgba(30,58,138,.025);
+      box-shadow: 0 4px 15px rgba(18,55,91,.025);
       transition: border-color .2s,transform .2s;
     }
 
-    .student-card:hover { border-color: #b9dcd2; transform: translateY(-2px); }
+    .student-card:hover {
+      border-color: #b9dcd2;
+      transform: translateY(-2px);
+    }
 
     .rank {
       display: grid;
@@ -573,6 +619,7 @@
     .student-card.top-three .rank { background: #f9e8d9; color: #955b2d; }
 
     .student-info { flex: 1; min-width: 0; }
+
     .student-info h3 {
       margin-bottom: 3px;
       color: var(--blue);
@@ -581,7 +628,10 @@
       overflow-wrap: anywhere;
     }
 
-    .student-info p { color: var(--muted); font-size: 11px; }
+    .student-info p {
+      color: var(--muted);
+      font-size: 11px;
+    }
 
     .points {
       color: var(--green-dark);
@@ -599,7 +649,7 @@
       font-weight: 500;
     }
 
-    /* التحميل والأخطاء */
+    /* حالات التحميل */
     .state-box {
       padding: 35px 20px;
       border: 1px solid var(--border);
@@ -611,9 +661,25 @@
       text-align: center;
     }
 
-    .state-icon { display: block; margin-bottom: 10px; font-size: 43px; }
-    .state-box h3 { margin-bottom: 6px; color: var(--blue); font-size: 16px; }
-    .state-box p { max-width: 500px; margin: auto; font-size: 12px; overflow-wrap: anywhere; }
+    .state-icon {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 43px;
+    }
+
+    .state-box h3 {
+      margin-bottom: 6px;
+      color: var(--blue);
+      font-size: 16px;
+    }
+
+    .state-box p {
+      max-width: 500px;
+      margin: auto;
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
     .state-box.error h3 { color: #b42332; }
 
     .retry-btn {
@@ -627,8 +693,6 @@
       font-weight: 700;
       cursor: pointer;
     }
-
-    .hidden { display: none !important; }
 
     .telegram-floating {
       position: fixed;
@@ -661,12 +725,14 @@
 
     .bottom-nav { display: none; }
 
+    /* التابلت */
     @media (max-width: 1100px) {
       .main { padding: 25px; }
       .stats-grid { gap: 10px; }
       .stat-card { padding: 15px 12px; }
     }
 
+    /* الموبايل */
     @media (max-width: 768px) {
       .sidebar { display: none; }
 
@@ -686,7 +752,12 @@
       .topbar h1 { font-size: 19px; }
       .topbar p { font-size: 11px; }
 
-      .user-chip { gap: 6px; max-width: 145px; padding: 6px; }
+      .user-chip {
+        gap: 6px;
+        max-width: 145px;
+        padding: 6px;
+      }
+
       .user-avatar { width: 32px; height: 32px; font-size: 17px; }
       .user-details strong { font-size: 10px; }
       .user-details small { font-size: 9px; }
@@ -697,12 +768,30 @@
       .hero-decoration { left: -8px; font-size: 100px; }
 
       .stats-grid { gap: 8px; margin-bottom: 23px; }
-      .stat-card { flex-direction: column; align-items: flex-start; gap: 9px; padding: 12px 10px; border-radius: 12px; }
-      .stat-icon { width: 35px; height: 35px; border-radius: 10px; font-size: 18px; }
+
+      .stat-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 9px;
+        padding: 12px 10px;
+        border-radius: 12px;
+      }
+
+      .stat-icon {
+        width: 35px;
+        height: 35px;
+        border-radius: 10px;
+        font-size: 18px;
+      }
+
       .stat-info span { font-size: 10px; }
       .stat-info strong { font-size: 17px; }
 
-      .section-heading { align-items: flex-start; margin: 22px 0 13px; }
+      .section-heading {
+        align-items: flex-start;
+        margin: 22px 0 13px;
+      }
+
       .section-heading h2 { font-size: 16px; }
       .section-heading p { font-size: 10px; }
       .refresh-btn { padding: 8px 9px; font-size: 10px; }
@@ -721,7 +810,13 @@
       .points { font-size: 11px; }
       .points small { font-size: 9px; }
 
-      .telegram-floating { left: 13px; bottom: 78px; width: 45px; height: 45px; font-size: 22px; }
+      .telegram-floating {
+        left: 13px;
+        bottom: 78px;
+        width: 45px;
+        height: 45px;
+        font-size: 22px;
+      }
 
       body { padding-bottom: 75px; }
 
@@ -735,8 +830,8 @@
         grid-template-columns: repeat(4,minmax(0,1fr));
         min-height: 65px;
         padding: 5px 4px calc(5px + env(safe-area-inset-bottom));
-        background: #fff;
         border-top: 1px solid var(--border);
+        background: #fff;
         box-shadow: 0 -4px 15px rgba(0,0,0,.08);
       }
 
@@ -753,8 +848,16 @@
         font-size: 20px;
       }
 
-      .bottom-nav-item small { font-size: 10px; font-weight: 700; }
-      .bottom-nav-item.active { background: var(--green-light); color: var(--green-dark); }
+      .bottom-nav-item small {
+        font-size: 10px;
+        font-weight: 700;
+      }
+
+      .bottom-nav-item.active {
+        background: var(--green-light);
+        color: var(--green-dark);
+      }
+
       footer { margin-top: 22px; }
     }
 
@@ -771,7 +874,11 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .sidebar,.main,.sidebar-toggle,.sidebar-toggle svg { transition: none; }
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+      }
     }
   </style>
 </head>
@@ -911,7 +1018,7 @@
           استمر في المذاكرة والتدريب، واجعل هدفك دائمًا تحقيق أفضل النتائج.
         </p>
       </div>
-      <div class="hero-decoration">🏆</div>
+      <div class="hero-decoration" aria-hidden="true">🏆</div>
     </section>
 
     <section class="stats-grid">
@@ -1026,6 +1133,7 @@
 
     try {
       const savedSidebarState = localStorage.getItem("ardAlahyaaSidebarCollapsed");
+
       if (savedSidebarState === "true") {
         document.body.classList.add("sidebar-collapsed");
         sidebarToggle.setAttribute("aria-expanded", "false");
@@ -1091,12 +1199,14 @@
         if (error) throw error;
 
         const session = data?.session;
+
         if (!session) {
           window.location.replace("../login/index.html");
           return false;
         }
 
         const user = session.user;
+
         let studentName =
           user.user_metadata?.full_name ||
           user.user_metadata?.name ||
@@ -1121,6 +1231,7 @@
         return true;
       } catch (error) {
         console.error("خطأ التحقق من المستخدم:", error);
+
         showState(
           rankingElement,
           "⚠️",
@@ -1128,14 +1239,18 @@
           "تأكد من اتصال الإنترنت ثم أعد تحميل الصفحة.",
           true
         );
+
         return false;
       }
     }
 
-    // قراءة الدرجة الرقمية
+    // تحويل الدرجات إلى أرقام
     function getNumericScore(value) {
       if (value === null || value === undefined || value === "") return null;
-      if (typeof value === "number") return Number.isFinite(value) ? value : null;
+
+      if (typeof value === "number") {
+        return Number.isFinite(value) ? value : null;
+      }
 
       const normalized = String(value)
         .replace(/[٠-٩]/g, digit => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)))
@@ -1158,6 +1273,7 @@
       }
 
       const numeric = getNumericScore(value);
+
       if (numeric !== null) {
         return Number.isInteger(numeric)
           ? numeric.toLocaleString("ar-EG")
@@ -1167,6 +1283,7 @@
       return String(value);
     }
 
+    // ترتيب الطلاب تنازليًا حسب الدرجة
     function sortStudents(students) {
       return [...students].sort((a, b) => {
         const scoreA = getNumericScore(a.score);
@@ -1178,6 +1295,7 @@
 
         const dateA = new Date(a.created_at || 0).getTime();
         const dateB = new Date(b.created_at || 0).getTime();
+
         return dateB - dateA;
       });
     }
@@ -1189,8 +1307,10 @@
       return String(position);
     }
 
+    // إنشاء بطاقة أحد الأبطال الثلاثة
     function createPodiumCard(student, position) {
       const classes = { 1: "first", 2: "second", 3: "third" };
+
       const card = document.createElement("article");
       card.className = "podium-card " + classes[position];
 
@@ -1206,7 +1326,8 @@
 
       const name = document.createElement("h3");
       name.className = "podium-name";
-      name.textContent = String(student.student_name || "").trim() || "طالب بالمنصة";
+      name.textContent =
+        String(student.student_name || "").trim() || "طالب بالمنصة";
 
       const score = document.createElement("div");
       score.className = "podium-score";
@@ -1216,9 +1337,11 @@
       return card;
     }
 
+    // إنشاء بطاقة طالب في الترتيب
     function createStudentCard(student, index) {
       const position = index + 1;
       const card = document.createElement("article");
+
       card.className = "student-card";
 
       if (position === 1) card.classList.add("top-one");
@@ -1233,17 +1356,22 @@
       info.className = "student-info";
 
       const name = document.createElement("h3");
-      name.textContent = String(student.student_name || "").trim() || "طالب بالمنصة";
+      name.textContent =
+        String(student.student_name || "").trim() || "طالب بالمنصة";
 
       const subtitle = document.createElement("p");
       subtitle.textContent =
-        position <= 3 ? "من أبطال منصة أرض الأحياء" : "المركز " + position;
+        position <= 3
+          ? "من أبطال منصة أرض الأحياء"
+          : "المركز " + position.toLocaleString("ar-EG");
 
       info.append(name, subtitle);
 
       const points = document.createElement("div");
       points.className = "points";
-      points.appendChild(document.createTextNode("⭐ " + getScoreLabel(student.score)));
+      points.appendChild(
+        document.createTextNode("⭐ " + getScoreLabel(student.score))
+      );
 
       const pointsNote = document.createElement("small");
       pointsNote.textContent = "النتيجة المسجلة";
@@ -1253,8 +1381,10 @@
       return card;
     }
 
+    // تحديث الإحصائيات
     function updateStats(students) {
-      totalStudentsElement.textContent = students.length.toLocaleString("ar-EG");
+      totalStudentsElement.textContent =
+        students.length.toLocaleString("ar-EG");
 
       if (students.length === 0) {
         firstPlaceNameElement.textContent = "—";
@@ -1271,9 +1401,12 @@
 
       if (numericScores.length) {
         const highest = Math.max(...numericScores);
+
         highestScoreElement.textContent = Number.isInteger(highest)
           ? highest.toLocaleString("ar-EG")
-          : highest.toLocaleString("ar-EG", { maximumFractionDigits: 2 });
+          : highest.toLocaleString("ar-EG", {
+              maximumFractionDigits: 2
+            });
       } else {
         highestScoreElement.textContent = "—";
       }
@@ -1287,7 +1420,13 @@
       refreshBtn.disabled = true;
       refreshBtn.textContent = "⏳ جارٍ التحديث...";
 
-      showState(rankingElement, "⏳", "جارٍ تحميل لوحة الشرف", "يتم الآن جلب النتائج المسجلة.");
+      showState(
+        rankingElement,
+        "⏳",
+        "جارٍ تحميل لوحة الشرف",
+        "يتم الآن جلب النتائج المسجلة."
+      );
+
       podiumSection.classList.add("hidden");
 
       try {
@@ -1313,6 +1452,7 @@
         }
 
         podiumElement.replaceChildren();
+
         students.slice(0, 3).forEach((student, index) => {
           podiumElement.appendChild(createPodiumCard(student, index + 1));
         });
@@ -1323,6 +1463,7 @@
         students.forEach((student, index) => {
           rankingElement.appendChild(createStudentCard(student, index));
         });
+
       } catch (error) {
         console.error("خطأ تحميل الأبطال:", error);
 
@@ -1335,7 +1476,14 @@
                 ? "لا توجد صلاحية لقراءة النتائج. راجع سياسات RLS."
                 : "تعذر تحميل النتائج من قاعدة البيانات. تأكد من الجدول والصلاحيات واتصال الإنترنت.";
 
-        showState(rankingElement, "⚠️", "تعذر تحميل النتائج", message, true);
+        showState(
+          rankingElement,
+          "⚠️",
+          "تعذر تحميل النتائج",
+          message,
+          true
+        );
+
       } finally {
         loadingChampions = false;
         refreshBtn.disabled = false;
@@ -1348,6 +1496,7 @@
     // تسجيل الخروج
     logoutBtn.addEventListener("click", async function () {
       logoutBtn.disabled = true;
+
       const label = logoutBtn.querySelector("span:not(.menu-icon)");
       const originalText = label ? label.textContent : "تسجيل الخروج";
 
@@ -1356,18 +1505,23 @@
       try {
         const { error } = await supabaseClient.auth.signOut();
         if (error) throw error;
+
         window.location.replace("../login/index.html");
+
       } catch (error) {
         console.error("خطأ تسجيل الخروج:", error);
         alert("تعذر تسجيل الخروج. حاول مرة أخرى.");
+
         logoutBtn.disabled = false;
         if (label) label.textContent = originalText;
       }
     });
 
+    // تشغيل الصفحة
     async function initPage() {
       const loggedIn = await checkUser();
       if (!loggedIn) return;
+
       await loadChampions();
     }
 
