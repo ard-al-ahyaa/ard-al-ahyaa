@@ -2,25 +2,17 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>المحاضرات | منصة أرض الأحياء</title>
-<meta name="description" content="محاضرات الأحياء للصف الثالث الثانوي في منصة أرض الأحياء.">
+<meta name="description" content="محاضرات الأحياء للصف الثالث الثانوي في منصة أرض الأحياء">
 <meta name="theme-color" content="#004e4d">
 <link rel="icon" href="../favicon.png">
-
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="../progress.js"></script>
 
 <style>
-*{
- box-sizing:border-box;
- margin:0;
- padding:0;
- font-family:'Cairo',sans-serif
-}
 :root{
  --green:#008866;
  --dark:#004e4d;
@@ -28,851 +20,410 @@
  --bg:#f4f7fb;
  --border:#e2eaf3;
  --text:#142f50;
- --muted:#6b7f98;
- --sidebar:272px
+ --muted:#6b7f98
 }
-body{
- background:var(--bg);
- color:var(--text);
- min-height:100vh
-}
-button{
- cursor:pointer;
- font-family:inherit
-}
-a{
- text-decoration:none
-}
-
-/* القائمة الجانبية */
+*{box-sizing:border-box;margin:0;padding:0;font-family:Cairo,sans-serif}
+body{background:var(--bg);color:var(--text)}
+button{cursor:pointer;font-family:inherit}
+a{text-decoration:none}
 .sidebar{
- position:fixed;
- right:0;
- top:0;
- bottom:0;
- width:var(--sidebar);
+ position:fixed;right:0;top:0;bottom:0;width:272px;
  background:linear-gradient(180deg,#004e4d,#003d50 62%,#07375b);
- color:white;
- z-index:1000;
- display:flex;
- flex-direction:column;
- padding:20px 15px;
- transition:.25s;
- overflow-y:auto
+ color:#fff;z-index:1000;padding:20px 15px;overflow-y:auto;transition:.25s
 }
-.sidebar.collapsed{
- width:82px
-}
+.sidebar.collapsed{width:82px}
 .sidebar-toggle{
- width:40px;
- height:40px;
- border:1px solid #ffffff30;
- border-radius:50%;
- background:#ffffff15;
- color:white;
- font-size:18px;
- margin-bottom:18px
+ width:40px;height:40px;border:1px solid #ffffff30;border-radius:50%;
+ background:#ffffff15;color:#fff;font-size:18px;margin-bottom:18px
 }
-.brand{
- text-align:center;
- padding-bottom:23px;
- border-bottom:1px solid #ffffff20;
- margin-bottom:25px
-}
-.brand img{
- width:75px;
- height:75px;
- object-fit:contain
-}
-.brand h2{
- font-size:23px;
- font-weight:900
-}
-.brand p{
- font-size:12px;
- opacity:.8
-}
-.menu{
- display:flex;
- flex-direction:column;
- gap:7px
-}
+.brand{text-align:center;padding-bottom:23px;border-bottom:1px solid #ffffff20;margin-bottom:25px}
+.brand img{width:75px;height:75px;object-fit:contain}
+.brand h2{font-size:23px;font-weight:900}
+.brand p{font-size:12px;opacity:.8}
+.menu{display:flex;flex-direction:column;gap:7px}
 .menu a{
- display:flex;
- align-items:center;
- gap:15px;
- min-height:48px;
- padding:12px 15px;
- border-radius:12px;
- color:white;
- font-size:14px;
- font-weight:700;
- white-space:nowrap
+ display:flex;align-items:center;gap:15px;min-height:48px;padding:12px 15px;
+ border-radius:12px;color:white;font-size:14px;font-weight:700;white-space:nowrap
 }
-.menu a:hover{
- background:#ffffff18
-}
-.menu a.active{
- background:linear-gradient(110deg,#1da77b,#159b78)
-}
-.menu i{
- width:27px;
- text-align:center;
- font-size:19px
-}
-.sidebar.collapsed .brand h2,
-.sidebar.collapsed .brand p,
-.sidebar.collapsed .menu span{
- display:none
-}
-.sidebar.collapsed .brand img{
- width:48px;
- height:48px
-}
-.sidebar.collapsed .menu a{
- justify-content:center;
- padding:13px 5px
-}
-.main{
- margin-right:272px;
- padding:27px 28px 45px;
- transition:.25s
-}
-.main.expanded{
- margin-right:82px
-}
+.menu a:hover{background:#ffffff18}
+.menu a.active{background:linear-gradient(110deg,#1da77b,#159b78)}
+.menu i{width:27px;text-align:center;font-size:19px}
+.sidebar.collapsed .brand h2,.sidebar.collapsed .brand p,.sidebar.collapsed .menu span{display:none}
+.sidebar.collapsed .brand img{width:48px;height:48px}
+.sidebar.collapsed .menu a{justify-content:center;padding:13px 5px}
+.main{margin-right:272px;padding:27px 28px 45px;transition:.25s}
+.main.expanded{margin-right:82px}
 .topbar{
- display:flex;
- justify-content:space-between;
- align-items:center;
- gap:15px;
- background:white;
- border:1px solid var(--border);
- border-radius:17px;
- padding:21px 24px;
- margin-bottom:23px
+ display:flex;justify-content:space-between;align-items:center;gap:15px;
+ background:#fff;border:1px solid var(--border);border-radius:17px;
+ padding:21px 24px;margin-bottom:23px
 }
-.topbar h1{
- color:var(--dark);
- font-size:22px;
- font-weight:900
-}
-.topbar p{
- color:var(--muted);
- font-size:12px;
- margin-top:5px
-}
-.topbar i{
- color:var(--green);
- font-size:27px
-}
-
-/* الشهور */
+.topbar h1{color:var(--dark);font-size:22px;font-weight:900}
+.topbar p{color:var(--muted);font-size:12px;margin-top:5px}
+.topbar>i{color:var(--green);font-size:27px}
 .months-grid{
- display:grid;
- grid-template-columns:repeat(3,minmax(0,1fr));
- gap:13px;
- margin-bottom:23px
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:13px;margin-bottom:23px
 }
 .month-btn{
- background:white;
- border:1px solid var(--border);
- border-radius:15px;
- padding:13px;
- text-align:right;
- color:var(--text);
- transition:.2s
+ background:white;border:1px solid var(--border);border-radius:15px;
+ padding:13px;text-align:right;color:var(--text);transition:.2s
 }
-.month-btn:hover{
- transform:translateY(-2px);
- border-color:var(--green)
-}
-.month-btn.active{
- border-color:var(--green);
- background:#f1fbf6
-}
-.month-btn img{
- width:100%;
- aspect-ratio:16/9;
- object-fit:cover;
- border-radius:10px;
- margin-bottom:10px
-}
-.month-btn strong{
- font-size:13px
-}
-.month-btn small{
- display:block;
- color:var(--muted);
- font-size:11px;
- margin-top:5px
-}
+.month-btn:hover{transform:translateY(-2px);border-color:var(--green)}
+.month-btn.active{border-color:var(--green);background:#f1fbf6}
+.month-btn img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;margin-bottom:10px}
+.month-btn strong{font-size:13px}
+.month-btn small{display:block;color:var(--muted);font-size:11px;margin-top:5px}
 .month-heading{
- background:white;
- border:1px solid var(--border);
- padding:15px 18px;
- border-radius:15px;
- margin-bottom:17px
+ background:#fff;border:1px solid var(--border);padding:15px 18px;
+ border-radius:15px;margin-bottom:17px
 }
-.month-heading h2{
- font-size:17px;
- color:var(--dark)
-}
-.month-heading p{
- color:var(--muted);
- font-size:11px
-}
-
-/* المحاضرات */
+.month-heading h2{font-size:17px;color:var(--dark)}
+.month-heading p{color:var(--muted);font-size:11px}
 .lecture-card{
- background:white;
- border:1px solid var(--border);
- border-radius:16px;
- overflow:hidden;
- margin-bottom:17px;
- box-shadow:0 4px 18px #12375b07
+ background:white;border:1px solid var(--border);border-radius:16px;
+ overflow:hidden;margin-bottom:17px;box-shadow:0 4px 18px #12375b07
 }
-.lecture-header{
- display:flex;
- align-items:center;
- gap:13px;
- padding:15px 18px;
- cursor:pointer
-}
-.lecture-header:hover{
- background:#f9fcff
-}
-.lecture-thumb{
- width:95px;
- aspect-ratio:16/9;
- object-fit:cover;
- border-radius:11px
-}
-.lecture-info{
- flex:1;
- min-width:0
-}
-.lecture-info h3{
- font-size:15px;
- font-weight:900
-}
-.lecture-info p{
- font-size:11px;
- color:var(--muted);
- margin-top:5px
-}
-.lecture-arrow{
- color:var(--green);
- font-size:18px
-}
-.lecture-body{
- display:none;
- padding:18px;
- background:#fbfcfe;
- border-top:1px solid #edf1f6
-}
-.lecture-body.open{
- display:block
-}
+.lecture-header{display:flex;align-items:center;gap:13px;padding:15px 18px;cursor:pointer}
+.lecture-header:hover{background:#f9fcff}
+.lecture-thumb{width:95px;aspect-ratio:16/9;object-fit:cover;border-radius:11px}
+.lecture-info{flex:1;min-width:0}
+.lecture-info h3{font-size:15px;font-weight:900}
+.lecture-info p{font-size:11px;color:var(--muted);margin-top:5px}
+.lecture-arrow{color:var(--green);font-size:18px;transition:.2s}
+.lecture-body{display:none;padding:18px;background:#fbfcfe;border-top:1px solid #edf1f6}
+.lecture-body.open{display:block}
 
 /* مشغل أرض الأحياء */
 .earth-player{
- position:relative;
- width:100%;
- aspect-ratio:16/9;
- background:#07111d;
- border-radius:13px;
- overflow:hidden;
- margin-bottom:17px;
- direction:ltr;
- user-select:none;
- -webkit-user-select:none;
- -webkit-touch-callout:none;
- touch-action:manipulation
+ position:relative;width:100%;aspect-ratio:16/9;background:#07111d;
+ border-radius:13px;overflow:hidden;margin-bottom:17px;direction:ltr;
+ user-select:none;-webkit-user-select:none
 }
-.earth-player video,
-.earth-player iframe{
- position:absolute;
- inset:0;
- width:100%;
- height:100%;
- object-fit:contain;
- border:0;
- background:#07111d
+.earth-player:fullscreen{border-radius:0}
+.earth-player video,.earth-player iframe{
+ position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+ border:0;background:#07111d
 }
-.earth-player video{
- pointer-events:none
-}
-
-/* شاشة التحميل */
+.earth-player video{pointer-events:none}
+.player-touch{position:absolute;inset:0;z-index:2;background:transparent}
 .player-loading{
- position:absolute;
- inset:0;
- display:flex;
- align-items:center;
- justify-content:center;
- flex-direction:column;
- gap:12px;
- background:#07111d;
- color:white;
- z-index:5;
- font-size:12px
+ position:absolute;inset:0;display:flex;align-items:center;
+ justify-content:center;flex-direction:column;gap:12px;
+ background:#07111d;color:white;z-index:5;font-size:12px;pointer-events:none
 }
-.player-loading.hidden{
- display:none
-}
+.player-loading.hidden{display:none}
 .spinner{
- width:38px;
- height:38px;
- border:3px solid #ffffff30;
- border-top-color:#20c997;
- border-radius:50%;
- animation:spin .8s linear infinite
+ width:38px;height:38px;border:3px solid #ffffff30;
+ border-top-color:#20c997;border-radius:50%;animation:spin .8s linear infinite
 }
-@keyframes spin{
- to{transform:rotate(360deg)}
-}
-
-/* العلامة الرئيسية */
+@keyframes spin{to{transform:rotate(360deg)}}
 .player-center{
- position:absolute;
- inset:0;
- display:flex;
- align-items:center;
- justify-content:center;
- z-index:3;
- pointer-events:none;
- transition:opacity .25s
+ position:absolute;inset:0;display:flex;align-items:center;
+ justify-content:center;z-index:3;pointer-events:none;transition:.25s
 }
-.player-center.hidden{
- opacity:0;
- visibility:hidden
-}
-.player-logo{
- display:flex;
- flex-direction:column;
- align-items:center;
- gap:13px;
- color:white
-}
-.player-logo img{
- width:75px;
- height:75px;
- object-fit:contain;
- filter:drop-shadow(0 4px 14px #0007)
-}
-.player-logo strong{
- font-size:16px;
- text-shadow:0 2px 8px #000
-}
+.player-center.hidden{opacity:0;visibility:hidden}
+.player-logo{display:flex;flex-direction:column;align-items:center;gap:13px;color:#fff}
+.player-logo img{width:75px;height:75px;object-fit:contain;filter:drop-shadow(0 4px 14px #0007)}
+.player-logo strong{font-size:16px;text-shadow:0 2px 8px #000}
 .center-play{
- width:75px;
- height:75px;
- border-radius:50%;
- border:2px solid #ffffff80;
- background:linear-gradient(135deg,#12a77c,#006e65);
- color:white;
- font-size:27px;
- display:grid;
- place-items:center;
- box-shadow:0 5px 25px #0008;
- pointer-events:auto;
- cursor:pointer
+ width:75px;height:75px;border-radius:50%;border:2px solid #ffffff80;
+ background:linear-gradient(135deg,#12a77c,#006e65);color:white;
+ font-size:27px;display:grid;place-items:center;box-shadow:0 5px 25px #0008;
+ pointer-events:auto
 }
-.center-play:hover{
- transform:scale(1.05)
-}
-
-/* علامة الطالب */
+.center-play:hover{transform:scale(1.05)}
 .watermark{
- position:absolute;
- z-index:4;
- pointer-events:none;
- color:white;
- opacity:.35;
- font-size:clamp(10px,2vw,17px);
- font-weight:800;
- text-shadow:0 1px 4px black;
- white-space:nowrap
+ position:absolute;z-index:4;pointer-events:none;color:#fff;opacity:.35;
+ font-size:clamp(10px,2vw,17px);font-weight:800;
+ text-shadow:0 1px 4px #000;white-space:nowrap
 }
-
-/* طبقة اللمس */
-.player-touch{
- position:absolute;
- inset:0;
- z-index:2;
- background:transparent
-}
-
-/* شريط التحكم */
 .player-controls{
- position:absolute;
- right:0;
- left:0;
- bottom:0;
- z-index:6;
- padding:25px 15px 12px;
- background:linear-gradient(transparent,#000d);
- color:white;
- opacity:1;
- visibility:visible;
- transform:translateY(0);
+ position:absolute;right:0;left:0;bottom:0;z-index:6;
+ padding:25px 15px 12px;background:linear-gradient(transparent,#000d);
+ color:#fff;opacity:1;visibility:visible;transform:translateY(0);
  transition:opacity .3s,transform .3s,visibility .3s
 }
 .player-controls.hide{
- opacity:0;
- visibility:hidden;
- transform:translateY(15px);
- pointer-events:none
+ opacity:0;visibility:hidden;transform:translateY(15px);pointer-events:none
 }
-.progress-container{
- display:flex;
- align-items:center;
- gap:10px;
- margin-bottom:9px
-}
-.player-range{
- width:100%;
- height:5px;
- accent-color:#16c48c;
- cursor:pointer
-}
-.time-label{
- color:#e5e7eb;
- font-size:10px;
- white-space:nowrap;
- direction:ltr
-}
-.controls-row{
- display:flex;
- align-items:center;
- gap:10px
-}
+.progress-container{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.player-range{width:100%;height:5px;accent-color:#16c48c;cursor:pointer}
+.time-label{color:#e5e7eb;font-size:10px;white-space:nowrap;direction:ltr}
+.controls-row{display:flex;align-items:center;gap:10px}
 .control-btn{
- border:0;
- background:transparent;
- color:white;
- width:32px;
- height:32px;
- display:grid;
- place-items:center;
- font-size:17px
+ border:0;background:transparent;color:#fff;width:32px;height:32px;
+ display:grid;place-items:center;font-size:17px;flex-shrink:0
 }
-.control-btn:hover{
- color:#28d5a0
-}
-.control-spacer{
- flex:1
-}
-.player-volume{
- width:70px;
- accent-color:#20c997
-}
+.control-btn:hover,.control-btn.active{color:#28d5a0}
+.control-spacer{flex:1}
+.player-volume{width:70px;accent-color:#20c997}
 .player-select{
- background:#ffffff18;
- color:white;
- border:1px solid #ffffff40;
- border-radius:7px;
- padding:5px;
- font-size:11px;
- cursor:pointer
+ background:#ffffff18;color:white;border:1px solid #ffffff40;
+ border-radius:7px;padding:5px;font-size:11px;cursor:pointer
 }
-.player-select option{
- color:#142f50;
- background:white
+.player-select option{color:#142f50;background:white}
+
+/* قائمة الجودة الاحترافية داخل الفيديو */
+.quality-inside{position:relative;display:flex;align-items:center}
+.quality-trigger{
+ position:relative;width:35px;height:35px;border:0;border-radius:50%;
+ background:transparent;color:white;font-size:18px;
+ display:grid;place-items:center;transition:.2s
+}
+.quality-trigger:hover,.quality-trigger.active{
+ background:rgba(0,136,102,.35);color:#35e5b0
+}
+.quality-popup{
+ display:none;position:absolute;bottom:calc(100% + 15px);right:0;
+ width:220px;max-width:calc(100vw - 35px);padding:10px;
+ background:rgba(8,23,37,.97);border:1px solid #ffffff25;
+ border-radius:16px;box-shadow:0 15px 40px #0009;
+ backdrop-filter:blur(14px);color:white;direction:rtl;text-align:right;
+ z-index:30
+}
+.quality-popup.open{display:block;animation:qualityOpen .18s ease-out}
+@keyframes qualityOpen{
+ from{opacity:0;transform:translateY(8px)}
+ to{opacity:1;transform:translateY(0)}
+}
+.quality-title{
+ display:flex;align-items:center;gap:9px;padding:10px 8px 13px;
+ border-bottom:1px solid #ffffff20;margin-bottom:6px;
+ font-size:13px;font-weight:900
+}
+.quality-title i{color:#30dfa9}
+.quality-option{
+ width:100%;display:flex;align-items:center;justify-content:space-between;
+ gap:10px;padding:11px;border:0;border-radius:10px;
+ background:transparent;color:#e5edf4;text-align:right;
+ font-size:12px;font-weight:800;transition:.2s
+}
+.quality-option:hover{background:#ffffff16}
+.quality-option.active{background:#00886645;color:#41e8b5}
+.quality-option:disabled{opacity:.6;cursor:wait}
+.quality-check{color:#41e8b5;font-size:15px}
+.quality-badge{
+ background:#008866;color:white;border-radius:5px;
+ font-size:9px;padding:2px 6px
+}
+.quality-hint{padding:9px 7px 4px;font-size:10px;color:#9cabb9}
+.earth-player.quality-open .player-controls{
+ opacity:1!important;visibility:visible!important;
+ transform:none!important;pointer-events:auto!important
 }
 
-/* أزرار المحاضرة */
-.video-actions{
- display:flex;
- flex-wrap:wrap;
- gap:9px;
- margin-bottom:18px
+.video-actions{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:18px}
+.primary-btn,.secondary-btn{
+ display:inline-flex;align-items:center;justify-content:center;gap:8px;
+ padding:11px 15px;border-radius:10px;font-size:12px;
+ font-weight:800;border:0
 }
-.primary-btn,
-.secondary-btn{
- display:inline-flex;
- align-items:center;
- justify-content:center;
- gap:8px;
- padding:11px 15px;
- border-radius:10px;
- font-size:12px;
- font-weight:800;
- border:0;
- cursor:pointer
-}
-.primary-btn{
- background:linear-gradient(110deg,#008866,#006e65);
- color:white
-}
-.secondary-btn{
- background:white;
- border:1px solid #dce8ef;
- color:#34536c
-}
-.action-btn{
- flex:1;
- min-width:130px
-}
-.action-btn.on{
- background:#e2f6ec;
- border-color:#a6dec2;
- color:#087a57
-}
-/* محتويات المحاضرة */
-.details-title{
- font-size:14px;
- font-weight:900;
- margin-bottom:12px
-}
-.lesson-sections{
- display:grid;
- grid-template-columns:repeat(2,minmax(0,1fr));
- gap:12px
-}
-.lesson-section{
- background:white;
- border:1px solid var(--border);
- border-radius:13px;
- overflow:hidden
-}
-.section-header{
- padding:13px;
- cursor:pointer;
- font-size:12px;
- font-weight:900;
- list-style:none
-}
-.section-header i{
- color:var(--green);
- margin-left:8px
-}
+.primary-btn{background:linear-gradient(110deg,#008866,#006e65);color:white}
+.secondary-btn{background:#fff;border:1px solid #dce8ef;color:#34536c}
+.action-btn{flex:1;min-width:130px}
+.action-btn.on{background:#e2f6ec;border-color:#a6dec2;color:#087a57}
+.details-title{font-size:14px;font-weight:900;margin-bottom:12px}
+.lesson-sections{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.lesson-section{background:#fff;border:1px solid var(--border);border-radius:13px;overflow:hidden}
+.section-header{padding:13px;cursor:pointer;font-size:12px;font-weight:900;list-style:none}
+.section-header i{color:var(--green);margin-left:8px}
 .section-content{
- border-top:1px solid #edf1f6;
- padding:13px;
- font-size:12px;
- line-height:2;
- color:#435a72;
- overflow-wrap:anywhere
+ border-top:1px solid #edf1f6;padding:13px;font-size:12px;
+ line-height:2;color:#435a72;overflow-wrap:anywhere
 }
-.section-content p{
- white-space:pre-wrap
+.section-content p{white-space:pre-wrap}
+.section-content .primary-btn{margin-top:8px}
+.handout-row{padding:10px 0;border-bottom:1px dashed #e1e8ef}
+.handout-row:last-child{border:0}
+.loading,.empty{
+ background:#fff;border:1px solid var(--border);border-radius:15px;
+ padding:29px;text-align:center;color:var(--muted);font-size:13px;line-height:2
 }
-.section-content .primary-btn{
- margin-top:8px
-}
-.handout-row{
- padding:10px 0;
- border-bottom:1px dashed #e1e8ef
-}
-.handout-row:last-child{
- border:0
-}
-.loading,
-.empty{
- background:white;
- border:1px solid var(--border);
- border-radius:15px;
- padding:29px;
- text-align:center;
- color:var(--muted);
- font-size:13px;
- line-height:2
-}
-.mobile-bottom{
- display:none
-}
+.mobile-bottom{display:none}
 
 @media(max-width:1100px){
- .months-grid{
-  grid-template-columns:repeat(2,minmax(0,1fr))
- }
- .main{
-  padding:22px
- }
+ .months-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .main{padding:22px}
 }
 @media(max-width:768px){
- .sidebar{
-  display:none
- }
- .main,
- .main.expanded{
-  margin-right:0;
-  padding:14px 13px 95px
- }
- .topbar{
-  padding:15px
- }
- .topbar h1{
-  font-size:18px
- }
- .topbar p{
-  font-size:11px
- }
- .lecture-header{
-  padding:12px
- }
- .lecture-thumb{
-  width:75px
- }
- .lecture-info h3{
-  font-size:13px
- }
- .lecture-body{
-  padding:12px
- }
- .lesson-sections{
-  grid-template-columns:1fr
- }
- .earth-player{
-  border-radius:10px
- }
- .player-controls{
-  padding:20px 8px 8px
- }
- .controls-row{
-  gap:3px
- }
- .control-btn{
-  width:29px;
-  height:29px;
-  font-size:14px
- }
- .player-volume{
-  width:40px
- }
- .player-select{
-  padding:3px;
-  font-size:10px
- }
- .player-logo img{
-  width:55px;
-  height:55px
- }
- .center-play{
-  width:60px;
-  height:60px
- }
+ .sidebar{display:none}
+ .main,.main.expanded{margin-right:0;padding:14px 13px 95px}
+ .topbar{padding:15px}
+ .topbar h1{font-size:18px}
+ .topbar p{font-size:11px}
+ .lecture-header{padding:12px}
+ .lecture-thumb{width:75px}
+ .lecture-info h3{font-size:13px}
+ .lecture-body{padding:12px}
+ .lesson-sections{grid-template-columns:1fr}
+ .earth-player{border-radius:10px}
+ .player-controls{padding:20px 8px 8px}
+ .controls-row{gap:3px}
+ .control-btn{width:29px;height:29px;font-size:14px}
+ .player-volume{width:40px}
+ .player-select{padding:3px;font-size:10px}
+ .player-logo img{width:55px;height:55px}
+ .center-play{width:60px;height:60px}
+ .quality-trigger{width:29px;height:29px;font-size:15px}
+ .quality-popup{width:195px;right:-34px}
  .mobile-bottom{
-  display:flex;
-  position:fixed;
-  bottom:0;
-  right:0;
-  left:0;
-  background:white;
-  border-top:1px solid #e6edf4;
-  z-index:1500;
-  justify-content:space-around;
+  display:flex;position:fixed;bottom:0;right:0;left:0;background:white;
+  border-top:1px solid #e6edf4;z-index:1500;justify-content:space-around;
   padding:8px 3px calc(8px + env(safe-area-inset-bottom))
  }
  .mobile-bottom a{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:4px;
-  font-size:9px;
-  color:#6b7f98
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+  font-size:9px;color:#6b7f98
  }
- .mobile-bottom a.active{
-  color:var(--green);
-  font-weight:900
- }
- .mobile-bottom i{
-  font-size:19px
- }
+ .mobile-bottom a.active{color:var(--green);font-weight:900}
+ .mobile-bottom i{font-size:19px}
 }
 @media(max-width:360px){
- .months-grid{
-  grid-template-columns:1fr
- }
+ .months-grid{grid-template-columns:1fr}
+ .player-volume{display:none}
 }
-
-/* قائمة الجودة داخل المشغل */
-.player-quality{position:relative;display:flex;align-items:center;direction:rtl}
-.player-quality-button{width:34px;height:34px;border:1px solid #ffffff28;border-radius:9px;background:#ffffff14;color:white;font-size:17px;display:grid;place-items:center;transition:.2s}
-.player-quality-button:hover,.player-quality-button[aria-expanded="true"]{background:#008866;border-color:#2ed9a4}
-.player-quality-menu{display:none;position:absolute;bottom:calc(100% + 15px);right:0;width:205px;max-width:calc(100vw - 40px);padding:9px;background:rgba(9,25,40,.97);color:white;border:1px solid #ffffff25;border-radius:15px;box-shadow:0 15px 35px #0008;backdrop-filter:blur(12px);z-index:50;text-align:right;direction:rtl}
-.player-quality-menu.open{display:block;animation:qualityPop .18s ease-out}
-@keyframes qualityPop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.player-quality-heading{padding:7px 8px 11px;border-bottom:1px solid #ffffff24;font-size:12px;font-weight:900;color:#e6f6f0;display:flex;gap:9px;align-items:center}
-.player-quality-heading i{color:#34e6ae}
-.player-quality-item{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px;border:0;border-radius:9px;background:transparent;color:#e0eaf0;font-size:12px;font-weight:700;text-align:right;cursor:pointer}
-.player-quality-item:hover,.player-quality-item.active{background:#00886645;color:#42f1bc}
-.player-quality-item:disabled{opacity:.55;cursor:wait}
-.player-quality-badge{font-size:9px;color:#a9e8d0;border:1px solid #ffffff35;border-radius:5px;padding:1px 5px}
-.player-controls.quality-open{opacity:1!important;visibility:visible!important;transform:translateY(0)!important;pointer-events:auto!important}
-@media(max-width:768px){.player-quality-button{width:29px;height:29px;font-size:15px}.player-quality-menu{width:185px;right:-42px}}
-
 </style>
 </head>
 
 <body>
 
 <aside class="sidebar" id="sidebar">
+ <button class="sidebar-toggle" id="sidebarToggle" type="button">
+  <i class="fa-solid fa-bars"></i>
+ </button>
 
-<button class="sidebar-toggle" id="sidebarToggle" type="button">
-<i class="fa-solid fa-bars"></i>
-</button>
+ <div class="brand">
+  <img src="../logo.png" alt="أرض الأحياء">
+  <h2>أرض الأحياء</h2>
+  <p>الثانوية العامة</p>
+ </div>
 
-<div class="brand">
-<img src="../logo.png" alt="أرض الأحياء">
-<h2>أرض الأحياء</h2>
-<p>الثانوية العامة</p>
-</div>
-
-<nav class="menu">
-<a href="../index.html" title="الرئيسية">
-<i class="fa-solid fa-house"></i>
-<span>الرئيسية</span>
-</a>
-
-<a href="index.html" class="active" title="المحاضرات">
-<i class="fa-regular fa-circle-play"></i>
-<span>المحاضرات</span>
-</a>
-
-<a href="../notes/index.html" title="المذكرات">
-<i class="fa-solid fa-book-open"></i>
-<span>المذكرات</span>
-</a>
-
-<a href="../champion/index.html" title="بطل الفصل">
-<i class="fa-solid fa-trophy"></i>
-<span>بطل الفصل</span>
-</a>
-
-<a href="../forum/index.html" title="المنتدى">
-<i class="fa-regular fa-comments"></i>
-<span>المنتدى</span>
-</a>
-
-<a href="../account/index.html" title="حساب الطالب">
-<i class="fa-regular fa-user"></i>
-<span>حساب الطالب</span>
-</a>
-</nav>
-
+ <nav class="menu">
+  <a href="../index.html" title="الرئيسية">
+   <i class="fa-solid fa-house"></i><span>الرئيسية</span>
+  </a>
+  <a href="index.html" class="active" title="المحاضرات">
+   <i class="fa-regular fa-circle-play"></i><span>المحاضرات</span>
+  </a>
+  <a href="../notes/index.html" title="المذكرات">
+   <i class="fa-solid fa-book-open"></i><span>المذكرات</span>
+  </a>
+  <a href="../champion/index.html" title="بطل الفصل">
+   <i class="fa-solid fa-trophy"></i><span>بطل الفصل</span>
+  </a>
+  <a href="../forum/index.html" title="المنتدى">
+   <i class="fa-regular fa-comments"></i><span>المنتدى</span>
+  </a>
+  <a href="../account/index.html" title="حساب الطالب">
+   <i class="fa-regular fa-user"></i><span>حساب الطالب</span>
+  </a>
+ </nav>
 </aside>
 
 <main class="main" id="main">
+ <header class="topbar">
+  <div>
+   <h1>محاضرات منهج الأحياء</h1>
+   <p>اختار الشهر، وافتح المحاضرة، وكمّل رحلتك نحو التفوق.</p>
+  </div>
+  <i class="fa-regular fa-circle-play"></i>
+ </header>
 
-<header class="topbar">
-<div>
-<h1>محاضرات منهج الأحياء</h1>
-<p>اختار الشهر، وافتح المحاضرة، وكمّل رحلتك نحو التفوق.</p>
-</div>
-<i class="fa-regular fa-circle-play"></i>
-</header>
+ <div id="pageNotice"></div>
 
-<div id="pageNotice"></div>
+ <h2 id="monthsTitle" style="font-size:16px;margin-bottom:13px;display:none">
+  اختر شهر المذاكرة
+ </h2>
 
-<h2 style="font-size:16px;margin-bottom:13px;display:none" id="monthsTitle">
-اختر شهر المذاكرة
-</h2>
+ <div class="months-grid" id="monthsGrid"></div>
 
-<div class="months-grid" id="monthsGrid"></div>
+ <div class="month-heading" id="monthHeading" style="display:none">
+  <h2 id="selectedMonthTitle"></h2>
+  <p id="selectedMonthDescription"></p>
+ </div>
 
-<div class="month-heading" id="monthHeading" style="display:none">
-<h2 id="selectedMonthTitle"></h2>
-<p id="selectedMonthDescription"></p>
-</div>
-
-<div id="lecturesList">
-<div class="loading">جارٍ تحميل المحاضرات...</div>
-</div>
-
+ <div id="lecturesList">
+  <div class="loading">جارٍ تحميل المحاضرات...</div>
+ </div>
 </main>
 
 <nav class="mobile-bottom">
-<a href="../index.html">
-<i class="fa-solid fa-house"></i>
-الرئيسية
-</a>
-<a href="index.html" class="active">
-<i class="fa-regular fa-circle-play"></i>
-المحاضرات
-</a>
-<a href="../notes/index.html">
-<i class="fa-solid fa-book-open"></i>
-المذكرات
-</a>
-<a href="../champion/index.html">
-<i class="fa-solid fa-trophy"></i>
-البطل
-</a>
-<a href="../forum/index.html">
-<i class="fa-regular fa-comments"></i>
-المنتدى
-</a>
-<a href="../account/index.html">
-<i class="fa-regular fa-user"></i>
-حسابي
-</a>
+ <a href="../index.html">
+  <i class="fa-solid fa-house"></i>الرئيسية
+ </a>
+ <a href="index.html" class="active">
+  <i class="fa-regular fa-circle-play"></i>المحاضرات
+ </a>
+ <a href="../notes/index.html">
+  <i class="fa-solid fa-book-open"></i>المذكرات
+ </a>
+ <a href="../champion/index.html">
+  <i class="fa-solid fa-trophy"></i>البطل
+ </a>
+ <a href="../forum/index.html">
+  <i class="fa-regular fa-comments"></i>المنتدى
+ </a>
+ <a href="../account/index.html">
+  <i class="fa-regular fa-user"></i>حسابي
+ </a>
 </nav>
 
 <script>
 "use strict";
 
-const SUPABASE_URL =
-"https://fpfbmjtpzamzlyzitmsd.supabase.co";
+const SUPABASE_URL="https://fpfbmjtpzamzlyzitmsd.supabase.co";
+const SUPABASE_KEY="sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
 
-const SUPABASE_KEY =
-"sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
-
-const supabaseClient = window.supabase.createClient(
- SUPABASE_URL,
- SUPABASE_KEY
+const supabaseClient=window.supabase.createClient(
+ SUPABASE_URL,SUPABASE_KEY
 );
 
-const $ = id => document.getElementById(id);
+const $=id=>document.getElementById(id);
 
-let allLectures = [];
-let visibleMonths = [];
-let currentList = [];
-let selectedMonth = null;
-let viewerLabel = "طالب أرض الأحياء";
-let progress = new Map();
+let allLectures=[];
+let visibleMonths=[];
+let currentList=[];
+let selectedMonth=null;
+let viewerLabel="طالب أرض الأحياء";
+let progress=new Map();
 
-const players = new Map();
+const players=new Map();
 
 function escapeHtml(value){
- return String(value ?? "")
- .replace(/&/g,"&amp;")
- .replace(/</g,"&lt;")
- .replace(/>/g,"&gt;")
- .replace(/"/g,"&quot;")
- .replace(/'/g,"&#039;");
+ return String(value??"")
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
 }
 
 function safeUrl(raw){
  try{
-  const url = new URL(String(raw || "").trim());
-  return url.protocol === "https:" ? url.href : "";
+  const url=new URL(String(raw||"").trim());
+  return url.protocol==="https:"?url.href:"";
  }catch{
   return "";
  }
 }
 
 function showMessage(message){
- const box = $("pageNotice");
- box.className = "empty";
- box.textContent = message;
+ const box=$("pageNotice");
+ box.className="empty";
+ box.textContent=message;
 }
 
-/* القائمة الجانبية */
-const sidebar = $("sidebar");
-const main = $("main");
+/* الشريط الجانبي */
+const sidebar=$("sidebar");
+const main=$("main");
 
 function setSidebar(collapsed){
  sidebar.classList.toggle("collapsed",collapsed);
  main.classList.toggle("expanded",collapsed);
-
  try{
   localStorage.setItem(
-   "ardAlahyaaSidebarCollapsed",
-   String(collapsed)
+   "ardAlahyaaSidebarCollapsed",String(collapsed)
   );
  }catch{}
 }
@@ -891,11 +442,11 @@ if(window.ArdProgress){
  ArdProgress.init(supabaseClient);
 }
 
-/* بيانات الجودات */
+/* قراءة الجودات المتاحة */
 function getQualities(lecture){
- const result = [];
+ const result=[];
 
- const fields = [
+ const fields=[
   ["video_1080_url","1080p",1080],
   ["quality_1080_url","1080p",1080],
   ["video_url_1080","1080p",1080],
@@ -911,40 +462,28 @@ function getQualities(lecture){
  ];
 
  fields.forEach(([key,label,height])=>{
-  const src = lecture[key];
-
+  const src=lecture[key];
   if(
    typeof src==="string" &&
    src.trim() &&
    !result.some(q=>q.height===height)
   ){
-   result.push({
-    label,
-    height,
-    src:src.trim()
-   });
+   result.push({label,height,src:src.trim()});
   }
  });
 
- let extra = lecture.qualities;
+ let extra=lecture.qualities;
 
  if(typeof extra==="string"){
-  try{
-   extra=JSON.parse(extra);
-  }catch{
-   extra={};
-  }
+  try{extra=JSON.parse(extra);}
+  catch{extra={};}
  }
 
  if(extra && typeof extra==="object"){
   Object.entries(extra).forEach(([key,src])=>{
    const match=key.match(/(1080|720|480|360)/);
 
-   if(
-    match &&
-    typeof src==="string" &&
-    src.trim()
-   ){
+   if(match && typeof src==="string" && src.trim()){
     const height=Number(match[1]);
 
     if(!result.some(q=>q.height===height)){
@@ -958,17 +497,19 @@ function getQualities(lecture){
   });
  }
 
- if(!result.length){
-  const src=
-   lecture.video_url ||
-   lecture.videoUrl ||
-   lecture.url;
+ const original=
+  lecture.video_url||
+  lecture.videoUrl||
+  lecture.url;
 
-  if(src){
+ if(original){
+  const src=String(original).trim();
+
+  if(!result.some(q=>q.src===src)){
    result.push({
     label:"الجودة الأصلية",
     height:0,
-    src:String(src)
+    src
    });
   }
  }
@@ -976,7 +517,7 @@ function getQualities(lecture){
  return result.sort((a,b)=>b.height-a.height);
 }
 
-/* روابط الفيديو */
+/* الفيديوهات الخارجية */
 function youtubeEmbed(raw){
  try{
   const url=new URL(raw);
@@ -988,7 +529,6 @@ function youtubeEmbed(raw){
    id=url.searchParams.get("v")||"";
   }else{
    const parts=url.pathname.split("/").filter(Boolean);
-
    if(["embed","shorts","live"].includes(parts[0])){
     id=parts[1]||"";
    }
@@ -1005,7 +545,6 @@ function youtubeEmbed(raw){
 
 function getEmbed(raw){
  const youtube=youtubeEmbed(raw);
-
  if(youtube)return youtube;
 
  try{
@@ -1015,7 +554,7 @@ function getEmbed(raw){
 
   if(host==="drive.google.com"){
    const id=
-    parts[parts.indexOf("d")+1] ||
+    parts[parts.indexOf("d")+1]||
     url.searchParams.get("id");
 
    if(id){
@@ -1024,30 +563,30 @@ function getEmbed(raw){
    }
   }
 
-  if(host==="vimeo.com" || host.endsWith(".vimeo.com")){
+  if(host==="vimeo.com"||host.endsWith(".vimeo.com")){
    const id=parts.find(x=>/^\d+$/.test(x));
    if(id)return "https://player.vimeo.com/video/"+id;
   }
 
-  if(host==="loom.com" || host.endsWith(".loom.com")){
+  if(host==="loom.com"||host.endsWith(".loom.com")){
    if(["share","embed"].includes(parts[0])){
     return "https://www.loom.com/embed/"+
      encodeURIComponent(parts[1]||"");
    }
   }
 
-  if(host==="dailymotion.com" || host.endsWith(".dailymotion.com")){
-   const index=parts.indexOf("video");
-   if(index>=0 && parts[index+1]){
+  if(host==="dailymotion.com"||host.endsWith(".dailymotion.com")){
+   const i=parts.indexOf("video");
+   if(i>=0&&parts[i+1]){
     return "https://www.dailymotion.com/embed/video/"+
-     parts[index+1].split("_")[0];
+     parts[i+1].split("_")[0];
    }
   }
 
   if(
-   host==="canva.com" ||
-   host.endsWith(".canva.com") ||
-   host==="canva.link" ||
+   host==="canva.com"||
+   host.endsWith(".canva.com")||
+   host==="canva.link"||
    host.endsWith(".canva.link")
   ){
    return raw;
@@ -1062,7 +601,6 @@ function getEmbed(raw){
 /* روابط التخزين */
 function storagePath(raw,bucket){
  const value=String(raw||"").trim();
-
  if(!value)return "";
 
  if(!/^https?:\/\//i.test(value)){
@@ -1072,23 +610,21 @@ function storagePath(raw,bucket){
  }
 
  try{
-  const parts=new URL(value).pathname
-   .split("/").filter(Boolean);
-
+  const parts=new URL(value).pathname.split("/").filter(Boolean);
   const index=parts.indexOf("object");
   if(index<0)return "";
 
   const rest=
    ["public","sign","authenticated"].includes(parts[index+1])
-    ?parts.slice(index+2)
-    :parts.slice(index+1);
+   ?parts.slice(index+2)
+   :parts.slice(index+1);
 
   if(rest[0]!==bucket)return "";
 
   return rest.slice(1).map(x=>{
    try{return decodeURIComponent(x);}
    catch{return x;}
-  }).join("/");
+  }).join("");
  }catch{
   return "";
  }
@@ -1096,7 +632,6 @@ function storagePath(raw,bucket){
 
 async function resolveMedia(raw,bucket="lectures"){
  const value=String(raw||"").trim();
-
  if(!value)return "";
 
  if(/^https:\/\//i.test(value)){
@@ -1105,7 +640,7 @@ async function resolveMedia(raw,bucket="lectures"){
   if(
    url &&
    (
-    url.includes("/storage/v1/object/public/") ||
+    url.includes("/storage/v1/object/public/")||
     !url.includes("/storage/v1/object/")
    )
   ){
@@ -1138,23 +673,22 @@ async function loadViewer(user){
    .maybeSingle();
 
   viewerLabel=
-   data?.phone ||
-   user.email?.split("@")[0] ||
+   data?.phone||
+   user.email?.split("@")[0]||
    "طالب أرض الأحياء";
  }catch{
   viewerLabel=
-   user.email?.split("@")[0] ||
+   user.email?.split("@")[0]||
    "طالب أرض الأحياء";
  }
 }
 
-/* تقدم الطالب */
+/* التقدم */
 async function loadProgress(){
  if(!window.ArdProgress)return;
 
  try{
   const rows=await ArdProgress.fetchAll();
-
   progress=new Map(
    rows.map(row=>[String(row.lecture_id),row])
   );
@@ -1222,7 +756,6 @@ function refreshActions(index){
  }
 }
 
-/* الوقت */
 function formatTime(seconds){
  if(!Number.isFinite(seconds))return "0:00";
 
@@ -1241,21 +774,12 @@ function formatTime(seconds){
  return minutes+":"+String(secs).padStart(2,"0");
 }
 
-/* المشغل */
+/* بناء مشغل الفيديو */
 async function buildPlayer(index){
  const lecture=currentList[index];
  const box=$("video-container-"+index);
- const wrap=$("quality-wrap-"+index);
- const menu=$("quality-menu-"+index);
- const qualityButton=$("quality-btn-"+index);
 
- if(!lecture || !box)return;
-
- if(wrap)wrap.style.display="none";
- if(menu){
-  menu.classList.remove("open");
-  menu.innerHTML="";
- }
+ if(!lecture||!box)return;
 
  const oldPlayer=players.get(index);
  if(oldPlayer?.destroy)oldPlayer.destroy();
@@ -1293,7 +817,7 @@ async function buildPlayer(index){
  box.innerHTML=`
   <video
    playsinline
-   preload="auto"
+   preload="metadata"
    controlsList="nodownload noremoteplayback"
    disablePictureInPicture
    disableRemotePlayback
@@ -1323,15 +847,10 @@ async function buildPlayer(index){
 
   <div class="player-controls" id="controls-${index}">
    <div class="progress-container">
-    <input
-     type="range"
-     class="player-range"
-     id="seek-${index}"
-     min="0"
-     max="100"
-     value="0"
-     step="0.1"
-     aria-label="التقدم في الفيديو">
+    <input type="range" class="player-range"
+     id="seek-${index}" min="0" max="100"
+     value="0" step="0.1" aria-label="التقدم في الفيديو">
+
     <span class="time-label" id="time-${index}">
      0:00 / 0:00
     </span>
@@ -1375,6 +894,32 @@ async function buildPlayer(index){
      <option value="2">2x</option>
     </select>
 
+    <!-- زر الجودة داخل الفيديو -->
+    <div class="quality-inside" id="qualityInside-${index}">
+     <button
+      class="quality-trigger"
+      id="qualityTrigger-${index}"
+      type="button"
+      title="جودة الفيديو"
+      aria-label="جودة الفيديو"
+      aria-expanded="false">
+      <i class="fa-solid fa-gear"></i>
+     </button>
+
+     <div class="quality-popup" id="qualityPopup-${index}">
+      <div class="quality-title">
+       <i class="fa-solid fa-sliders"></i>
+       <span>جودة الفيديو</span>
+      </div>
+
+      <div id="qualityOptions-${index}"></div>
+
+      <div class="quality-hint">
+       اختر الجودة المناسبة لسرعة الإنترنت
+      </div>
+     </div>
+    </div>
+
     <button class="control-btn" id="fullscreen-${index}"
      type="button" title="ملء الشاشة">
      <i class="fa-solid fa-expand"></i>
@@ -1397,67 +942,204 @@ async function buildPlayer(index){
  const fullscreen=$("fullscreen-"+index);
  const touch=box.querySelector(".player-touch");
 
- let hideTimer=null;
- let destroyed=false;
- let loadingTimer=null;
+ const qualityInside=$("qualityInside-"+index);
+ const qualityTrigger=$("qualityTrigger-"+index);
+ const qualityPopup=$("qualityPopup-"+index);
+ const qualityOptions=$("qualityOptions-"+index);
 
- /* إظهار شريط التحكم */
+ let hideTimer=null;
+ let loadingTimer=null;
+ let destroyed=false;
+ let currentQuality=0;
+ let changingQuality=false;
+ let pendingRestore=null;
+
+ function isQualityOpen(){
+  return qualityPopup.classList.contains("open");
+ }
+
  function showControls(){
   if(destroyed)return;
 
   controls.classList.remove("hide");
-
   clearTimeout(hideTimer);
 
-  if(!video.paused && !video.ended){
+  if(!video.paused&&!video.ended&&!isQualityOpen()){
    hideTimer=setTimeout(()=>{
-    if(!video.paused && !video.ended){
+    if(
+     !destroyed &&
+     !video.paused &&
+     !video.ended &&
+     !isQualityOpen()
+    ){
      controls.classList.add("hide");
     }
    },5000);
   }
  }
 
- /* إخفاء مؤشر التحميل */
+ function closeQuality(){
+  qualityPopup.classList.remove("open");
+  qualityTrigger.classList.remove("active");
+  qualityTrigger.setAttribute("aria-expanded","false");
+  box.classList.remove("quality-open");
+  showControls();
+ }
+
+ function toggleQuality(){
+  const opening=!isQualityOpen();
+
+  if(opening){
+   clearTimeout(hideTimer);
+   controls.classList.remove("hide");
+   qualityPopup.classList.add("open");
+   qualityTrigger.classList.add("active");
+   qualityTrigger.setAttribute("aria-expanded","true");
+   box.classList.add("quality-open");
+  }else{
+   closeQuality();
+  }
+ }
+
+ function renderQualityOptions(){
+  qualityOptions.replaceChildren();
+
+  qualities.forEach((quality,i)=>{
+   const button=document.createElement("button");
+
+   button.type="button";
+   button.className=
+    "quality-option"+(i===currentQuality?" active":"");
+
+   button.disabled=changingQuality;
+
+   const label=document.createElement("span");
+   label.textContent=quality.label;
+
+   const indicator=document.createElement("span");
+
+   if(i===currentQuality){
+    indicator.className="quality-check";
+    indicator.textContent="✓";
+   }else if(quality.height>=720){
+    indicator.className="quality-badge";
+    indicator.textContent=quality.height>=1080?"FHD":"HD";
+   }
+
+   button.append(label,indicator);
+
+   button.addEventListener("click",async event=>{
+    event.stopPropagation();
+
+    if(changingQuality)return;
+
+    if(i===currentQuality){
+     closeQuality();
+     return;
+    }
+
+    changingQuality=true;
+    renderQualityOptions();
+
+    try{
+     const nextUrl=await resolveMedia(quality.src,"lectures");
+
+     if(!nextUrl){
+      throw new Error("تعذر تحميل رابط الجودة");
+     }
+
+     const oldTime=video.currentTime;
+     const wasPlaying=!video.paused;
+     const oldSpeed=video.playbackRate;
+
+     pendingRestore={
+      time:oldTime,
+      playing:wasPlaying,
+      speed:oldSpeed
+     };
+
+     currentQuality=i;
+
+     video.src=nextUrl;
+     video.load();
+
+     closeQuality();
+    }catch(error){
+     console.error(error);
+     alert("تعذر تغيير جودة الفيديو.");
+    }finally{
+     changingQuality=false;
+     renderQualityOptions();
+    }
+   });
+
+   qualityOptions.appendChild(button);
+  });
+ }
+
+ qualityTrigger.addEventListener("click",event=>{
+  event.stopPropagation();
+  toggleQuality();
+ });
+
+ qualityInside.addEventListener("click",event=>{
+  event.stopPropagation();
+ });
+
+ touch.addEventListener("click",()=>{
+  if(isQualityOpen()){
+   closeQuality();
+  }else{
+   showControls();
+  }
+ });
+
+ touch.addEventListener("touchstart",()=>{
+  showControls();
+ },{passive:true});
+
+ controls.addEventListener("pointerdown",()=>{
+  clearTimeout(hideTimer);
+ });
+
+ controls.addEventListener("pointerup",()=>{
+  if(!isQualityOpen())showControls();
+ });
+
  function hideLoading(){
   if(destroyed)return;
   loading.classList.add("hidden");
   clearTimeout(loadingTimer);
  }
 
- /* إظهار مؤشر التحميل عند الانتظار */
  function showLoading(){
   if(destroyed)return;
 
   clearTimeout(loadingTimer);
 
   loadingTimer=setTimeout(()=>{
-   if(!destroyed && video.readyState<3){
+   if(!destroyed&&video.readyState<3){
     loading.classList.remove("hidden");
    }
   },350);
  }
 
  function updatePlayButton(){
-  const playing=!video.paused && !video.ended;
+  const playing=!video.paused&&!video.ended;
 
   playButton.innerHTML=playing
    ?'<i class="fa-solid fa-pause"></i>'
    :'<i class="fa-solid fa-play"></i>';
 
-  if(playing){
-   center.classList.add("hidden");
-  }else{
-   center.classList.remove("hidden");
-  }
+  center.classList.toggle("hidden",playing);
  }
 
  async function togglePlay(){
-  if(video.paused || video.ended){
+  if(video.paused||video.ended){
    try{
     await video.play();
    }catch(error){
-    console.warn("تعذر بدء التشغيل:",error);
+    console.warn(error);
     showControls();
    }
   }else{
@@ -1465,29 +1147,9 @@ async function buildPlayer(index){
   }
  }
 
- /* التشغيل من الأزرار فقط */
  playButton.addEventListener("click",togglePlay);
  centerPlay.addEventListener("click",togglePlay);
 
- /* لمس الفيديو لا يوقفه */
- touch.addEventListener("click",()=>{
-  showControls();
- });
-
- touch.addEventListener("touchstart",()=>{
-  showControls();
- },{passive:true});
-
- /* لمس شريط التحكم */
- controls.addEventListener("pointerdown",()=>{
-  clearTimeout(hideTimer);
- });
-
- controls.addEventListener("pointerup",()=>{
-  showControls();
- });
-
- /* تقديم وتأخير */
  $("back-"+index).addEventListener("click",()=>{
   video.currentTime=Math.max(0,video.currentTime-10);
   showControls();
@@ -1496,8 +1158,7 @@ async function buildPlayer(index){
  $("forward-"+index).addEventListener("click",()=>{
   if(Number.isFinite(video.duration)){
    video.currentTime=Math.min(
-    video.duration,
-    video.currentTime+10
+    video.duration,video.currentTime+10
    );
   }else{
    video.currentTime+=10;
@@ -1505,11 +1166,10 @@ async function buildPlayer(index){
   showControls();
  });
 
- /* شريط التقدم */
  video.addEventListener("timeupdate",()=>{
   const duration=video.duration||0;
 
-  if(Number.isFinite(duration) && duration>0){
+  if(Number.isFinite(duration)&&duration>0){
    seek.value=(video.currentTime/duration)*100;
   }
 
@@ -1522,14 +1182,14 @@ async function buildPlayer(index){
  seek.addEventListener("input",()=>{
   const duration=video.duration;
 
-  if(Number.isFinite(duration) && duration>0){
-   video.currentTime=(Number(seek.value)/100)*duration;
+  if(Number.isFinite(duration)&&duration>0){
+   video.currentTime=
+    (Number(seek.value)/100)*duration;
   }
 
   showControls();
  });
 
- /* الصوت */
  volume.addEventListener("input",()=>{
   video.volume=Number(volume.value);
   video.muted=video.volume===0;
@@ -1546,13 +1206,11 @@ async function buildPlayer(index){
   showControls();
  });
 
- /* السرعة */
  speed.addEventListener("change",()=>{
   video.playbackRate=Number(speed.value);
   showControls();
  });
 
- /* ملء الشاشة */
  fullscreen.addEventListener("click",async()=>{
   try{
    if(document.fullscreenElement){
@@ -1569,30 +1227,39 @@ async function buildPlayer(index){
   showControls();
  });
 
- /* تحميل الفيديو */
- video.addEventListener("loadstart",()=>{
-  showLoading();
- });
+ video.addEventListener("loadstart",showLoading);
 
  video.addEventListener("loadedmetadata",()=>{
   hideLoading();
+
+  if(pendingRestore){
+   const restore=pendingRestore;
+   pendingRestore=null;
+
+   video.playbackRate=restore.speed;
+
+   if(Number.isFinite(restore.time)){
+    try{
+     video.currentTime=
+      Number.isFinite(video.duration)
+      ?Math.min(restore.time,video.duration)
+      :restore.time;
+    }catch(error){
+     console.warn(error);
+    }
+   }
+
+   if(restore.playing){
+    video.play().catch(console.warn);
+   }
+  }
+
   showControls();
-
-  time.textContent=
-   "0:00 / "+formatTime(video.duration);
  });
 
- video.addEventListener("loadeddata",()=>{
-  hideLoading();
- });
-
- video.addEventListener("canplay",()=>{
-  hideLoading();
- });
-
- video.addEventListener("waiting",()=>{
-  showLoading();
- });
+ video.addEventListener("loadeddata",hideLoading);
+ video.addEventListener("canplay",hideLoading);
+ video.addEventListener("waiting",showLoading);
 
  video.addEventListener("playing",()=>{
   hideLoading();
@@ -1611,7 +1278,7 @@ async function buildPlayer(index){
 
   const row=progress.get(String(lecture.id))||{};
 
-  if(!row.completed && window.ArdProgress){
+  if(!row.completed&&window.ArdProgress){
    updateProgress(index,"completed");
   }
  });
@@ -1636,9 +1303,10 @@ async function buildPlayer(index){
   event.preventDefault();
  });
 
- /* مصدر الفيديو */
  video.src=url;
  video.load();
+
+ renderQualityOptions();
 
  players.set(index,{
   video,
@@ -1652,11 +1320,10 @@ async function buildPlayer(index){
   }
  });
 
- /* الشريط ظاهر عند فتح المحاضرة */
  showControls();
 }
 
-/* العلامة المائية المتحركة */
+/* العلامة المائية */
 setInterval(()=>{
  document.querySelectorAll(".watermark").forEach(mark=>{
   mark.style.top=(8+Math.random()*75)+"%";
@@ -1669,21 +1336,18 @@ function getHandouts(lecture){
  let list=lecture.handouts;
 
  if(typeof list==="string"){
-  try{
-   list=JSON.parse(list);
-  }catch{
-   list=[];
-  }
+  try{list=JSON.parse(list);}
+  catch{list=[];}
  }
 
  list=Array.isArray(list)
-  ?list.filter(x=>x && x.url).map(x=>({
+  ?list.filter(x=>x&&x.url).map(x=>({
    title:String(x.title||"ملزمة المحاضرة"),
    url:String(x.url)
   }))
   :[];
 
- if(!list.length && (lecture.pdf_url || lecture.pdfUrl)){
+ if(!list.length&&(lecture.pdf_url||lecture.pdfUrl)){
   list=[{
    title:"ملزمة المحاضرة",
    url:String(lecture.pdf_url||lecture.pdfUrl)
@@ -1735,7 +1399,7 @@ function handoutsHtml(lecture,index){
 
  return handouts.map((item,i)=>{
   const external=
-   /^https:\/\//i.test(item.url) &&
+   /^https:\/\//i.test(item.url)&&
    !item.url.includes("/storage/v1/object/");
 
   const button=external
@@ -1754,8 +1418,7 @@ function section(title,icon,content,open=false){
  return `
   <details class="lesson-section" ${open?"open":""}>
    <summary class="section-header">
-    <i class="${icon}"></i>
-    ${title}
+    <i class="${icon}"></i>${title}
    </summary>
    <div class="section-content">${content}</div>
   </details>
@@ -1766,9 +1429,7 @@ function section(title,icon,content,open=false){
 function monthNumber(lecture){
  const n=Number(lecture.month_number);
 
- return Number.isInteger(n) && n>=1 && n<=12
-  ?n
-  :null;
+ return Number.isInteger(n)&&n>=1&&n<=12?n:null;
 }
 
 function renderMonths(){
@@ -1862,15 +1523,16 @@ function renderLectures(){
 
   const title=lecture.title||"محاضرة أحياء";
   const image=safeUrl(lecture.image_url);
+
   const description=
-   lecture.chapter ||
-   lecture.lesson ||
-   lecture.description ||
+   lecture.chapter||
+   lecture.lesson||
+   lecture.description||
    "اضغط لفتح المحاضرة";
 
   const details=
-   lecture.details ||
-   lecture.content ||
+   lecture.details||
+   lecture.content||
    "لم تتم إضافة شرح تفصيلي بعد.";
 
   const handouts=handoutsHtml(lecture,index);
@@ -1913,7 +1575,6 @@ function renderLectures(){
      id="video-container-${index}"></div>
 
     <div class="video-actions">
-
      <button type="button"
       class="primary-btn action-btn"
       id="save-${index}"
@@ -1927,13 +1588,11 @@ function renderLectures(){
       onclick="toggleCompleted(${index})">
       ✓ تحديد كمكتملة
      </button>
-
     </div>
 
     <h3 class="details-title">محتويات المحاضرة</h3>
 
     <div class="lesson-sections">
-
      ${section(
       "الشرح التفصيلي",
       "fa-regular fa-file-lines",
@@ -1958,7 +1617,6 @@ function renderLectures(){
       "fa-solid fa-clipboard-check",
       exam
      )}
-
     </div>
    </div>
   `;
@@ -1972,7 +1630,7 @@ function renderLectures(){
   });
 
   header.addEventListener("keydown",event=>{
-   if(event.key==="Enter" || event.key===" "){
+   if(event.key==="Enter"||event.key===" "){
     event.preventDefault();
     toggleLecture(index);
    }
@@ -2014,7 +1672,7 @@ async function toggleLecture(index){
  }
 }
 
-/* تحميل بيانات المنصة */
+/* تحميل المحاضرات */
 async function loadLectures(){
  const list=$("lecturesList");
 
@@ -2075,7 +1733,7 @@ async function init(){
   const {data,error}=
    await supabaseClient.auth.getSession();
 
-  if(error || !data?.session){
+  if(error||!data?.session){
    $("lecturesList").innerHTML=`
     <div class="empty">
      سجّل الدخول لمشاهدة المحاضرات.
@@ -2102,6 +1760,5 @@ async function init(){
 
 init();
 </script>
-
 </body>
 </html>
