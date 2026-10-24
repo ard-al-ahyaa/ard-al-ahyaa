@@ -154,7 +154,9 @@ body.sidebar-collapsed .main{margin-right:var(--collapsed)}
 .custom-player.earth-playing .earth-top,.custom-player.earth-playing .earth-center{opacity:0;visibility:hidden;pointer-events:none}
 .custom-player.earth-playing .earth-controls{opacity:1}
 .custom-player.earth-playing .earth-bottom{opacity:1;pointer-events:auto}
-.custom-player.earth-playing.earth-idle .earth-controls{opacity:1}
+.custom-player.earth-playing.earth-idle .earth-controls{opacity:0;pointer-events:none}
+.custom-player.earth-playing.earth-idle .earth-controls>*{pointer-events:none}
+.custom-player.earth-playing.earth-idle .earth-bottom{opacity:0;pointer-events:none}
 .earth-top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 15px;font-size:12px;font-weight:900}
 .earth-brand{direction:rtl;display:flex;align-items:center;gap:8px;text-shadow:0 2px 5px #000}
 .earth-brand img{height:30px;width:30px;object-fit:contain}
@@ -1041,7 +1043,7 @@ async function buildPlayer(index) {
     control("mute").addEventListener("click", () => { video.muted = !video.muted; updateControls(); });
     control("full").addEventListener("click", async () => { try { if (document.fullscreenElement) await document.exitFullscreen(); else if (box.requestFullscreen) await box.requestFullscreen(); else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen(); } catch(e) { console.warn(e); } });
     let idleTimer;
-    const showControls = () => { box.classList.remove("earth-idle"); clearTimeout(idleTimer); if (!video.paused) idleTimer = setTimeout(() => box.classList.add("earth-idle"), 3200); };
+    const showControls = () => { box.classList.remove("earth-idle"); clearTimeout(idleTimer); if (!video.paused) idleTimer = setTimeout(() => box.classList.add("earth-idle"), 5000); };
     ["mousemove", "touchstart", "click"].forEach(evt => box.addEventListener(evt, showControls, {passive:true}));
     ["play", "pause", "timeupdate", "loadedmetadata", "durationchange", "volumechange", "ended"].forEach(evt => video.addEventListener(evt, () => { updateControls(); if (evt === "play") showControls(); if (evt === "pause") box.classList.remove("earth-idle"); }));
     // لمس سطح الفيديو لا يغيّر التشغيل؛ زر الشريط السفلي فقط يتحكم في ذلك.
