@@ -2,138 +2,2342 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>لوحة تحكم أرض الأحياء</title>
+<meta name="theme-color" content="#004e4d">
+
+<link rel="icon" href="../favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--green:#087f5b;--dark:#066747;--bg:#f3f6f5;--white:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;--red:#dc2626;--blue:#2563eb;--shadow:0 5px 20px rgba(0,0,0,.06)}
-*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text)}
-button,input,textarea,select{font-family:inherit;font-size:14px}button{cursor:pointer;border:0;border-radius:8px;padding:11px 16px;font-weight:bold}button:disabled{opacity:.6;cursor:not-allowed}
-.primary{background:var(--green);color:#fff}.primary:hover{background:var(--dark)}.secondary{background:#e2e8f0;color:#334155}.danger{background:#fee2e2;color:#b91c1c}.blue{background:#dbeafe;color:#1d4ed8}
-input,textarea,select{width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;background:#fff;outline:none;margin-top:6px}input:focus,textarea:focus,select:focus{border-color:var(--green)}textarea{resize:vertical;min-height:85px}label{display:block;font-weight:bold;margin-top:14px;font-size:14px}.hidden{display:none!important}
-#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}.login-box{background:#fff;width:100%;max-width:430px;padding:30px;border-radius:18px;box-shadow:var(--shadow)}.logo{width:65px;height:65px;border-radius:18px;background:#dcfce7;color:var(--green);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 15px}.login-box h1{text-align:center;font-size:23px}.login-box p{text-align:center;color:var(--muted);line-height:1.8}#loginButton{width:100%;margin-top:22px}#loginMessage{color:var(--red);line-height:1.8;margin-top:12px;font-size:13px;overflow-wrap:anywhere}
-.layout{display:flex;min-height:100vh}.sidebar{width:250px;background:#064e3b;color:#fff;padding:20px 14px;flex-shrink:0}.brand{font-size:19px;font-weight:bold;padding:10px 8px 24px;line-height:1.8}.brand small{display:block;font-size:12px;color:#bbf7d0;font-weight:normal}.nav-btn{display:block;width:100%;text-align:right;color:#d1fae5;background:transparent;margin:5px 0;padding:13px;border-radius:9px}.nav-btn:hover,.nav-btn.active{background:#087f5b;color:#fff}.sidebar-bottom{margin-top:30px;border-top:1px solid #26745d;padding-top:15px}.main{flex:1;min-width:0;padding:24px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}.topbar h1{font-size:25px;margin:0}.topbar p{color:var(--muted);font-size:13px}.panel{display:none}.panel.active{display:block}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:22px}.stat-card,.box{background:#fff;border-radius:13px;padding:20px;box-shadow:var(--shadow)}.stat-card .label{color:var(--muted);font-size:13px}.stat-card .number{font-size:28px;font-weight:bold;margin-top:12px;color:var(--green)}.box{margin-bottom:20px}.box h2{font-size:18px;margin:0 0 16px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}.full{grid-column:1/-1}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}.table-wrap{overflow-x:auto;width:100%}table{border-collapse:collapse;width:100%;min-width:650px}th,td{text-align:right;padding:13px 10px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}th{background:#f8fafc;color:#475569}td{overflow-wrap:anywhere}.empty{text-align:center;color:var(--muted);padding:25px}.status{padding:12px 15px;border-radius:9px;margin-bottom:15px;line-height:1.8;overflow-wrap:anywhere}.status.success{background:#dcfce7;color:#166534}.status.error{background:#fee2e2;color:#991b1b}.status.info{background:#dbeafe;color:#1e40af}.progress{height:8px;background:#e2e8f0;border-radius:10px;overflow:hidden;margin-top:10px}.progress div{width:0;height:100%;background:var(--green);transition:width .2s}.hint{font-size:12px;color:var(--muted);line-height:1.8;margin-top:8px}.user-email{font-size:12px;color:#bbf7d0;overflow-wrap:anywhere;padding:8px}.forum-image{width:90px;height:75px;object-fit:cover;border-radius:8px;border:1px solid var(--border)}.post-content{white-space:pre-wrap;min-width:180px;max-width:360px;line-height:1.8}.reply-box{background:#f8fafc;border:1px solid var(--border);padding:18px;border-radius:12px;margin-top:20px}
-.quality-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px;padding:14px;border:1px solid #d1fae5;border-radius:12px;background:#f0fdf4;margin-top:14px}.quality-grid .quality-heading{grid-column:1/-1;font-weight:bold;color:#065f46;margin-bottom:4px}.quality-label{display:flex;align-items:center;gap:7px}.quality-label span{min-width:58px;display:inline-block}.quality-label input{min-width:0}
-@media(max-width:1000px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:700px){.layout{display:block}.sidebar{width:100%;padding:12px}.brand{padding:8px;font-size:17px}.nav-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}.nav-btn{font-size:12px;padding:11px 8px;margin:0}.sidebar-bottom{margin-top:12px;padding-top:10px}.main{padding:13px}.topbar h1{font-size:21px}.cards{gap:9px}.stat-card{padding:14px}.stat-card .number{font-size:23px}.form-grid,.quality-grid{grid-template-columns:1fr}.full,.quality-grid .quality-heading{grid-column:auto}.box{padding:15px}}
+:root{
+  --green:#008866;
+  --dark:#004e4d;
+  --blue:#07375b;
+  --bg:#f3f7fb;
+  --text:#18334e;
+  --muted:#64748b;
+  --border:#e2e8f0;
+  --red:#dc2626;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Cairo,sans-serif;
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.layout{display:flex;min-height:100vh}
+.sidebar{
+  width:272px;
+  min-width:272px;
+  background:linear-gradient(155deg,#004e4d,#003d50,#07375b);
+  color:white;
+  padding:22px 14px;
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow:auto;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px 25px;
+  font-size:20px;
+  font-weight:900;
+}
+.brand img{
+  width:45px;
+  height:45px;
+  object-fit:contain;
+}
+.nav-btn{
+  width:100%;
+  background:transparent;
+  border:0;
+  color:#e5f4f3;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:14px;
+  border-radius:12px;
+  margin-bottom:6px;
+  text-align:right;
+  font-weight:700;
+}
+.nav-btn i{width:23px;text-align:center}
+.nav-btn:hover,.nav-btn.active{
+  background:rgba(255,255,255,.15);
+  color:#fff;
+}
+.main{
+  flex:1;
+  min-width:0;
+  padding:26px;
+}
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-bottom:24px;
+}
+h1{font-size:25px;margin:0}
+h2{font-size:21px;margin:0 0 16px}
+h3{font-size:17px;margin:0 0 12px}
+p{line-height:1.9}
+.card{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:17px;
+  padding:22px;
+  margin-bottom:20px;
+  box-shadow:0 5px 22px rgba(10,45,65,.035);
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+}
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:15px;
+}
+.stat{
+  padding:20px;
+  border-radius:15px;
+  background:#edf8f4;
+  border:1px solid #d4ede4;
+}
+.stat strong{
+  display:block;
+  font-size:29px;
+  color:var(--dark);
+}
+.stat span{color:var(--muted);font-size:13px}
+label{
+  display:block;
+  font-size:13px;
+  font-weight:800;
+  margin-bottom:12px;
+}
+input,textarea,select{
+  display:block;
+  width:100%;
+  padding:12px 13px;
+  margin-top:7px;
+  border:1px solid #d8e2ea;
+  border-radius:10px;
+  background:white;
+  color:var(--text);
+  outline:none;
+  min-width:0;
+}
+input:focus,textarea:focus,select:focus{
+  border-color:var(--green);
+}
+textarea{min-height:85px;resize:vertical}
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:11px 16px;
+  border:0;
+  border-radius:10px;
+  background:var(--green);
+  color:white;
+  font-weight:800;
+}
+.btn:hover{filter:brightness(.95)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn.gray{background:#e9eef3;color:#234}
+.btn.red{background:#fee2e2;color:#b91c1c}
+.btn.blue{background:#2563eb}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+.list-item{
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:16px;
+  margin:12px 0;
+  background:#fff;
+}
+.list-item strong{display:block;margin-bottom:6px}
+.muted{color:var(--muted);font-size:13px}
+.notice{
+  padding:14px;
+  background:#eff6ff;
+  border:1px solid #bfdbfe;
+  border-radius:11px;
+  color:#1e40af;
+  margin-bottom:15px;
+}
+.error{
+  background:#fff1f2;
+  border-color:#fecdd3;
+  color:#be123c;
+}
+.success{
+  background:#ecfdf5;
+  border-color:#a7f3d0;
+  color:#047857;
+}
+.table-wrap{overflow-x:auto}
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:650px;
+}
+th,td{
+  padding:13px;
+  text-align:right;
+  border-bottom:1px solid var(--border);
+  font-size:13px;
+}
+th{background:#f1f5f9}
+.section{display:none}
+.section.active{display:block}
+.question-card{
+  border:1px solid #d8e5ed;
+  border-radius:14px;
+  padding:18px;
+  margin:15px 0;
+  background:#fbfdff;
+}
+.question-card h3{color:var(--dark)}
+.question-image{
+  max-width:260px;
+  max-height:200px;
+  object-fit:contain;
+  display:block;
+  margin:12px 0;
+  border-radius:10px;
+}
+.badge{
+  display:inline-block;
+  background:#e2f4ec;
+  color:#087f5b;
+  border-radius:50px;
+  padding:4px 11px;
+  font-size:12px;
+  font-weight:800;
+}
+#loginScreen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.login-box{
+  background:white;
+  width:100%;
+  max-width:430px;
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 12px 40px #0001;
+}
+.login-box h1{text-align:center;margin-bottom:15px}
+#message{
+  position:fixed;
+  bottom:20px;
+  left:20px;
+  right:20px;
+  max-width:550px;
+  margin:auto;
+  z-index:100;
+  padding:15px;
+  border-radius:12px;
+  background:#18334e;
+  color:white;
+  box-shadow:0 5px 25px #0002;
+  display:none;
+  overflow-wrap:anywhere;
+}
+@media(max-width:850px){
+  .layout{display:block}
+  .sidebar{
+    width:100%;
+    min-width:0;
+    height:auto;
+    position:relative;
+    padding:12px;
+  }
+  .brand{padding:5px 8px 12px}
+  .nav{
+    display:flex;
+    overflow-x:auto;
+    gap:6px;
+    padding-bottom:6px;
+  }
+  .nav-btn{
+    width:auto;
+    white-space:nowrap;
+    flex-shrink:0;
+    margin:0;
+    padding:11px;
+    font-size:12px;
+  }
+  .main{padding:15px}
+  .card{padding:15px}
+  h1{font-size:20px}
+}
 </style>
 </head>
+
 <body>
-<section id="loginScreen"><div class="login-box"><div class="logo">🌱</div><h1>أرض الأحياء</h1><p>لوحة تحكم إدارة المنصة</p><form id="loginForm"><label for="email">البريد الإلكتروني</label><input id="email" type="email" autocomplete="username" required><label for="password">كلمة المرور</label><input id="password" type="password" autocomplete="current-password" required><button class="primary" id="loginButton" type="submit">تسجيل الدخول</button></form><div id="loginMessage"></div></div></section>
+
+<div id="loginScreen">
+  <div class="login-box">
+    <h1>🌿 إدارة أرض الأحياء</h1>
+    <p class="muted" style="text-align:center">
+      تسجيل دخول مسؤول المنصة
+    </p>
+
+    <label>
+      البريد الإلكتروني
+      <input type="email" id="loginEmail">
+    </label>
+
+    <label>
+      كلمة المرور
+      <input type="password" id="loginPassword">
+    </label>
+
+    <button class="btn" style="width:100%" onclick="login()">
+      تسجيل الدخول
+    </button>
+
+    <p id="loginError" style="color:#dc2626"></p>
+  </div>
+</div>
+
 <div id="adminApp" class="layout hidden">
-<aside class="sidebar"><div class="brand">🌱 أرض الأحياء<small>لوحة تحكم الإدارة</small></div><div class="nav-list">
-<button class="nav-btn active" data-panel="dashboard">📊 الرئيسية</button><button class="nav-btn" data-panel="lectures">🎥 المحاضرات</button><button class="nav-btn" data-panel="months">📅 إدارة الشهور</button><button class="nav-btn" data-panel="notes">📚 المذكرات</button><button class="nav-btn" data-panel="exams">📝 الاختبارات</button><button class="nav-btn" data-panel="questions">❓ أسئلة الاختبارات</button><button class="nav-btn" data-panel="students">👨‍🎓 حسابات الطلاب</button><button class="nav-btn" data-panel="forum">💬 المنتدى</button>
-</div><div class="sidebar-bottom"><div id="adminEmail" class="user-email"></div><button id="refreshButton" class="nav-btn">🔄 تحديث البيانات</button><button id="logoutButton" class="nav-btn">🚪 تسجيل الخروج</button></div></aside>
-<main class="main"><div class="topbar"><div><h1 id="pageTitle">الرئيسية</h1><p>إدارة محتوى منصة أرض الأحياء</p></div><button class="primary" id="topRefresh">تحديث ↻</button></div><div id="globalStatus" class="hidden"></div>
-<section id="panel-dashboard" class="panel active"><div class="cards"><div class="stat-card"><div class="label">إجمالي المحاضرات</div><div class="number" id="countLectures">—</div></div><div class="stat-card"><div class="label">إجمالي المذكرات</div><div class="number" id="countNotes">—</div></div><div class="stat-card"><div class="label">إجمالي الاختبارات</div><div class="number" id="countExams">—</div></div><div class="stat-card"><div class="label">حسابات الطلاب</div><div class="number" id="countStudents">—</div></div></div><div class="box"><h2>مرحبًا بك في لوحة الإدارة</h2><p style="line-height:2;color:#64748b">من القائمة الجانبية يمكنك إدارة المحاضرات والشهور والمذكرات والاختبارات والطلاب والمنتدى.</p></div></section>
-<section id="panel-lectures" class="panel"><div class="box"><h2 id="lectureFormTitle">إضافة محاضرة جديدة</h2><form id="lectureForm"><input type="hidden" id="lectureId"><div class="form-grid">
-<div class="full"><label for="lectureTitle">عنوان المحاضرة</label><input id="lectureTitle" required></div>
-<div class="full"><label for="lectureMonth">الشهر التابع له المحاضرة</label><select id="lectureMonth" required><option value="">جارٍ تحميل الشهور...</option></select><div class="hint">أضف الشهر أولًا من قسم إدارة الشهور إذا لم يكن موجودًا.</div></div>
-<div class="full"><label for="lectureDescription">وصف المحاضرة</label><textarea id="lectureDescription"></textarea></div>
-<div class="full"><label for="lectureUrl">رابط الفيديو الأساسي (اختياري)</label><input id="lectureUrl" type="url" placeholder="https://..."><div class="hint">يُستخدم كرابط احتياطي للمحاضرات القديمة أو عند عدم إضافة روابط جودات منفصلة.</div></div>
-<div class="full"><div class="quality-grid">
-<div class="quality-heading">⚙️ روابط جودة الفيديو (اختياري)</div>
-<div><label class="quality-label" for="lectureUrl1080"><span>1080p</span><input id="lectureUrl1080" type="url" placeholder="رابط جودة 1080p"></label></div>
-<div><label class="quality-label" for="lectureUrl720"><span>720p</span><input id="lectureUrl720" type="url" placeholder="رابط جودة 720p"></label></div>
-<div><label class="quality-label" for="lectureUrl480"><span>480p</span><input id="lectureUrl480" type="url" placeholder="رابط جودة 480p"></label></div>
-<div><label class="quality-label" for="lectureUrl360"><span>360p</span><input id="lectureUrl360" type="url" placeholder="رابط جودة 360p"></label></div>
-<div class="hint" style="grid-column:1/-1">ضع رابط ملف فيديو مباشر لكل جودة. اترك الخانة فارغة إذا لم تتوفر هذه الجودة. يدعم مشغل المنصة اختيار الجودة إذا كانت صفحة المحاضرات مبرمجة لقراءة هذه الأعمدة.</div>
-</div></div>
-<div class="full"><label for="videoFile">أو اختر ملف فيديو أساسي</label><input id="videoFile" type="file" accept="video/*"><div class="hint">يرفع الملف إلى Storage داخل المجلد videos. رفع الملف هنا يغيّر رابط الفيديو الأساسي فقط، ولا ينشئ جودات متعددة تلقائيًا.</div></div>
-</div><div id="videoProgress" class="progress hidden"><div id="videoProgressBar"></div></div><div class="actions"><button class="primary" id="saveLecture" type="submit">حفظ المحاضرة</button><button class="secondary" type="button" id="cancelLectureEdit">إلغاء التعديل</button></div></form></div>
-<div class="box"><h2>المحاضرات الموجودة</h2><div class="table-wrap"><table><thead><tr><th>العنوان</th><th>الشهر</th><th>الوصف</th><th>روابط الفيديو والجودات</th><th>الإجراءات</th></tr></thead><tbody id="lecturesTable"></tbody></table></div></div></section>
-<section id="panel-months" class="panel"><div class="box"><h2 id="monthFormTitle">📅 إضافة شهر جديد</h2><form id="monthForm"><input type="hidden" id="monthId"><div class="form-grid"><div><label for="monthNumber">رقم الشهر</label><input id="monthNumber" type="number" min="1" step="1" required></div><div><label for="monthSortOrder">ترتيب الشهر</label><input id="monthSortOrder" type="number" min="0" step="1" value="1" required></div><div class="full"><label for="monthTitle">اسم الشهر</label><input id="monthTitle" required placeholder="مثال: شهر أكتوبر"></div><div class="full"><label for="monthVisibility">ظهور الشهر للطلاب</label><select id="monthVisibility"><option value="true">ظاهر للطلاب</option><option value="false">مخفي عن الطلاب</option></select></div></div><div class="actions"><button class="primary" id="saveMonth" type="submit">حفظ الشهر</button><button class="secondary" id="cancelMonthEdit" type="button">إلغاء التعديل</button></div></form></div><div class="box"><h2>📚 الشهور الموجودة</h2><p class="hint">يمكنك إضافة الشهور وتعديلها وترتيبها وإخفاؤها أو إظهارها.</p><div class="table-wrap"><table><thead><tr><th>رقم الشهر</th><th>اسم الشهر</th><th>الترتيب</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody id="monthsTable"></tbody></table></div></div></section>
-<section id="panel-notes" class="panel"><div class="box"><h2 id="noteFormTitle">إضافة مذكرة جديدة</h2><form id="noteForm"><input type="hidden" id="noteId"><label for="noteTitle">عنوان المذكرة</label><input id="noteTitle" required><label for="pdfFile">ملف PDF</label><input id="pdfFile" type="file" accept="application/pdf,.pdf"><div class="hint">عند التعديل يمكنك ترك الملف فارغًا للاحتفاظ بالملف الحالي.</div><div class="actions"><button class="primary" id="saveNote" type="submit">حفظ المذكرة</button><button class="secondary" type="button" id="cancelNoteEdit">إلغاء التعديل</button></div></form></div><div class="box"><h2>المذكرات الموجودة</h2><div class="table-wrap"><table><thead><tr><th>العنوان</th><th>مسار الملف</th><th>الإجراءات</th></tr></thead><tbody id="notesTable"></tbody></table></div></div></section>
-<section id="panel-exams" class="panel"><div class="box"><h2 id="examFormTitle">إضافة اختبار جديد</h2><form id="examForm"><input type="hidden" id="examId"><label for="examTitle">عنوان الاختبار</label><input id="examTitle" required><label for="examDescription">وصف الاختبار</label><textarea id="examDescription"></textarea><label for="examDuration">مدة الاختبار بالدقائق</label><input id="examDuration" type="number" min="1" value="30" required><div class="actions"><button class="primary" id="saveExam" type="submit">حفظ الاختبار</button><button class="secondary" type="button" id="cancelExamEdit">إلغاء التعديل</button></div></form></div><div class="box"><h2>الاختبارات الموجودة</h2><div class="table-wrap"><table><thead><tr><th>العنوان</th><th>الوصف</th><th>المدة</th><th>الإجراءات</th></tr></thead><tbody id="examsTable"></tbody></table></div></div></section>
-<section id="panel-questions" class="panel"><div class="box"><h2 id="questionFormTitle">إضافة سؤال لاختبار</h2><form id="questionForm"><input type="hidden" id="questionId"><label for="questionExam">الاختبار</label><select id="questionExam" required><option value="">اختر الاختبار</option></select><label for="questionText">نص السؤال</label><textarea id="questionText" required></textarea><label for="optionA">الاختيار الأول</label><input id="optionA" required><label for="optionB">الاختيار الثاني</label><input id="optionB" required><label for="optionC">الاختيار الثالث</label><input id="optionC" required><label for="optionD">الاختيار الرابع</label><input id="optionD" required><label for="correctAnswer">الإجابة الصحيحة</label><select id="correctAnswer" required><option value="">اختر الإجابة</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select><div class="actions"><button class="primary" id="saveQuestion" type="submit">حفظ السؤال</button><button class="secondary" type="button" id="cancelQuestionEdit">إلغاء التعديل</button></div></form></div><div class="box"><h2>الأسئلة الموجودة</h2><div class="table-wrap"><table><thead><tr><th>السؤال</th><th>الاختبار</th><th>الإجابة الصحيحة</th><th>الإجراءات</th></tr></thead><tbody id="questionsTable"></tbody></table></div></div></section>
-<section id="panel-students" class="panel"><div class="box"><h2>👨‍🎓 حسابات الطلاب</h2><p class="hint">بيانات الحسابات المسجلة في جدول profiles.</p><div class="table-wrap"><table><thead><tr><th>الاسم</th><th>رقم الهاتف</th><th>البريد الإلكتروني</th><th>الصلاحية</th><th>معرّف الحساب</th></tr></thead><tbody id="studentsTable"></tbody></table></div></div></section>
-<section id="panel-forum" class="panel"><div class="box"><h2>💬 إدارة المنتدى</h2><p style="color:#64748b;line-height:1.8">شاهد منشورات الطلاب وصورهم، واختر المنشور الذي تريد الرد عليه.</p><div class="actions"><button class="primary" id="refreshForum">🔄 تحديث المنشورات</button></div></div><div class="box"><h2>📨 منشورات الطلاب</h2><div class="table-wrap"><table><thead><tr><th>المنشور</th><th>الصورة</th><th>صاحب المنشور</th><th>التاريخ</th><th>الإجراءات</th></tr></thead><tbody id="forumPostsTable"></tbody></table></div></div><div class="box"><h2>✍️ الرد على الطالب</h2><label for="forumPostSelect">اختر المنشور الذي تريد الرد عليه</label><select id="forumPostSelect"><option value="">اختر منشورًا</option></select><div id="selectedPostPreview" class="reply-box hidden"><strong>المنشور المحدد:</strong><p id="selectedPostText" class="post-content"></p></div><form id="adminReplyForm"><label for="adminReplyText">اكتب ردك</label><textarea id="adminReplyText" placeholder="اكتب ردك على الطالب هنا..." required></textarea><div class="actions"><button class="primary" id="sendAdminReply" type="submit">📩 إرسال الرد</button><button class="secondary" type="button" id="clearReply">مسح النص</button></div><p class="hint">اختر منشورًا أولًا ثم اكتب الرد واضغط إرسال.</p></form></div><div class="box"><h2>💬 الردود على المنشور المحدد</h2><div class="table-wrap"><table><thead><tr><th>الرد</th><th>صاحب الرد</th><th>التاريخ</th><th>الإجراءات</th></tr></thead><tbody id="forumRepliesTable"></tbody></table></div></div></section>
-</main></div>
+
+  <aside class="sidebar">
+
+    <div class="brand">
+      <img src="../logo.png" alt="الشعار">
+      <span>أرض الأحياء</span>
+    </div>
+
+    <nav class="nav">
+
+      <button class="nav-btn active" onclick="showSection('dashboard',this)">
+        <i class="fa-solid fa-chart-line"></i>
+        الرئيسية
+      </button>
+
+      <button class="nav-btn" onclick="showSection('lectures',this)">
+        <i class="fa-regular fa-circle-play"></i>
+        المحاضرات
+      </button>
+
+      <button class="nav-btn" onclick="showSection('months',this)">
+        <i class="fa-regular fa-calendar"></i>
+        الشهور
+      </button>
+
+      <button class="nav-btn" onclick="showSection('content',this)">
+        <i class="fa-solid fa-layer-group"></i>
+        محتوى المحاضرة
+      </button>
+
+      <button class="nav-btn" onclick="showSection('notes',this)">
+        <i class="fa-solid fa-book-open"></i>
+        المذكرات
+      </button>
+
+      <button class="nav-btn" onclick="showSection('exams',this)">
+        <i class="fa-solid fa-file-circle-question"></i>
+        الاختبارات
+      </button>
+
+      <button class="nav-btn" onclick="showSection('students',this)">
+        <i class="fa-solid fa-users"></i>
+        الطلاب
+      </button>
+
+      <button class="nav-btn" onclick="showSection('forum',this)">
+        <i class="fa-regular fa-comments"></i>
+        المنتدى
+      </button>
+
+    </nav>
+
+  </aside>
+
+  <main class="main">
+
+    <div class="topbar">
+      <h1 id="pageTitle">لوحة التحكم</h1>
+
+      <button class="btn red" onclick="logout()">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        تسجيل الخروج
+      </button>
+    </div>
+
+    <!-- الرئيسية -->
+
+    <section id="dashboard" class="section active">
+
+      <div class="stats">
+
+        <div class="stat">
+          <strong id="lectureCount">0</strong>
+          <span>المحاضرات</span>
+        </div>
+
+        <div class="stat">
+          <strong id="studentCount">0</strong>
+          <span>الطلاب</span>
+        </div>
+
+        <div class="stat">
+          <strong id="assessmentCount">0</strong>
+          <span>الواجبات والامتحانات</span>
+        </div>
+
+        <div class="stat">
+          <strong id="noteCount">0</strong>
+          <span>المذكرات</span>
+        </div>
+
+      </div>
+
+      <div class="card" style="margin-top:20px">
+        <h2>مرحبًا بك في إدارة أرض الأحياء</h2>
+        <p>
+          يمكنك إدارة المحاضرات والمذكرات والواجبات
+          والامتحانات والطلاب من لوحة واحدة.
+        </p>
+      </div>
+
+    </section>
+
+    <!-- المحاضرات -->
+
+    <section id="lectures" class="section">
+
+      <div class="card">
+
+        <h2>إضافة أو تعديل محاضرة</h2>
+
+        <input type="hidden" id="lectureId">
+
+        <label>
+          عنوان المحاضرة
+          <input id="lectureTitle" placeholder="مثال: الدعامة في النبات">
+        </label>
+
+        <label>
+          رقم الشهر
+          <input id="lectureMonth" type="number" min="1" value="1">
+        </label>
+
+        <label>
+          وصف المحاضرة
+          <textarea id="lectureDescription"></textarea>
+        </label>
+
+        <label>
+          رابط الفيديو
+          <input id="lectureVideo" placeholder="https://...">
+        </label>
+
+        <div class="grid">
+
+          <label>
+            جودة 1080p
+            <input id="video1080">
+          </label>
+
+          <label>
+            جودة 720p
+            <input id="video720">
+          </label>
+
+          <label>
+            جودة 480p
+            <input id="video480">
+          </label>
+
+          <label>
+            جودة 360p
+            <input id="video360">
+          </label>
+
+        </div>
+
+        <div class="actions">
+
+          <button class="btn" onclick="saveLecture()">
+            <i class="fa-solid fa-floppy-disk"></i>
+            حفظ المحاضرة
+          </button>
+
+          <button class="btn gray" onclick="resetLecture()">
+            إلغاء التعديل
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="card">
+        <h2>جميع المحاضرات</h2>
+        <div id="lecturesList"></div>
+      </div>
+
+    </section>
+
+    <!-- الشهور -->
+
+    <section id="months" class="section">
+
+      <div class="card">
+
+        <h2>إدارة الشهور</h2>
+
+        <input type="hidden" id="monthId">
+
+        <div class="grid">
+
+          <label>
+            رقم الشهر
+            <input id="monthNumber" type="number" min="1">
+          </label>
+
+          <label>
+            عنوان الشهر
+            <input id="monthTitle">
+          </label>
+
+          <label>
+            ترتيب العرض
+            <input id="monthSort" type="number" value="1">
+          </label>
+
+          <label>
+            الحالة
+            <select id="monthVisible">
+              <option value="true">ظاهر</option>
+              <option value="false">مخفي</option>
+            </select>
+          </label>
+
+        </div>
+
+        <div class="actions">
+
+          <button class="btn" onclick="saveMonth()">
+            حفظ الشهر
+          </button>
+
+          <button class="btn gray" onclick="resetMonth()">
+            إلغاء
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="card">
+        <h2>الشهور المسجلة</h2>
+        <div id="monthsList"></div>
+      </div>
+
+    </section>
+
+    <!-- محتوى المحاضرة -->
+
+    <section id="content" class="section">
+
+      <div class="card">
+
+        <h2>إدارة محتوى المحاضرة</h2>
+
+        <p class="muted">
+          اختر المحاضرة لإضافة المذكرات والواجبات والامتحانات.
+        </p>
+
+        <label>
+          اختر المحاضرة
+          <select id="selectedLecture" onchange="loadLectureContent()">
+            <option value="">اختر المحاضرة</option>
+          </select>
+        </label>
+
+      </div>
+
+      <div id="lectureContentArea" class="hidden">
+
+        <div class="card">
+
+          <h2>📚 مذكرات المحاضرة</h2>
+
+          <label>
+            عنوان المذكرة
+            <input id="resourceTitle" placeholder="مذكرة الشرح">
+          </label>
+
+          <label>
+            رفع ملف PDF من الجهاز
+            <input id="resourceFile" type="file" accept=".pdf,application/pdf">
+          </label>
+
+          <button class="btn" onclick="addResource()">
+            <i class="fa-solid fa-upload"></i>
+            رفع المذكرة
+          </button>
+
+          <div id="resourcesList"></div>
+
+        </div>
+
+        <div class="card">
+
+          <h2>📝 إضافة واجب أو امتحان</h2>
+
+          <label>
+            نوع التقييم
+            <select id="assessmentType">
+              <option value="homework">واجب</option>
+              <option value="exam">امتحان</option>
+            </select>
+          </label>
+
+          <label>
+            عنوان التقييم
+            <input id="assessmentTitle" placeholder="امتحان المحاضرة الأولى">
+          </label>
+
+          <label>
+            المدة بالدقائق
+            <input id="assessmentDuration" type="number" min="1" placeholder="مثال: 30">
+          </label>
+
+          <button class="btn" onclick="createAssessment()">
+            <i class="fa-solid fa-plus"></i>
+            إنشاء التقييم
+          </button>
+
+        </div>
+
+        <div class="card">
+
+          <h2>الواجبات والامتحانات</h2>
+
+          <div id="assessmentsList"></div>
+
+        </div>
+
+        <div id="questionEditor" class="card hidden">
+
+          <h2 id="questionEditorTitle">إضافة أسئلة</h2>
+
+          <input type="hidden" id="currentAssessmentId">
+          <input type="hidden" id="questionId">
+
+          <div class="notice">
+            الطالب لن يرى الإجابة الصحيحة أو الشرح أثناء الحل.
+          </div>
+
+          <label>
+            نص السؤال
+            <textarea id="questionText" placeholder="اكتب السؤال هنا"></textarea>
+          </label>
+
+          <label>
+            صورة السؤال (اختياري)
+            <input id="questionImage" type="file" accept="image/*">
+          </label>
+
+          <label>
+            أ) الاختيار الأول
+            <input id="optionA">
+          </label>
+
+          <label>
+            ب) الاختيار الثاني
+            <input id="optionB">
+          </label>
+
+          <label>
+            ج) الاختيار الثالث
+            <input id="optionC">
+          </label>
+
+          <label>
+            د) الاختيار الرابع
+            <input id="optionD">
+          </label>
+
+          <div class="grid">
+
+            <label>
+              الإجابة الصحيحة
+              <select id="correctAnswer">
+                <option value="A">أ</option>
+                <option value="B">ب</option>
+                <option value="C">ج</option>
+                <option value="D">د</option>
+              </select>
+            </label>
+
+            <label>
+              درجة السؤال
+              <input id="questionPoints" type="number" min="0.25" step="0.25" value="1">
+            </label>
+
+            <label>
+              ترتيب السؤال
+              <input id="questionOrder" type="number" min="1" value="1">
+            </label>
+
+          </div>
+
+          <label>
+            شرح الإجابة الصحيحة
+            <textarea id="answerExplanation" placeholder="اكتب شرح الإجابة هنا"></textarea>
+          </label>
+
+          <div class="actions">
+
+            <button class="btn" onclick="saveQuestion()">
+              <i class="fa-solid fa-floppy-disk"></i>
+              حفظ السؤال
+            </button>
+
+            <button class="btn gray" onclick="resetQuestion()">
+              سؤال جديد
+            </button>
+
+          </div>
+
+          <hr style="border:0;border-top:1px solid #eee;margin:25px 0">
+
+          <h3>الأسئلة الموجودة</h3>
+
+          <div id="questionsList"></div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- المذكرات العامة -->
+
+    <section id="notes" class="section">
+
+      <div class="card">
+
+        <h2>إضافة مذكرة عامة</h2>
+
+        <input type="hidden" id="noteId">
+
+        <label>
+          عنوان المذكرة
+          <input id="noteTitle">
+        </label>
+
+        <label>
+          ملف PDF
+          <input id="noteFile" type="file" accept=".pdf,application/pdf">
+        </label>
+
+        <button class="btn" onclick="saveNote()">
+          حفظ المذكرة
+        </button>
+
+      </div>
+
+      <div class="card">
+        <h2>المذكرات العامة</h2>
+        <div id="notesList"></div>
+      </div>
+
+    </section>
+
+    <!-- الاختبارات القديمة -->
+
+    <section id="exams" class="section">
+
+      <div class="card">
+
+        <h2>الاختبارات العامة</h2>
+
+        <p class="muted">
+          هذا القسم خاص بجدول الاختبارات العام الموجود مسبقًا.
+          أما امتحانات المحاضرات الجديدة فتُدار من قسم
+          «محتوى المحاضرة».
+        </p>
+
+        <input type="hidden" id="examId">
+
+        <label>
+          عنوان الامتحان
+          <input id="examTitle">
+        </label>
+
+        <label>
+          وصف الامتحان
+          <textarea id="examDescription"></textarea>
+        </label>
+
+        <label>
+          المدة بالدقائق
+          <input id="examDuration" type="number" min="1">
+        </label>
+
+        <div class="actions">
+
+          <button class="btn" onclick="saveExam()">
+            حفظ الامتحان
+          </button>
+
+          <button class="btn gray" onclick="resetExam()">
+            إلغاء
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="card">
+        <h2>الاختبارات المسجلة</h2>
+        <div id="examsList"></div>
+      </div>
+
+    </section>
+
+    <!-- الطلاب -->
+
+    <section id="students" class="section">
+
+      <div class="card">
+
+        <h2>إدارة الطلاب</h2>
+
+        <label>
+          البحث عن طالب
+          <input id="studentSearch" placeholder="اسم الطالب أو رقم الهاتف" oninput="renderStudents()">
+        </label>
+
+        <div id="studentsList"></div>
+
+      </div>
+
+    </section>
+
+    <!-- المنتدى -->
+
+    <section id="forum" class="section">
+
+      <div class="card">
+
+        <h2>إدارة المنتدى</h2>
+
+        <button class="btn" onclick="loadForum()">
+          تحديث المنشورات
+        </button>
+
+        <div id="forumList"></div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+<div id="message"></div>
+
 <script>
 "use strict";
-const SUPABASE_URL="https://fpfbmjtpzamzlyzitmsd.supabase.co";
-const SUPABASE_KEY="sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
-const ADMIN_UID="6b6a2997-74a6-4441-b817-cbf00cd81229";
-const STORAGE_BUCKET="lectures";
-let db=null,currentUser=null;
-let lecturesCache=[],monthsCache=[],notesCache=[],examsCache=[],questionsCache=[],profilesCache=[],forumPostsCache=[],forumRepliesCache=[];
-const $=id=>document.getElementById(id);
-function escapeHTML(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function ensureClient(){if(db)return db;if(!window.supabase?.createClient)throw new Error("تعذر تحميل مكتبة Supabase.");db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});return db}
-function friendlyError(error){const m=error?.message||String(error||"خطأ غير معروف");if(/Invalid login credentials/i.test(m))return"البريد الإلكتروني أو كلمة المرور غير صحيحة.";if(/Email not confirmed/i.test(m))return"يجب تأكيد البريد الإلكتروني أولًا.";if(/Bucket not found/i.test(m))return"مساحة التخزين المطلوبة غير موجودة.";if(/Invalid key/i.test(m))return"اسم الملف غير مقبول. جرّب اختيار الملف مرة أخرى.";if(/row-level security|permission denied|not allowed/i.test(m))return"العملية مرفوضة بسبب صلاحيات قاعدة البيانات أو Storage.";if(/foreign key constraint/i.test(m))return"تعذر حفظ البيانات لأن العنصر المرتبط غير موجود.";if(/does not exist|Could not find the table|schema cache/i.test(m))return"الجدول أو العمود غير موجود. تحقق من أسماء الجداول والأعمدة في Supabase.";return m}
-function showStatus(message,type="info"){const box=$("globalStatus");box.className="status "+type;box.textContent=message;box.classList.remove("hidden");if(type!=="error")setTimeout(()=>box.classList.add("hidden"),6000)}
-function showLoginMessage(message){$("loginMessage").textContent=message}
-function setLoading(button,on,label){if(!button.dataset.originalText)button.dataset.originalText=button.textContent;button.disabled=on;button.textContent=on?(label||"جارٍ التنفيذ..."):button.dataset.originalText}
-function renderEmpty(tbody,cols,message="لا توجد بيانات حتى الآن."){tbody.innerHTML=`<tr><td colspan="${cols}" class="empty">${escapeHTML(message)}</td></tr>`}
-function actionButton(label,action,id,cls="secondary"){return`<button type="button" class="${cls}" data-action="${action}" data-id="${escapeHTML(id)}">${label}</button>`}
-function safeFilename(name){const part=String(name||"file").split(/[\\/]/).pop(),dot=part.lastIndexOf(".");let ext=dot>=0?part.slice(dot).toLowerCase():"",base=dot>=0?part.slice(0,dot):part;ext=ext.replace(/[^a-z0-9.]/g,"").slice(0,12);base=base.normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-zA-Z0-9_-]/g,"_").replace(/_+/g,"_").replace(/^_+|_+$/g,"").slice(0,60);return(base||"file")+ext}
-async function uploadFile(file,folder){const name=Date.now()+"_"+Math.random().toString(36).slice(2)+"_"+safeFilename(file.name),path=folder+"/"+name;const{data,error}=await ensureClient().storage.from(STORAGE_BUCKET).upload(path,file,{cacheControl:"3600",upsert:false,contentType:file.type||undefined});if(error)throw error;return data.path}
-async function fetchRows(table){const{data,error}=await ensureClient().from(table).select("*").order("created_at",{ascending:false});if(error)throw error;return data||[]}
-async function isAdmin(user){if(!user)return false;if(user.id===ADMIN_UID)return true;const{data,error}=await ensureClient().from("profiles").select("role").eq("id",user.id).maybeSingle();if(error){console.error(error);return false}return String(data?.role||"").toLowerCase()==="admin"}
-async function enterAdmin(user){if(!await isAdmin(user)){await ensureClient().auth.signOut();currentUser=null;$("adminApp").classList.add("hidden");$("loginScreen").classList.remove("hidden");showLoginMessage("هذا الحساب ليس لديه صلاحية الأدمن. تحقق من معرّف الحساب أو role في profiles.");return}currentUser=user;$("loginScreen").classList.add("hidden");$("adminApp").classList.remove("hidden");$("adminEmail").textContent=user.email||user.id;showLoginMessage("");await loadAllData()}
-$("loginForm").addEventListener("submit",async e=>{e.preventDefault();const button=$("loginButton");setLoading(button,true,"جارٍ تسجيل الدخول...");showLoginMessage("");try{const{data,error}=await ensureClient().auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error)throw error;if(!data?.user)throw new Error("تعذر العثور على الحساب.");await enterAdmin(data.user)}catch(error){console.error(error);showLoginMessage(friendlyError(error))}finally{setLoading(button,false)}});
-$("logoutButton").addEventListener("click",async()=>{try{if(db){const{error}=await db.auth.signOut();if(error)throw error}currentUser=null;$("adminApp").classList.add("hidden");$("loginScreen").classList.remove("hidden");$("password").value="";showLoginMessage("تم تسجيل الخروج.")}catch(e){showStatus(friendlyError(e),"error")}});
-const titles={dashboard:"الرئيسية",lectures:"إدارة المحاضرات",months:"إدارة الشهور",notes:"إدارة المذكرات",exams:"إدارة الاختبارات",questions:"أسئلة الاختبارات",students:"حسابات الطلاب",forum:"إدارة المنتدى"};
-document.querySelectorAll(".nav-btn[data-panel]").forEach(button=>button.addEventListener("click",()=>{const name=button.dataset.panel;document.querySelectorAll(".nav-btn[data-panel]").forEach(b=>b.classList.toggle("active",b===button));document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));$("panel-"+name).classList.add("active");$("pageTitle").textContent=titles[name]||"لوحة التحكم";if(name==="forum")loadForum();if(name==="months")loadMonths()}));
-async function deleteRow(table,id){if(!confirm("هل أنت متأكد من حذف هذا العنصر؟"))return;const{error}=await ensureClient().from(table).delete().eq("id",id);if(error)throw error;showStatus("تم الحذف بنجاح.","success");await loadAllData()}
-/* الشهور */
-async function loadMonths(){const body=$("monthsTable");try{const{data,error}=await ensureClient().from("lecture_months").select("*").order("sort_order",{ascending:true}).order("month_number",{ascending:true});if(error)throw error;monthsCache=data||[];renderMonths();populateLectureMonths()}catch(error){console.error(error);renderEmpty(body,5,"تعذر تحميل الشهور: "+friendlyError(error))}}
-function renderMonths(){const body=$("monthsTable");if(!monthsCache.length){renderEmpty(body,5,"لا توجد شهور حتى الآن. أضف أول شهر.");return}body.innerHTML=monthsCache.map(m=>`<tr><td>${escapeHTML(m.month_number)}</td><td>${escapeHTML(m.title)}</td><td>${escapeHTML(m.sort_order??0)}</td><td>${m.is_visible?'<span style="color:#087f5b;font-weight:bold">ظاهر للطلاب</span>':'<span style="color:#dc2626;font-weight:bold">مخفي</span>'}</td><td><div class="actions">${actionButton("تعديل","edit-month",m.id,"blue")}${actionButton(m.is_visible?"إخفاء":"إظهار","toggle-month",m.id)}${actionButton("حذف","delete-month",m.id,"danger")}</div></td></tr>`).join("")}
-function populateLectureMonths(){const select=$("lectureMonth");if(!select)return;const previous=select.value;select.innerHTML='<option value="">اختر الشهر</option>'+monthsCache.map(m=>`<option value="${escapeHTML(m.month_number)}">${escapeHTML(m.title)}</option>`).join("");if(monthsCache.some(m=>String(m.month_number)===String(previous)))select.value=previous}
-function resetMonthForm(){$("monthForm").reset();$("monthId").value="";$("monthFormTitle").textContent="📅 إضافة شهر جديد";$("saveMonth").textContent="حفظ الشهر";const next=monthsCache.length?Math.max(...monthsCache.map(m=>Number(m.month_number)||0))+1:1;$("monthNumber").value=next;$("monthSortOrder").value=next;$("monthVisibility").value="true"}
-$("monthForm").addEventListener("submit",async e=>{e.preventDefault();const button=$("saveMonth");setLoading(button,true,"جارٍ حفظ الشهر...");try{const id=$("monthId").value,monthNumber=Number($("monthNumber").value),payload={month_number:monthNumber,title:$("monthTitle").value.trim(),sort_order:Number($("monthSortOrder").value),is_visible:$("monthVisibility").value==="true"};if(!Number.isInteger(monthNumber)||monthNumber<1)throw new Error("رقم الشهر يجب أن يكون عددًا صحيحًا أكبر من صفر.");if(!Number.isInteger(payload.sort_order)||payload.sort_order<0)throw new Error("ترتيب الشهر يجب أن يكون صفرًا أو أكبر.");if(!payload.title)throw new Error("اكتب اسم الشهر.");if(monthsCache.some(m=>Number(m.month_number)===monthNumber&&String(m.id)!==String(id)))throw new Error("رقم الشهر مستخدم بالفعل.");const result=id?await ensureClient().from("lecture_months").update(payload).eq("id",id):await ensureClient().from("lecture_months").insert(payload);if(result.error)throw result.error;resetMonthForm();await loadMonths();await loadLectures();showStatus("تم حفظ الشهر بنجاح.","success")}catch(error){console.error(error);showStatus("تعذر حفظ الشهر: "+friendlyError(error),"error")}finally{setLoading(button,false)}});$("cancelMonthEdit").addEventListener("click",resetMonthForm);
-/* المحاضرات والجودات */
-const qualityFields=[["lectureUrl1080","video_1080_url"],["lectureUrl720","video_720_url"],["lectureUrl480","video_480_url"],["lectureUrl360","video_360_url"]];
-function qualityLinksText(r){const parts=[["1080p",r.video_1080_url],["720p",r.video_720_url],["480p",r.video_480_url],["360p",r.video_360_url]].filter(x=>x[1]);return parts.length?parts.map(x=>`<div><b>${x[0]}:</b> <a href="${escapeHTML(x[1])}" target="_blank" rel="noopener noreferrer">فتح الرابط</a></div>`).join(""):`<span class="hint">لا توجد روابط جودة منفصلة</span>`}
-async function loadLectures(){lecturesCache=await fetchRows("lectures");const body=$("lecturesTable");if(!lecturesCache.length){renderEmpty(body,5);return}body.innerHTML=lecturesCache.map(r=>{const m=monthsCache.find(x=>Number(x.month_number)===Number(r.month_number));return`<tr><td>${escapeHTML(r.title)}</td><td>${escapeHTML(m?.title||(r.month_number?"الشهر "+r.month_number:"غير محدد"))}</td><td>${escapeHTML(r.description||"—")}</td><td><div><b>الأساسي:</b> ${r.video_url?`<a href="${escapeHTML(r.video_url)}" target="_blank" rel="noopener noreferrer">فتح الرابط</a>`:"—"}</div>${qualityLinksText(r)}</td><td><div class="actions">${actionButton("تعديل","edit-lecture",r.id,"blue")}${actionButton("حذف","delete-lecture",r.id,"danger")}</div></td></tr>`}).join("")}
-$("lectureForm").addEventListener("submit",async e=>{e.preventDefault();const button=$("saveLecture");setLoading(button,true,"جارٍ الحفظ...");$("videoProgress").classList.remove("hidden");try{const id=$("lectureId").value,title=$("lectureTitle").value.trim(),description=$("lectureDescription").value.trim(),month_number=Number($("lectureMonth").value);let video_url=$("lectureUrl").value.trim();const file=$("videoFile").files[0];if(!title)throw new Error("اكتب عنوان المحاضرة.");if(!Number.isInteger(month_number)||month_number<1)throw new Error("اختر الشهر التابع له المحاضرة.");if(!monthsCache.some(m=>Number(m.month_number)===month_number))throw new Error("الشهر المختار غير موجود.");if(file){$("videoProgressBar").style.width="30%";video_url=await uploadFile(file,"videos");$("videoProgressBar").style.width="90%"}else if(id&&!video_url)video_url=lecturesCache.find(r=>String(r.id)===String(id))?.video_url||"";const payload={title,description,video_url,month_number};for(const[field,column]of qualityFields){const entered=$(field).value.trim();payload[column]=entered||null}const result=id?await ensureClient().from("lectures").update(payload).eq("id",id):await ensureClient().from("lectures").insert(payload);if(result.error)throw result.error;$("videoProgressBar").style.width="100%";resetLectureForm();showStatus("تم حفظ المحاضرة وروابط الجودة بنجاح.","success");await loadAllData()}catch(error){console.error(error);showStatus("تعذر حفظ المحاضرة: "+friendlyError(error),"error")}finally{setLoading(button,false);setTimeout(()=>{$("videoProgress").classList.add("hidden");$("videoProgressBar").style.width="0"},700)}});
-function resetLectureForm(){$("lectureForm").reset();$("lectureId").value="";$("lectureFormTitle").textContent="إضافة محاضرة جديدة";$("saveLecture").textContent="حفظ المحاضرة";populateLectureMonths()}$("cancelLectureEdit").addEventListener("click",resetLectureForm);
-/* المذكرات */
-async function loadNotes(){notesCache=await fetchRows("notes");const body=$("notesTable");if(!notesCache.length){renderEmpty(body,3);return}body.innerHTML=notesCache.map(r=>`<tr><td>${escapeHTML(r.title)}</td><td>${escapeHTML(r.file_path||"—")}</td><td><div class="actions">${actionButton("تعديل","edit-note",r.id,"blue")}${actionButton("حذف","delete-note",r.id,"danger")}</div></td></tr>`).join("")}
-$("noteForm").addEventListener("submit",async e=>{e.preventDefault();const button=$("saveNote");setLoading(button,true,"جارٍ الحفظ...");try{const id=$("noteId").value,title=$("noteTitle").value.trim(),file=$("pdfFile").files[0];let file_path="";if(!title)throw new Error("اكتب عنوان المذكرة.");if(file){if(file.type!=="application/pdf"&&!file.name.toLowerCase().endsWith(".pdf"))throw new Error("اختر ملف PDF فقط.");file_path=await uploadFile(file,"pdf")}else if(id)file_path=notesCache.find(r=>String(r.id)===String(id))?.file_path||"";else throw new Error("اختر ملف PDF للمذكرة.");const result=id?await ensureClient().from("notes").update({title,file_path}).eq("id",id):await ensureClient().from("notes").insert({title,file_path});if(result.error)throw result.error;resetNoteForm();showStatus("تم حفظ المذكرة بنجاح.","success");await loadAllData()}catch(error){showStatus("تعذر حفظ المذكرة: "+friendlyError(error),"error")}finally{setLoading(button,false)}});function resetNoteForm(){$("noteForm").reset();$("noteId").value="";$("noteFormTitle").textContent="إضافة مذكرة جديدة";$("saveNote").textContent="حفظ المذكرة"}$("cancelNoteEdit").addEventListener("click",resetNoteForm);
-/* الاختبارات */
-async function loadExams(){examsCache=await fetchRows("exams");const body=$("examsTable");if(!examsCache.length)renderEmpty(body,4);else body.innerHTML=examsCache.map(r=>`<tr><td>${escapeHTML(r.title)}</td><td>${escapeHTML(r.description||"—")}</td><td>${escapeHTML(r.duration??"—")} دقيقة</td><td><div class="actions">${actionButton("تعديل","edit-exam",r.id,"blue")}${actionButton("حذف","delete-exam",r.id,"danger")}</div></td></tr>`).join("");const select=$("questionExam"),previous=select.value;select.innerHTML='<option value="">اختر الاختبار</option>'+examsCache.map(r=>`<option value="${escapeHTML(r.id)}">${escapeHTML(r.title)}</option>`).join("");if(examsCache.some(r=>String(r.id)===previous))select.value=previous}
-$("examForm").addEventListener("submit",async e=>{e.preventDefault();const button=$("saveExam");setLoading(button,true,"جارٍ الحفظ...");try{const id=$("examId").value,payload={title:$("examTitle").value.trim(),description:$("examDescription").value.trim(),duration:Number($("examDuration").value)};if(!payload.title)throw new Error("اكتب عنوان الاختبار.");if(!payload.duration||payload.duration<1)throw new Error("أدخل مدة صحيحة للاختبار.");const result=id?await ensureClient().from("exams").update(payload).eq("id",id):await ensureClient().from("exams").insert(payload);if(result.error)throw result.error;resetExamForm();showStatus("تم حفظ الاختبار بنجاح.","success");await loadAllData()}catch(error){showStatus("تعذر حفظ الاختبار: "+friendlyError(error),"error")}finally{setLoading(button,false)}});function resetExamForm(){$("examForm").reset();$("examId").value="";$("examDuration").value="30";$("examFormTitle").textContent="إضافة اختبار جديد";$("saveExam").textContent="حفظ الاختبار"}$("cancelExamEdit").addEventListener("click",resetExamForm);
-/* أسئلة الاختبارات */
-async function loadQuestions(){questionsCache=await fetchRows("exam_questions");const body=$("questionsTable");if(!questionsCache.length){renderEmpty(body,4);return}body.innerHTML=questionsCache.map(r=>{const exam=examsCache.find(x=>String(x.id)===String(r.exam_id));return`<tr><td>${escapeHTML(r.question)}</td><td>${escapeHTML(exam?.title||r.exam_id||"—")}</td><td>${escapeHTML(r.correct_answer||"—")}</td><td><div class="actions">${actionButton("تعديل","edit-question",r.id,"blue")}${actionButton("حذف","delete-question",r.id,"danger")}</div></td></tr>`}).join("")}
-$("questionForm").addEventListener("submit",async e=>{e.preventDefault();const button=$("saveQuestion");setLoading(button,true,"جارٍ الحفظ...");try{const id=$("questionId").value,payload={exam_id:$("questionExam").value,question:$("questionText").value.trim(),option_a:$("optionA").value.trim(),option_b:$("optionB").value.trim(),option_c:$("optionC").value.trim(),option_d:$("optionD").value.trim(),correct_answer:$("correctAnswer").value};if(!payload.exam_id)throw new Error("اختر الاختبار أولًا.");const result=id?await ensureClient().from("exam_questions").update(payload).eq("id",id):await ensureClient().from("exam_questions").insert(payload);if(result.error)throw result.error;resetQuestionForm();showStatus("تم حفظ السؤال بنجاح.","success");await loadAllData()}catch(error){showStatus("تعذر حفظ السؤال: "+friendlyError(error),"error")}finally{setLoading(button,false)}});function resetQuestionForm(){$("questionForm").reset();$("questionId").value="";$("questionFormTitle").textContent="إضافة سؤال لاختبار";$("saveQuestion").textContent="حفظ السؤال"}$("cancelQuestionEdit").addEventListener("click",resetQuestionForm);
-/* حسابات الطلاب */
-async function loadProfiles(){const{data,error}=await ensureClient().from("profiles").select("id,full_name,email,phone,role").order("full_name",{ascending:true});if(error)throw error;profilesCache=data||[];const body=$("studentsTable");if(!profilesCache.length){renderEmpty(body,5);return}body.innerHTML=profilesCache.map(r=>`<tr><td>${escapeHTML(r.full_name||"—")}</td><td>${escapeHTML(r.phone||"غير مسجل")}</td><td>${escapeHTML(r.email||"—")}</td><td>${escapeHTML(r.role||"student")}</td><td>${escapeHTML(r.id||"—")}</td></tr>`).join("")}
-/* المنتدى */
-function firstValue(row,keys){for(const key of keys)if(row[key]!==undefined&&row[key]!==null&&row[key]!=="")return row[key];return""}
-function postText(row){return firstValue(row,["content","body","message","text","post_content","title"])||"(منشور بلا نص)"}
-function authorText(row){if(String(row?.reply_type||"").toLowerCase()==="admin")return"إدارة المنصة";return firstValue(row,["full_name","username","author_name","user_name","email","user_id","author_id"])||"غير معروف"}
-function dateText(row){const value=firstValue(row,["created_at","inserted_at","date","created_on","timestamp"]);if(!value)return"—";const d=new Date(value);return Number.isNaN(d.getTime())?String(value):d.toLocaleString("ar-EG")}
-function getPostImage(row){return firstValue(row,["image_url","image","photo_url","attachment_url","image_path"])}
-function imageHTML(row){const raw=getPostImage(row);if(!raw)return"—";const url=String(raw).trim();if(!/^https?:\/\//i.test(url))return`<span class="hint">مسار الصورة: ${escapeHTML(url)}</span>`;return`<a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer"><img class="forum-image" src="${escapeHTML(url)}" alt="صورة منشور الطالب" loading="lazy"></a>`}
-async function discoverForumPostsTable(){const{data,error}=await ensureClient().from("forum").select("*").order("created_at",{ascending:false});if(error)throw error;return data||[]}
-async function loadForum(){if(!currentUser)return;const postsBody=$("forumPostsTable"),repliesBody=$("forumRepliesTable");renderEmpty(postsBody,5,"جارٍ تحميل المنشورات...");try{forumPostsCache=await discoverForumPostsTable();const select=$("forumPostSelect"),previous=select.value;if(!forumPostsCache.length){renderEmpty(postsBody,5,"لا توجد منشورات في المنتدى حتى الآن.");select.innerHTML='<option value="">لا توجد منشورات</option>';renderEmpty(repliesBody,4,"لا توجد منشورات لعرض ردودها.");$("selectedPostPreview").classList.add("hidden");forumRepliesCache=[];return}postsBody.innerHTML=forumPostsCache.map(r=>`<tr><td><div class="post-content">${escapeHTML(postText(r))}</div></td><td>${imageHTML(r)}</td><td>${escapeHTML(authorText(r))}</td><td>${escapeHTML(dateText(r))}</td><td><div class="actions">${actionButton("الرد على المنشور","show-post-replies",r.id,"blue")}${actionButton("حذف المنشور","delete-post",r.id,"danger")}</div></td></tr>`).join("");select.innerHTML='<option value="">اختر منشورًا</option>'+forumPostsCache.map(r=>`<option value="${escapeHTML(r.id)}">${escapeHTML(String(postText(r)).slice(0,90))}</option>`).join("");if(previous&&forumPostsCache.some(r=>String(r.id)===previous)){select.value=previous;showSelectedPost(previous);await loadForumReplies(previous)}else{renderEmpty(repliesBody,4,"اختر منشورًا لعرض الردود.");$("selectedPostPreview").classList.add("hidden")}}catch(error){console.error("Forum load error:",error);renderEmpty(postsBody,5,"تعذر تحميل المنشورات: "+friendlyError(error));showStatus("تعذر تحميل المنتدى. تحقق من جدول forum وصلاحيات القراءة.","error")}}
-function showSelectedPost(postId){const post=forumPostsCache.find(r=>String(r.id)===String(postId));if(!post){$("selectedPostPreview").classList.add("hidden");return}$("selectedPostText").textContent=postText(post);$("selectedPostPreview").classList.remove("hidden")}
-async function loadForumReplies(postId){const body=$("forumRepliesTable");if(!postId){renderEmpty(body,4,"اختر منشورًا لعرض الردود.");return}renderEmpty(body,4,"جارٍ تحميل الردود...");try{const{data,error}=await ensureClient().from("forum_replies").select("*").eq("post_id",postId).order("created_at",{ascending:true});if(error)throw error;forumRepliesCache=data||[];if(!forumRepliesCache.length){renderEmpty(body,4,"لا توجد ردود على هذا المنشور حتى الآن.");return}body.innerHTML=forumRepliesCache.map(r=>`<tr><td><div class="post-content">${escapeHTML(firstValue(r,["content","body","message","text","reply","reply_content"])||"(رد بلا نص)")}</div></td><td>${escapeHTML(authorText(r))}</td><td>${escapeHTML(dateText(r))}</td><td>${actionButton("حذف الرد","delete-reply",r.id,"danger")}</td></tr>`).join("")}catch(error){console.error("Replies error:",error);renderEmpty(body,4,"تعذر تحميل الردود: "+friendlyError(error))}}
-$("adminReplyForm").addEventListener("submit",async e=>{e.preventDefault();const button=$("sendAdminReply"),postId=$("forumPostSelect").value,content=$("adminReplyText").value.trim();if(!postId){showStatus("اختر منشور الطالب أولًا.","error");return}if(!content){showStatus("اكتب الرد قبل الإرسال.","error");return}if(!currentUser){showStatus("انتهت جلسة الدخول. سجّل الدخول مرة أخرى.","error");return}const selectedPost=forumPostsCache.find(p=>String(p.id)===String(postId));if(!selectedPost){showStatus("المنشور المحدد غير موجود. حدّث المنشورات.","error");return}setLoading(button,true,"جارٍ إرسال الرد...");try{const{data:post,error:checkError}=await ensureClient().from("forum").select("id").eq("id",postId).maybeSingle();if(checkError)throw checkError;if(!post)throw new Error("المنشور غير موجود في جدول forum.");const{error}=await ensureClient().from("forum_replies").insert({post_id:post.id,content:content,user_id:currentUser.id,reply_type:"admin"});if(error)throw error;$("adminReplyText").value="";showStatus("تم إرسال ردك بنجاح.","success");await loadForumReplies(post.id)}catch(error){console.error("Send reply error:",error);showStatus("تعذر إرسال الرد: "+friendlyError(error),"error")}finally{setLoading(button,false)}});
-$("clearReply").addEventListener("click",()=>$("adminReplyText").value="");
-$("forumPostSelect").addEventListener("change",async e=>{const postId=e.target.value;showSelectedPost(postId);$("adminReplyText").value="";await loadForumReplies(postId)});
-$("refreshForum").addEventListener("click",loadForum);
-/* أزرار التعديل والحذف */
-document.addEventListener("click",async event=>{const button=event.target.closest("button[data-action]");if(!button)return;const action=button.dataset.action,id=button.dataset.id;try{
-if(action==="edit-month"){const m=monthsCache.find(x=>String(x.id)===String(id));if(!m)return;$("monthId").value=m.id;$("monthNumber").value=m.month_number;$("monthTitle").value=m.title||"";$("monthSortOrder").value=m.sort_order??0;$("monthVisibility").value=String(m.is_visible);$("monthFormTitle").textContent="تعديل الشهر";$("saveMonth").textContent="حفظ التعديلات";$("panel-months").scrollIntoView({behavior:"smooth"})}
-else if(action==="toggle-month"){const m=monthsCache.find(x=>String(x.id)===String(id));if(!m)return;const{error}=await ensureClient().from("lecture_months").update({is_visible:!m.is_visible}).eq("id",m.id);if(error)throw error;await loadMonths();showStatus(m.is_visible?"تم إخفاء الشهر.":"تم إظهار الشهر.","success")}
-else if(action==="delete-month"){const m=monthsCache.find(x=>String(x.id)===String(id));if(!m)return;if(lecturesCache.some(l=>Number(l.month_number)===Number(m.month_number))){showStatus("لا يمكن حذف هذا الشهر لأنه يحتوي على محاضرات. انقل المحاضرات إلى شهر آخر أولًا.","error");return}if(!confirm(`هل تريد حذف شهر "${m.title}"؟`))return;const{error}=await ensureClient().from("lecture_months").delete().eq("id",m.id);if(error)throw error;await loadMonths();resetMonthForm();showStatus("تم حذف الشهر بنجاح.","success")}
-else if(action==="edit-lecture"){const r=lecturesCache.find(x=>String(x.id)===String(id));if(!r)return;$("lectureId").value=r.id;$("lectureTitle").value=r.title||"";$("lectureDescription").value=r.description||"";$("lectureUrl").value=r.video_url&&/^https?:\/\//i.test(r.video_url)?r.video_url:"";$("lectureUrl1080").value=r.video_1080_url||"";$("lectureUrl720").value=r.video_720_url||"";$("lectureUrl480").value=r.video_480_url||"";$("lectureUrl360").value=r.video_360_url||"";populateLectureMonths();$("lectureMonth").value=String(r.month_number??"");if(r.month_number&&!$("lectureMonth").value){const option=document.createElement("option");option.value=String(r.month_number);option.textContent="الشهر رقم "+r.month_number+" (غير مسجل)";$("lectureMonth").appendChild(option);$("lectureMonth").value=String(r.month_number)}$("lectureFormTitle").textContent="تعديل المحاضرة";$("saveLecture").textContent="حفظ التعديلات";$("panel-lectures").scrollIntoView({behavior:"smooth"})}
-else if(action==="delete-lecture")await deleteRow("lectures",id);
-else if(action==="edit-note"){const r=notesCache.find(x=>String(x.id)===String(id));if(!r)return;$("noteId").value=r.id;$("noteTitle").value=r.title||"";$("noteFormTitle").textContent="تعديل المذكرة";$("saveNote").textContent="حفظ التعديلات";$("panel-notes").scrollIntoView({behavior:"smooth"})}
-else if(action==="delete-note")await deleteRow("notes",id);
-else if(action==="edit-exam"){const r=examsCache.find(x=>String(x.id)===String(id));if(!r)return;$("examId").value=r.id;$("examTitle").value=r.title||"";$("examDescription").value=r.description||"";$("examDuration").value=r.duration||30;$("examFormTitle").textContent="تعديل الاختبار";$("saveExam").textContent="حفظ التعديلات";$("panel-exams").scrollIntoView({behavior:"smooth"})}
-else if(action==="delete-exam"){if(questionsCache.some(r=>String(r.exam_id)===String(id))){showStatus("احذف أسئلة الاختبار أولًا ثم احذف الاختبار.","error");return}await deleteRow("exams",id)}
-else if(action==="edit-question"){const r=questionsCache.find(x=>String(x.id)===String(id));if(!r)return;$("questionId").value=r.id;$("questionExam").value=r.exam_id||"";$("questionText").value=r.question||"";$("optionA").value=r.option_a||"";$("optionB").value=r.option_b||"";$("optionC").value=r.option_c||"";$("optionD").value=r.option_d||"";$("correctAnswer").value=r.correct_answer||"";$("questionFormTitle").textContent="تعديل السؤال";$("saveQuestion").textContent="حفظ التعديلات";$("panel-questions").scrollIntoView({behavior:"smooth"})}
-else if(action==="delete-question")await deleteRow("exam_questions",id);
-else if(action==="show-post-replies"){const post=forumPostsCache.find(p=>String(p.id)===String(id));if(!post){showStatus("المنشور غير موجود. حدّث المنشورات.","error");return}$("forumPostSelect").value=String(post.id);showSelectedPost(post.id);$("panel-forum").scrollIntoView({behavior:"smooth"});await loadForumReplies(post.id);$("adminReplyText").focus()}
-else if(action==="delete-post"){if(!confirm("هل تريد حذف المنشور وجميع ردوده؟"))return;const repliesResult=await ensureClient().from("forum_replies").delete().eq("post_id",id);if(repliesResult.error)throw repliesResult.error;const postResult=await ensureClient().from("forum").delete().eq("id",id);if(postResult.error)throw postResult.error;showStatus("تم حذف المنشور وردوده.","success");await loadForum()}
-else if(action==="delete-reply"){if(!confirm("هل تريد حذف هذا الرد؟"))return;const{error}=await ensureClient().from("forum_replies").delete().eq("id",id);if(error)throw error;showStatus("تم حذف الرد.","success");await loadForumReplies($("forumPostSelect").value)}
-}catch(error){console.error(error);showStatus("حدث خطأ: "+friendlyError(error),"error")}});
-async function loadAllData(){if(!currentUser)return;showStatus("جارٍ تحميل بيانات لوحة التحكم...","info");try{await loadMonths();await Promise.all([loadLectures(),loadNotes(),loadExams(),loadProfiles()]);await loadQuestions();$("countLectures").textContent=lecturesCache.length;$("countNotes").textContent=notesCache.length;$("countExams").textContent=examsCache.length;$("countStudents").textContent=profilesCache.length;$("globalStatus").classList.add("hidden");if($("panel-forum").classList.contains("active"))await loadForum()}catch(error){console.error(error);showStatus("تعذر تحميل بعض البيانات: "+friendlyError(error),"error")}}
-$("refreshButton").addEventListener("click",loadAllData);$("topRefresh").addEventListener("click",loadAllData);
-async function startAdminPanel(){try{ensureClient();const{data,error}=await db.auth.getSession();if(error)throw error;if(data.session?.user)await enterAdmin(data.session.user);db.auth.onAuthStateChange((event,session)=>{setTimeout(async()=>{if(event==="SIGNED_OUT"){currentUser=null;$("adminApp").classList.add("hidden");$("loginScreen").classList.remove("hidden")}else if(event==="SIGNED_IN"&&session?.user&&!currentUser){try{await enterAdmin(session.user)}catch(e){showLoginMessage(friendlyError(e))}}},0)})}catch(error){console.error(error);$("loginScreen").classList.remove("hidden");$("adminApp").classList.add("hidden");showLoginMessage("تعذر الاتصال بـ Supabase: "+friendlyError(error))}}
-startAdminPanel();
+
+/* ===========================
+   إعداد Supabase
+=========================== */
+
+const SUPABASE_URL =
+  "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+const BUCKET = "lectures";
+
+let currentUser = null;
+let lectures = [];
+let months = [];
+let notes = [];
+let exams = [];
+let students = [];
+let assessments = [];
+let resources = [];
+let questions = [];
+
+/* ===========================
+   أدوات مساعدة
+=========================== */
+
+function el(id){
+  return document.getElementById(id);
+}
+
+function value(id){
+  return el(id).value.trim();
+}
+
+function escapeHTML(input){
+  return String(input ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#39;");
+}
+
+function notify(text,isError=false){
+  const box=el("message");
+  box.textContent=text;
+  box.style.background=isError?"#b91c1c":"#004e4d";
+  box.style.display="block";
+
+  clearTimeout(window.notifyTimer);
+
+  window.notifyTimer=setTimeout(()=>{
+    box.style.display="none";
+  },5000);
+}
+
+function handleError(error){
+  console.error(error);
+  notify(error?.message || "حدث خطأ غير متوقع",true);
+}
+
+function confirmDelete(){
+  return confirm("هل أنت متأكد من الحذف؟");
+}
+
+function publicFileUrl(path){
+  if(!path)return "";
+
+  if(/^https?:\/\//i.test(path))return path;
+
+  return db.storage
+    .from(BUCKET)
+    .getPublicUrl(path)
+    .data.publicUrl;
+}
+
+async function uploadFile(file,folder){
+  if(!file)throw new Error("اختر ملفًا أولًا");
+
+  const extension=(file.name.split(".").pop()||"bin")
+    .toLowerCase();
+
+  const allowed={
+    pdf:["pdf"],
+    images:["jpg","jpeg","png","webp","gif"]
+  };
+
+  if(allowed[folder] && !allowed[folder].includes(extension)){
+    throw new Error("نوع الملف غير مدعوم");
+  }
+
+  const path=
+    folder+"/"+
+    crypto.randomUUID()+"."+extension;
+
+  const {error}=await db.storage
+    .from(BUCKET)
+    .upload(path,file,{
+      upsert:false,
+      contentType:file.type || undefined
+    });
+
+  if(error)throw error;
+
+  return path;
+}
+
+async function removeUploadedFile(path){
+  if(!path || /^https?:\/\//i.test(path))return;
+
+  const {error}=await db.storage
+    .from(BUCKET)
+    .remove([path]);
+
+  if(error)console.warn(error);
+}
+
+function empty(text){
+  return `<p class="muted">${escapeHTML(text)}</p>`;
+}
+
+function listError(error){
+  return `<div class="notice error">${escapeHTML(error.message)}</div>`;
+}
+
+/* ===========================
+   تسجيل الدخول
+=========================== */
+
+async function login(){
+  try{
+    el("loginError").textContent="";
+
+    const email=value("loginEmail");
+    const password=value("loginPassword");
+
+    if(!email || !password){
+      throw new Error("أدخل البريد وكلمة المرور");
+    }
+
+    const {data,error}=await db.auth.signInWithPassword({
+      email,password
+    });
+
+    if(error)throw error;
+
+    await checkAdmin(data.user);
+
+  }catch(error){
+    el("loginError").textContent=error.message;
+  }
+}
+
+async function checkAdmin(user){
+  if(!user)return;
+
+  const {data,error}=await db
+    .from("profiles")
+    .select("role")
+    .eq("id",user.id)
+    .single();
+
+  if(error)throw error;
+
+  if(data?.role!=="admin"){
+    await db.auth.signOut();
+    throw new Error("هذا الحساب لا يمتلك صلاحية الإدارة");
+  }
+
+  currentUser=user;
+
+  el("loginScreen").classList.add("hidden");
+  el("adminApp").classList.remove("hidden");
+
+  await loadAll();
+}
+
+async function logout(){
+  await db.auth.signOut();
+  location.reload();
+}
+
+async function init(){
+  try{
+    const {data}=await db.auth.getUser();
+
+    if(data?.user){
+      await checkAdmin(data.user);
+    }
+  }catch(error){
+    el("loginError").textContent=error.message;
+  }
+}
+
+/* ===========================
+   التنقل
+=========================== */
+
+function showSection(id,button){
+  document.querySelectorAll(".section").forEach(section=>{
+    section.classList.remove("active");
+  });
+
+  document.querySelectorAll(".nav-btn").forEach(btn=>{
+    btn.classList.remove("active");
+  });
+
+  el(id).classList.add("active");
+  button.classList.add("active");
+
+  el("pageTitle").textContent=button.textContent.trim();
+}
+
+/* ===========================
+   تحميل البيانات
+=========================== */
+
+async function loadAll(){
+  const jobs=[
+    loadLectures(),
+    loadMonths(),
+    loadNotes(),
+    loadExams(),
+    loadStudents()
+  ];
+
+  const results=await Promise.allSettled(jobs);
+
+  results.forEach(result=>{
+    if(result.status==="rejected"){
+      console.error(result.reason);
+      notify(result.reason.message,true);
+    }
+  });
+
+  await loadAssessmentsCount();
+}
+
+/* ===========================
+   المحاضرات
+=========================== */
+
+async function loadLectures(){
+  const {data,error}=await db
+    .from("lectures")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+  if(error)throw error;
+
+  lectures=data||[];
+
+  el("lectureCount").textContent=lectures.length;
+
+  renderLectures();
+  fillLectureSelect();
+}
+
+function renderLectures(){
+  el("lecturesList").innerHTML=lectures.length
+    ? lectures.map(item=>`
+      <div class="list-item">
+        <strong>${escapeHTML(item.title)}</strong>
+        <div class="muted">
+          الشهر: ${escapeHTML(item.month_number)}
+        </div>
+        <div class="actions">
+          <button class="btn gray"
+            onclick="editLecture('${item.id}')">
+            تعديل
+          </button>
+          <button class="btn blue"
+            onclick="openLectureContent('${item.id}')">
+            المحتوى
+          </button>
+          <button class="btn red"
+            onclick="deleteLecture('${item.id}')">
+            حذف
+          </button>
+        </div>
+      </div>
+    `).join("")
+    :empty("لا توجد محاضرات");
+}
+
+function resetLecture(){
+  [
+    "lectureId",
+    "lectureTitle",
+    "lectureDescription",
+    "lectureVideo",
+    "video1080",
+    "video720",
+    "video480",
+    "video360"
+  ].forEach(id=>el(id).value="");
+
+  el("lectureMonth").value=1;
+}
+
+function editLecture(id){
+  const item=lectures.find(x=>x.id===id);
+  if(!item)return;
+
+  el("lectureId").value=item.id;
+  el("lectureTitle").value=item.title||"";
+  el("lectureMonth").value=item.month_number||1;
+  el("lectureDescription").value=item.description||"";
+  el("lectureVideo").value=item.video_url||"";
+  el("video1080").value=item.video_1080_url||"";
+  el("video720").value=item.video_720_url||"";
+  el("video480").value=item.video_480_url||"";
+  el("video360").value=item.video_360_url||"";
+
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function saveLecture(){
+  try{
+    const id=value("lectureId");
+
+    if(!value("lectureTitle")){
+      throw new Error("أدخل عنوان المحاضرة");
+    }
+
+    const payload={
+      title:value("lectureTitle"),
+      month_number:Number(value("lectureMonth"))||1,
+      description:value("lectureDescription"),
+      video_url:value("lectureVideo"),
+      video_1080_url:value("video1080"),
+      video_720_url:value("video720"),
+      video_480_url:value("video480"),
+      video_360_url:value("video360")
+    };
+
+    const query=id
+      ?db.from("lectures").update(payload).eq("id",id)
+      :db.from("lectures").insert(payload);
+
+    const {error}=await query;
+
+    if(error)throw error;
+
+    notify("تم حفظ المحاضرة");
+    resetLecture();
+    await loadLectures();
+
+  }catch(error){
+    handleError(error);
+  }
+}
+
+async function deleteLecture(id){
+  if(!confirmDelete())return;
+
+  try{
+    const {error}=await db
+      .from("lectures")
+      .delete()
+      .eq("id",id);
+
+    if(error)throw error;
+
+    notify("تم حذف المحاضرة");
+    await loadLectures();
+
+  }catch(error){
+    handleError(error);
+  }
+}
+
+/* ===========================
+   الشهور
+=========================== */
+
+async function loadMonths(){
+  const {data,error}=await db
+    .from("lecture_months")
+    .select("*")
+    .order("sort_order");
+
+  if(error)throw error;
+
+  months=data||[];
+
+  el("monthsList").innerHTML=months.length
+    ?months.map(m=>`
+      <div class="list-item">
+        <strong>${escapeHTML(m.title)}</strong>
+        <span class="muted">
+          الشهر ${escapeHTML(m.month_number)}
+          — ${m.is_visible?"ظاهر":"مخفي"}
+        </span>
+        <div class="actions">
+          <button class="btn gray"
+            onclick="editMonth('${m.id}')">تعديل</button>
+          <button class="btn red"
+            onclick="deleteMonth('${m.id}')">حذف</button>
+        </div>
+      </div>
+    `).join("")
+    :empty("لا توجد شهور");
+}
+
+function editMonth(id){
+  const m=months.find(x=>x.id===id);
+  if(!m)return;
+
+  el("monthId").value=m.id;
+  el("monthNumber").value=m.month_number;
+  el("monthTitle").value=m.title||"";
+  el("monthSort").value=m.sort_order||1;
+  el("monthVisible").value=String(m.is_visible);
+}
+
+function resetMonth(){
+  ["monthId","monthNumber","monthTitle"].forEach(id=>{
+    el(id).value="";
+  });
+
+  el("monthSort").value=1;
+  el("monthVisible").value="true";
+}
+
+async function saveMonth(){
+  try{
+    const id=value("monthId");
+
+    if(!value("monthTitle")){
+      throw new Error("أدخل عنوان الشهر");
+    }
+
+    const payload={
+      month_number:Number(value("monthNumber")),
+      title:value("monthTitle"),
+      sort_order:Number(value("monthSort"))||1,
+      is_visible:value("monthVisible")==="true"
+    };
+
+    if(!Number.isInteger(payload.month_number) ||
+       payload.month_number<1){
+      throw new Error("رقم الشهر غير صحيح");
+    }
+
+    const query=id
+      ?db.from("lecture_months").update(payload).eq("id",id)
+      :db.from("lecture_months").insert(payload);
+
+    const {error}=await query;
+    if(error)throw error;
+
+    resetMonth();
+    await loadMonths();
+    notify("تم حفظ الشهر");
+
+  }catch(error){
+    handleError(error);
+  }
+}
+
+async function deleteMonth(id){
+  if(!confirmDelete())return;
+
+  try{
+    const {error}=await db
+      .from("lecture_months")
+      .delete()
+      .eq("id",id);
+
+    if(error)throw error;
+
+    await loadMonths();
+    notify("تم الحذف");
+
+  }catch(error){
+    handleError(error);
+  }
+}
+
+/* ===========================
+   محتوى المحاضرة
+=========================== */
+
+function fillLectureSelect(){
+  const selected=value("selectedLecture");
+
+  el("selectedLecture").innerHTML=
+    `<option value="">اختر المحاضرة</option>`+
+    lectures.map(l=>`
+      <option value="${escapeHTML(l.id)}">
+        ${escapeHTML(l.title)}
+      </option>
+    `).join("");
+
+  if(lectures.some(l=>l.id===selected)){
+    el("selectedLecture").value=selected;
+  }
+}
+
+function openLectureContent(id){
+  document.querySelector(
+    '[onclick="showSection(\'content\',this)"]'
+  ).click();
+
+  el("selectedLecture").value=id;
+  loadLectureContent();
+}
+
+async function loadLectureContent(){
+  const id=value("selectedLecture");
+
+  el("lectureContentArea").classList.toggle("hidden",!id);
+  el("questionEditor").classList.add("hidden");
+
+  if(!id)return;
+
+  await Promise.all([
+    loadResources(),
+    loadAssessments()
+  ]);
+}
+
+/* ===========================
+   مذكرات المحاضرة
+=========================== */
+
+async function loadResources(){
+  const lectureId=value("selectedLecture");
+  if(!lectureId)return;
+
+  const {data,error}=await db
+    .from("lecture_resources")
+    .select("*")
+    .eq("lecture_id",lectureId)
+    .order("created_at",{ascending:false});
+
+  if(error){
+    el("resourcesList").innerHTML=listError(error);
+    return;
+  }
+
+  resources=data||[];
+
+  el("resourcesList").innerHTML=resources.length
+    ?resources.map(r=>`
+      <div class="list-item">
+        <strong>${escapeHTML(r.title)}</strong>
+        <div class="actions">
+          <a class="btn blue"
+            href="${escapeHTML(publicFileUrl(r.file_path))}"
+            target="_blank"
+            rel="noopener noreferrer">
+            فتح الملف
+          </a>
+          <button class="btn red"
+            onclick="deleteResource('${r.id}')">
+            حذف
+          </button>
+        </div>
+      </div>
+    `).join("")
+    :empty("لم تتم إضافة مذكرات لهذه المحاضرة");
+}
+
+async function addResource(){
+  try{
+    const lectureId=value("selectedLecture");
+    const title=value("resourceTitle");
+    const file=el("resourceFile").files[0];
+
+    if(!lectureId)throw new Error("اختر المحاضرة");
+    if(!title)throw new Error("أدخل عنوان المذكرة");
+    if(!file)throw new Error("اختر ملف PDF");
+
+    const path=await uploadFile(file,"pdf");
+
+    const {error}=await db
+      .from("lecture_resources")
+      .insert({
+        lecture_id:lectureId,
+        title,
+        file_path:path
+      });
+
+    if(error){
+      await removeUploadedFile(path);
+      throw error;
+    }
+
+    el("resourceTitle").value="";
+    el("resourceFile").value="";
+
+    await loadResources();
+    notify("تم رفع المذكرة بنجاح");
+
+  }catch(error){
+    handleError(error);
+  }
+}
+
+async function deleteResource(id){
+  if(!confirmDelete())return;
+
+  try{
+    const resource=resources.find(x=>x.id===id);
+
+    const {error}=await db
+      .from("lecture_resources")
+      .delete()
+      .eq("id",id);
+
+    if(error)throw error;
+
+    if(resource){
+      await removeUploadedFile(resource.file_path);
+    }
+
+    await loadResources();
+    notify("تم حذف المذكرة");
+
+  }catch(error){
+    handleError(error);
+  }
+}
+
+/* ===========================
+   الواجبات والامتحانات
+=========================== */
+
+async function loadAssessments(){
+  const lectureId=value("selectedLecture");
+  if(!lectureId)return;
+
+  const {data,error}=await db
+    .from("lecture_assessments")
+    .select("*")
+    .eq("lecture_id",lectureId)
+    .order("created_at",{ascending:false});
+
+  if(error){
+    el("assessmentsList").innerHTML=listError(error);
+    return;
+  }
+
+  assessments=data||[];
+  renderAssessments();
+}
+
+function renderAssessments(){
+  el("assessmentsList").innerHTML=assessments.length
+    ?assessments.map(a=>`
+      <div class="list-item">
+
+        <span class="badge">
+          ${a.assessment_type==="exam"?"امتحان":"واجب"}
+        </span>
+
+        <strong style="margin-top:10px">
+          ${escapeHTML(a.title)}
+        </strong>
+
+        <p class="muted">
+          المدة:
+          ${a.duration_minutes||"بدون"}
+          دقيقة
+          —
+          ${a.is_published?"منشور":"غير منشور"}
+        </p>
+
+        <div class="actions">
+
+          <button class="btn blue"
+            onclick="openQuestionEditor('${a.id}')">
+            إدارة الأسئلة
+          </button>
+
+          <button class="btn gray"
+            onclick="toggleAssessment('${a.id}',${!a.is_published})">
+            ${a.is_published?"إخفاء":"نشر"}
+          </button>
+
+          <button class="btn red"
+            onclick="deleteAssessment('${a.id}')">
+            حذف
+          </button>
+
+        </div>
+
+      </div>
+    `).join("")
+    :empty("لا توجد واجبات أو امتحانات لهذه المحاضرة");
+}
+
+async function createAssessment(){
+  try{
+    const lectureId=value("selectedLecture");
+    const title=value("assessmentTitle");
+    const type=value("assessmentType");
+    const duration=value("assessmentDuration");
+
+    if(!lectureId)throw new Error("اختر المحاضرة");
+    if(!title)throw new Error("أدخل عنوان التقييم");
+
+    if(duration && Number(duration)<1){
+      throw new Error("مدة الامتحان غير صحيحة");
+    }
+
+    const {data,error}=await db
+      .from("lecture_assessments")
+      .insert({
+        lecture_id:lectureId,
+        title,
+        assessment_type:type,
+        duration_minutes:duration?Number(duration):null,
+        is_published:false
+      })
+      .select()
+      .single();
+
+    if(error)throw error;
+
+    el("assessmentTitle").value="";
+    el("assessmentDuration").value="";
+
+    await loadAssessments();
+    await loadAssessmentsCount();
+
+    notify("تم إنشاء التقييم. أضف الأسئلة الآن.");
+
+    await openQuestionEditor(data.id);
+
+  }catch(error){
+    handleError(error);
+  }
+}
+
+async function toggleAssessment(id,published){
+  try{
+    if(published){
+      const {count,error:countError}=await db
+        .from("lecture_assessment_questions")
+        .select("id",{count:"exact",head:true})
+        .eq("assessment_id",id);
+
+      if(countError)throw countError;
+
+      if(!count){
+        throw new Error("أضف سؤالًا واحدًا على الأقل قبل النشر");
+      }
+    }
+
+    const {error}=await db
+      .from("lecture_assessments")
+      .update({is_published:published})
+      .eq("id",id);
+
+    if(error)throw error;
+
+    await loadAssessments();
+
+    notify(
+      published
+      ?"تم نشر التقييم في قاعدة البيانات"
+      :"تم إخفاء التقييم"
+    );
+
+  }catch(error){
+    handleError(error);
+  }
+}
+
+async function deleteAssessment(id){
+  if(!confirmDelete())return;
+
+  try{
+    const {error}=await db
+      .from("lecture_assessments")
+      .delete()
+      .eq("id",id);
+
+    if(error)throw error;
+
+    el("questionEditor").classList.add("hidden");
+
+    await loadAssessments();
+    await loadAssessmentsCount();
+
+    notify("تم حذف التقييم");
+
+  }catch(error){
+    handleError(error);
+  }
+}
+
+async function loadAssessmentsCount(){
+  const {count,error}=await db
+    .from("lecture_assessments")
+    .select("id",{count:"exact",head:true});
+
+  if(!error){
+    el("assessmentCount").textContent=count||0;
+  }
+}
+
+/* ===========================
+   إدارة الأسئلة
+=========================== */
+
+async function openQuestionEditor(id){
+  const assessment=assessments.find(x=>x.id===id);
+
+  if(!assessment)return;
+
+  el("currentAssessmentId").value=id;
+  el("questionEditorTitle").textContent=
+    "أسئلة "+assessment.title;
+
+  el("questionEditor").classList.remove("hidden");
+
+  resetQuestion();
+  await loadQuestions();
+
+  el("questionEditor").scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+}
+
+function resetQuestion(){
+  [
+    "questionId",
+    "questionText",
+    "questionImage",
+    "optionA",
+    "optionB",
+    "optionC",
+    "optionD",
+    "answerExplanation"
+  ].forEach(id=>el(id).value="");
+
+  el("correctAnswer").value="A";
+  el("questionPoints").value=1;
+  el("questionOrder").value=questions.length+1;
+}
+
+async function loadQuestions(){
+  const assessmentId=value("currentAssessmentId");
+  if(!assessmentId)return;
+
+  const {data,error}=await db
+    .from("lecture_assessment_questions")
+    .select("*")
+    .eq("assessment_id",assessmentId)
+    .order("sort_order");
+
+  if(error){
+    el("questionsList").innerHTML=listError(error);
+    return;
+  }
+
+  questions=data||[];
+
+  const ids=questions.map(q=>q.id);
+
+  let answers=[];
+
+  if(ids.length){
+    const result=await db
+      .from("lecture_question_answers")
+      .select("*")
+      .in("question_id",ids);
+
+    if(result.error){
+      el("questionsList").innerHTML=listError(result.error);
+      return;
+    }
+
+    answers=result.data||[];
+  }
+
+  questions=questions.map(q=>({
+    ...q,
+    answer:answers.find(a=>a.question_id===q.id)||null
+  }));
+
+  renderQuestions();
+}
+
+function renderQuestions(){
+  el("questionsList").innerHTML=questions.length
+    ?questions.map((q,index)=>`
+      <div class="question-card">
+
+        <h3>السؤال ${index+1}</h3>
+
+        <p>${escapeHTML(q.question_text)}</p>
+
+        ${q.image_path?`
+          <img class="question-image"
+            src="${escapeHTML(publicFileUrl(q.image_path))}"
+            alt="صورة السؤال">
+        `:""}
+
+        <p>أ) ${escapeHTML(q.option_a)}</p>
+        <p>ب) ${escapeHTML(q.option_b)}</p>
+        <p>ج) ${escapeHTML(q.option_c)}</p>
+        <p>د) ${escapeHTML(q.option_d)}</p>
+
+        <p>
+          <strong>الإجابة الصحيحة:</strong>
+          ${escapeHTML(q.answer?.correct_answer||"غير محددة")}
+        </p>
+
+        <p class="muted">
+          الشرح:
+          ${escapeHTML(q.answer?.explanation||"لا يوجد")}
+        </p>
+
+        <p class="muted">
+          الدرجة: ${escapeHTML(q.points)}
+        </p>
+
+        <div class="actions">
+
+          <button class="btn gray"
+            onclick="editQuestion('${q.id}')">
+            تعديل
+          </button>
+
+          <button class="btn red"
+            onclick="deleteQuestion('${q.id}')">
+            حذف
+          </button>
+
+        </div>
+
+      </div>
+    `).join("")
+    :empty("لا توجد أسئلة بعد");
+}
+
+function editQuestion(id){
+  const q=questions.find(x=>x.id===id);
+  if(!q)return;
+
+  el("questionId").value=q.id;
+  el("questionText").value=q.question_text||"";
+  el("optionA").value=q.option_a||"";
+  el("optionB").value=q.option_b||"";
+  el("optionC").value=q.option_c||"";
+  el("optionD").value=q.option_d||"";
+  el("correctAnswer").value=q.answer?.correct_answer||"A";
+  el("answerExplanation").value=q.answer?.explanation||"";
+  el("questionPoints").value=q.points||1;
+  el("questionOrder").value=q.sort_order||1;
+
+  el("questionText").scrollIntoView({
+    behavior:"smooth",
+    block:"center"
+  });
+}
+
+async function saveQuestion(){
+  try{
+    const assessmentId=value("currentAssessmentId");
+    const questionId=value("questionId");
+
+    if(!assessmentId){
+      throw new Error("اختر الامتحان أو الواجب");
+    }
+
+    const text=value("questionText");
+
+    const options=[
+      value("optionA"),
+      value("optionB"),
+      value("optionC"),
+      value("optionD")
+    ];
+
+    if(!text || options.some(x=>!x)){
+      throw new Error("أدخل السؤال والاختيارات الأربعة");
+    }
+
+    const points=Number(value("questionPoints"));
+    const sortOrder=Number(value("questionOrder"));
+
+    if(!Number.isFinite(points) || points<=0){
+      throw new Error("درجة السؤال غير صحيحة");
+    }
+
+    if(!Number.isInteger(sortOrder) || sortOrder<1){
+      throw new Error("ترتيب السؤال غير صحيح");
+    }
+
+    let imagePath=null;
+    const file=el("questionImage").files[0];
+
+    if(file){
+      imagePath=await uploadFile(file,"images");
+    }
+
+    const oldQuestion=questions.find(q=>q.id===questionId);
+
+    const payload={
+      assessment_id:assessmentId,
+      question_text:text,
+      option_a:options[0],
+      option_b:options[1],
+      option_c:options[2],
+      option_d:options[3],
+      points,
+      sort_order:sortOrder
+    };
+
+    if(imagePath){
+      payload.image_path=imagePath;
+    }
+
+    let savedId=questionId;
+
+    try{
+      if(questionId){
+        const {error}=await db
+          .from("lecture_assessment_questions")
+          .update(payload)
+          .eq("id",questionId);
+
+        if(error)throw error;
+
+      }else{
+        const {data,error}=await db
+          .from("lecture_assessment_questions")
+          .insert(payload)
+          .select("id")
+          .single();
+
+        if(error)throw error;
+
+        savedId=data.id;
+      }
+
+      const {error:answerError}=await db
+        .from("lecture_question_answers")
+        .upsert({
+          question_id:savedId,
+          correct_answer:value("correctAnswer"),
+          explanation:value("answerExplanation")
+        });
+
+      if(answerError)throw answerError;
+
+    }catch(error){
+      if(imagePath)await removeUploadedFile(imagePath);
+      throw error;
+    }
+
+    if(imagePath && oldQuestion?.image_path){
+      await removeUploadedFile(oldQuestion.image_path);
+    }
+
+    await loadQuestions();
+    resetQuestion();
+
+    notify("تم حفظ السؤال والإجابة والشرح");
+
+  }catch(error){
+    handleError(error);
+  }
+}
+
+async function deleteQuestion(id){
+  if(!confirmDelete())return;
+
+  try{
+    const q=questions.find(x=>x.id===id);
+
+    const {error}=await db
+      .from("lecture_assessment_questions")
+      .delete()
+      .eq("id",id);
+
+    if(error)throw error;
+
+    if(q?.image_path){
+      await removeUploadedFile(q.image_path);
+    }
+
+    await loadQuestions();
+
+    notify("تم حذف السؤال");
+
+  }catch(error){
+    handleError(error);
+  }
+}
+
+/* ===========================
+   المذكرات العامة
+=========================== */
+
+async function loadNotes(){
+  const {data,error}=await db
+    .from("notes")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+  if(error)throw error;
+
+  notes=data||[];
+
+  el("noteCount").textContent=notes.length;
+
+  el("notesList").innerHTML=notes.length
+    ?notes.map(n=>`
+      <div class="list-item">
+        <strong>${escapeHTML(n.title)}</strong>
+        <div class="actions">
+          <a class="btn blue"
+            href="${escapeHTML(publicFileUrl(n.file_path))}"
+            target="_blank"
+            rel="noopener noreferrer">
+            فتح
+          </a>
+          <button class="btn red"
+            onclick="deleteNote('${n.id}')">
+            حذف
+          </button>
+        </div>
+      </div>
+    `).join("")
+    :empty("لا توجد مذكرات");
+}
+
+async function saveNote(){
+  try{
+    const title=value("noteTitle");
+    const file=el("noteFile").files[0];
+
+    if(!title)throw new Error("أدخل عنوان المذكرة");
+    if(!file)throw new Error("اختر ملف PDF");
+
+    const path=await uploadFile(file,"pdf");
+
+    const {error}=await db
+      .from("notes")
+      .insert({
+        title,
+        file_path:path
+      });
+
+    if(error){
+      await removeUploadedFile(path);
+      throw error;
+    }
+
+    el("noteTitle").value="";
+    el("noteFile").value="";
+
+    await loadNotes();
+    notify("تم إضافة المذكرة");
+
+  }catch(error){
+    handleError(error);
+  }
+}
+
+async function deleteNote(id){
+  if(!confirmDelete())return;
+
+  try{
+    const note=notes.find(n=>n.id===id);
+
+    const {error}=await db
+      .from("notes")
+      .delete()
+      .eq("id",id);
+
+    if(error)throw error;
+
+    if(note?.file_path){
+      await removeUploadedFile(note.file_path);
+    }
+
+    await loadNotes();
+    notify("تم الحذف");
+
+  }catch(error){
+    handleError(error);
+  }
+}
+
+/* ===========================
+   الاختبارات العامة
+=========================== */
+
+async function loadExams(){
+  const {data,error}=await db
+    .from("exams")
+    .select("*");
+
+  if(error)throw error;
+
+  exams=data||[];
+
+  el("examsList").innerHTML=exams.length
+    ?exams.map(e=>`
+      <div class="list-item">
+        <strong>${escapeHTML(e.title)}</strong>
+        <p class="muted">
+          ${escapeHTML(e.description||"")}
+        </p>
+        <div class="actions">
+          <button class="btn gray"
+            onclick="editExam('${e.id}')">
+            تعديل
+          </button>
+          <button class="btn red"
+            onclick="deleteExam('${e.id}')">
+            حذف
+          </button>
+        </div>
+      </div>
+    `).join("")
+    :empty("لا توجد اختبارات عامة");
+}
+
+function editExam(id){
+  const e=exams.find(x=>x.id===id);
+  if(!e)return;
+
+  el("examId").value=e.id;
+  el("examTitle").value=e.title||"";
+  el("examDescription").value=e.description||"";
+  el("examDuration").value=e.duration||"";
+}
+
+function resetExam(){
+  [
+    "examId",
+    "examTitle",
+    "examDescription",
+    "examDuration"
+  ].forEach(id=>el(id).value="");
+}
+
+async function saveExam(){
+  try{
+    const id=value("examId");
+
+    if(!value("examTitle")){
+      throw new Error("أدخل عنوان الامتحان");
+    }
+
+    const payload={
+      title:value("examTitle"),
+      description:value("examDescription"),
+      duration:Number(value("examDuration"))||0
+    };
+
+    const query=id
+      ?db.from("exams").update(payload).eq("id",id)
+      :db.from("exams").insert(payload);
+
+    const {error}=await query;
+
+    if(error)throw error;
+
+    resetExam();
+    await loadExams();
+    notify("تم حفظ الامتحان");
+
+  }catch(error){
+    handleError(error);
+  }
+}
+
+async function deleteExam(id){
+  if(!confirmDelete())return;
+
+  try{
+    const {error}=await db
+      .from("exams")
+      .delete()
+      .eq("id",id);
+
+    if(error)throw error;
+
+    await loadExams();
+    notify("تم الحذف");
+
+  }catch(error){
+    handleError(error);
+  }
+}
+
+/* ===========================
+   الطلاب
+=========================== */
+
+async function loadStudents(){
+  const {data,error}=await db
+    .from("profiles")
+    .select("id,full_name,email,phone,role")
+    .order("full_name");
+
+  if(error)throw error;
+
+  students=data||[];
+
+  el("studentCount").textContent=students.length;
+
+  renderStudents();
+}
+
+function renderStudents(){
+  const search=value("studentSearch").toLowerCase();
+
+  const filtered=students.filter(s=>
+    String(s.full_name||"").toLowerCase().includes(search)||
+    String(s.phone||"").includes(search)
+  );
+
+  el("studentsList").innerHTML=filtered.length
+    ?filtered.map(s=>`
+      <div class="list-item">
+
+        <strong>${escapeHTML(s.full_name||"بدون اسم")}</strong>
+
+        <p class="muted">
+          ${escapeHTML(s.email||"")}
+        </p>
+
+        <p>
+          الهاتف: ${escapeHTML(s.phone||"غير مسجل")}
+        </p>
+
+        <p class="muted">
+          الصلاحية: ${escapeHTML(s.role||"student")}
+        </p>
+
+        <button class="btn gray"
+          onclick="editStudent('${s.id}')">
+          تعديل بيانات الطالب
+        </button>
+
+      </div>
+    `).join("")
+    :empty("لا توجد نتائج");
+}
+
+async function editStudent(id){
+  const student=students.find(s=>s.id===id);
+  if(!student)return;
+
+  const name=prompt(
+    "اسم الطالب:",
+    student.full_name||""
+  );
+
+  if(name===null)return;
+
+  const phone=prompt(
+    "رقم هاتف الطالب:",
+    student.phone||""
+  );
+
+  if(phone===null)return;
+
+  try{
+    if(!name.trim()){
+      throw new Error("اسم الطالب لا يمكن أن يكون فارغًا");
+    }
+
+    const {error}=await db
+      .from("profiles")
+      .update({
+        full_name:name.trim(),
+        phone:phone.trim()
+      })
+      .eq("id",id);
+
+    if(error)throw error;
+
+    await loadStudents();
+    notify("تم تحديث بيانات الطالب");
+
+  }catch(error){
+    handleError(error);
+  }
+}
+
+/* ===========================
+   المنتدى
+=========================== */
+
+async function loadForum(){
+  try{
+    const {data,error}=await db
+      .from("forum")
+      .select("*")
+      .order("created_at",{ascending:false})
+      .limit(100);
+
+    if(error)throw error;
+
+    const posts=data||[];
+
+    el("forumList").innerHTML=posts.length
+      ?posts.map(p=>`
+        <div class="list-item">
+
+          <p>${escapeHTML(p.content||"")}</p>
+
+          <p class="muted">
+            ${escapeHTML(p.created_at||"")}
+          </p>
+
+          <button class="btn red"
+            onclick="deleteForumPost('${p.id}')">
+            حذف المنشور
+          </button>
+
+        </div>
+      `).join("")
+      :empty("لا توجد منشورات");
+
+  }catch(error){
+    el("forumList").innerHTML=listError(error);
+  }
+}
+
+async function deleteForumPost(id){
+  if(!confirmDelete())return;
+
+  try{
+    const {error:repliesError}=await db
+      .from("forum_replies")
+      .delete()
+      .eq("post_id",id);
+
+    if(repliesError)throw repliesError;
+
+    const {error}=await db
+      .from("forum")
+      .delete()
+      .eq("id",id);
+
+    if(error)throw error;
+
+    await loadForum();
+    notify("تم حذف المنشور");
+
+  }catch(error){
+    handleError(error);
+  }
+}
+
+/* ===========================
+   تشغيل لوحة التحكم
+=========================== */
+
+init();
+
 </script>
+
 </body>
 </html>
