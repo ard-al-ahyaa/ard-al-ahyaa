@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>إدارة الاشتراكات | أرض الأحياء</title>
+
+<meta name="theme-color" content="#004e4d">
+
+<link rel="icon" href="../favicon.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+:root{
+  --green:#008866;
+  --dark:#004e4d;
+  --blue:#07375b;
+  --bg:#f3f7fb;
+  --text:#18334e;
+  --muted:#64748b;
+  --border:#e2e8f0;
+  --red:#dc2626;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Cairo,sans-serif;
+}
+
+button,input,textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.layout{
+  display:flex;
+  min-height:100vh;
+}
+
+.sidebar{
+  width:272px;
+  min-width:272px;
+  background:linear-gradient(
+    155deg,
+    #004e4d,
+    #003d50,
+    #07375b
+  );
+  color:white;
+  padding:22px 14px;
+  min-height:100vh;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px 25px;
+  font-size:20px;
+  font-weight:900;
+}
+
+.brand img{
+  width:45px;
+  height:45px;
+  object-fit:contain;
+}
+
+.nav-link{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  width:100%;
+  padding:14px;
+  margin-bottom:6px;
+  border-radius:12px;
+  color:#e5f4f3;
+  text-decoration:none;
+  font-weight:700;
+}
+
+.nav-link i{
+  width:23px;
+  text-align:center;
+}
+
+.nav-link:hover,
+.nav-link.active{
+  background:rgba(255,255,255,.15);
+  color:white;
+}
+
+.main{
+  flex:1;
+  min-width:0;
+  padding:26px;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:24px;
+}
+
+h1{
+  font-size:25px;
+  margin:0;
+}
+
+h2{
+  font-size:20px;
+  margin:0 0 16px;
+}
+
+.card{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:17px;
+  padding:22px;
+  margin-bottom:20px;
+  box-shadow:0 5px 22px rgba(10,45,65,.035);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(
+    auto-fit,
+    minmax(220px,1fr)
+  );
+  gap:15px;
+}
+
+label{
+  display:block;
+  font-size:13px;
+  font-weight:800;
+  margin-bottom:12px;
+}
+
+input,textarea{
+  display:block;
+  width:100%;
+  padding:12px 13px;
+  margin-top:7px;
+  border:1px solid #d8e2ea;
+  border-radius:10px;
+  background:white;
+  color:var(--text);
+  outline:none;
+}
+
+input:focus,
+textarea:focus{
+  border-color:var(--green);
+}
+
+textarea{
+  min-height:90px;
+  resize:vertical;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:11px 16px;
+  border:0;
+  border-radius:10px;
+  background:var(--green);
+  color:white;
+  font-weight:800;
+  text-decoration:none;
+}
+
+.btn:hover{
+  filter:brightness(.95);
+}
+
+.btn:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.btn.gray{
+  background:#e9eef3;
+  color:#234;
+}
+
+.btn.red{
+  background:#fee2e2;
+  color:#b91c1c;
+}
+
+.btn.blue{
+  background:#2563eb;
+}
+
+.actions{
+  display:flex;
+  gap:9px;
+  flex-wrap:wrap;
+  margin-top:15px;
+}
+
+.muted{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.notice{
+  padding:14px;
+  background:#eff6ff;
+  border:1px solid #bfdbfe;
+  border-radius:11px;
+  color:#1e40af;
+  margin-bottom:15px;
+}
+
+.list-item{
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:16px;
+  margin:12px 0;
+  background:#fff;
+  overflow-wrap:anywhere;
+}
+
+.list-item strong{
+  display:block;
+  margin-bottom:6px;
+}
+
+.badge{
+  display:inline-block;
+  padding:4px 11px;
+  border-radius:50px;
+  font-size:12px;
+  font-weight:800;
+}
+
+.badge.pending{
+  background:#fef3c7;
+  color:#92400e;
+}
+
+.badge.approved{
+  background:#dcfce7;
+  color:#166534;
+}
+
+.badge.rejected{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(
+    auto-fit,
+    minmax(150px,1fr)
+  );
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.stat{
+  background:#edf8f4;
+  border:1px solid #d4ede4;
+  padding:20px;
+  border-radius:15px;
+}
+
+.stat strong{
+  display:block;
+  font-size:28px;
+  color:var(--dark);
+}
+
+.stat span{
+  color:var(--muted);
+  font-size:13px;
+}
+
+#message{
+  position:fixed;
+  bottom:20px;
+  left:20px;
+  right:20px;
+  max-width:550px;
+  margin:auto;
+  z-index:100;
+  padding:15px;
+  border-radius:12px;
+  background:#18334e;
+  color:white;
+  display:none;
+  box-shadow:0 5px 25px #0002;
+}
+
+.loading{
+  text-align:center;
+  padding:60px 20px;
+  font-size:17px;
+  font-weight:700;
+}
+
+@media(max-width:850px){
+
+  .layout{
+    display:block;
+  }
+
+  .sidebar{
+    width:100%;
+    min-width:0;
+    min-height:auto;
+    padding:12px;
+  }
+
+  .brand{
+    padding:5px 8px 12px;
+  }
+
+  .nav{
+    display:flex;
+    overflow-x:auto;
+    gap:6px;
+  }
+
+  .nav-link{
+    width:auto;
+    white-space:nowrap;
+    flex-shrink:0;
+    padding:11px;
+    font-size:12px;
+  }
+
+  .main{
+    padding:15px;
+  }
+
+  .card{
+    padding:15px;
+  }
+
+  h1{
+    font-size:20px;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="loading" class="loading">
+  <i class="fa-solid fa-spinner fa-spin"></i>
+  جارٍ التحقق من صلاحيات الإدارة...
+</div>
+
+<div id="adminApp" class="layout hidden">
+
+  <aside class="sidebar">
+
+    <div class="brand">
+      <img src="../logo.png" alt="الشعار">
+      <span>أرض الأحياء</span>
+    </div>
+
+    <nav class="nav">
+
+      <a class="nav-link" href="index.html">
+        <i class="fa-solid fa-chart-line"></i>
+        لوحة التحكم
+      </a>
+
+      <a class="nav-link active" href="subscriptions.html">
+        <i class="fa-solid fa-credit-card"></i>
+        إدارة الاشتراكات
+      </a>
+
+      <a class="nav-link" href="../index.html">
+        <i class="fa-solid fa-house"></i>
+        عرض المنصة
+      </a>
+
+    </nav>
+
+  </aside>
+
+  <main class="main">
+
+    <div class="topbar">
+
+      <h1>
+        <i class="fa-solid fa-credit-card"></i>
+        إدارة الاشتراكات
+      </h1>
+
+      <button class="btn red" onclick="logout()">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        خروج
+      </button>
+
+    </div>
+
+    <div class="stats">
+
+      <div class="stat">
+        <strong id="pendingCount">0</strong>
+        <span>طلبات قيد المراجعة</span>
+      </div>
+
+      <div class="stat">
+        <strong id="approvedCount">0</strong>
+        <span>طلبات مقبولة</span>
+      </div>
+
+      <div class="stat">
+        <strong id="rejectedCount">0</strong>
+        <span>طلبات مرفوضة</span>
+      </div>
+
+    </div>
+
+    <!-- أسعار الاشتراكات -->
+
+    <div class="card">
+
+      <h2>
+        <i class="fa-solid fa-tags"></i>
+        أسعار الاشتراكات
+      </h2>
+
+      <div class="grid">
+
+        <label>
+          سعر اشتراك الشهر بالجنيه
+          <input
+            type="number"
+            id="monthPrice"
+            min="1"
+            step="1"
+            placeholder="40"
+          >
+        </label>
+
+        <label>
+          سعر اشتراك الترم بالجنيه
+          <input
+            type="number"
+            id="termPrice"
+            min="1"
+            step="1"
+            placeholder="100"
+          >
+        </label>
+
+      </div>
+
+      <button class="btn" id="savePricesBtn" onclick="savePrices()">
+        <i class="fa-solid fa-floppy-disk"></i>
+        حفظ الأسعار
+      </button>
+
+    </div>
+
+    <!-- إعدادات فودافون كاش -->
+
+    <div class="card">
+
+      <h2>
+        <i class="fa-solid fa-wallet"></i>
+        إعدادات فودافون كاش
+      </h2>
+
+      <label>
+        رقم فودافون كاش لاستقبال المدفوعات
+
+        <input
+          type="tel"
+          id="vodafoneNumber"
+          maxlength="11"
+          inputmode="numeric"
+          placeholder="01XXXXXXXXX"
+        >
+      </label>
+
+      <label>
+        تعليمات الدفع للطلاب
+
+        <textarea id="paymentInstructions"></textarea>
+      </label>
+
+      <label>
+        <input
+          type="checkbox"
+          id="vodafoneEnabled"
+          style="display:inline;width:auto;margin-left:8px"
+        >
+        تفعيل الدفع بفودافون كاش
+      </label>
+
+      <button
+        class="btn"
+        id="savePaymentBtn"
+        onclick="savePaymentSettings()"
+      >
+        <i class="fa-solid fa-floppy-disk"></i>
+        حفظ إعدادات الدفع
+      </button>
+
+    </div>
+
+    <!-- طلبات الاشتراك -->
+
+    <div class="card">
+
+      <div class="topbar">
+
+        <h2>
+          <i class="fa-solid fa-receipt"></i>
+          طلبات الاشتراك
+        </h2>
+
+        <button class="btn blue" onclick="loadRequests()">
+          <i class="fa-solid fa-rotate"></i>
+          تحديث
+        </button>
+
+      </div>
+
+      <div class="notice">
+        وافق على الطلب فقط بعد التأكد من وصول المبلغ
+        الصحيح إلى المحفظة.
+      </div>
+
+      <div id="requestsList">
+        جارٍ تحميل الطلبات...
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+<div id="message"></div>
+
+<script>
+"use strict";
+
+/* =============================
+   إعداد Supabase
+============================= */
+
+const SUPABASE_URL =
+  "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+let currentUser = null;
+let requests = [];
+let months = [];
+
+/* =============================
+   أدوات مساعدة
+============================= */
+
+function el(id){
+  return document.getElementById(id);
+}
+
+function value(id){
+  return el(id).value.trim();
+}
+
+function escapeHTML(input){
+  return String(input ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#39;");
+}
+
+function notify(text,isError=false){
+
+  const box=el("message");
+
+  box.textContent=text;
+
+  box.style.background=
+    isError?"#b91c1c":"#004e4d";
+
+  box.style.display="block";
+
+  clearTimeout(window.notifyTimer);
+
+  window.notifyTimer=setTimeout(()=>{
+    box.style.display="none";
+  },5000);
+
+}
+
+function handleError(error){
+  console.error(error);
+  notify(error?.message||"حدث خطأ",true);
+}
+
+function formatDate(date){
+
+  if(!date)return "—";
+
+  return new Date(date).toLocaleString("ar-EG");
+
+}
+
+function formatPrice(price){
+
+  return Number(price||0).toLocaleString("ar-EG")
+    +" جنيه";
+
+}
+
+/* =============================
+   تسجيل الدخول والتحقق من الأدمن
+============================= */
+
+async function init(){
+
+  try{
+
+    const {data,error}=await db.auth.getUser();
+
+    if(error)throw error;
+
+    if(!data?.user){
+
+      location.href="index.html";
+      return;
+
+    }
+
+    const {data:profile,error:profileError}=await db
+      .from("profiles")
+      .select("role")
+      .eq("id",data.user.id)
+      .single();
+
+    if(profileError)throw profileError;
+
+    if(profile?.role!=="admin"){
+
+      throw new Error(
+        "هذا الحساب لا يمتلك صلاحية الإدارة"
+      );
+
+    }
+
+    currentUser=data.user;
+
+    el("loading").classList.add("hidden");
+
+    el("adminApp").classList.remove("hidden");
+
+    await Promise.allSettled([
+      loadPrices(),
+      loadPaymentSettings(),
+      loadMonths(),
+      loadRequests()
+    ]);
+
+  }catch(error){
+
+    el("loading").textContent=
+      error.message||"تعذر فتح لوحة الإدارة";
+
+  }
+
+}
+
+async function logout(){
+
+  await db.auth.signOut();
+
+  location.href="index.html";
+
+}
+
+/* =============================
+   تحميل الأسعار
+============================= */
+
+async function loadPrices(){
+
+  try{
+
+    const {data,error}=await db
+      .from("subscription_prices")
+      .select("*");
+
+    if(error)throw error;
+
+    const prices=data||[];
+
+    const month=prices.find(
+      item=>item.package_type==="month"
+    );
+
+    const term=prices.find(
+      item=>item.package_type==="term"
+    );
+
+    el("monthPrice").value=month?.price_egp??40;
+
+    el("termPrice").value=term?.price_egp??100;
+
+  }catch(error){
+    handleError(error);
+  }
+
+}
+
+/* =============================
+   حفظ الأسعار
+============================= */
+
+async function savePrices(){
+
+  const button=el("savePricesBtn");
+
+  try{
+
+    const monthPrice=Number(value("monthPrice"));
+
+    const termPrice=Number(value("termPrice"));
+
+    if(
+      !Number.isInteger(monthPrice)||
+      monthPrice<1||
+      !Number.isInteger(termPrice)||
+      termPrice<1
+    ){
+
+      throw new Error(
+        "أدخل أسعارًا صحيحة أكبر من صفر"
+      );
+
+    }
+
+    button.disabled=true;
+
+    const updates=[
+      {package_type:"month",price_egp:monthPrice},
+      {package_type:"term",price_egp:termPrice}
+    ];
+
+    for(const item of updates){
+
+      const {data,error}=await db
+        .from("subscription_prices")
+        .update({
+          price_egp:item.price_egp,
+          updated_at:new Date().toISOString()
+        })
+        .eq("package_type",item.package_type)
+        .select("package_type");
+
+      if(error)throw error;
+
+      if(!data?.length){
+        throw new Error(
+          "لم يتم تحديث السعر. تحقق من صلاحيات الإدارة."
+        );
+      }
+
+    }
+
+    notify("تم حفظ أسعار الاشتراكات بنجاح");
+
+    await loadPrices();
+
+  }catch(error){
+
+    handleError(error);
+
+  }finally{
+
+    button.disabled=false;
+
+  }
+
+}
+
+/* =============================
+   تحميل إعدادات الدفع
+============================= */
+
+async function loadPaymentSettings(){
+
+  try{
+
+    const {data,error}=await db
+      .from("payment_settings")
+      .select("*")
+      .eq("id",1)
+      .single();
+
+    if(error)throw error;
+
+    el("vodafoneNumber").value=
+      data.vodafone_cash_number||"";
+
+    el("paymentInstructions").value=
+      data.payment_instructions||"";
+
+    el("vodafoneEnabled").checked=
+      data.vodafone_cash_enabled===true;
+
+  }catch(error){
+
+    handleError(error);
+
+  }
+
+}
+
+/* =============================
+   حفظ إعدادات الدفع
+============================= */
+
+async function savePaymentSettings(){
+
+  const button=el("savePaymentBtn");
+
+  try{
+
+    const phone=value("vodafoneNumber");
+
+    const enabled=el("vodafoneEnabled").checked;
+
+    if(enabled && !/^01[0125]\d{8}$/.test(phone)){
+
+      throw new Error(
+        "أدخل رقم محفظة مصري صحيحًا من 11 رقمًا"
+      );
+
+    }
+
+    button.disabled=true;
+
+    const {data,error}=await db
+      .from("payment_settings")
+      .update({
+        vodafone_cash_number:phone,
+        vodafone_cash_enabled:enabled,
+        payment_instructions:value(
+          "paymentInstructions"
+        ),
+        updated_at:new Date().toISOString()
+      })
+      .eq("id",1)
+      .select("id");
+
+    if(error)throw error;
+
+    if(!data?.length){
+
+      throw new Error(
+        "لم يتم حفظ إعدادات الدفع"
+      );
+
+    }
+
+    notify("تم حفظ إعدادات فودافون كاش");
+
+  }catch(error){
+
+    handleError(error);
+
+  }finally{
+
+    button.disabled=false;
+
+  }
+
+}
+
+/* =============================
+   تحميل الشهور
+============================= */
+
+async function loadMonths(){
+
+  try{
+
+    const {data,error}=await db
+      .from("lecture_months")
+      .select("id,title,month_number,term_code");
+
+    if(error)throw error;
+
+    months=data||[];
+
+  }catch(error){
+
+    handleError(error);
+
+  }
+
+}
+
+/* =============================
+   تحميل طلبات الاشتراك
+============================= */
+
+async function loadRequests(){
+
+  try{
+
+    el("requestsList").innerHTML=
+      '<p class="muted">جارٍ تحميل الطلبات...</p>';
+
+    const {data,error}=await db
+      .from("subscription_requests")
+      .select("*")
+      .order("created_at",{ascending:false});
+
+    if(error)throw error;
+
+    requests=data||[];
+
+    el("pendingCount").textContent=
+      requests.filter(
+        r=>r.status==="pending"
+      ).length;
+
+    el("approvedCount").textContent=
+      requests.filter(
+        r=>r.status==="approved"
+      ).length;
+
+    el("rejectedCount").textContent=
+      requests.filter(
+        r=>r.status==="rejected"
+      ).length;
+
+    renderRequests();
+
+  }catch(error){
+
+    el("requestsList").innerHTML=
+      `<div class="notice">${escapeHTML(error.message)}</div>`;
+
+    handleError(error);
+
+  }
+
+}
+
+/* =============================
+   عرض طلبات الاشتراك
+============================= */
+
+function renderRequests(){
+
+  if(!requests.length){
+
+    el("requestsList").innerHTML=
+      '<p class="muted">لا توجد طلبات اشتراك حتى الآن.</p>';
+
+    return;
+
+  }
+
+  el("requestsList").innerHTML=requests.map(r=>{
+
+    const month=months.find(
+      m=>String(m.id)===String(r.month_id)
+    );
+
+    const packageName=r.package_type==="month"
+      ?`اشتراك شهر: ${month?.title||r.month_id}`
+      :`اشتراك ترم: ${
+          r.term_code==="term1"
+          ?"الأول"
+          :r.term_code==="term2"
+          ?"الثاني"
+          :r.term_code||"غير محدد"
+        }`;
+
+    const statusText={
+      pending:"قيد المراجعة",
+      approved:"مقبول",
+      rejected:"مرفوض"
+    };
+
+    const actions=r.status==="pending"
+      ?`
+        <div class="actions">
+
+          <button
+            class="btn"
+            onclick="reviewRequest('${r.id}','approved')"
+          >
+            <i class="fa-solid fa-check"></i>
+            قبول الاشتراك
+          </button>
+
+          <button
+            class="btn red"
+            onclick="reviewRequest('${r.id}','rejected')"
+          >
+            <i class="fa-solid fa-xmark"></i>
+            رفض
+          </button>
+
+        </div>
+      `
+      :"";
+
+    return `
+
+      <div class="list-item">
+
+        <span class="badge ${escapeHTML(r.status)}">
+          ${statusText[r.status]||"غير معروف"}
+        </span>
+
+        <h3>${escapeHTML(packageName)}</h3>
+
+        <p>
+          <strong>معرّف الطالب:</strong>
+          ${escapeHTML(r.student_id)}
+        </p>
+
+        <p>
+          <strong>المبلغ المطلوب:</strong>
+          ${
+            r.amount_egp==null
+            ?"غير مسجل"
+            :formatPrice(r.amount_egp)
+          }
+        </p>
+
+        <p>
+          <strong>وسيلة الدفع:</strong>
+          ${escapeHTML(r.payment_method)}
+        </p>
+
+        <p>
+          <strong>رقم العملية:</strong>
+          ${escapeHTML(r.payment_reference)}
+        </p>
+
+        <p>
+          <strong>رقم المرسل:</strong>
+          ${escapeHTML(r.sender_phone||"غير مسجل")}
+        </p>
+
+        <p class="muted">
+          تاريخ الطلب:
+          ${formatDate(r.created_at)}
+        </p>
+
+        ${actions}
+
+      </div>
+
+    `;
+
+  }).join("");
+
+}
+
+/* =============================
+   قبول أو رفض الاشتراك
+============================= */
+
+async function reviewRequest(id,decision){
+
+  const request=requests.find(r=>r.id===id);
+
+  if(!request)return;
+
+  if(request.status!=="pending"){
+    notify("تمت مراجعة هذا الطلب بالفعل",true);
+    return;
+  }
+
+  if(decision==="approved" && request.amount_egp==null){
+
+    notify(
+      "لا يمكن اعتماد الطلب قبل تسجيل مبلغ الاشتراك والتحقق منه.",
+      true
+    );
+
+    return;
+
+  }
+
+  const message=decision==="approved"
+    ?"هل تأكدت من وصول المبلغ الصحيح إلى المحفظة؟"
+    :"هل تريد رفض طلب الاشتراك؟";
+
+  if(!confirm(message))return;
+
+  try{
+
+    const {error}=await db.rpc(
+      "review_subscription",
+      {
+        p_request_id:id,
+        p_decision:decision
+      }
+    );
+
+    if(error)throw error;
+
+    notify(
+      decision==="approved"
+      ?"تم قبول الاشتراك وتفعيل صلاحية الطالب"
+      :"تم رفض الطلب"
+    );
+
+    await loadRequests();
+
+  }catch(error){
+
+    handleError(error);
+
+  }
+
+}
+
+/* =============================
+   تشغيل الصفحة
+============================= */
+
+init();
+
+</script>
+
+</body>
+</html>
