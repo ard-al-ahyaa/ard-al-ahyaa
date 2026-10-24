@@ -143,6 +143,34 @@ body.sidebar-collapsed .main{margin-right:var(--collapsed)}
 }
 @media(max-width:360px){.months-grid{grid-template-columns:1fr}.month-heading{align-items:flex-start}.month-info{gap:8px}.lecture-thumb{width:62px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
+
+/* مشغل أرض الأحياء الخاص */
+.video-container.custom-player{border:1px solid #10b98188;box-shadow:0 12px 35px #003d5040;touch-action:manipulation}
+.custom-player video{z-index:1}
+.custom-player .watermark{z-index:3}
+.earth-controls{position:absolute;inset:0;z-index:5;color:#fff;direction:ltr;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none;background:linear-gradient(180deg,#001f2d70,transparent 27%,transparent 54%,#001923db);transition:opacity .25s}
+.earth-controls>*{pointer-events:auto}
+.earth-top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 15px;font-size:12px;font-weight:900}
+.earth-brand{direction:rtl;display:flex;align-items:center;gap:8px;text-shadow:0 2px 5px #000}
+.earth-brand img{height:30px;width:30px;object-fit:contain}
+.earth-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:15px}
+.earth-btn{display:inline-grid;place-items:center;width:37px;height:37px;border:0;border-radius:50%;background:#ffffff20;color:#fff;cursor:pointer;font:700 15px Cairo,sans-serif;backdrop-filter:blur(7px)}
+.earth-btn:hover{background:#00a77b}
+.earth-btn svg{width:21px;height:21px;fill:currentColor}
+.earth-main-play{width:63px;height:63px;border:2px solid #35e2a8;background:#004e4dba}
+.earth-main-play svg{width:30px;height:30px}
+.earth-bottom{padding:10px 13px 12px}
+.earth-seek{display:block;width:100%;height:5px;accent-color:#12dc9a;cursor:pointer;margin:0 0 9px;direction:ltr}
+.earth-row{display:flex;align-items:center;gap:9px;justify-content:space-between}
+.earth-left,.earth-right{display:flex;align-items:center;gap:7px}
+.earth-time{font:12px Arial,sans-serif;white-space:nowrap}
+.earth-select{border:1px solid #ffffff44;background:#07375bc7;color:white;border-radius:7px;padding:5px;font:11px Cairo,sans-serif;max-width:86px}
+.earth-volume{width:65px;accent-color:#12dc9a}
+.custom-player.earth-idle .earth-controls{opacity:0}
+.custom-player.earth-idle:hover .earth-controls,.custom-player.earth-idle:focus-within .earth-controls{opacity:1}
+.custom-player:fullscreen{width:100%;height:100%;aspect-ratio:auto;border-radius:0}
+.custom-player:fullscreen video{width:100%;height:100%}
+@media(max-width:500px){.earth-top{padding:7px 9px}.earth-brand{font-size:10px}.earth-brand img{height:23px;width:23px}.earth-main-play{width:48px;height:48px}.earth-btn{width:30px;height:30px;font-size:12px}.earth-center{gap:9px}.earth-bottom{padding:7px}.earth-volume{display:none}.earth-time{font-size:10px}.earth-row{gap:4px}.earth-left,.earth-right{gap:3px}.earth-select{max-width:67px;font-size:10px;padding:3px}}
 </style>
 </head>
 
@@ -858,6 +886,7 @@ async function buildPlayer(index) {
 
     if (!lecture || !box) return;
 
+    box.classList.remove("custom-player", "earth-idle");
     const qualities = getQualities(lecture);
 
     if (wrap) wrap.style.display = "none";
@@ -975,18 +1004,44 @@ async function buildPlayer(index) {
         return;
     }
 
+    box.classList.add("custom-player");
     box.innerHTML =
-        '<video controls playsinline preload="metadata" ' +
-        'controlsList="nodownload noremoteplayback" disablePictureInPicture ' +
-        'disableRemotePlayback draggable="false" ' +
-        'oncontextmenu="return false"></video>' +
-        watermark();
+        '<video playsinline preload="metadata" controlsList="nodownload noremoteplayback" disablePictureInPicture disableRemotePlayback draggable="false"></video>' +
+        watermark() +
+        '<div class="earth-controls">' +
+        '<div class="earth-top"><span class="earth-brand"><img src="../logo.png" alt="">أرض الأحياء</span><span>منصة أرض الأحياء التعليمية</span></div>' +
+        '<div class="earth-center"><button type="button" class="earth-btn earth-back" title="رجوع 10 ثوان">↶10</button><button type="button" class="earth-btn earth-main-play" title="تشغيل وإيقاف"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button><button type="button" class="earth-btn earth-forward" title="تقديم 10 ثوان">10↷</button></div>' +
+        '<div class="earth-bottom"><input class="earth-seek" aria-label="شريط تقدم الفيديو" type="range" min="0" max="1000" value="0"><div class="earth-row"><div class="earth-left"><button type="button" class="earth-btn earth-play" title="تشغيل وإيقاف">▶</button><span class="earth-time">00:00 / 00:00</span></div><div class="earth-right"><button type="button" class="earth-btn earth-mute" title="الصوت">🔊</button><input class="earth-volume" type="range" min="0" max="1" step="0.05" value="1" aria-label="مستوى الصوت"><select class="earth-select earth-speed" aria-label="سرعة التشغيل"><option value="0.5">0.5x</option><option value="0.75">0.75x</option><option value="1" selected>1x</option><option value="1.25">1.25x</option><option value="1.5">1.5x</option><option value="2">2x</option></select><button type="button" class="earth-btn earth-full" title="ملء الشاشة">⛶</button></div></div></div></div>';
 
     const video = box.querySelector("video");
-    // منع قائمة السياق والسحب حيث يدعم المتصفح ذلك.
+    const control = name => box.querySelector(".earth-" + name);
+    const playButtons = [control("play"), control("main-play")];
+    const fmt = t => Number.isFinite(t) ? String(Math.floor(t / 60)).padStart(2, "0") + ":" + String(Math.floor(t % 60)).padStart(2, "0") : "00:00";
+    const updateControls = () => {
+        const playing = !video.paused && !video.ended;
+        control("play").textContent = playing ? "❚❚" : "▶";
+        control("main-play").innerHTML = playing ? '<svg viewBox="0 0 24 24"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>' : '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+        control("time").textContent = fmt(video.currentTime) + " / " + fmt(video.duration);
+        control("seek").value = Number.isFinite(video.duration) && video.duration > 0 ? Math.round(video.currentTime / video.duration * 1000) : 0;
+        control("mute").textContent = video.muted || video.volume === 0 ? "🔇" : "🔊";
+    };
+    playButtons.forEach(b => b.addEventListener("click", () => video.paused ? video.play().catch(() => {}) : video.pause()));
+    control("back").addEventListener("click", () => { video.currentTime = Math.max(0, video.currentTime - 10); });
+    control("forward").addEventListener("click", () => { video.currentTime = Math.min(Number.isFinite(video.duration) ? video.duration : video.currentTime + 10, video.currentTime + 10); });
+    control("seek").addEventListener("input", e => { if (Number.isFinite(video.duration)) video.currentTime = video.duration * Number(e.target.value) / 1000; });
+    control("speed").addEventListener("change", e => { video.playbackRate = Number(e.target.value); });
+    control("volume").addEventListener("input", e => { video.volume = Number(e.target.value); video.muted = false; updateControls(); });
+    control("mute").addEventListener("click", () => { video.muted = !video.muted; updateControls(); });
+    control("full").addEventListener("click", async () => { try { if (document.fullscreenElement) await document.exitFullscreen(); else if (box.requestFullscreen) await box.requestFullscreen(); else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen(); } catch(e) { console.warn(e); } });
+    let idleTimer;
+    const showControls = () => { box.classList.remove("earth-idle"); clearTimeout(idleTimer); if (!video.paused) idleTimer = setTimeout(() => box.classList.add("earth-idle"), 3200); };
+    ["mousemove", "touchstart", "click"].forEach(evt => box.addEventListener(evt, showControls, {passive:true}));
+    ["play", "pause", "timeupdate", "loadedmetadata", "durationchange", "volumechange", "ended"].forEach(evt => video.addEventListener(evt, () => { updateControls(); if (evt === "play") showControls(); if (evt === "pause") box.classList.remove("earth-idle"); }));
+    video.addEventListener("click", () => video.paused ? video.play().catch(() => {}) : video.pause());
     video.addEventListener("contextmenu", event => event.preventDefault());
     video.addEventListener("dragstart", event => event.preventDefault());
     box.addEventListener("contextmenu", event => event.preventDefault());
+    updateControls();
     video.src = initialUrl;
 
     video.addEventListener("ended", () => {
