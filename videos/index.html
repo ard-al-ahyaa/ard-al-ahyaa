@@ -213,3 +213,1540 @@ a{text-decoration:none}
  opacity:1!important;visibility:visible!important;
  transform:none!important;pointer-events:auto!important
 }
+/* =========================================
+   نظام الواجبات والامتحانات
+========================================= */
+
+const assessmentsCache = new Map();
+const quizSessions = new Map();
+
+/* تحميل واجبات وامتحانات المحاضرة */
+async function getLectureAssessments(lectureId) {
+
+ const key = String(lectureId);
+
+ if (assessmentsCache.has(key)) {
+  return assessmentsCache.get(key);
+ }
+
+ const { data, error } = await supabaseClient
+  .from("lecture_assessments")
+  .select("id,title,assessment_type,duration_minutes")
+  .eq("lecture_id", lectureId)
+  .eq("is_published", true);
+
+ if (error) {
+  console.warn("تعذر تحميل الاختبارات:", error);
+  return [];
+ }
+
+ const assessments = data || [];
+
+ assessmentsCache.set(key, assessments);
+
+ return assessments;
+}
+
+/* عرض الواجبات والامتحانات */
+async function renderLectureAssessments(index) {
+
+ const lecture = currentList[index];
+
+ if (!lecture) return;
+
+ const homeworkBox = $("homework-" + index);
+ const examBox = $("exam-" + index);
+
+ if (!homeworkBox || !examBox) return;
+
+ homeworkBox.innerHTML =
+  '<div class="loading">جارٍ تحميل الواجبات...</div>';
+
+ examBox.innerHTML =
+  '<div class="loading">جارٍ تحميل الامتحانات...</div>';
+
+ const assessments = await getLectureAssessments(
+  lecture.id
+ );
+
+ const homeworks = assessments.filter(
+  item => item.assessment_type === "homework"
+ );
+
+ const exams = assessments.filter(
+  item => item.assessment_type === "exam"
+ );
+
+ function createCards(items, type) {
+
+  if (!items.length) {
+   return `
+    <div class="empty">
+     لا توجد ${type === "homework" ? "واجبات" : "امتحانات"}
+     متاحة لهذه المحاضرة حاليًا.
+    </div>
+   `;
+  }
+
+  return items.map(item => {
+
+   const id = escapeHtml(item.id);
+
+   return `
+    <div class="assessment-card">
+
+     <strong>
+      <i class="fa-solid fa-clipboard-question"
+       style="color:#008866;margin-left:8px"></i>
+
+      ${escapeHtml(item.title)}
+     </strong>
+
+     <p>
+      ${
+       item.duration_minutes
+        ? "المدة المحددة: " +
+          escapeHtml(item.duration_minutes) +
+          " دقيقة"
+        : "اختبار إلكتروني"
+      }
+     </p>
+
+     <button
+      type="button"
+      class="primary-btn"
+      data-start-assessment="${id}"
+      data-lecture-index="${index}">
+
+      <i class="fa-solid fa-play"></i>
+      ابدأ ${type === "homework" ? "الواجب" : "الامتحان"}
+
+     </button>
+
+     <div
+      id="assessment-panel-${id}"
+      style="margin-top:12px">
+     </div>
+
+    </div>
+   `;
+
+  }).join("");
+ }
+
+ homeworkBox.innerHTML = createCards(
+  homeworks,
+  "homework"
+ );
+
+ examBox.innerHTML = createCards(
+  exams,
+  "exam"
+ );
+
+ [homeworkBox, examBox].forEach(box => {
+
+  box.querySelectorAll(
+   "[data-start-assessment]"
+  ).forEach(button => {
+
+   button.addEventListener("click", () => {
+
+    startLectureAssessment(
+     button.dataset.startAssessment,
+     Number(button.dataset.lectureIndex)
+    );
+
+   });
+
+  });
+
+ });
+
+}
+
+/* =========================================
+   تحميل أسئلة الاختبار
+========================================= */
+
+async function startLectureAssessment(
+ assessmentId,
+ lectureIndex
+) {
+
+ const panel = $(
+  "assessment-panel-" + assessmentId
+ );
+
+ if (!panel) return;
+
+ panel.innerHTML = `
+  <div class="loading">
+   جارٍ تجهيز الأسئلة...
+  </div>
+ `;
+
+ const lecture = currentList[lectureIndex];
+
+ if (!lecture) return;
+
+ const assessments = await getLectureAssessments(
+  lecture.id
+ );
+
+ const assessment = assessments.find(
+  item => String(item.id) === String(assessmentId)
+ );
+
+ if (!assessment) {
+  panel.innerHTML = `
+   <div class="empty">
+    الاختبار غير متاح حاليًا.
+   </div>
+  `;
+  return;
+ }
+
+ const { data, error } = await supabaseClient
+  .from("lecture_assessment_questions")
+  .select(
+   "id,question_text,image_path,option_a,option_b,option_c,option_d,sort_order"
+  )
+  .eq("assessment_id", assessmentId)
+  .order("sort_order", { ascending: true });
+
+ if (error) {
+
+  console.error(error);
+
+  panel.innerHTML = `
+   <div class="empty">
+    تعذر تحميل أسئلة الاختبار.
+   </div>
+  `;
+
+  return;
+ }
+
+ const questions = data || [];
+
+ if (!questions.length) {
+
+  panel.innerHTML = `
+   <div class="empty">
+    لم تتم إضافة أسئلة لهذا الاختبار بعد.
+   </div>
+  `;
+
+  return;
+ }
+
+ quizSessions.set(String(assessmentId), {
+  assessment,
+  questions,
+  answers: {},
+  current: 0,
+  submitting: false,
+  finished: false
+ });
+
+ renderQuizQuestion(assessmentId);
+
+}
+
+/* =========================================
+   عرض سؤال واحد في كل مرة
+========================================= */
+
+function renderQuizQuestion(assessmentId) {
+
+ const session = quizSessions.get(
+  String(assessmentId)
+ );
+
+ if (!session || session.finished) return;
+
+ const panel = $(
+  "assessment-panel-" + assessmentId
+ );
+
+ if (!panel) return;
+
+ const index = session.current;
+ const question = session.questions[index];
+
+ if (!question) return;
+
+ const total = session.questions.length;
+
+ const selected = session.answers[
+  String(question.id)
+ ] || "";
+
+ const options = [
+  ["A", question.option_a],
+  ["B", question.option_b],
+  ["C", question.option_c],
+  ["D", question.option_d]
+ ];
+
+ const progressPercent =
+  ((index + 1) / total) * 100;
+
+ panel.innerHTML = `
+  <div class="quiz-panel">
+
+   <div style="
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    align-items:center;
+    flex-wrap:wrap;
+   ">
+
+    <strong>
+     ${escapeHtml(session.assessment.title)}
+    </strong>
+
+    <span style="color:#64748b">
+     السؤال ${index + 1} من ${total}
+    </span>
+
+   </div>
+
+   <div class="quiz-meter">
+    <span style="width:${progressPercent}%"></span>
+   </div>
+
+   <h3 style="
+    font-size:15px;
+    margin:17px 0;
+    line-height:2;
+    white-space:pre-wrap;
+   ">
+    ${escapeHtml(question.question_text)}
+   </h3>
+
+   <div id="quiz-image-${escapeHtml(assessmentId)}"></div>
+
+   <div class="quiz-options">
+
+    ${options.map(([letter, value]) => `
+
+     <button
+      type="button"
+      class="quiz-choice ${
+       selected === letter ? "selected" : ""
+      }"
+      data-answer="${letter}">
+
+      <b>${letter}</b>
+
+      <span>
+       ${escapeHtml(value || "")}
+      </span>
+
+     </button>
+
+    `).join("")}
+
+   </div>
+
+   <div class="quiz-nav">
+
+    <button
+     type="button"
+     class="secondary-btn"
+     id="quiz-prev-${escapeHtml(assessmentId)}"
+     ${index === 0 ? "disabled" : ""}>
+
+     <i class="fa-solid fa-arrow-right"></i>
+     السابق
+
+    </button>
+
+    ${
+     index === total - 1
+      ? `
+       <button
+        type="button"
+        class="primary-btn"
+        id="quiz-submit-${escapeHtml(assessmentId)}">
+
+        <i class="fa-solid fa-check"></i>
+        تسليم الإجابات
+
+       </button>
+      `
+      : `
+       <button
+        type="button"
+        class="primary-btn"
+        id="quiz-next-${escapeHtml(assessmentId)}">
+
+        التالي
+        <i class="fa-solid fa-arrow-left"></i>
+
+       </button>
+      `
+    }
+
+   </div>
+
+  </div>
+ `;
+
+ /* تحديد الإجابة */
+ panel.querySelectorAll(
+  "[data-answer]"
+ ).forEach(button => {
+
+  button.addEventListener("click", () => {
+
+   session.answers[String(question.id)] =
+    button.dataset.answer;
+
+   renderQuizQuestion(assessmentId);
+
+  });
+
+ });
+
+ /* السؤال السابق */
+ const previous = $(
+  "quiz-prev-" + assessmentId
+ );
+
+ if (previous) {
+
+  previous.addEventListener("click", () => {
+
+   if (session.current > 0) {
+
+    session.current--;
+
+    renderQuizQuestion(assessmentId);
+
+   }
+
+  });
+
+ }
+
+ /* السؤال التالي */
+ const next = $(
+  "quiz-next-" + assessmentId
+ );
+
+ if (next) {
+
+  next.addEventListener("click", () => {
+
+   if (session.current < total - 1) {
+
+    session.current++;
+
+    renderQuizQuestion(assessmentId);
+
+   }
+
+  });
+
+ }
+
+ /* تسليم الاختبار */
+ const submit = $(
+  "quiz-submit-" + assessmentId
+ );
+
+ if (submit) {
+
+  submit.addEventListener("click", () => {
+
+   submitLectureAssessment(assessmentId);
+
+  });
+
+ }
+
+ /* صورة السؤال */
+ if (question.image_path) {
+
+  loadQuizImage(
+   assessmentId,
+   question.image_path
+  );
+
+ }
+
+}
+
+/* =========================================
+   عرض صورة السؤال
+========================================= */
+
+async function loadQuizImage(
+ assessmentId,
+ imagePath
+) {
+
+ const container = $(
+  "quiz-image-" + assessmentId
+ );
+
+ if (!container) return;
+
+ const url = await resolveMedia(
+  imagePath,
+  "lectures"
+ );
+
+ if (!url) return;
+
+ if (!container.isConnected) return;
+
+ const image = document.createElement("img");
+
+ image.src = url;
+ image.alt = "صورة السؤال";
+ image.className = "quiz-photo";
+ image.loading = "lazy";
+
+ container.replaceChildren(image);
+
+}
+
+/* =========================================
+   تسليم الواجب أو الامتحان
+========================================= */
+
+async function submitLectureAssessment(
+ assessmentId
+) {
+
+ const session = quizSessions.get(
+  String(assessmentId)
+ );
+
+ if (
+  !session ||
+  session.finished ||
+  session.submitting
+ ) {
+  return;
+ }
+
+ const total = session.questions.length;
+
+ const answered = session.questions.filter(
+  question => session.answers[String(question.id)]
+ ).length;
+
+ if (answered < total) {
+
+  const proceed = confirm(
+   "أجبت عن " + answered +
+   " من " + total +
+   " سؤال. هل تريد تسليم الاختبار؟"
+  );
+
+  if (!proceed) return;
+
+ } else {
+
+  if (!confirm(
+   "هل أنت متأكد من تسليم إجاباتك؟"
+  )) {
+   return;
+  }
+
+ }
+
+ session.submitting = true;
+
+ const panel = $(
+  "assessment-panel-" + assessmentId
+ );
+
+ if (!panel) {
+  session.submitting = false;
+  return;
+ }
+
+ const answers = session.questions.map(
+  question => ({
+   question_id: question.id,
+   selected_answer:
+    session.answers[String(question.id)] || null
+  })
+ );
+
+ panel.innerHTML = `
+  <div class="loading">
+   جارٍ تصحيح الإجابات وحساب النتيجة...
+  </div>
+ `;
+
+ try {
+
+  /*
+   التصحيح يتم داخل Supabase
+   وليس داخل متصفح الطالب.
+  */
+
+  const { data, error } = await supabaseClient.rpc(
+   "submit_lecture_assessment",
+   {
+    p_assessment_id: assessmentId,
+    p_answers: answers
+   }
+  );
+
+  if (error) {
+   throw error;
+  }
+
+  const result = Array.isArray(data)
+   ? data[0]
+   : data;
+
+  if (!result) {
+   throw new Error(
+    "لم يتم إرجاع نتيجة الاختبار"
+   );
+  }
+
+  session.finished = true;
+
+  renderAssessmentResult(
+   assessmentId,
+   result
+  );
+
+ } catch (error) {
+
+  console.error(
+   "Assessment submission error:",
+   error
+  );
+
+  session.submitting = false;
+
+  panel.innerHTML = `
+   <div class="quiz-warning">
+    تعذر تسليم الاختبار.
+    تأكد من الاتصال بالإنترنت وحاول مرة أخرى.
+   </div>
+
+   <button
+    type="button"
+    class="primary-btn"
+    id="retry-submit-${escapeHtml(assessmentId)}">
+
+    إعادة المحاولة
+
+   </button>
+  `;
+
+  const retry = $(
+   "retry-submit-" + assessmentId
+  );
+
+  if (retry) {
+
+   retry.addEventListener("click", () => {
+    submitLectureAssessment(assessmentId);
+   });
+
+  }
+
+ }
+
+}
+
+/* =========================================
+   عرض النتيجة بعد التصحيح
+========================================= */
+
+function renderAssessmentResult(
+ assessmentId,
+ result
+) {
+
+ const panel = $(
+  "assessment-panel-" + assessmentId
+ );
+
+ if (!panel) return;
+
+ const score = Number(result.score ?? 0);
+ const maxScore = Number(result.max_score ?? 0);
+
+ const percentage = maxScore > 0
+  ? Math.round((score / maxScore) * 100)
+  : 0;
+
+ const review = Array.isArray(result.review)
+  ? result.review
+  : [];
+
+ panel.innerHTML = `
+  <div class="quiz-panel">
+
+   <div style="
+    text-align:center;
+    padding:20px 10px;
+   ">
+
+    <i
+     class="fa-solid fa-circle-check"
+     style="
+      font-size:42px;
+      color:#008866;
+      margin-bottom:15px;
+     ">
+    </i>
+
+    <h2 style="
+     color:#004e4d;
+     margin-bottom:10px;
+    ">
+     تم تسليم الاختبار
+    </h2>
+
+    <p>
+     نتيجتك
+    </p>
+
+    <div style="
+     font-size:35px;
+     font-weight:900;
+     color:#008866;
+     margin:12px 0;
+    ">
+     ${escapeHtml(score)}
+     /
+     ${escapeHtml(maxScore)}
+    </div>
+
+    <strong>
+     النسبة المئوية: ${escapeHtml(percentage)}%
+    </strong>
+
+   </div>
+
+   ${
+    review.length
+     ? `
+      <h3 class="details-title">
+       مراجعة الإجابات
+      </h3>
+
+      ${review.map((item, index) => `
+
+       <div class="quiz-review">
+
+        <strong>
+         السؤال ${index + 1}
+        </strong>
+
+        <p>
+         ${escapeHtml(item.question_text || "")}
+        </p>
+
+        <p>
+         إجابتك:
+         <b>
+          ${escapeHtml(
+           item.selected_answer || "لم تتم الإجابة"
+          )}
+         </b>
+        </p>
+
+        <p>
+         الإجابة الصحيحة:
+         <b style="color:#008866">
+          ${escapeHtml(item.correct_answer || "")}
+         </b>
+        </p>
+
+        ${
+         item.explanation
+          ? `
+           <p>
+            <strong>التفسير:</strong>
+            ${escapeHtml(item.explanation)}
+           </p>
+          `
+          : ""
+        }
+
+       </div>
+
+      `).join("")}
+     `
+     : ""
+   }
+
+  </div>
+ `;
+
+}
+
+/* =========================================
+   تحميل محتويات المحاضرة الإضافية
+========================================= */
+
+async function loadLectureExtras(
+ lecture,
+ index
+) {
+
+ await Promise.allSettled([
+
+  renderLectureHandouts(index),
+
+  renderLectureAssessments(index)
+
+ ]);
+
+}
+
+/* =========================================
+   تنظيف جلسات الاختبارات
+========================================= */
+
+function destroyQuizSessions() {
+
+ quizSessions.clear();
+
+       }
+ /* =========================================
+   تحميل شهور المحاضرات
+========================================= */
+
+async function loadMonths(){
+
+ const grid=$("monthsGrid");
+
+ grid.innerHTML=`
+  <div class="loading">
+   جارٍ تحميل الشهور...
+  </div>
+ `;
+
+ const {data,error}=await supabaseClient
+  .from("lecture_months")
+  .select("*")
+  .order("sort_order",{ascending:true});
+
+ if(error){
+
+  console.error(error);
+
+  grid.innerHTML=`
+   <div class="empty">
+    تعذر تحميل الشهور.
+   </div>
+  `;
+
+  return;
+ }
+
+ visibleMonths=(data||[]).filter(month=>
+  month.is_visible!==false &&
+  month.visible!==false
+ );
+
+ renderMonths();
+
+ if(visibleMonths.length){
+  selectMonth(visibleMonths[0].id);
+ }else{
+  $("lecturesList").innerHTML=`
+   <div class="empty">
+    لا توجد شهور متاحة حاليًا.
+   </div>
+  `;
+ }
+
+}
+
+/* =========================================
+   عرض بطاقات الشهور
+========================================= */
+
+function renderMonths(){
+
+ const grid=$("monthsGrid");
+
+ $("monthsTitle").style.display=
+  visibleMonths.length?"block":"none";
+
+ if(!visibleMonths.length){
+
+  grid.innerHTML=`
+   <div class="empty">
+    لم تتم إضافة شهور بعد.
+   </div>
+  `;
+
+  return;
+ }
+
+ grid.innerHTML=visibleMonths.map(month=>{
+
+  const active=
+   String(selectedMonth)===String(month.id);
+
+  const image=
+   month.cover_url||
+   month.image_url||
+   month.cover_path||
+   "";
+
+  const safeImage=safeUrl(image);
+
+  return `
+   <button
+    type="button"
+    class="month-btn ${active?"active":""}"
+    data-month-id="${escapeHtml(month.id)}">
+
+    ${
+     safeImage
+      ?`
+       <img
+        src="${escapeHtml(safeImage)}"
+        alt="${escapeHtml(month.title||"الشهر")}"
+        loading="lazy">
+      `
+      :""
+    }
+
+    <strong>
+     <i class="fa-regular fa-calendar"
+      style="color:#008866;margin-left:7px"></i>
+
+     ${escapeHtml(month.title||"شهر دراسي")}
+    </strong>
+
+    <small>
+     اضغط لعرض المحاضرات
+    </small>
+
+   </button>
+  `;
+
+ }).join("");
+
+ grid.querySelectorAll(
+  "[data-month-id]"
+ ).forEach(button=>{
+
+  button.addEventListener("click",()=>{
+
+   selectMonth(button.dataset.monthId);
+
+  });
+
+ });
+
+}
+
+/* =========================================
+   اختيار الشهر
+========================================= */
+
+async function selectMonth(monthId){
+
+ selectedMonth=monthId;
+
+ renderMonths();
+
+ const month=visibleMonths.find(item=>
+  String(item.id)===String(monthId)
+ );
+
+ $("monthHeading").style.display="block";
+
+ $("selectedMonthTitle").textContent=
+  month?.title||"محاضرات الشهر";
+
+ $("selectedMonthDescription").textContent=
+  month?.description||
+  "اختر المحاضرة التي تريد مشاهدتها.";
+
+ await loadLectures(monthId);
+
+}
+
+/* =========================================
+   تحميل محاضرات الشهر
+========================================= */
+
+async function loadLectures(monthId){
+
+ const container=$("lecturesList");
+
+ container.innerHTML=`
+  <div class="loading">
+   جارٍ تحميل المحاضرات...
+  </div>
+ `;
+
+ /* تنظيف المشغلات السابقة */
+ for(const player of players.values()){
+
+  try{
+   player.destroy?.();
+  }catch(error){
+   console.warn(error);
+  }
+
+ }
+
+ players.clear();
+
+ destroyPdfReaders();
+ destroyQuizSessions();
+
+ const {data,error}=await supabaseClient
+  .from("lectures")
+  .select("*")
+  .eq("month_id",monthId)
+  .order("created_at",{ascending:true});
+
+ if(error){
+
+  console.error(error);
+
+  container.innerHTML=`
+   <div class="empty">
+    تعذر تحميل المحاضرات.
+    <br>
+    تحقق من الاتصال بالإنترنت.
+   </div>
+  `;
+
+  return;
+ }
+
+ currentList=data||[];
+
+ renderLectures();
+
+}
+
+/* =========================================
+   عرض المحاضرات
+========================================= */
+
+function renderLectures(){
+
+ const container=$("lecturesList");
+
+ if(!currentList.length){
+
+  container.innerHTML=`
+   <div class="empty">
+    لا توجد محاضرات مضافة لهذا الشهر بعد.
+   </div>
+  `;
+
+  return;
+ }
+
+ container.innerHTML=currentList.map(
+  (lecture,index)=>{
+
+   const title=escapeHtml(
+    lecture.title||"محاضرة الأحياء"
+   );
+
+   const description=escapeHtml(
+    lecture.description||
+    "شرح المحاضرة ومحتوياتها التعليمية."
+   );
+
+   const image=safeUrl(
+    lecture.cover_url||
+    lecture.thumbnail_url||
+    lecture.image_url||
+    ""
+   );
+
+   const row=
+    progress.get(String(lecture.id))||{};
+
+   return `
+    <article
+     class="lecture-card"
+     id="lecture-${index}">
+
+     <div
+      class="lecture-header"
+      data-open-lecture="${index}"
+      role="button"
+      tabindex="0"
+      aria-expanded="false">
+
+      ${
+       image
+        ?`
+         <img
+          class="lecture-thumb"
+          src="${escapeHtml(image)}"
+          alt="${title}"
+          loading="lazy">
+        `
+        :`
+         <div
+          class="lecture-thumb"
+          style="
+           background:linear-gradient(
+            135deg,#008866,#07375b
+           );
+           display:grid;
+           place-items:center;
+           color:white;
+           font-size:26px;
+          ">
+
+          <i class="fa-regular fa-circle-play"></i>
+
+         </div>
+        `
+      }
+
+      <div class="lecture-info">
+
+       <h3>${title}</h3>
+
+       <p>
+        اضغط لعرض الفيديو ومحتويات المحاضرة
+       </p>
+
+      </div>
+
+      <i
+       class="fa-solid fa-chevron-down lecture-arrow"
+       id="lecture-arrow-${index}">
+      </i>
+
+     </div>
+
+     <div
+      class="lecture-body"
+      id="lecture-body-${index}">
+
+      <!-- مشغل الفيديو -->
+      <div
+       class="earth-player"
+       id="video-container-${index}">
+      </div>
+
+      <!-- أزرار تقدم الطالب -->
+      <div class="video-actions">
+
+       <button
+        type="button"
+        class="secondary-btn action-btn ${
+         row.saved?"on":""
+        }"
+        data-save-lecture="${index}"
+        id="save-${index}">
+
+        ${
+         row.saved
+          ?"★ تمت الإضافة للمحفوظات"
+          :"☆ حفظ المحاضرة"
+        }
+
+       </button>
+
+       <button
+        type="button"
+        class="secondary-btn action-btn ${
+         row.completed?"on":""
+        }"
+        data-complete-lecture="${index}"
+        id="done-${index}">
+
+        ${
+         row.completed
+          ?"✓ تمت المشاهدة"
+          :"✓ تحديد كمكتملة"
+        }
+
+       </button>
+
+      </div>
+
+      <!-- أقسام المحاضرة -->
+      <div class="lesson-sections">
+
+       <!-- الوصف -->
+       <details
+        class="lesson-section"
+        open>
+
+        <summary class="section-header">
+
+         <i class="fa-solid fa-align-right"></i>
+
+         تفاصيل المحاضرة
+
+        </summary>
+
+        <div class="section-content">
+
+         <p>${description}</p>
+
+        </div>
+
+       </details>
+
+       <!-- المذكرات -->
+       <details class="lesson-section">
+
+        <summary class="section-header">
+
+         <i class="fa-solid fa-book-open"></i>
+
+         مذكرات المحاضرة
+
+        </summary>
+
+        <div class="section-content">
+
+         <div id="handouts-list-${index}">
+
+          <div class="loading">
+           جارٍ تحميل المذكرات...
+          </div>
+
+         </div>
+
+        </div>
+
+       </details>
+
+       <!-- الواجب -->
+       <details class="lesson-section">
+
+        <summary class="section-header">
+
+         <i class="fa-solid fa-pen-to-square"></i>
+
+         واجب المحاضرة
+
+        </summary>
+
+        <div class="section-content">
+
+         <div id="homework-${index}">
+
+          <div class="loading">
+           جارٍ تحميل الواجب...
+          </div>
+
+         </div>
+
+        </div>
+
+       </details>
+
+       <!-- الامتحان -->
+       <details class="lesson-section">
+
+        <summary class="section-header">
+
+         <i class="fa-solid fa-clipboard-check"></i>
+
+         امتحان المحاضرة
+
+        </summary>
+
+        <div class="section-content">
+
+         <div id="exam-${index}">
+
+          <div class="loading">
+           جارٍ تحميل الامتحان...
+          </div>
+
+         </div>
+
+        </div>
+
+       </details>
+
+      </div>
+
+     </div>
+
+    </article>
+   `;
+
+  }
+ ).join("");
+
+ /* ربط فتح المحاضرات */
+ container.querySelectorAll(
+  "[data-open-lecture]"
+ ).forEach(header=>{
+
+  const index=Number(
+   header.dataset.openLecture
+  );
+
+  header.addEventListener("click",()=>{
+
+   toggleLecture(index);
+
+  });
+
+  header.addEventListener("keydown",event=>{
+
+   if(
+    event.key==="Enter"||
+    event.key===" "
+   ){
+
+    event.preventDefault();
+    toggleLecture(index);
+
+   }
+
+  });
+
+ });
+
+ /* ربط أزرار الحفظ */
+ container.querySelectorAll(
+  "[data-save-lecture]"
+ ).forEach(button=>{
+
+  button.addEventListener("click",()=>{
+
+   toggleSaved(
+    Number(button.dataset.saveLecture)
+   );
+
+  });
+
+ });
+
+ /* ربط أزرار إكمال المحاضرة */
+ container.querySelectorAll(
+  "[data-complete-lecture]"
+ ).forEach(button=>{
+
+  button.addEventListener("click",()=>{
+
+   toggleCompleted(
+    Number(button.dataset.completeLecture)
+   );
+
+  });
+
+ });
+
+ /* فتح أول محاضرة تلقائيًا */
+ if(currentList.length){
+
+  toggleLecture(0);
+
+ }
+
+}
+
+/* =========================================
+   فتح وإغلاق المحاضرة
+========================================= */
+
+async function toggleLecture(index){
+
+ const body=$("lecture-body-"+index);
+ const arrow=$("lecture-arrow-"+index);
+
+ if(!body)return;
+
+ const header=body.previousElementSibling;
+
+ const wasOpen=body.classList.contains(
+  "open"
+ );
+
+ /* إغلاق المحاضرات الأخرى */
+ document.querySelectorAll(
+  ".lecture-body.open"
+ ).forEach(item=>{
+
+  if(item!==body){
+
+   item.classList.remove("open");
+
+   const otherIndex=Number(
+    item.id.replace("lecture-body-","")
+   );
+
+   const otherArrow=$(
+    "lecture-arrow-"+otherIndex
+   );
+
+   if(otherArrow){
+    otherArrow.style.transform="";
+   }
+
+   const otherHeader=
+    item.previousElementSibling;
+
+   if(otherHeader){
+    otherHeader.setAttribute(
+     "aria-expanded",
+     "false"
+    );
+   }
+
+   const otherPlayer=players.get(
+    otherIndex
+   );
+
+   if(otherPlayer?.video){
+    otherPlayer.video.pause();
+   }
+
+  }
+
+ });
+
+ if(wasOpen){
+
+  body.classList.remove("open");
+
+  if(arrow){
+   arrow.style.transform="";
+  }
+
+  if(header){
+   header.setAttribute(
+    "aria-expanded",
+    "false"
+   );
+  }
+
+  const player=players.get(index);
+
+  if(player?.video){
+   player.video.pause();
+  }
+
+  return;
+ }
+
+ body.classList.add("open");
+
+ if(arrow){
+  arrow.style.transform="rotate(180deg)";
+ }
+
+ if(header){
+  header.setAttribute(
+   "aria-expanded",
+   "true"
+  );
+ }
+
+ /* تحميل محتويات المحاضرة أول مرة */
+ if(!body.dataset.initialized){
+
+  body.dataset.initialized="true";
+
+  const lecture=currentList[index];
+
+  await Promise.allSettled([
+
+   buildPlayer(index),
+
+   loadLectureExtras(
+    lecture,
+    index
+   )
+
+  ]);
+
+ }
+
+}
+
+/* =========================================
+   بدء تشغيل صفحة المحاضرات
+========================================= */
+
+async function initializePage(){
+
+ try{
+
+  const {
+   data:{session},
+   error
+  }=await supabaseClient.auth.getSession();
+
+  if(error){
+   console.warn(error);
+  }
+
+  if(!session?.user){
+
+   $("lecturesList").innerHTML=`
+    <div class="empty">
+
+     يجب تسجيل الدخول أولًا
+     لمشاهدة المحاضرات.
+
+     <br><br>
+
+     <a
+      href="../login/index.html"
+      class="primary-btn">
+
+      تسجيل الدخول
+
+     </a>
+
+    </div>
+   `;
+
+   return;
+  }
+
+  await loadViewer(session.user);
+
+  await loadProgress();
+
+  await loadMonths();
+
+ }catch(error){
+
+  console.error(
+   "Page initialization error:",
+   error
+  );
+
+  showMessage(
+   "حدث خطأ أثناء تحميل الصفحة. حاول تحديثها."
+  );
+
+ }
+
+}
+
+/* تشغيل المنصة */
+initializePage();
+
+</script>
+
+</body>
+</html>
