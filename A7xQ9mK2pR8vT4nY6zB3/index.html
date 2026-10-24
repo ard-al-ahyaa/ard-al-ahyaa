@@ -290,6 +290,19 @@ th{background:#f1f5f9}
   .card{padding:15px}
   h1{font-size:20px}
 }
+
+/* ردود المنتدى */
+.forum-post{border:1px solid var(--border);border-radius:15px;padding:18px;margin:15px 0;background:#fff}
+.forum-replies{border-right:3px solid #008866;margin:14px 0;padding:5px 14px;background:#f7fbfa;border-radius:8px}
+.forum-reply{padding:11px 0;border-bottom:1px solid #e3ebe8;overflow-wrap:anywhere}
+.forum-reply:last-child{border-bottom:0}
+.forum-reply img,.forum-reply video{display:block;max-width:100%;max-height:330px;border-radius:10px;margin:10px 0}
+.forum-reply audio{max-width:100%;display:block;margin:10px 0}
+.forum-compose{background:#f3f8f7;padding:15px;border-radius:12px;margin-top:15px}
+.forum-compose textarea{min-height:90px}
+.forum-compose .grid{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.record-status{font-size:12px;color:#64748b;margin:8px 0}
+
 </style>
 </head>
 
@@ -840,22 +853,14 @@ th{background:#f1f5f9}
 
     </section>
 
-    <!-- المنتدى -->
-
+    <!-- المنتدى والردود -->
     <section id="forum" class="section">
-
       <div class="card">
-
-        <h2>إدارة المنتدى</h2>
-
-        <button class="btn" onclick="loadForum()">
-          تحديث المنشورات
-        </button>
-
-        <div id="forumList"></div>
-
+        <h2><i class="fa-regular fa-comments"></i> إدارة المنتدى والرد على الطلاب</h2>
+        <p class="muted">يمكنك الرد بالنص أو بالصوت أو بالصورة أو بالفيديو.</p>
+        <button class="btn" onclick="loadForum()"><i class="fa-solid fa-rotate"></i> تحديث المنشورات</button>
+        <div id="forumList" aria-live="polite"></div>
       </div>
-
     </section>
 
   </main>
@@ -1083,6 +1088,7 @@ function showSection(id,button){
   button.classList.add("active");
 
   el("pageTitle").textContent=button.textContent.trim();
+  if(id==="forum")loadForum();
 }
 
 /* ===========================
@@ -2269,66 +2275,184 @@ async function editStudent(id){
    المنتدى
 =========================== */
 
+let forumPosts=[];
+let forumReplies=[];
+let activeRecorder=null;
+let recordedAudio=new Map();
+const forumMediaBucket="lectures";
+
+function forumDate(v){try{return new Date(v).toLocaleString("ar-EG")}catch{return ""}}
+function forumSafeUrl(v){try{const u=new URL(v);return u.protocol==="https:"?u.href:""}catch{return ""}}
+function forumMediaUrl(v){
+  if(!v)return "";
+  if(/^https:\/\//i.test(v))return forumSafeUrl(v);
+  return db.storage.from(forumMediaBucket).getPublicUrl(v).data.publicUrl;
+}
+function forumMediaView(r){
+  const kind=r.media_type||((r.audio_url)?"audio":"text");
+  const src=forumMediaUrl(r.media_url||r.audio_url);
+  if(!src)return "";
+  const safe=escapeHTML(src);
+  if(kind==="image")return `<img loading="lazy" src="${safe}" alt="صورة الرد">`;
+  if(kind==="audio")return `<audio controls preload="none" src="${safe}"></audio>`;
+  if(kind==="video"){
+    if(/\.(mp4|webm|ogg)(\?|$)/i.test(src))return `<video controls preload="metadata" src="${safe}"></video>`;
+    return `<a class="btn blue" href="${safe}" target="_blank" rel="noopener noreferrer">مشاهدة الفيديو</a>`;
+  }
+  return "";
+}
 async function loadForum(){
   try{
-    const {data,error}=await db
-      .from("forum")
-      .select("*")
-      .order("created_at",{ascending:false})
-      .limit(100);
-
+    el("forumList").innerHTML=empty("جارٍ تحميل المنشورات والردود...");
+    const {data,error}=await db.from("forum").select("*").order("created_at",{ascending:false}).limit(100);
     if(error)throw error;
-
-    const posts=data||[];
-
-    el("forumList").innerHTML=posts.length
-      ?posts.map(p=>`
-        <div class="list-item">
-
-          <p>${escapeHTML(p.content||"")}</p>
-
-          <p class="muted">
-            ${escapeHTML(p.created_at||"")}
-          </p>
-
-          <button class="btn red"
-            onclick="deleteForumPost('${p.id}')">
-            حذف المنشور
-          </button>
-
-        </div>
-      `).join("")
-      :empty("لا توجد منشورات");
-
-  }catch(error){
-    el("forumList").innerHTML=listError(error);
-  }
+    forumPosts=data||[];
+    const ids=forumPosts.map(p=>p.id);
+    forumReplies=[];
+    if(ids.length){
+      const result=await db.from("forum_replies").select("*").in("post_id",ids).order("created_at",{ascending:true});
+      if(result.error)throw result.error;
+      forumReplies=result.data||[];
+    }
+    renderForum();
+  }catch(error){el("forumList").innerHTML=listError(error);handleError(error)}
 }
-
+function renderForum(){
+  el("forumList").innerHTML=forumPosts.length?forumPosts.map(p=>{
+    const replies=forumReplies.filter(r=>String(r.post_id)===String(p.id));
+    return `<article class="forum-post">
+      <strong><i class="fa-regular fa-user"></i> ${escapeHTML(p.author_name||"طالب")}</strong>
+      <p style="white-space:pre-wrap;overflow-wrap:anywhere">${escapeHTML(p.content||"")}</p>
+      ${p.image_url?`<img style="max-width:100%;max-height:300px;border-radius:10px" src="${escapeHTML(forumMediaUrl(p.image_url))}" alt="صورة المنشور">`:""}
+      <p class="muted">${escapeHTML(forumDate(p.created_at))}</p>
+      <div class="forum-replies"><strong>الردود (${replies.length})</strong>
+        ${replies.length?replies.map(r=>`<div class="forum-reply">
+          <b>${r.user_id===currentUser?.id?"رد الإدارة":"رد الطالب"}</b>
+          <span class="muted"> — ${escapeHTML(forumDate(r.created_at))}</span>
+          ${r.content?`<p style="white-space:pre-wrap">${escapeHTML(r.content)}</p>`:""}
+          ${forumMediaView(r)}
+          ${r.user_id===currentUser?.id?`<button class="btn red" onclick="deleteForumReply('${r.id}')">حذف ردي</button>`:""}
+        </div>`).join(""):empty("لا توجد ردود بعد")}
+      </div>
+      <div class="forum-compose" id="compose-${p.id}">
+        <h3>الرد على الطالب</h3>
+        <label>نص الرد (اختياري مع الوسائط)<textarea id="forum-text-${p.id}" placeholder="اكتب ردك هنا..."></textarea></label>
+        <div class="grid">
+          <label>نوع الرد<select id="forum-type-${p.id}" onchange="forumTypeChanged('${p.id}')">
+            <option value="text">نص فقط</option><option value="audio">صوت</option><option value="image">صورة</option><option value="video">فيديو</option>
+          </select></label>
+          <label id="forum-file-label-${p.id}" class="hidden">رفع ملف<input type="file" id="forum-file-${p.id}" accept="audio/*"></label>
+        </div>
+        <label id="forum-link-label-${p.id}" class="hidden">أو رابط فيديو مباشر (HTTPS)<input id="forum-link-${p.id}" type="url" placeholder="https://..."></label>
+        <div class="actions hidden" id="forum-record-actions-${p.id}">
+          <button class="btn blue" id="forum-record-${p.id}" onclick="startForumRecording('${p.id}')" type="button"><i class="fa-solid fa-microphone"></i> بدء التسجيل</button>
+          <button class="btn gray" id="forum-stop-${p.id}" onclick="stopForumRecording('${p.id}')" type="button" disabled>إيقاف التسجيل</button>
+        </div>
+        <div id="forum-record-status-${p.id}" class="record-status"></div>
+        <div class="actions">
+          <button class="btn" id="forum-send-${p.id}" onclick="sendForumReply('${p.id}')"><i class="fa-solid fa-paper-plane"></i> إرسال الرد</button>
+          <button class="btn red" onclick="deleteForumPost('${p.id}')">حذف المنشور</button>
+        </div>
+      </div>
+    </article>`;
+  }).join(""):empty("لا توجد منشورات");
+}
+function forumTypeChanged(id){
+  const type=value("forum-type-"+id);
+  el("forum-file-label-"+id).classList.toggle("hidden",type==="text");
+  el("forum-link-label-"+id).classList.toggle("hidden",type!=="video");
+  el("forum-record-actions-"+id).classList.toggle("hidden",type!=="audio");
+  el("forum-file-"+id).accept=type==="audio"?"audio/*":type==="image"?"image/*":"video/*";
+  recordedAudio.delete(String(id));
+  el("forum-record-status-"+id).textContent="";
+}
+async function startForumRecording(id){
+  try{
+    if(activeRecorder)throw Error("أوقف التسجيل الحالي أولًا");
+    if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder)throw Error("التسجيل غير مدعوم في المتصفح");
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    const mime=["audio/webm;codecs=opus","audio/webm","audio/mp4"].find(x=>MediaRecorder.isTypeSupported(x))||"";
+    const recorder=new MediaRecorder(stream,mime?{mimeType:mime}:undefined);
+    const chunks=[];
+    activeRecorder={id,recorder,stream};
+    recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+    recorder.onstop=()=>{
+      const type=recorder.mimeType||"audio/webm";
+      const ext=type.includes("mp4")?"m4a":"webm";
+      recordedAudio.set(String(id),new File(chunks,"reply."+ext,{type}));
+      stream.getTracks().forEach(t=>t.stop());
+      activeRecorder=null;
+      const status=el("forum-record-status-"+id);
+      if(status)status.textContent="التسجيل جاهز للإرسال.";
+      const stop=el("forum-stop-"+id);if(stop)stop.disabled=true;
+      const start=el("forum-record-"+id);if(start)start.disabled=false;
+    };
+    recorder.start();
+    el("forum-record-"+id).disabled=true;
+    el("forum-stop-"+id).disabled=false;
+    el("forum-record-status-"+id).textContent="جارٍ التسجيل...";
+  }catch(error){handleError(error)}
+}
+function stopForumRecording(id){
+  if(activeRecorder?.id===id&&activeRecorder.recorder.state==="recording")activeRecorder.recorder.stop();
+}
+async function sendForumReply(id){
+  const button=el("forum-send-"+id);
+  if(!button)return;
+  button.disabled=true;
+  let uploaded="";
+  try{
+    if(activeRecorder?.id===id)throw Error("أوقف التسجيل أولًا");
+    const content=value("forum-text-"+id);
+    const type=value("forum-type-"+id);
+    const file=el("forum-file-"+id).files[0]||(type==="audio"?recordedAudio.get(String(id)):null);
+    const link=type==="video"?value("forum-link-"+id):"";
+    if(!content&&!file&&!link)throw Error("اكتب ردًا أو اختر ملفًا");
+    if(file){
+      const allowed={audio:["audio/"],image:["image/"],video:["video/"]};
+      if(!allowed[type]?.some(prefix=>file.type.startsWith(prefix)))throw Error("نوع الملف غير مناسب للرد");
+      const max={audio:25,image:10,video:100}[type]*1024*1024;
+      if(file.size>max)throw Error("حجم الملف كبير. استخدم رابط فيديو أو ملفًا أصغر");
+      const ext=(file.name.split(".").pop()||"bin").replace(/[^a-zA-Z0-9]/g,"").toLowerCase();
+      uploaded="forum-replies/"+currentUser.id+"/"+crypto.randomUUID()+"."+ext;
+      const {error}=await db.storage.from(forumMediaBucket).upload(uploaded,file,{contentType:file.type,upsert:false});
+      if(error)throw error;
+    }
+    if(link&&!forumSafeUrl(link))throw Error("أدخل رابط HTTPS صحيحًا");
+    const payload={post_id:Number(id),user_id:currentUser.id,content:content||" ",reply_type:type,
+      audio_url:type==="audio"?uploaded||null:null,
+      media_type:type,media_url:uploaded||link||null};
+    const {error}=await db.from("forum_replies").insert(payload);
+    if(error)throw error;
+    recordedAudio.delete(String(id));
+    notify("تم إرسال الرد بنجاح");
+    await loadForum();
+  }catch(error){
+    if(uploaded)await db.storage.from(forumMediaBucket).remove([uploaded]);
+    handleError(error);
+  }finally{if(button.isConnected)button.disabled=false}
+}
+async function deleteForumReply(id){
+  if(!confirmDelete())return;
+  try{
+    const reply=forumReplies.find(r=>String(r.id)===String(id));
+    if(!reply||reply.user_id!==currentUser?.id)throw Error("لا يمكنك حذف رد لا يخص حسابك");
+    const {error}=await db.from("forum_replies").delete().eq("id",id).eq("user_id",currentUser.id);
+    if(error)throw error;
+    const path=reply.media_url||reply.audio_url;
+    if(path&&!/^https:\/\//i.test(path))await db.storage.from(forumMediaBucket).remove([path]);
+    notify("تم حذف الرد");await loadForum();
+  }catch(error){handleError(error)}
+}
 async function deleteForumPost(id){
   if(!confirmDelete())return;
-
   try{
-    const {error:repliesError}=await db
-      .from("forum_replies")
-      .delete()
-      .eq("post_id",id);
-
+    const {error:repliesError}=await db.from("forum_replies").delete().eq("post_id",id);
     if(repliesError)throw repliesError;
-
-    const {error}=await db
-      .from("forum")
-      .delete()
-      .eq("id",id);
-
+    const {error}=await db.from("forum").delete().eq("id",id);
     if(error)throw error;
-
-    await loadForum();
-    notify("تم حذف المنشور");
-
-  }catch(error){
-    handleError(error);
-  }
+    await loadForum();notify("تم حذف المنشور");
+  }catch(error){handleError(error)}
 }
 
 /* ===========================
