@@ -520,40 +520,6 @@ a{
  border-color:#a6dec2;
  color:#087a57
 }
-.quality-wrap{
- position:relative
-}
-.quality-menu{
- display:none;
- position:absolute;
- top:calc(100% + 6px);
- right:0;
- z-index:30;
- min-width:150px;
- background:white;
- border:1px solid var(--border);
- border-radius:10px;
- padding:6px;
- box-shadow:0 8px 25px #102b451c
-}
-.quality-menu.open{
- display:block
-}
-.quality-option{
- width:100%;
- padding:9px;
- border:0;
- background:white;
- text-align:right;
- border-radius:7px;
- color:var(--text)
-}
-.quality-option.active,
-.quality-option:hover{
- background:#e7f6ef;
- color:var(--green)
-}
-
 /* محتويات المحاضرة */
 .details-title{
  font-size:14px;
@@ -722,6 +688,23 @@ a{
   grid-template-columns:1fr
  }
 }
+
+/* قائمة الجودة داخل المشغل */
+.player-quality{position:relative;display:flex;align-items:center;direction:rtl}
+.player-quality-button{width:34px;height:34px;border:1px solid #ffffff28;border-radius:9px;background:#ffffff14;color:white;font-size:17px;display:grid;place-items:center;transition:.2s}
+.player-quality-button:hover,.player-quality-button[aria-expanded="true"]{background:#008866;border-color:#2ed9a4}
+.player-quality-menu{display:none;position:absolute;bottom:calc(100% + 15px);right:0;width:205px;max-width:calc(100vw - 40px);padding:9px;background:rgba(9,25,40,.97);color:white;border:1px solid #ffffff25;border-radius:15px;box-shadow:0 15px 35px #0008;backdrop-filter:blur(12px);z-index:50;text-align:right;direction:rtl}
+.player-quality-menu.open{display:block;animation:qualityPop .18s ease-out}
+@keyframes qualityPop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.player-quality-heading{padding:7px 8px 11px;border-bottom:1px solid #ffffff24;font-size:12px;font-weight:900;color:#e6f6f0;display:flex;gap:9px;align-items:center}
+.player-quality-heading i{color:#34e6ae}
+.player-quality-item{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px;border:0;border-radius:9px;background:transparent;color:#e0eaf0;font-size:12px;font-weight:700;text-align:right;cursor:pointer}
+.player-quality-item:hover,.player-quality-item.active{background:#00886645;color:#42f1bc}
+.player-quality-item:disabled{opacity:.55;cursor:wait}
+.player-quality-badge{font-size:9px;color:#a9e8d0;border:1px solid #ffffff35;border-radius:5px;padding:1px 5px}
+.player-controls.quality-open{opacity:1!important;visibility:visible!important;transform:translateY(0)!important;pointer-events:auto!important}
+@media(max-width:768px){.player-quality-button{width:29px;height:29px;font-size:15px}.player-quality-menu{width:185px;right:-42px}}
+
 </style>
 </head>
 
@@ -1657,71 +1640,6 @@ async function buildPlayer(index){
  video.src=url;
  video.load();
 
- /* الجودة */
- if(qualities.length>1 && wrap && menu && qualityButton){
-  wrap.style.display="inline-block";
-
-  menu.innerHTML=qualities.map((quality,i)=>`
-   <button type="button"
-    class="quality-option ${i===0?"active":""}"
-    data-quality="${i}">
-    ${escapeHtml(quality.label)}
-   </button>
-  `).join("");
-
-  qualityButton.textContent="⚙ الجودة: "+qualities[0].label;
-
-  qualityButton.onclick=event=>{
-   event.stopPropagation();
-   menu.classList.toggle("open");
-  };
-
-  menu.querySelectorAll(".quality-option").forEach(option=>{
-   option.addEventListener("click",async()=>{
-    const i=Number(option.dataset.quality);
-    const quality=qualities[i];
-    if(!quality)return;
-
-    const nextUrl=await resolveMedia(quality.src,"lectures");
-    if(!nextUrl){
-     alert("تعذر تحميل الجودة المحددة.");
-     return;
-    }
-
-    const oldTime=video.currentTime;
-    const wasPlaying=!video.paused;
-
-    video.src=nextUrl;
-    video.load();
-
-    video.addEventListener("loadedmetadata",function restore(){
-     video.removeEventListener("loadedmetadata",restore);
-
-     try{
-      video.currentTime=Math.min(
-       oldTime,
-       Number.isFinite(video.duration)
-        ?video.duration
-        :oldTime
-      );
-     }catch{}
-
-     if(wasPlaying){
-      video.play().catch(()=>{});
-     }
-    });
-
-    menu.querySelectorAll(".quality-option").forEach(btn=>{
-     btn.classList.remove("active");
-    });
-
-    option.classList.add("active");
-    qualityButton.textContent="⚙ الجودة: "+quality.label;
-    menu.classList.remove("open");
-   });
-  });
- }
-
  players.set(index,{
   video,
   destroy(){
@@ -1996,20 +1914,6 @@ function renderLectures(){
 
     <div class="video-actions">
 
-     <div class="quality-wrap"
-      id="quality-wrap-${index}"
-      style="display:none">
-
-      <button type="button"
-       class="secondary-btn"
-       id="quality-btn-${index}">
-       ⚙ جودة الفيديو
-      </button>
-
-      <div class="quality-menu"
-       id="quality-menu-${index}"></div>
-     </div>
-
      <button type="button"
       class="primary-btn action-btn"
       id="save-${index}"
@@ -2195,14 +2099,6 @@ async function init(){
    '<div class="empty">حدث خطأ أثناء فتح الصفحة.</div>';
  }
 }
-
-document.addEventListener("click",event=>{
- if(!event.target.closest(".quality-wrap")){
-  document.querySelectorAll(".quality-menu").forEach(menu=>{
-   menu.classList.remove("open");
-  });
- }
-});
 
 init();
 </script>
