@@ -1105,18 +1105,26 @@ function getQualities(lecture){
  return list.sort((a,b)=>b.height-a.height);
 }
 
-/* بيانات الطالب */
+/* رقم هاتف الطالب للعلامة المائية فوق الفيديو */
 async function loadViewer(user){
- viewerLabel=user.email?.split("@")[0]||"طالب أرض الأحياء";
+ viewerLabel="رقم الهاتف غير مسجل";
 
  try{
-  const {data}=await supabaseClient.from("profiles")
-   .select("full_name")
+  const {data,error}=await supabaseClient.from("profiles")
+   .select("phone")
    .eq("id",user.id)
    .maybeSingle();
 
-  if(data?.full_name)viewerLabel=data.full_name;
- }catch{}
+  if(error){
+   console.warn("تعذر قراءة هاتف الطالب:",error);
+   return;
+  }
+
+  const phone=String(data?.phone??"").trim();
+  if(phone)viewerLabel=phone;
+ }catch(error){
+  console.warn("تعذر قراءة هاتف الطالب:",error);
+ }
 }
 
 /* تقدم الطالب */
