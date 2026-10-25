@@ -374,6 +374,15 @@ textarea{
 
 }
 
+
+.student-table{width:100%;border-collapse:collapse;min-width:680px}
+.student-table th,.student-table td{padding:12px;text-align:right;border-bottom:1px solid var(--border);font-size:13px}
+.student-table th{background:#f1f5f9}
+.table-scroll{overflow-x:auto}
+.student-table button{padding:8px 12px}
+.student-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:end}
+.student-controls>*{flex:1;min-width:170px}
+.preview-image{max-width:320px;max-height:230px;object-fit:contain;border-radius:12px;display:block;margin:12px 0}
 </style>
 </head>
 
@@ -395,7 +404,7 @@ textarea{
 
     <nav class="nav">
 
-      <a href="../A7xQ9mK2pR8vT4nY6zB3/">
+      <a class="nav-link" href="../A7xQ9mK2pR8vT4nY6zB3/">
   <i class="fa-solid fa-gauge-high"></i>
   لوحة التحكم
       </a>
@@ -538,6 +547,25 @@ textarea{
 
     </div>
 
+    <!-- الطلاب والمنح اليدوية -->
+    <div class="card">
+      <div class="topbar"><h2><i class="fa-solid fa-users"></i> جميع الطلاب وتفعيل الاشتراكات</h2>
+      <button class="btn blue" onclick="loadSubscriptionStudents()"><i class="fa-solid fa-rotate"></i> تحديث الطلاب</button></div>
+      <p class="muted">يمكنك منح اشتراك مجاني لطالب مسجل. يتم تسجيل المنحة في قاعدة البيانات، ولا تُعتبر عملية دفع.</p>
+      <label>البحث بالاسم أو الهاتف أو البريد<input id="subscriptionStudentSearch" placeholder="ابحث عن طالب" oninput="renderSubscriptionStudents()"></label>
+      <div id="subscriptionStudentsList">جارٍ تحميل الطلاب...</div>
+    </div>
+
+    <!-- صورة تعليمات الدفع -->
+    <div class="card">
+      <h2><i class="fa-solid fa-image"></i> صورة تعليمات الدفع</h2>
+      <p class="muted">اختر صورة JPG أو PNG أو WebP (بحد أقصى 3 ميجابايت). تُرفع داخل مجلد payment-images في مخزن lectures الموجود.</p>
+      <input type="file" id="paymentImageFile" accept="image/png,image/jpeg,image/webp">
+      <div class="actions"><button class="btn" id="uploadPaymentImageBtn" onclick="uploadPaymentImage()"><i class="fa-solid fa-upload"></i> رفع الصورة</button></div>
+      <div id="paymentImageResult"></div>
+      <p class="muted">بعد الرفع انسخ الرابط وضعه في صفحة دفع الطالب. ظهور الصورة يتطلب أن يكون مسار التخزين متاحًا للقراءة؛ لا تجعل مستندات الطلاب الخاصة عامة.</p>
+    </div>
+
     <!-- طلبات الاشتراك -->
 
     <div class="card">
@@ -594,6 +622,8 @@ const db = window.supabase.createClient(
 let currentUser = null;
 let requests = [];
 let months = [];
+let subscriptionStudents = [];
+let studentGrants = [];
 
 /* =============================
    أدوات مساعدة
@@ -669,7 +699,7 @@ async function init(){
 
     if(!data?.user){
 
-      location.href="index.html";
+      location.href="../A7xQ9mK2pR8vT4nY6zB3/";
       return;
 
     }
@@ -700,7 +730,8 @@ async function init(){
       loadPrices(),
       loadPaymentSettings(),
       loadMonths(),
-      loadRequests()
+      loadRequests(),
+      loadSubscriptionStudents()
     ]);
 
   }catch(error){
@@ -716,7 +747,7 @@ async function logout(){
 
   await db.auth.signOut();
 
-  location.href="index.html";
+  location.href="../A7xQ9mK2pR8vT4nY6zB3/";
 
 }
 
