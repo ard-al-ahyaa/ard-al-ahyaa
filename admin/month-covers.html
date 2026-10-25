@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>إدارة صور الشهور | أرض الأحياء</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Cairo, sans-serif;
+    background: #f4f7fb;
+    color: #142f50;
+}
+
+.wrap {
+    max-width: 1100px;
+    margin: 35px auto;
+    padding: 15px;
+}
+
+header {
+    background: linear-gradient(120deg, #004e4d, #07375b);
+    color: white;
+    padding: 25px;
+    border-radius: 18px;
+}
+
+h1 {
+    margin: 0;
+}
+
+p {
+    font-size: 13px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 18px;
+    margin-top: 22px;
+}
+
+.card {
+    background: white;
+    border: 1px solid #e2eaf3;
+    border-radius: 16px;
+    padding: 15px;
+    box-shadow: 0 4px 18px #07375b09;
+}
+
+.card img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.placeholder {
+    aspect-ratio: 16/9;
+    background: linear-gradient(120deg, #008866, #07375b);
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    color: white;
+    font-size: 36px;
+}
+
+input {
+    width: 100%;
+    margin: 12px 0;
+    border: 1px solid #ddd;
+    border-radius: 9px;
+    padding: 9px;
+}
+
+button {
+    border: 0;
+    background: #008866;
+    color: white;
+    border-radius: 9px;
+    padding: 11px 15px;
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: .5;
+}
+
+.message {
+    margin-top: 12px;
+    color: #0a705a;
+}
+
+a {
+    color: #008866;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<header>
+    <h1>
+        <i class="fa-solid fa-images"></i>
+        صور شهور المحاضرات
+    </h1>
+
+    <p>
+        اختار صورة لكل شهر واضغط حفظ.
+        هذه الصفحة مخصصة للإدارة فقط.
+    </p>
+</header>
+
+<p id="status">
+    جارٍ التحقق من صلاحية الإدارة...
+</p>
+
+<div class="grid" id="grid"></div>
+
+</div>
+
+<script>
+const client = window.supabase.createClient(
+    "https://fpfbmjtpzamzlyzitmsd.supabase.co",
+    "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d"
+);
+
+const $ = id => document.getElementById(id);
+
+const esc = s => String(s ?? "").replace(
+    /[&<>"']/g,
+    c => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    }[c])
+);
+
+let user = null;
+
+async function init() {
+
+    const { data } = await client.auth.getUser();
+
+    user = data?.user;
+
+    if (!user) {
+        $("status").textContent =
+            "يجب تسجيل الدخول بحساب الإدارة.";
+        return;
+    }
+
+    const {
+        data: profile,
+        error
+    } = await client
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .maybeSingle();
+
+    if (
+        error ||
+        !["admin", "owner", "super_admin"].includes(profile?.role)
+    ) {
+        $("status").textContent =
+            "هذا الحساب ليس لديه صلاحية الإدارة.";
+        return;
+    }
+
+    const {
+        data: months,
+        error: err
+    } = await client
+        .from("lecture_months")
+        .select("*")
+        .order("sort_order", { ascending: true });
+
+    if (err) {
+        $("status").textContent = err.message;
+        return;
+    }
+
+    $("status").textContent =
+        "اختار صورة بصيغة JPG أو PNG أو WebP (حتى 3 ميجابايت).";
+
+    $("grid").innerHTML = (months || []).map(m => `
+        <div class="card">
+
+            <div id="cover-${esc(m.id)}">
+                ${
+                    m.cover_url
+                        ? `<img src="${esc(m.cover_url)}" alt="صورة الشهر">`
+                        : `<div class="placeholder">
+                            <i class="fa-solid fa-calendar"></i>
+                           </div>`
+                }
+            </div>
+
+            <h3>${esc(m.title || "شهر دراسي")}</h3>
+
+            <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                id="file-${esc(m.id)}"
+            >
+
+            <button data-save="${esc(m.id)}">
+                رفع الصورة وحفظها
+            </button>
+
+            <p
+                class="message"
+                id="msg-${esc(m.id)}"
+            ></p>
+
+        </div>
+    `).join("");
+
+    document.querySelectorAll("[data-save]").forEach(btn => {
+        btn.addEventListener("click", () => {
+            saveCover(btn.dataset.save, btn);
+        });
+    });
+}
+
+async function saveCover(id, btn) {
+
+    const file = $("file-" + id).files[0];
+
+    if (!file) {
+        alert("اختر صورة أولًا");
+        return;
+    }
+
+    const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+    ];
+
+    if (
+        !allowedTypes.includes(file.type) ||
+        file.size > 3 * 1024 * 1024
+    ) {
+        alert(
+            "الصورة يجب أن تكون JPG أو PNG أو WebP وبحجم لا يزيد عن 3 ميجابايت"
+        );
+        return;
+    }
+
+    btn.disabled = true;
+
+    $("msg-" + id).textContent =
+        "جارٍ رفع الصورة...";
+
+    const ext = ({
+        "image/jpeg": "jpg",
+        "image/png": "png",
+        "image/webp": "webp"
+    })[file.type];
+
+    const path =
+        `months/${id}/${crypto.randomUUID()}.${ext}`;
+
+    const { error: upErr } = await client.storage
+        .from("month-covers")
+        .upload(path, file, {
+            contentType: file.type,
+            upsert: false
+        });
+
+    if (upErr) {
+        $("msg-" + id).textContent = upErr.message;
+        btn.disabled = false;
+        return;
+    }
+
+    const { data: link } = client.storage
+        .from("month-covers")
+        .getPublicUrl(path);
+
+    const { error } = await client
+        .from("lecture_months")
+        .update({
+            cover_url: link.publicUrl
+        })
+        .eq("id", id);
+
+    if (error) {
+        $("msg-" + id).textContent = error.message;
+        btn.disabled = false;
+        return;
+    }
+
+    $("cover-" + id).innerHTML = `
+        <img
+            src="${esc(link.publicUrl)}"
+            alt="صورة الشهر"
+        >
+    `;
+
+    $("msg-" + id).textContent =
+        "تم حفظ صورة الشهر بنجاح.";
+
+    btn.disabled = false;
+}
+
+init();
+</script>
+
+</body>
+</html>
