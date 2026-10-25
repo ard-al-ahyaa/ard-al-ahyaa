@@ -1174,7 +1174,7 @@ function getQualities(lecture){
   }
  }
 
- const original=lecture.video_url||lecture.videoUrl||lecture.url;
+ const original=lecture.video_url||lecture.video_path||lecture.videoUrl||lecture.url;
  if(typeof original==="string"&&original.trim()&&
     !list.some(q=>q.src===original.trim())){
   list.push({label:"الجودة الأصلية",height:0,src:original.trim()});
@@ -1286,26 +1286,29 @@ async function buildPlayer(index){
   return;
  }
 
- const first=qualities[0];
- const embed=getEmbed(first.src);
-
- if(embed){
-  box.innerHTML=`
-   <iframe src="${escapeHtml(embed)}"
-    title="فيديو المحاضرة"
-    allow="autoplay;fullscreen;picture-in-picture;encrypted-media"
-    allowfullscreen></iframe>
-   <div class="watermark">${escapeHtml(viewerLabel)}</div>
-  `;
-  return;
+ // جرّب رابط الفيديو الأصلي أولًا، ثم روابط الجودات البديلة.
+ // اختيار أعلى جودة مباشرة قد يفشل على بعض الهواتف.
+ const preferred=[...qualities].sort((a,b)=>{
+  const original=String(lecture.video_url||lecture.video_path||lecture.videoUrl||lecture.url||"").trim();
+  return Number(b.src===original)-Number(a.src===original);
+ });
+ let currentSourceIndex=0;
+ let initialUrl="";
+ for(let i=0;i<preferred.length;i++){
+  const candidate=preferred[i];
+  const embed=getEmbed(candidate.src);
+  if(embed){
+   box.innerHTML=`<iframe src="${escapeHtml(embed)}" title="فيديو المحاضرة"
+    allow="autoplay;fullscreen;picture-in-picture;encrypted-media" allowfullscreen></iframe>
+    <div class="watermark">${escapeHtml(viewerLabel)}</div>`;
+   return;
+  }
+  initialUrl=await resolveMedia(candidate.src);
+  if(initialUrl){currentSourceIndex=i;break}
  }
-
- const initialUrl=await resolveMedia(first.src);
-
  if(!box.isConnected)return;
-
  if(!initialUrl){
-  box.innerHTML='<div class="player-loading">تعذر تحميل الفيديو. تحقق من الرابط.</div>';
+  box.innerHTML='<div class="player-loading">تعذر الوصول إلى روابط الفيديو. تحقق من صلاحيات الملف أو رابط الاستضافة.</div>';
   return;
  }
 
@@ -1407,7 +1410,8 @@ async function buildPlayer(index){
 
  let destroyed=false;
  let hideTimer=null;
- let currentQuality=0;
+ let currentQuality=Math.max(0,qualities.findIndex(q=>q.src===preferred[currentSourceIndex].src));
+ let tryingFallback=false;
  let changing=false;
  let restore=null;
 
@@ -1487,6 +1491,7 @@ async function buildPlayer(index){
      };
 
      currentQuality=i;
+     currentSourceIndex=preferred.findIndex(q=>q.src===quality.src);
      video.src=url;
      video.load();
      closeQuality();
@@ -1630,9 +1635,43 @@ async function buildPlayer(index){
   if(!row.completed)updateProgress(index,"completed");
  });
 
- video.addEventListener("error",()=>{
+ video.addEventListener("error",async()=>{
+  if(destroyed||tryingFallback)return;
+  tryingFallback=true;
+  const code=video.error?.code;
+  console.warn("فشل مصدر الفيديو",{lecture:lecture.id,quality:preferred[currentSourceIndex]?.label,mediaError:code});
   loading.classList.remove("hidden");
-  loading.textContent="تعذر تشغيل الفيديو. تحقق من الرابط.";
+  loading.textContent="جارٍ تجربة مصدر فيديو آخر...";
+  let recovered=false;
+  for(let i=currentSourceIndex+1;i<preferred.length;i++){
+   if(destroyed)break;
+   const source=preferred[i];
+   const embed=getEmbed(source.src);
+   if(embed){
+    video.pause();
+    box.innerHTML=`<iframe src="${escapeHtml(embed)}" title="فيديو المحاضرة" allow="autoplay;fullscreen;picture-in-picture" allowfullscreen></iframe><div class="watermark">${escapeHtml(viewerLabel)}</div>`;
+    players.delete(index);
+    recovered=true;
+    break;
+   }
+   const url=await resolveMedia(source.src);
+   if(!url)continue;
+   currentSourceIndex=i;
+   currentQuality=Math.max(0,qualities.findIndex(q=>q.src===source.src));
+   video.src=url;
+   video.load();
+   renderQualities();
+   recovered=true;
+   break;
+  }
+  tryingFallback=false;
+  if(!recovered&&!destroyed){
+   const reason=code===4?"صيغة الفيديو غير مدعومة أو الرابط لا يقدم ملف فيديو مباشر":
+    code===3?"تعذر فك ترميز الفيديو على هذا الجهاز":
+    code===2?"تعذر تحميل الفيديو من خادم الاستضافة":"تعذر تشغيل الفيديو";
+   loading.textContent=reason+". تأكد من الرابط وصلاحيات المشاهدة.";
+   console.error("فشلت كل مصادر الفيديو للمحاضرة",lecture.id);
+  }
  });
 
  video.addEventListener("contextmenu",e=>e.preventDefault());
