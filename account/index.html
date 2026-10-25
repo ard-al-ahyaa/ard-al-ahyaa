@@ -1033,6 +1033,33 @@ body.sidebar-collapsed .sidebar-toggle i {
     display: none;
   }
 }
+
+/* لوحة الحساب الجديدة: بطاقات ناعمة وهوية أرض الأحياء */
+body{background:#f5f8fc}
+.page{max-width:1440px}
+.welcome-banner{background:linear-gradient(115deg,#004e4d 0%,#086b69 52%,#07375b 100%);border:0;box-shadow:0 15px 38px rgba(4,70,81,.15);border-radius:24px;min-height:205px;color:#fff}
+.welcome-banner h1{color:#fff}.welcome-banner p{color:#d9f5ed}.welcome-tag{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.2)}
+.welcome-banner::after{color:rgba(255,255,255,.055)}.banner-icon{background:rgba(255,255,255,.12);color:#d7fff1}
+.card,.stat-card{border-color:#e5edf4;box-shadow:0 8px 28px rgba(10,52,83,.045);border-radius:20px}
+.card-heading h2{color:#0b3450}.stat-card{transition:transform .2s,box-shadow .2s}.stat-card:hover{transform:translateY(-3px);box-shadow:0 12px 25px rgba(10,52,83,.09)}
+.account-welcome-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;position:relative;z-index:2}
+.account-hero-btn{display:inline-flex;align-items:center;gap:9px;padding:10px 17px;border-radius:12px;background:#fff;color:#075e58;font-weight:900;font-size:12px}
+.account-hero-btn.ghost{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25)}
+.subscription-panel{background:#fff;border:1px solid #e3edf4;border-radius:21px;padding:23px;margin:18px 0;box-shadow:0 8px 28px rgba(10,52,83,.045)}
+.subscription-panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.subscription-panel-head h2{font-size:19px;color:#0b3450}.subscription-panel-head p{font-size:12px;color:#71849b;margin-top:3px}
+.subscription-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.subscription-tile{border:1px solid #e2edf0;background:linear-gradient(125deg,#f3fbf7,#fff);border-radius:15px;padding:17px;min-width:0}
+.subscription-tile .tile-icon{width:42px;height:42px;border-radius:13px;background:#dcf3e9;color:#07835d;display:grid;place-items:center;font-size:19px;margin-bottom:12px}
+.subscription-tile strong{display:block;font-size:15px;color:#113a50}.subscription-tile p{font-size:12px;color:#687f92;line-height:1.9;margin:7px 0}
+.subscription-tile .tile-state{font-size:12px;font-weight:800;color:#087c5e;overflow-wrap:anywhere}
+.subscription-tile .tile-state.muted{color:#71849b}
+.subscription-tile .tile-state.warn{color:#a96d11}
+.subscription-panel .btn{white-space:nowrap}
+.profile-head{background:#f8fbfe;padding:15px;border-radius:16px;border:1px solid #eaf0f6}
+.info-item{transition:background .2s}.info-item:hover{background:#f8fbfe}
+@media(max-width:760px){.welcome-banner{min-height:200px}.account-welcome-actions{margin-top:16px}.subscription-grid{grid-template-columns:1fr}.subscription-panel{padding:17px}.subscription-panel-head h2{font-size:17px}}
+
 </style>
 </head>
 
@@ -1174,12 +1201,25 @@ body.sidebar-collapsed .sidebar-toggle i {
     <section class="welcome-banner">
       <div class="welcome-content">
         <span class="welcome-tag">مرحبًا بك في</span>
-        <h1>حسابك في أرض الأحياء</h1>
-        <p>تابع بياناتك التعليمية، ونظّم رحلتك نحو التفوق.</p>
+        <h1>مساحتك التعليمية، على طريقتك</h1>
+        <p>كل اللي يخص حسابك، اشتراكاتك، ومحاضراتك في مكان واحد.</p>
+        <div class="account-welcome-actions"><a class="account-hero-btn" href="../subscriptions/index.html"><i class="fa-solid fa-crown"></i> إدارة الاشتراكات</a><a class="account-hero-btn ghost" href="../videos/index.html"><i class="fa-regular fa-circle-play"></i> متابعة التعلم</a></div>
       </div>
 
       <div class="banner-icon">
         <i class="fa-solid fa-leaf"></i>
+      </div>
+    </section>
+
+
+    <section class="subscription-panel" aria-labelledby="subscriptionsTitle">
+      <div class="subscription-panel-head">
+        <div><h2 id="subscriptionsTitle"><i class="fa-solid fa-crown" style="color:#09916e"></i> اشتراكاتي</h2><p>حالة الاشتراكات وطلبات التفعيل الخاصة بحسابك.</p></div>
+        <a class="btn btn-primary" href="../subscriptions/index.html"><i class="fa-solid fa-arrow-up-right-from-square"></i> ترقية الاشتراك</a>
+      </div>
+      <div class="subscription-grid">
+        <div class="subscription-tile"><div class="tile-icon"><i class="fa-solid fa-shield-check"></i></div><strong>الاشتراكات المفعّلة</strong><p>الباقات المتاحة لك حاليًا.</p><div class="tile-state muted" id="accountActiveSubscriptions">جارٍ التحقق...</div></div>
+        <div class="subscription-tile"><div class="tile-icon"><i class="fa-regular fa-clock"></i></div><strong>طلبات الاشتراك</strong><p>آخر حالة لطلبات الدفع التي أرسلتها.</p><div class="tile-state muted" id="accountSubscriptionRequests">جارٍ التحقق...</div></div>
       </div>
     </section>
 
@@ -1914,6 +1954,46 @@ async function loadResults() {
   });
 }
 
+
+async function loadAccountSubscriptions() {
+  const active = $("accountActiveSubscriptions");
+  const requests = $("accountSubscriptionRequests");
+  if (!currentUser) return;
+  // لا نعرض حالة نشطة إلا من بيانات قاعدة البيانات؛ ولا نفترض أن طلب الدفع موافقة.
+  const [grantsResult, subsResult, requestsResult] = await Promise.allSettled([
+    supabaseClient.from("student_subscription_grants").select("package_type,expires_at").eq("student_id",currentUser.id),
+    supabaseClient.from("student_subscriptions").select("*").eq("student_id",currentUser.id),
+    supabaseClient.from("subscription_requests").select("status,created_at").eq("student_id",currentUser.id).order("created_at",{ascending:false}).limit(10)
+  ]);
+  const ok = r => r.status === 'fulfilled' && !r.value.error;
+  if (!ok(grantsResult) && !ok(subsResult)) {
+    active.textContent = 'تعذر قراءة الاشتراكات حاليًا';
+    active.className = 'tile-state muted';
+  } else {
+    const now = Date.now();
+    const grants = ok(grantsResult) ? (grantsResult.value.data || []).filter(x => !x.expires_at || new Date(x.expires_at).getTime() > now) : [];
+    // لا نستنتج صلاحية الاشتراك المدفوع من أسماء أعمدة غير مؤكدة.
+    const paid = ok(subsResult) ? (subsResult.value.data || []).filter(x => {
+      if (x.status && !['active','approved'].includes(x.status)) return false;
+      const end = x.expires_at || x.end_date || x.valid_until;
+      return !end || new Date(end).getTime() > now;
+    }) : [];
+    const count = grants.length + paid.length;
+    active.textContent = count ? `${count} اشتراك/منحة ظاهر في حسابك` : 'لا توجد اشتراكات مفعّلة ظاهرة';
+    active.className = count ? 'tile-state' : 'tile-state muted';
+  }
+  if (!ok(requestsResult)) {
+    requests.textContent = 'تعذر قراءة الطلبات حاليًا';
+    requests.className = 'tile-state muted';
+  } else {
+    const rows = requestsResult.value.data || [];
+    const pending = rows.filter(x => x.status === 'pending').length;
+    const approved = rows.filter(x => x.status === 'approved').length;
+    requests.textContent = rows.length ? `${pending} قيد المراجعة • ${approved} تمت الموافقة عليها` : 'لم ترسل أي طلبات بعد';
+    requests.className = pending ? 'tile-state warn' : 'tile-state muted';
+  }
+}
+
 async function loadDashboard() {
   setLoading(true);
 
@@ -1937,7 +2017,8 @@ async function loadDashboard() {
     */
     await Promise.allSettled([
       loadLectureStats(),
-      loadResults()
+      loadResults(),
+      loadAccountSubscriptions()
     ]);
 
   } catch (error) {
