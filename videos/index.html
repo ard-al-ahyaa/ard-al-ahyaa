@@ -772,6 +772,24 @@ button:disabled{opacity:.55;cursor:not-allowed}
  .control-btn{width:26px;min-width:26px}
  .quality-trigger{width:32px!important;height:32px!important;min-width:32px}
 }
+
+/* بطاقة ترقية هادئة أسفل صورة الشهر */
+.month-btn{cursor:pointer}
+.month-upgrade{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px;padding:10px 11px;border:1px solid #d9e9e5;border-radius:11px;background:#f6faf9;text-align:right}
+.month-upgrade .upgrade-text{display:flex;flex-direction:column;gap:2px;min-width:0}
+.month-upgrade .upgrade-text b{font-size:11px;color:#0a6558}
+.month-upgrade .upgrade-text span{font-size:10px;color:#67837d}
+.month-upgrade i{font-size:15px;color:#0b8d70}
+.month-upgrade.unlocked{background:#effaf4;border-color:#c5e9d5}
+.month-upgrade.unlocked .upgrade-text b{color:#137b4f}
+.month-upgrade.upgrade-error{background:#fff8ee;border-color:#f1dec3}
+.month-upgrade.upgrade-error .upgrade-text b{color:#98621d}
+.lecture-locked{background:linear-gradient(140deg,#f9fcfb,#f1f8f6);border:1px solid #dcece6;border-radius:15px;padding:25px 18px;text-align:center;margin:3px 0 16px}
+.lecture-locked .lock-symbol{display:grid;place-items:center;width:58px;height:58px;border-radius:18px;background:#e0f2eb;color:#087b61;font-size:23px;margin:0 auto 12px}
+.lecture-locked h3{margin:0 0 7px;color:#134b46;font-size:16px}
+.lecture-locked p{color:#627a77;font-size:12px;line-height:1.9;margin:0 auto 14px;max-width:430px}
+.lecture-locked .primary-btn{display:inline-flex}
+@media(max-width:768px){.month-upgrade{padding:9px}.month-upgrade .upgrade-text b{font-size:10px}}
 </style>
 </head>
 
@@ -879,6 +897,13 @@ let selectedMonth=null;
 let viewerLabel="طالب أرض الأحياء";
 let progress=new Map();
 let monthRequest=0;
+let viewerId=null;
+let viewerIsAdmin=false;
+let paidAccess=[];
+let freeGrants=[];
+let accessLoadError=false;
+const SUBSCRIPTION_PAGE="../subscriptions/index.html"; // عدّل المسار لو صفحة اشتراك الطالب في مجلد آخر
+
 
 const players=new Map();
 const pdfReaders=new Map();
@@ -925,6 +950,47 @@ function formatTime(value){
  return h
   ?h+":"+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0")
   :m+":"+String(s).padStart(2,"0");
+}
+
+/* صلاحيات الاشتراكات: المدفوع المعتمد + المنح المجانية غير المنتهية */
+async function loadSubscriptionAccess(user){
+ viewerId=user.id;
+ const [profile,paid,free]=await Promise.all([
+  supabaseClient.from("profiles").select("role").eq("id",user.id).maybeSingle(),
+  supabaseClient.from("student_access").select("month_id,term_code").eq("student_id",user.id),
+  supabaseClient.from("student_subscription_grants").select("month_id,term_code,expires_at").eq("student_id",user.id).gt("expires_at",new Date().toISOString())
+ ]);
+ viewerIsAdmin=profile.data?.role==="admin";
+ paidAccess=paid.error?[]:(paid.data||[]);
+ freeGrants=free.error?[]:(free.data||[]);
+ accessLoadError=!!(profile.error||paid.error||free.error);
+ if(accessLoadError){
+  console.warn("Subscription access check failed:",profile.error,paid.error,free.error);
+  showMessage("تعذر التحقق من اشتراكك الآن. جرّب تحديث الصفحة. لن يتم فتح المحتوى قبل التحقق.");
+ }
+}
+function canOpenMonth(month){
+ if(viewerIsAdmin)return true;
+ if(!viewerId||accessLoadError||!month)return false;
+ const id=String(month.id);
+ const term=String(month.term_code||"");
+ return [...paidAccess,...freeGrants].some(row=>
+  (row.month_id&&String(row.month_id)===id)||
+  (term&&row.term_code&&String(row.term_code)===term)
+ );
+}
+function getMonthStatus(month){
+ if(accessLoadError)return {type:"upgrade-error",icon:"fa-circle-exclamation",title:"تعذر فحص الاشتراك",detail:"حاول تحديث الصفحة"};
+ if(canOpenMonth(month))return {type:"unlocked",icon:"fa-circle-check",title:"الشهر متاح ليك",detail:"ابدأ المذاكرة براحتك"};
+ return {type:"",icon:"fa-lock",title:"افتح محتوى الشهر",detail:"رقّي اشتراكك واستمتع بالمحاضرات"};
+}
+function lockedLectureHTML(){
+ return `<div class="lecture-locked">
+  <div class="lock-symbol"><i class="fa-solid fa-lock"></i></div>
+  <h3>المحاضرة دي ضمن محتوى الاشتراك</h3>
+  <p>اشترك في الشهر أو الترم علشان تفتح الفيديو والمذكرات والواجبات. لو اشتراكك متفعّل بالفعل، حدّث الصفحة.</p>
+  <a class="primary-btn" href="${escapeHtml(SUBSCRIPTION_PAGE)}"><i class="fa-solid fa-arrow-up-right-dots"></i> ترقية الاشتراك</a>
+ </div>`;
 }
 
 /* الشريط الجانبي */
@@ -2210,6 +2276,7 @@ function renderMonths(){
    month.cover_url||month.image_url||month.cover_path||""
   );
 
+  const status=getMonthStatus(month);
   return `
    <button type="button"
     class="month-btn ${active?"active":""}"
@@ -2226,6 +2293,10 @@ function renderMonths(){
     </strong>
 
     <small>اضغط لعرض المحاضرات</small>
+    <div class="month-upgrade ${status.type}">
+     <span class="upgrade-text"><b>${status.title}</b><span>${status.detail}</span></span>
+     <i class="fa-solid ${status.icon}" aria-hidden="true"></i>
+    </div>
    </button>
   `;
  }).join("");
@@ -2286,6 +2357,8 @@ async function loadLectures(monthId){
 
 function renderLectures(){
  const box=$("lecturesList");
+ const activeMonth=visibleMonths.find(m=>String(m.id)===String(selectedMonth));
+ const unlocked=canOpenMonth(activeMonth);
 
  if(!currentList.length){
   box.innerHTML='<div class="empty">لا توجد محاضرات لهذا الشهر بعد.</div>';
@@ -2318,7 +2391,7 @@ function renderLectures(){
 
      <div class="lecture-info">
       <h3>${title}</h3>
-      <p>اضغط لعرض الفيديو ومحتويات المحاضرة</p>
+      <p>${unlocked?"اضغط لعرض الفيديو ومحتويات المحاضرة":"<i class='fa-solid fa-lock'></i> تتطلب اشتراكًا لفتح المحتوى"}</p>
      </div>
 
      <i class="fa-solid fa-chevron-down lecture-arrow"
@@ -2326,7 +2399,8 @@ function renderLectures(){
     </div>
 
     <div class="lecture-body" id="lecture-body-${index}">
-     <div class="earth-player" id="video-container-${index}"></div>
+     ${unlocked?`<div class="earth-player" id="video-container-${index}"></div>`:lockedLectureHTML()}
+     ${unlocked?`
 
      <div class="video-actions">
       <button type="button" class="secondary-btn action-btn ${row.saved?"on":""}"
@@ -2388,7 +2462,7 @@ function renderLectures(){
        </div>
       </details>
 
-     </div>
+     </div>`:""}
     </div>
    </article>
   `;
@@ -2455,6 +2529,8 @@ async function toggleLecture(index){
  if(arrow)arrow.style.transform="rotate(180deg)";
  body.previousElementSibling?.setAttribute("aria-expanded","true");
 
+ const activeMonth=visibleMonths.find(m=>String(m.id)===String(selectedMonth));
+ if(!canOpenMonth(activeMonth))return;
  if(!body.dataset.initialized){
   body.dataset.initialized="true";
 
@@ -2485,6 +2561,7 @@ async function initializePage(){
   }
 
   await loadViewer(data.session.user);
+  await loadSubscriptionAccess(data.session.user);
   await loadProgress();
   await loadMonths();
 
