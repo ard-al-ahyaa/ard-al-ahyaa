@@ -1143,7 +1143,7 @@ function renderRequests(){
 
 async function reviewRequest(id,decision){
 
-  const request=requests.find(r=>r.id===id);
+  const request=requests.find(r=>String(r.id)===String(id));
 
   if(!request)return;
 
@@ -1195,6 +1195,107 @@ async function reviewRequest(id,decision){
 
   }
 
+}
+
+
+/* إدارة الطلاب: القراءة من profiles والمنح من جدول مخصص */
+async function loadSubscriptionStudents(){
+  const box=el("subscriptionStudentsList");
+  box.textContent="جارٍ تحميل الطلاب...";
+  try{
+    const {data,error}=await db.from("profiles")
+      .select("id,full_name,phone,email,role").order("full_name").limit(1000);
+    if(error)throw error;
+    subscriptionStudents=(data||[]).filter(s=>s.role!=="admin");
+    const grants=await db.from("student_subscription_grants")
+      .select("id,student_id,package_type,month_id,term_code,expires_at,created_at")
+      .order("created_at",{ascending:false}).limit(2000);
+    if(grants.error){
+      console.warn("تعذر تحميل المنح:",grants.error);
+      studentGrants=[];
+      renderSubscriptionStudents();
+      el("subscriptionStudentsList").insertAdjacentHTML("afterbegin",
+        '<div class="notice">ظهرت قائمة الطلاب، لكن تعذر تحميل سجل المنح: '+
+        escapeHTML(grants.error.message)+'</div>');
+      return;
+    }
+    studentGrants=grants.data||[];
+    renderSubscriptionStudents();
+  }catch(error){
+    box.innerHTML='<div class="notice">'+escapeHTML(error.message)+
+      '<br>إذا كان جدول المنح غير موجود، نفّذ ملف SQL المرفق أولًا.</div>';
+  }
+}
+function renderSubscriptionStudents(){
+  const q=(el("subscriptionStudentSearch")?.value||"").trim().toLowerCase();
+  const rows=subscriptionStudents.filter(s=>
+    [s.full_name,s.phone,s.email].some(v=>String(v||"").toLowerCase().includes(q))
+  );
+  const box=el("subscriptionStudentsList");
+  if(!rows.length){box.innerHTML='<p class="muted">لا يوجد طلاب مطابقون.</p>';return;}
+  box.innerHTML='<div class="table-scroll"><table class="student-table"><thead><tr><th>الطالب</th><th>الهاتف / البريد</th><th>المنح اليدوية</th><th>الإجراء</th></tr></thead><tbody>'+rows.map(s=>{
+    const grants=studentGrants.filter(g=>String(g.student_id)===String(s.id));
+    const valid=grants.filter(g=>!g.expires_at||new Date(g.expires_at)>new Date());
+    const details=valid.map(g=>`${g.package_type==="month"?"شهر":"ترم"} — ${g.expires_at?"حتى "+formatDate(g.expires_at):"بدون انتهاء"}`).join('، ');
+    return `<tr><td><strong>${escapeHTML(s.full_name||"بدون اسم")}</strong></td><td>${escapeHTML(s.phone||"—")}<br>${escapeHTML(s.email||"—")}</td><td>${escapeHTML(details||"لا توجد منحة نشطة")}</td><td><button class="btn" onclick="openGrantForm('${escapeHTML(s.id)}')">تفعيل مجاني</button></td></tr>`;
+  }).join('')+'</tbody></table></div>';
+}
+function openGrantForm(studentId){
+  const student=subscriptionStudents.find(s=>String(s.id)===String(studentId));
+  if(!student)return;
+  const type=prompt('منحة للطالب: '+(student.full_name||student.email||student.id)+'\nاكتب month للشهر أو term للترم','month');
+  if(type===null)return;
+  if(!['month','term'].includes(type)){notify('اكتب month أو term',true);return;}
+  let monthId=null,termCode=null;
+  if(type==='month'){
+    const options=months.map(m=>`${m.id} : ${m.title}`).join('\n');
+    monthId=prompt('انسخ معرّف الشهر المطلوب:\n'+options);
+    if(monthId===null)return;
+    if(!months.some(m=>String(m.id)===monthId.trim())){notify('اختر معرّف شهر صحيحًا',true);return;}
+    monthId=monthId.trim();
+  }else{
+    termCode=prompt('اكتب term1 للترم الأول أو term2 للترم الثاني','term1');
+    if(termCode===null)return;
+    if(!['term1','term2'].includes(termCode.trim())){notify('رمز الترم غير صحيح',true);return;}
+    termCode=termCode.trim();
+  }
+  const daysText=prompt('مدة الاشتراك بالأيام (مثلاً 30 للشهر أو 120 للترم)',type==='month'?'30':'120');
+  if(daysText===null)return;
+  const days=Number(daysText);
+  if(!Number.isInteger(days)||days<1||days>366){notify('مدة غير صحيحة',true);return;}
+  if(!confirm('تفعيل اشتراك مجاني للطالب '+(student.full_name||student.id)+' لمدة '+days+' يومًا؟'))return;
+  grantStudentSubscription(studentId,type,monthId,termCode,days);
+}
+async function grantStudentSubscription(studentId,packageType,monthId,termCode,days){
+  try{
+    const {error}=await db.rpc('admin_grant_subscription',{
+      p_student_id:studentId,
+      p_package_type:packageType,
+      p_month_id:monthId,
+      p_term_code:termCode,
+      p_duration_days:days
+    });
+    if(error)throw error;
+    notify('تم تسجيل الاشتراك المجاني بنجاح');
+    await loadSubscriptionStudents();
+  }catch(error){handleError(error);}
+}
+async function uploadPaymentImage(){
+  const file=el('paymentImageFile').files[0];
+  const btn=el('uploadPaymentImageBtn');
+  try{
+    if(!file)throw Error('اختر صورة أولًا');
+    if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw Error('نوع الصورة غير مدعوم');
+    if(file.size>3*1024*1024)throw Error('حجم الصورة أكبر من 3 ميجابايت');
+    btn.disabled=true;
+    const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg';
+    const path='payment-images/'+crypto.randomUUID()+'.'+ext;
+    const {error}=await db.storage.from('lectures').upload(path,file,{upsert:false,contentType:file.type});
+    if(error)throw error;
+    const url=db.storage.from('lectures').getPublicUrl(path).data.publicUrl;
+    el('paymentImageResult').innerHTML=`<p>مسار الصورة: <code>${escapeHTML(path)}</code></p><img class="preview-image" src="${escapeHTML(url)}" alt="صورة الدفع"><label>رابط الصورة<input readonly value="${escapeHTML(url)}" onclick="this.select()"></label>`;
+    notify('تم رفع الصورة. تأكد من ظهور المعاينة قبل نسخ الرابط.');
+  }catch(error){handleError(error)}finally{btn.disabled=false;}
 }
 
 /* =============================
