@@ -1060,6 +1060,19 @@ body{background:#f5f8fc}
 .info-item{transition:background .2s}.info-item:hover{background:#f8fbfe}
 @media(max-width:760px){.welcome-banner{min-height:200px}.account-welcome-actions{margin-top:16px}.subscription-grid{grid-template-columns:1fr}.subscription-panel{padding:17px}.subscription-panel-head h2{font-size:17px}}
 
+
+/* واجهة الحساب المبوبة */
+.account-tabs{display:flex;gap:10px;overflow-x:auto;padding:5px 1px 14px;margin:18px 0 5px;scrollbar-width:thin}
+.account-tab{flex:0 0 auto;border:1px solid #dce9ec;background:#fff;color:#426075;padding:13px 21px;border-radius:14px;font-weight:900;font-size:13px;display:flex;align-items:center;gap:10px;box-shadow:0 5px 18px #07375b08;transition:.2s}
+.account-tab i{font-size:17px}.account-tab.active{background:linear-gradient(115deg,#087f68,#004e4d);color:#fff;border-color:transparent;box-shadow:0 8px 22px #004e4d22}
+.account-tab:hover{transform:translateY(-2px)}.account-pane[hidden]{display:none!important}
+.account-section-title{font-size:23px;color:#103b4f;margin:18px 0 5px;font-weight:900}.account-section-sub{color:#72879a;font-size:13px;margin-bottom:18px}
+.account-actions-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0 22px}
+.account-action{display:flex;align-items:center;gap:13px;border:1px solid #e1ebf0;border-radius:15px;padding:17px;background:#fff;font-size:13px;font-weight:800;transition:.2s}
+.account-action:hover{border-color:#a5dccc;transform:translateY(-2px)}.account-action i{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:#e5f6ef;color:#087e64;font-size:19px}
+.account-data-table{width:100%;border-collapse:collapse;min-width:560px;font-size:12px}.account-data-table th{text-align:right;background:#f2f8f7;color:#406477;padding:13px;border-bottom:1px solid #e0e9ee}.account-data-table td{padding:14px 13px;border-bottom:1px solid #edf2f5}.table-scroll{overflow-x:auto}
+.tag-pending{color:#9b680d;background:#fff4dc;padding:5px 9px;border-radius:20px}.tag-approved{color:#08734f;background:#e4f7ee;padding:5px 9px;border-radius:20px}.tag-rejected{color:#b52b3c;background:#ffeded;padding:5px 9px;border-radius:20px}
+@media(max-width:760px){.account-tabs{gap:7px}.account-tab{padding:11px 13px;font-size:11px}.account-actions-grid{grid-template-columns:1fr}.account-section-title{font-size:19px}}
 </style>
 </head>
 
@@ -1212,17 +1225,13 @@ body{background:#f5f8fc}
     </section>
 
 
-    <section class="subscription-panel" aria-labelledby="subscriptionsTitle">
-      <div class="subscription-panel-head">
-        <div><h2 id="subscriptionsTitle"><i class="fa-solid fa-crown" style="color:#09916e"></i> اشتراكاتي</h2><p>حالة الاشتراكات وطلبات التفعيل الخاصة بحسابك.</p></div>
-        <a class="btn btn-primary" href="../subscriptions/index.html"><i class="fa-solid fa-arrow-up-right-from-square"></i> ترقية الاشتراك</a>
-      </div>
-      <div class="subscription-grid">
-        <div class="subscription-tile"><div class="tile-icon"><i class="fa-solid fa-shield-check"></i></div><strong>الاشتراكات المفعّلة</strong><p>الباقات المتاحة لك حاليًا.</p><div class="tile-state muted" id="accountActiveSubscriptions">جارٍ التحقق...</div></div>
-        <div class="subscription-tile"><div class="tile-icon"><i class="fa-regular fa-clock"></i></div><strong>طلبات الاشتراك</strong><p>آخر حالة لطلبات الدفع التي أرسلتها.</p><div class="tile-state muted" id="accountSubscriptionRequests">جارٍ التحقق...</div></div>
-      </div>
-    </section>
-
+    <nav class="account-tabs" aria-label="أقسام حساب الطالب">
+      <button type="button" class="account-tab active" data-account-tab="profile" aria-selected="true"><i class="fa-regular fa-user"></i> حساب الطالب</button>
+      <button type="button" class="account-tab" data-account-tab="results" aria-selected="false"><i class="fa-solid fa-square-poll-vertical"></i> نتائج وواجبات الطالب</button>
+      <button type="button" class="account-tab" data-account-tab="subscriptions" aria-selected="false"><i class="fa-solid fa-crown"></i> إدارة الاشتراكات</button>
+    </nav>
+    <div class="account-pane" id="accountPaneProfile">
+    <h2 class="account-section-title">حساب الطالب</h2><p class="account-section-sub">بياناتك الشخصية وتقدمك الدراسي واختصارات حسابك.</p>
     <section class="stats-grid">
 
       <div class="stat-card">
@@ -1400,24 +1409,7 @@ body{background:#f5f8fc}
           </div>
         </section>
 
-        <section class="card">
-          <div class="card-heading">
-            <div>
-              <h2>نتائج الاختبارات</h2>
-              <p>النتائج المرتبطة بحسابك إذا كانت متاحة.</p>
-            </div>
-            <div class="heading-icon">
-              <i class="fa-solid fa-award"></i>
-            </div>
-          </div>
 
-          <div id="resultsList">
-            <div class="empty-state">
-              <i class="fa-solid fa-spinner fa-spin"></i>
-              جاري تحميل النتائج...
-            </div>
-          </div>
-        </section>
 
       </div>
 
@@ -1557,6 +1549,60 @@ body{background:#f5f8fc}
 
     </section>
 
+    </div><!-- نهاية حساب الطالب -->
+    <div class="account-pane" id="accountPaneResults" hidden>
+      <h2 class="account-section-title">نتائج وواجبات الطالب</h2>
+      <p class="account-section-sub">تابع نتائج الاختبارات والواجبات المرتبطة بحسابك، بدون درجات تجريبية.</p>
+      <div class="account-actions-grid">
+        <a class="account-action" href="../videos/index.html"><i class="fa-regular fa-circle-play"></i> تفاصيل محاضراتي</a>
+        <a class="account-action" href="../notes/index.html"><i class="fa-solid fa-book-open"></i> المذكرات والمراجعات</a>
+        <a class="account-action" href="../forum/index.html"><i class="fa-regular fa-comments"></i> اسأل في المنتدى</a>
+      </div>
+              <section class="card">
+          <div class="card-heading">
+            <div>
+              <h2>نتائج الاختبارات</h2>
+              <p>النتائج المرتبطة بحسابك إذا كانت متاحة.</p>
+            </div>
+            <div class="heading-icon">
+              <i class="fa-solid fa-award"></i>
+            </div>
+          </div>
+
+          <div id="resultsList">
+            <div class="empty-state">
+              <i class="fa-solid fa-spinner fa-spin"></i>
+              جاري تحميل النتائج...
+            </div>
+          </div>
+        </section>
+      <section class="card"><div class="card-heading"><div><h2>نتائج الواجبات</h2><p>تظهر هنا النتائج المتاحة من قاعدة بيانات المنصة.</p></div><div class="heading-icon"><i class="fa-solid fa-list-check"></i></div></div>
+        <div id="homeworkResults" class="empty-state">جارٍ التحقق من نتائج الواجبات...</div>
+      </section>
+    </div>
+    <div class="account-pane" id="accountPaneSubscriptions" hidden>
+      <h2 class="account-section-title">إدارة الاشتراكات</h2>
+      <p class="account-section-sub">اعرف حالة اشتراكاتك، وراجع طلبات الدفع، وجدّد الباقة المناسبة.</p>
+          <section class="subscription-panel" aria-labelledby="subscriptionsTitle">
+      <div class="subscription-panel-head">
+        <div><h2 id="subscriptionsTitle"><i class="fa-solid fa-crown" style="color:#09916e"></i> اشتراكاتي</h2><p>حالة الاشتراكات وطلبات التفعيل الخاصة بحسابك.</p></div>
+        <a class="btn btn-primary" href="../subscriptions/index.html"><i class="fa-solid fa-arrow-up-right-from-square"></i> ترقية الاشتراك</a>
+      </div>
+      <div class="subscription-grid">
+        <div class="subscription-tile"><div class="tile-icon"><i class="fa-solid fa-shield-check"></i></div><strong>الاشتراكات المفعّلة</strong><p>الباقات المتاحة لك حاليًا.</p><div class="tile-state muted" id="accountActiveSubscriptions">جارٍ التحقق...</div></div>
+        <div class="subscription-tile"><div class="tile-icon"><i class="fa-regular fa-clock"></i></div><strong>طلبات الاشتراك</strong><p>آخر حالة لطلبات الدفع التي أرسلتها.</p><div class="tile-state muted" id="accountSubscriptionRequests">جارٍ التحقق...</div></div>
+      </div>
+    </section>
+
+
+      <div class="account-actions-grid">
+        <a class="account-action" href="../subscriptions/index.html"><i class="fa-solid fa-wallet"></i> طلب اشتراك أو تجديد</a>
+        <a class="account-action" href="../videos/index.html"><i class="fa-regular fa-circle-play"></i> المحاضرات المتاحة</a>
+        <button type="button" class="account-action" id="refreshSubscriptions"><i class="fa-solid fa-rotate"></i> تحديث حالة الطلبات</button>
+      </div>
+      <section class="card"><div class="card-heading"><div><h2>سجل طلبات الاشتراك</h2><p>بيانات الطلبات المسجلة في أرض الأحياء، وليست فواتير مدفوعة إلا بعد الموافقة.</p></div><div class="heading-icon"><i class="fa-solid fa-receipt"></i></div></div>
+      <div class="table-scroll"><table class="account-data-table"><thead><tr><th>تاريخ الطلب</th><th>الباقة</th><th>المبلغ</th><th>حالة الطلب</th></tr></thead><tbody id="accountRequestsRows"><tr><td colspan="4">جارٍ تحميل الطلبات...</td></tr></tbody></table></div></section>
+    </div>
     <footer class="footer">
       أرض الأحياء — منصة تعليمية للصف الثالث الثانوي © 2026
     </footer>
@@ -2018,7 +2064,9 @@ async function loadDashboard() {
     await Promise.allSettled([
       loadLectureStats(),
       loadResults(),
-      loadAccountSubscriptions()
+      loadAccountSubscriptions(),
+      loadAccountRequestHistory(),
+      loadHomeworkResults()
     ]);
 
   } catch (error) {
@@ -2120,6 +2168,38 @@ $("reloadProfileButton").addEventListener("click", async () => {
     );
   }
 });
+
+
+function openAccountTab(name){
+  const names={profile:'Profile',results:'Results',subscriptions:'Subscriptions'};
+  if(!names[name])return;
+  Object.entries(names).forEach(([key,value])=>{
+    const pane=$('accountPane'+value);
+    pane.hidden=key!==name;
+  });
+  document.querySelectorAll('[data-account-tab]').forEach(btn=>{
+    const active=btn.dataset.accountTab===name;
+    btn.classList.toggle('active',active);
+    btn.setAttribute('aria-selected',String(active));
+  });
+  try{history.replaceState(null,'','#'+name)}catch(_e){}
+}
+document.querySelectorAll('[data-account-tab]').forEach(btn=>btn.addEventListener('click',()=>openAccountTab(btn.dataset.accountTab)));
+openAccountTab(['profile','results','subscriptions'].includes(location.hash.slice(1))?location.hash.slice(1):'profile');
+$('refreshSubscriptions').addEventListener('click',()=>{loadAccountSubscriptions();loadAccountRequestHistory()});
+async function loadAccountRequestHistory(){
+ const body=$('accountRequestsRows');if(!currentUser)return;
+ const {data,error}=await supabaseClient.from('subscription_requests').select('created_at,package_type,amount_egp,status').eq('student_id',currentUser.id).order('created_at',{ascending:false}).limit(30);
+ body.replaceChildren();
+ if(error){const tr=body.insertRow();tr.insertCell().colSpan=4;tr.cells[0].textContent='تعذر تحميل الطلبات: '+error.message;return}
+ if(!data?.length){const tr=body.insertRow();tr.insertCell().colSpan=4;tr.cells[0].textContent='لا توجد طلبات اشتراك مسجلة بعد.';return}
+ for(const r of data){const tr=body.insertRow();tr.insertCell().textContent=formatDate(r.created_at);tr.insertCell().textContent=r.package_type==='month'?'اشتراك شهر':r.package_type==='term'?'اشتراك ترم':'اشتراك';tr.insertCell().textContent=r.amount_egp==null?'—':Number(r.amount_egp).toLocaleString('ar-EG')+' جنيه';const cell=tr.insertCell(),tag=document.createElement('span');tag.className=r.status==='approved'?'tag-approved':r.status==='rejected'?'tag-rejected':'tag-pending';tag.textContent=r.status==='approved'?'تمت الموافقة':r.status==='rejected'?'مرفوض':'قيد المراجعة';cell.append(tag)}
+}
+async function loadHomeworkResults(){
+ const box=$('homeworkResults');if(!currentUser)return;
+ // جدول results الحالي لا يحدد نوع الواجب بشكل موحد، لذا لا ننسب درجات اختبارات إلى واجبات دون دليل.
+ box.textContent='نتائج الاختبارات تظهر بالأعلى. لعرض درجات الواجبات منفصلة، يلزم ربطها بحقل نوع الواجب في قاعدة البيانات.';
+}
 
 setupSidebar();
 
