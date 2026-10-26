@@ -952,36 +952,65 @@ function formatTime(value){
   :m+":"+String(s).padStart(2,"0");
 }
 
-/* صلاحيات الاشتراكات: المدفوع المعتمد + المنح المجانية غير المنتهية */
+/* صلاحيات الاشتراكات: فحص مستقل للمدفوع والمجاني */
 async function loadSubscriptionAccess(user){
  viewerId=user.id;
- const [profile,paid,free]=await Promise.all([
+ viewerIsAdmin=false;
+ paidAccess=[];
+ freeGrants=[];
+ accessLoadError=false;
+
+ // فشل جدول الاشتراكات المدفوعة لا يلغي منحة مجانية صالحة، والعكس صحيح.
+ const [profile,paid,free]=await Promise.allSettled([
   supabaseClient.from("profiles").select("role").eq("id",user.id).maybeSingle(),
   supabaseClient.from("student_access").select("month_id,term_code").eq("student_id",user.id),
-  supabaseClient.from("student_subscription_grants").select("month_id,term_code,expires_at").eq("student_id",user.id).gt("expires_at",new Date().toISOString())
+  supabaseClient.from("student_subscription_grants")
+   .select("month_id,term_code,expires_at")
+   .eq("student_id",user.id)
  ]);
- viewerIsAdmin=profile.data?.role==="admin";
- paidAccess=paid.error?[]:(paid.data||[]);
- freeGrants=free.error?[]:(free.data||[]);
- accessLoadError=!!(profile.error||paid.error||free.error);
- if(accessLoadError){
-  console.warn("Subscription access check failed:",profile.error,paid.error,free.error);
-  showMessage("تعذر التحقق من اشتراكك الآن. جرّب تحديث الصفحة. لن يتم فتح المحتوى قبل التحقق.");
+ const result=x=>x.status==="fulfilled"?x.value:{data:null,error:x.reason||new Error("تعذر الاتصال")};
+ const profileResult=result(profile);
+ const paidResult=result(paid);
+ const freeResult=result(free);
+ viewerIsAdmin=profileResult.data?.role==="admin";
+ paidAccess=paidResult.error?[]:(paidResult.data||[]);
+ const now=Date.now();
+ freeGrants=freeResult.error?[]:(freeResult.data||[]).filter(row=>{
+  const expiry=Date.parse(row.expires_at||"");
+  return Number.isFinite(expiry)&&expiry>now;
+ });
+ // لا نمنح الوصول بناءً على تخمين عند فشل الاستعلامات.
+ // الخطأ يظهر فقط إذا لم تتوفر أي بيانات صلاحية مثبتة.
+ accessLoadError=!!(paidResult.error||freeResult.error);
+ if(profileResult.error||paidResult.error||freeResult.error){
+  console.warn("Subscription access check:",{
+   profile:profileResult.error,paid:paidResult.error,free:freeResult.error
+  });
+ }
+ if(accessLoadError&&!viewerIsAdmin&&!paidAccess.length&&!freeGrants.length){
+  showMessage("تعذر التحقق من الاشتراك حاليًا. حدّث الصفحة، وإذا استمرت المشكلة تواصل مع الإدارة.");
+ }else{
+  const notice=$("pageNotice");
+  if(notice){notice.textContent="";notice.className="";}
  }
 }
+
 function canOpenMonth(month){
  if(viewerIsAdmin)return true;
- if(!viewerId||accessLoadError||!month)return false;
- const id=String(month.id);
- const term=String(month.term_code||"");
- return [...paidAccess,...freeGrants].some(row=>
-  (row.month_id&&String(row.month_id)===id)||
-  (term&&row.term_code&&String(row.term_code)===term)
- );
+ if(!viewerId||!month)return false;
+ const id=String(month.id??"").trim();
+ const term=String(month.term_code??"").trim().toLowerCase();
+ const grants=[...paidAccess,...freeGrants];
+ return grants.some(row=>{
+  const grantMonth=row.month_id==null?"":String(row.month_id).trim();
+  const grantTerm=String(row.term_code??"").trim().toLowerCase();
+  return (id!==""&&grantMonth!==""&&grantMonth===id)||
+         (term!==""&&grantTerm!==""&&grantTerm===term);
+ });
 }
 function getMonthStatus(month){
- if(accessLoadError)return {type:"upgrade-error",icon:"fa-circle-exclamation",title:"تعذر فحص الاشتراك",detail:"حاول تحديث الصفحة"};
  if(canOpenMonth(month))return {type:"unlocked",icon:"fa-circle-check",title:"الشهر متاح ليك",detail:"ابدأ المذاكرة براحتك"};
+ if(accessLoadError)return {type:"upgrade-error",icon:"fa-circle-exclamation",title:"تعذر فحص بعض الاشتراكات",detail:"حدّث الصفحة أو تواصل مع الإدارة"};
  return {type:"",icon:"fa-lock",title:"افتح محتوى الشهر",detail:"رقّي اشتراكك واستمتع بالمحاضرات"};
 }
 function lockedLectureHTML(){
