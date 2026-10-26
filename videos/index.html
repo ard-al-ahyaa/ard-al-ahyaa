@@ -2394,32 +2394,43 @@ async function selectMonth(id){
 async function loadLectures(monthId){
  const request=++monthRequest;
  const box=$("lecturesList");
-
  destroyPlayers();
  destroyPdfReaders();
  quizSessions.clear();
-
  box.innerHTML='<div class="loading">جارٍ تحميل المحاضرات...</div>';
 
- const {data,error}=await supabaseClient
-  .from("lectures")
-  .select("*")
-  .eq("month_id",monthId)
-  .order("created_at",{ascending:true});
-
- if(request!==monthRequest)return;
-
- if(error){
-  console.error(error);
-  box.innerHTML=`
-   <div class="empty">
-    تعذر تحميل المحاضرات. تحقق من إعدادات جدول lectures.
-   </div>
-  `;
+ const month=visibleMonths.find(m=>String(m.id)===String(monthId));
+ const monthNumber=month?.month_number;
+ const queries=[{column:"month_id",value:monthId}];
+ if(monthNumber!==null&&monthNumber!==undefined&&String(monthNumber)!==""){
+  queries.push({column:"month_number",value:monthNumber});
+ }
+ let result=null;
+ let errors=[];
+ for(const query of queries){
+  // جرّب عمود الشهر الأساسي، واستخدم البديل فقط إذا كان العمود غير موجود أو نوعه غير متوافق.
+  let response=await supabaseClient.from("lectures")
+   .select("*").eq(query.column,query.value)
+   .order("created_at",{ascending:true});
+  if(response.error && (response.error.code==="42703" || /created_at.*does not exist|column.*created_at/i.test(response.error.message||""))){
+   response=await supabaseClient.from("lectures")
+    .select("*").eq(query.column,query.value);
+  }
+  if(request!==monthRequest)return;
+  if(!response.error){result=response;break;}
+  errors.push(query.column+": "+(response.error.message||"خطأ غير معروف"));
+  console.warn("Lectures query failed",query,response.error);
+  const schemaMismatch=response.error.code==="42703" || response.error.code==="22P02" ||
+   /column .* does not exist|invalid input syntax for type/i.test(response.error.message||"");
+  if(!schemaMismatch)break;
+ }
+ if(!result){
+  const message=errors.join(" | ");
+  box.innerHTML='<div class="empty"><strong>تعذر تحميل المحاضرات.</strong><br>'+escapeHtml(message)+
+   '<br><small>ابعت رسالة الخطأ دي علشان نحدد العمود أو الصلاحية المطلوبة.</small></div>';
   return;
  }
-
- currentList=data||[];
+ currentList=result.data||[];
  renderLectures();
 }
 
