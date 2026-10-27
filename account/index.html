@@ -96,8 +96,8 @@ button {
   display: grid;
   place-items: center;
   font-size: 17px;
-  margin-top: 22px;
-  margin-bottom: 8px;
+  margin: 0 auto 10px;
+  flex-shrink: 0;
 }
 
 .sidebar-toggle:hover {
@@ -181,15 +181,20 @@ button {
 }
 
 .sidebar-bottom {
-  padding: 14px 8px 20px;
+  padding: 10px 8px 14px;
   text-align: center;
   font-size: 11px;
   color: #e5f3f1;
   border-top: 1px solid rgba(255,255,255,.1);
   margin: 0 15px;
+  flex-shrink: 0;
 }
 
-.sidebar-bottom i {
+.sidebar-copyright {
+  white-space: nowrap;
+}
+
+.sidebar-copyright i {
   color: #20c38a;
   margin-left: 5px;
 }
@@ -204,6 +209,15 @@ body.sidebar-collapsed .menu-label,
 body.sidebar-collapsed .side-link span,
 body.sidebar-collapsed .sidebar-bottom span {
   display: none;
+}
+
+body.sidebar-collapsed .sidebar-copyright {
+  display: none;
+}
+
+body.sidebar-collapsed .sidebar-bottom {
+  padding-left: 3px;
+  padding-right: 3px;
 }
 
 body.sidebar-collapsed .brand {
@@ -1142,11 +1156,6 @@ body{background:#f5f8fc}
 
   <div class="sidebar-inner">
 
-    <button type="button" class="sidebar-toggle" id="sidebarToggle"
-            aria-label="تصغير القائمة">
-      <i class="fa-solid fa-angles-right"></i>
-    </button>
-
     <div class="brand">
       <img src="../logo.png" class="brand-logo" alt="شعار أرض الأحياء"
            onerror="this.style.display='none'">
@@ -1195,8 +1204,14 @@ body{background:#f5f8fc}
   </div>
 
   <div class="sidebar-bottom">
-    <i class="fa-solid fa-leaf"></i>
-    <span>جميع الحقوق محفوظة © 2026</span>
+    <button type="button" class="sidebar-toggle" id="sidebarToggle"
+            aria-label="تصغير القائمة" title="تصغير أو تكبير القائمة">
+      <i class="fa-solid fa-angles-right"></i>
+    </button>
+    <div class="sidebar-copyright">
+      <i class="fa-solid fa-leaf"></i>
+      <span>جميع الحقوق محفوظة © 2026</span>
+    </div>
   </div>
 </aside>
 
