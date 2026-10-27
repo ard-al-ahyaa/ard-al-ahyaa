@@ -1067,7 +1067,21 @@ body{background:#f5f8fc}
 .account-tab i{font-size:17px}.account-tab.active{background:linear-gradient(115deg,#087f68,#004e4d);color:#fff;border-color:transparent;box-shadow:0 8px 22px #004e4d22}
 .account-tab:hover{transform:translateY(-2px)}.account-pane[hidden]{display:none!important}
 .account-section-title{font-size:23px;color:#103b4f;margin:18px 0 5px;font-weight:900}.account-section-sub{color:#72879a;font-size:13px;margin-bottom:18px}
-.account-actions-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0 22px}
+ .account-actions-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0 22px}
+.student-services{margin:18px 0 24px}
+.student-services-heading{display:flex;align-items:center;gap:10px;margin-bottom:14px;color:#103b4f;font-size:19px;font-weight:900}
+.student-services-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.student-service-card{width:100%;min-width:0;border:1px solid #dfeaf2;border-radius:18px;padding:20px;background:linear-gradient(120deg,#f0fbf6,#fff);display:flex;align-items:center;gap:15px;text-align:right;color:#12394e;transition:transform .2s,box-shadow .2s,border-color .2s}
+.student-service-card.exam{background:linear-gradient(120deg,#f0f5ff,#fff);border-color:#dce7ff}
+.student-service-card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(10,52,83,.08);border-color:#9ed9c8}
+.student-service-icon{width:58px;height:58px;flex:0 0 58px;border-radius:16px;background:#2eaa8b;color:#fff;display:grid;place-items:center;font-size:25px}
+.student-service-card.exam .student-service-icon{background:#5c86e8}
+.student-service-copy{flex:1;min-width:0}
+.student-service-copy strong{display:block;font-size:17px;font-weight:900;margin-bottom:5px}
+.student-service-copy small{display:block;font-size:12px;color:#6d8297;line-height:1.8}
+.student-service-arrow{width:35px;height:35px;flex:0 0 35px;border-radius:50%;background:#078f70;color:#fff;display:grid;place-items:center}
+.student-service-card.exam .student-service-arrow{background:#3d72dc}
+@media(max-width:760px){.student-services-grid{grid-template-columns:1fr}.student-service-card{padding:16px}.student-service-copy strong{font-size:15px}}
 .account-action{display:flex;align-items:center;gap:13px;border:1px solid #e1ebf0;border-radius:15px;padding:17px;background:#fff;font-size:13px;font-weight:800;transition:.2s}
 .account-action:hover{border-color:#a5dccc;transform:translateY(-2px)}.account-action i{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:#e5f6ef;color:#087e64;font-size:19px}
 .account-data-table{width:100%;border-collapse:collapse;min-width:560px;font-size:12px}.account-data-table th{text-align:right;background:#f2f8f7;color:#406477;padding:13px;border-bottom:1px solid #e0e9ee}.account-data-table td{padding:14px 13px;border-bottom:1px solid #edf2f5}.table-scroll{overflow-x:auto}
@@ -1278,6 +1292,22 @@ body{background:#f5f8fc}
         </div>
       </div>
 
+    </section>
+
+    <section class="student-services" aria-labelledby="studentServicesHeading">
+      <h2 class="student-services-heading" id="studentServicesHeading"><i class="fa-solid fa-shapes"></i> الواجبات والامتحانات في حسابك</h2>
+      <div class="student-services-grid">
+        <button type="button" class="student-service-card" data-open-account-section="homeworkResultsSection" aria-label="فتح قسم الواجبات">
+          <span class="student-service-icon"><i class="fa-solid fa-clipboard-check"></i></span>
+          <span class="student-service-copy"><strong>الواجبات</strong><small>تابع الواجبات وراجع النتائج المتاحة لحسابك.</small></span>
+          <span class="student-service-arrow"><i class="fa-solid fa-chevron-left"></i></span>
+        </button>
+        <button type="button" class="student-service-card exam" data-open-account-section="examResultsSection" aria-label="فتح قسم الامتحانات">
+          <span class="student-service-icon"><i class="fa-solid fa-file-circle-check"></i></span>
+          <span class="student-service-copy"><strong>الامتحانات</strong><small>اعرض نتائج الاختبارات المسجلة في حسابك.</small></span>
+          <span class="student-service-arrow"><i class="fa-solid fa-chevron-left"></i></span>
+        </button>
+      </div>
     </section>
 
     <section class="content-grid">
@@ -1558,10 +1588,10 @@ body{background:#f5f8fc}
         <a class="account-action" href="../notes/index.html"><i class="fa-solid fa-book-open"></i> المذكرات والمراجعات</a>
         <a class="account-action" href="../forum/index.html"><i class="fa-regular fa-comments"></i> اسأل في المنتدى</a>
       </div>
-              <section class="card">
+              <section class="card" id="examResultsSection" tabindex="-1">
           <div class="card-heading">
             <div>
-              <h2>نتائج الاختبارات</h2>
+              <h2>الامتحانات ونتائجها</h2>
               <p>النتائج المرتبطة بحسابك إذا كانت متاحة.</p>
             </div>
             <div class="heading-icon">
@@ -1576,7 +1606,7 @@ body{background:#f5f8fc}
             </div>
           </div>
         </section>
-      <section class="card"><div class="card-heading"><div><h2>نتائج الواجبات</h2><p>تظهر هنا النتائج المتاحة من قاعدة بيانات المنصة.</p></div><div class="heading-icon"><i class="fa-solid fa-list-check"></i></div></div>
+      <section class="card" id="homeworkResultsSection" tabindex="-1"><div class="card-heading"><div><h2>الواجبات ونتائجها</h2><p>تظهر هنا النتائج المتاحة من قاعدة بيانات المنصة.</p></div><div class="heading-icon"><i class="fa-solid fa-list-check"></i></div></div>
         <div id="homeworkResults" class="empty-state">جارٍ التحقق من نتائج الواجبات...</div>
       </section>
     </div>
@@ -2200,6 +2230,20 @@ async function loadHomeworkResults(){
  // جدول results الحالي لا يحدد نوع الواجب بشكل موحد، لذا لا ننسب درجات اختبارات إلى واجبات دون دليل.
  box.textContent='نتائج الاختبارات تظهر بالأعلى. لعرض درجات الواجبات منفصلة، يلزم ربطها بحقل نوع الواجب في قاعدة البيانات.';
 }
+
+document.querySelectorAll('[data-open-account-section]').forEach(button => {
+  button.addEventListener('click', () => {
+    const targetId = button.dataset.openAccountSection;
+    openAccountTab('results');
+    window.setTimeout(() => {
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        target.focus({ preventScroll: true });
+      }
+    }, 80);
+  });
+});
 
 setupSidebar();
 
