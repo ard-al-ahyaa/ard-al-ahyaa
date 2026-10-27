@@ -96,7 +96,7 @@ button {
   display: grid;
   place-items: center;
   font-size: 17px;
-  margin: 0 auto 10px;
+  margin: -8px auto 16px;
   flex-shrink: 0;
 }
 
@@ -1166,6 +1166,11 @@ body{background:#f5f8fc}
       </div>
     </div>
 
+    <button type="button" class="sidebar-toggle" id="sidebarToggle"
+            aria-label="تصغير القائمة" title="تصغير أو تكبير القائمة">
+      <i class="fa-solid fa-angles-right"></i>
+    </button>
+
     <div class="menu-label">القائمة الرئيسية</div>
 
     <nav class="side-menu" aria-label="القائمة الرئيسية">
@@ -1204,10 +1209,6 @@ body{background:#f5f8fc}
   </div>
 
   <div class="sidebar-bottom">
-    <button type="button" class="sidebar-toggle" id="sidebarToggle"
-            aria-label="تصغير القائمة" title="تصغير أو تكبير القائمة">
-      <i class="fa-solid fa-angles-right"></i>
-    </button>
     <div class="sidebar-copyright">
       <i class="fa-solid fa-leaf"></i>
       <span>جميع الحقوق محفوظة © 2026</span>
