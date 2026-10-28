@@ -1066,74 +1066,96 @@ function formatTime(value){
 }
 
 /* صلاحيات الاشتراكات: فحص مستقل للمدفوع والمجاني */
-async function loadSubscriptionAccess(user){
- viewerId=user.id;
- viewerIsAdmin=false;
- paidAccess=[];
- freeGrants=[];
- accessLoadError=false;
+```javascript
+async function loadSubscriptionAccess(user) {
+  viewerId = user.id;
+  viewerIsAdmin = false;
+  paidAccess = [];
+  freeGrants = [];
+  accessLoadError = false;
 
- // فشل جدول الاشتراكات المدفوعة لا يلغي منحة مجانية صالحة، والعكس صحيح.
- const [profile,paid,free]=await Promise.allSettled([
-  supabaseClient.from("profiles").select("role").eq("id",user.id).maybeSingle(),
-  supabaseClient.from("student_access").select("month_id,term_code").eq("student_id",user.id),
-  supabaseClient.from("student_subscription_grants")
-   .select("month_id,term_code,expires_at")
-   .eq("student_id",user.id)
- ]);
- const result=x=>x.status==="fulfilled"?x.value:{data:null,error:x.reason||new Error("تعذر الاتصال")};
- const profileResult=result(profile);
- const paidResult=result(paid);
- const freeResult=result(free);
- viewerIsAdmin=profileResult.data?.role==="admin";
- paidAccess=paidResult.error?[]:(paidResult.data||[]);
- const now=Date.now();
- freeGrants=freeResult.error?[]:(freeResult.data||[]).filter(row=>{
-  const expiry=Date.parse(row.expires_at||"");
-  return Number.isFinite(expiry)&&expiry>now;
- });
- // لا نمنح الوصول بناءً على تخمين عند فشل الاستعلامات.
- // الخطأ يظهر فقط إذا لم تتوفر أي بيانات صلاحية مثبتة.
- accessLoadError=!!(paidResult.error||freeResult.error);
- if(profileResult.error||paidResult.error||freeResult.error){
-  console.warn("Subscription access check:",{
-   profile:profileResult.error,paid:paidResult.error,free:freeResult.error
-  });
- }
- if(accessLoadError&&!viewerIsAdmin&&!paidAccess.length&&!freeGrants.length){
-  showMessage("تعذر التحقق من الاشتراك حاليًا. حدّث الصفحة، وإذا استمرت المشكلة تواصل مع الإدارة.");
- }else{
-  const notice=$("pageNotice");
-  if(notice){notice.textContent="";notice.className="";}
- }
-}
+  // قراءة بيانات الحساب والاشتراكات
+  const [profile, paid, free] = await Promise.allSettled([
+    supabaseClient
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle(),
 
-function canOpenMonth(month){
- if(viewerIsAdmin)return true;
- if(!viewerId||!month)return false;
- const id=String(month.id??"").trim();
- const term=String(month.term_code??"").trim().toLowerCase();
- const grants=[...paidAccess,...freeGrants];
- return grants.some(row=>{
-  const grantMonth=row.month_id==null?"":String(row.month_id).trim();
-  const grantTerm=String(row.term_code??"").trim().toLowerCase();
-  return (id!==""&&grantMonth!==""&&grantMonth===id)||
-         (term!==""&&grantTerm!==""&&grantTerm===term);
- });
-}
-function getMonthStatus(month){
- if(canOpenMonth(month))return {type:"unlocked",icon:"fa-circle-check",title:"الشهر متاح ليك",detail:"ابدأ المذاكرة براحتك"};
- if(accessLoadError)return {type:"upgrade-error",icon:"fa-circle-exclamation",title:"تعذر فحص بعض الاشتراكات",detail:"حدّث الصفحة أو تواصل مع الإدارة"};
- return {type:"",icon:"fa-lock",title:"افتح محتوى الشهر",detail:"رقّي اشتراكك واستمتع بالمحاضرات"};
-}
-function lockedLectureHTML(){
- return `<div class="lecture-locked">
-  <div class="lock-symbol"><i class="fa-solid fa-lock"></i></div>
-  <h3>المحاضرة دي ضمن محتوى الاشتراك</h3>
-  <p>اشترك في الشهر أو الترم علشان تفتح الفيديو والمذكرات والواجبات. لو اشتراكك متفعّل بالفعل، حدّث الصفحة.</p>
-  <a class="primary-btn" href="${escapeHtml(SUBSCRIPTION_PAGE)}"><i class="fa-solid fa-arrow-up-right-dots"></i> ترقية الاشتراك</a>
- </div>`;
-}
+    supabaseClient
+      .from("student_access")
+      .select("month_id,term_code")
+      .eq("student_id", user.id),
+
+    supabaseClient
+      .from("student_subscription_grants")
+      .select("month_id,term_code,expires_at")
+      .eq("student_id", user.id)
+  ]);
+
+  const result = x =>
+    x.status === "fulfilled"
+      ? x.value
+      : { data: null, error: x.reason || new Error("تعذر الاتصال") };
+
+  const profileResult = result(profile);
+  const paidResult = result(paid);
+  const freeResult = result(free);
+
+  // تحديد صلاحية الإدارة
+  viewerIsAdmin = profileResult.data?.role === "admin";
+
+  // الاشتراكات المدفوعة
+  paidAccess = paidResult.error
+    ? []
+    : (paidResult.data || []);
+
+  // الاشتراكات المجانية السارية فقط
+  const now = Date.now();
+
+  freeGrants = freeResult.error
+    ? []
+    : (freeResult.data || []).filter(row => {
+        const expiry = Date.parse(row.expires_at || "");
+        return Number.isFinite(expiry) && expiry > now;
+      });
+
+  // تسجيل بيانات الفحص في وحدة التحكم
+  console.log("بيانات الطالب:", viewerId);
+  console.log("هل الحساب إداري؟", viewerIsAdmin);
+  console.log("الاشتراكات المدفوعة:", paidAccess);
+  console.log("الاشتراكات المجانية السارية:", freeGrants);
+  console.log("خطأ قراءة الاشتراكات المجانية:", freeResult.error);
+
+  // تسجيل أخطاء القراءة
+  accessLoadError = !!(paidResult.error || freeResult.error);
+
+  if (profileResult.error || paidResult.error || freeResult.error) {
+    console.warn("Subscription access check:", {
+      profile: profileResult.error,
+      paid: paidResult.error,
+      free: freeResult.error
+    });
+  }
+
+  // عرض رسالة في حالة تعذر التحقق من الاشتراك
+  if (
+    accessLoadError &&
+    !viewerIsAdmin &&
+    !paidAccess.length &&
+    !freeGrants.length
+  ) {
+    showMessage(
+      "تعذر التحقق من الاشتراك حاليًا. حدّث الصفحة، وإذا استمرت المشكلة تواصل مع الإدارة."
+    );
+  } else {
+    const notice = $("pageNotice");
+
+    if (notice) {
+      notice.textContent = "";
+      notice.className = "";
+    }
+  }
 
 /* الشريط الجانبي */
 function setSidebar(collapsed){
