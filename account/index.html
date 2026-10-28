@@ -13,7 +13,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -29,11 +28,7 @@
   --sidebar-width: 272px;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   font-family: 'Cairo', sans-serif;
@@ -42,22 +37,10 @@ body {
   min-height: 100vh;
 }
 
-button, input {
-  font: inherit;
-}
-
-button, a {
-  -webkit-tap-highlight-color: transparent;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button {
-  cursor: pointer;
-}
+button, input { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; }
 
 .sidebar {
   position: fixed;
@@ -66,12 +49,7 @@ button {
   top: 0;
   width: var(--sidebar-width);
   height: 100vh;
-  background: linear-gradient(
-    180deg,
-    #004e4d 0%,
-    #003d50 62%,
-    #07375b 100%
-  );
+  background: linear-gradient(180deg,#004e4d 0%,#003d50 62%,#07375b 100%);
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -100,9 +78,7 @@ button {
   flex-shrink: 0;
 }
 
-.sidebar-toggle:hover {
-  background: rgba(255,255,255,.18);
-}
+.sidebar-toggle:hover { background: rgba(255,255,255,.18); }
 
 .brand {
   display: flex;
@@ -115,23 +91,9 @@ button {
   border-bottom: 1px solid rgba(255,255,255,.12);
 }
 
-.brand-logo {
-  width: 87px;
-  height: 87px;
-  object-fit: contain;
-}
-
-.brand h2 {
-  font-size: 22px;
-  line-height: 1.6;
-  font-weight: 900;
-  color: white;
-}
-
-.brand small {
-  font-size: 13px;
-  color: #d2e8e5;
-}
+.brand-logo { width: 87px; height: 87px; object-fit: contain; }
+.brand h2 { font-size: 22px; line-height: 1.6; font-weight: 900; color: white; }
+.brand small { font-size: 13px; color: #d2e8e5; }
 
 .menu-label {
   color: rgba(255,255,255,.55);
@@ -141,11 +103,7 @@ button {
   margin-bottom: 10px;
 }
 
-.side-menu {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+.side-menu { display: flex; flex-direction: column; gap: 8px; }
 
 .side-link {
   min-height: 54px;
@@ -172,13 +130,11 @@ button {
 
 .side-link:hover,
 .side-link.active {
-  background: linear-gradient(100deg, #20aa7d, #159b77);
+  background: linear-gradient(100deg,#20aa7d,#159b77);
   color: white;
 }
 
-.side-link:hover {
-  transform: translateX(-2px);
-}
+.side-link:hover { transform: translateX(-2px); }
 
 .sidebar-bottom {
   padding: 10px 8px 14px;
@@ -190,63 +146,30 @@ button {
   flex-shrink: 0;
 }
 
-.sidebar-copyright {
-  white-space: nowrap;
-}
+.sidebar-copyright { white-space: nowrap; }
+.sidebar-copyright i { color: #20c38a; margin-left: 5px; }
 
-.sidebar-copyright i {
-  color: #20c38a;
-  margin-left: 5px;
-}
-
-body.sidebar-collapsed {
-  --sidebar-width: 82px;
-}
+body.sidebar-collapsed { --sidebar-width: 82px; }
 
 body.sidebar-collapsed .brand h2,
 body.sidebar-collapsed .brand small,
 body.sidebar-collapsed .menu-label,
 body.sidebar-collapsed .side-link span,
-body.sidebar-collapsed .sidebar-bottom span {
-  display: none;
-}
+body.sidebar-collapsed .sidebar-bottom span { display: none; }
 
-body.sidebar-collapsed .sidebar-copyright {
-  display: none;
-}
-
-body.sidebar-collapsed .sidebar-bottom {
-  padding-left: 3px;
-  padding-right: 3px;
-}
-
-body.sidebar-collapsed .brand {
-  padding-bottom: 15px;
-}
-
-body.sidebar-collapsed .brand-logo {
-  width: 52px;
-  height: 52px;
-}
+body.sidebar-collapsed .sidebar-copyright { display: none; }
+body.sidebar-collapsed .sidebar-bottom { padding-left: 3px; padding-right: 3px; }
+body.sidebar-collapsed .brand { padding-bottom: 15px; }
+body.sidebar-collapsed .brand-logo { width: 52px; height: 52px; }
 
 body.sidebar-collapsed .side-link {
   justify-content: center;
   padding: 13px 5px;
 }
 
-body.sidebar-collapsed .side-link i {
-  font-size: 22px;
-}
-
-body.sidebar-collapsed .sidebar-bottom {
-  margin: 0 5px;
-}
-
-body.sidebar-collapsed .sidebar-toggle i {
-  transform: rotate(180deg);
-}
-
-/* المحتوى الرئيسي */
+body.sidebar-collapsed .side-link i { font-size: 22px; }
+body.sidebar-collapsed .sidebar-bottom { margin: 0 5px; }
+body.sidebar-collapsed .sidebar-toggle i { transform: rotate(180deg); }
 
 .main {
   margin-right: var(--sidebar-width);
@@ -268,11 +191,7 @@ body.sidebar-collapsed .sidebar-toggle i {
   z-index: 100;
 }
 
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
+.topbar-right { display: flex; align-items: center; gap: 15px; }
 
 .mobile-menu {
   display: none;
@@ -282,21 +201,9 @@ body.sidebar-collapsed .sidebar-toggle i {
   font-size: 24px;
 }
 
-.topbar-title {
-  font-size: 17px;
-  font-weight: 900;
-}
-
-.topbar-subtitle {
-  color: var(--muted);
-  font-size: 11px;
-}
-
-.topbar-user {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+.topbar-title { font-size: 17px; font-weight: 900; }
+.topbar-subtitle { color: var(--muted); font-size: 11px; }
+.topbar-user { display: flex; align-items: center; gap: 10px; }
 
 .avatar {
   width: 43px;
@@ -319,23 +226,15 @@ body.sidebar-collapsed .sidebar-toggle i {
   font-size: 13px;
 }
 
-.topbar-user small {
-  display: block;
-  color: var(--muted);
-  font-size: 11px;
-}
+.topbar-user small { display: block; color: var(--muted); font-size: 11px; }
 
-.page {
-  max-width: 1600px;
-  margin: auto;
-  padding: 25px 27px 35px;
-}
+.page { max-width: 1600px; margin: auto; padding: 25px 27px 35px; }
 
 .welcome-banner {
   min-height: 160px;
   padding: 26px 32px;
   border-radius: 19px;
-  background: linear-gradient(115deg, #e4f7f0, #fff 57%, #eaf2ff);
+  background: linear-gradient(115deg,#e4f7f0,#fff 57%,#eaf2ff);
   border: 1px solid #d9eae6;
   display: flex;
   align-items: center;
@@ -358,10 +257,7 @@ body.sidebar-collapsed .sidebar-toggle i {
   pointer-events: none;
 }
 
-.welcome-content {
-  position: relative;
-  z-index: 1;
-}
+.welcome-content { position: relative; z-index: 1; }
 
 .welcome-tag {
   display: inline-block;
@@ -375,16 +271,13 @@ body.sidebar-collapsed .sidebar-toggle i {
 }
 
 .welcome-banner h1 {
-  font-size: clamp(24px, 3vw, 36px);
+  font-size: clamp(24px,3vw,36px);
   font-weight: 900;
   color: #00795e;
   margin-bottom: 5px;
 }
 
-.welcome-banner p {
-  color: #315d70;
-  font-size: 14px;
-}
+.welcome-banner p { color: #315d70; font-size: 14px; }
 
 .banner-icon {
   width: 105px;
@@ -400,7 +293,7 @@ body.sidebar-collapsed .sidebar-toggle i {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4,minmax(0,1fr));
   gap: 13px;
   margin: 18px 0;
 }
@@ -427,55 +320,19 @@ body.sidebar-collapsed .sidebar-toggle i {
   flex-shrink: 0;
 }
 
-.icon-green {
-  background: #d9f3e9;
-  color: #07875f;
-}
+.icon-green { background: #d9f3e9; color: #07875f; }
+.icon-blue { background: #e0edff; color: #2367d5; }
+.icon-purple { background: #ece4ff; color: #7650de; }
+.icon-orange { background: #fff0d9; color: #e99510; }
 
-.icon-blue {
-  background: #e0edff;
-  color: #2367d5;
-}
-
-.icon-purple {
-  background: #ece4ff;
-  color: #7650de;
-}
-
-.icon-orange {
-  background: #fff0d9;
-  color: #e99510;
-}
-
-.stat-text {
-  min-width: 0;
-}
-
-.stat-text span {
-  display: block;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 700;
-  margin-bottom: 5px;
-}
-
-.stat-text strong {
-  display: block;
-  font-size: 25px;
-  color: var(--navy);
-  font-weight: 900;
-}
-
-.stat-text small {
-  display: block;
-  color: #8195b3;
-  font-size: 10px;
-  margin-top: 3px;
-}
+.stat-text { min-width: 0; }
+.stat-text span { display: block; color: var(--muted); font-size: 12px; font-weight: 700; margin-bottom: 5px; }
+.stat-text strong { display: block; font-size: 25px; color: var(--navy); font-weight: 900; }
+.stat-text small { display: block; color: #8195b3; font-size: 10px; margin-top: 3px; }
 
 .content-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr);
+  grid-template-columns: minmax(0,1.25fr) minmax(280px,.75fr);
   gap: 17px;
   align-items: start;
 }
@@ -498,16 +355,8 @@ body.sidebar-collapsed .sidebar-toggle i {
   margin-bottom: 22px;
 }
 
-.card-heading h2 {
-  font-size: 18px;
-  font-weight: 900;
-}
-
-.card-heading p {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 3px;
-}
+.card-heading h2 { font-size: 18px; font-weight: 900; }
+.card-heading p { font-size: 12px; color: var(--muted); margin-top: 3px; }
 
 .heading-icon {
   width: 45px;
@@ -534,7 +383,7 @@ body.sidebar-collapsed .sidebar-toggle i {
   width: 76px;
   height: 76px;
   border-radius: 22px;
-  background: linear-gradient(145deg, #d7f5e8, #e2edff);
+  background: linear-gradient(145deg,#d7f5e8,#e2edff);
   color: #087d65;
   display: grid;
   place-items: center;
@@ -542,39 +391,13 @@ body.sidebar-collapsed .sidebar-toggle i {
   flex-shrink: 0;
 }
 
-.profile-head h3 {
-  font-size: 20px;
-  font-weight: 900;
-  overflow-wrap: anywhere;
-}
+.profile-head h3 { font-size: 20px; font-weight: 900; overflow-wrap: anywhere; }
+.profile-head p { font-size: 12px; color: var(--muted); margin-top: 5px; }
 
-.profile-head p {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 5px;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 17px;
-}
-
-.field {
-  margin-bottom: 3px;
-  min-width: 0;
-}
-
-.field label {
-  display: block;
-  font-size: 12px;
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-
-.input-wrap {
-  position: relative;
-}
+.form-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 17px; }
+.field { margin-bottom: 3px; min-width: 0; }
+.field label { display: block; font-size: 12px; font-weight: 800; margin-bottom: 8px; }
+.input-wrap { position: relative; }
 
 .input-wrap i {
   position: absolute;
@@ -596,34 +419,14 @@ body.sidebar-collapsed .sidebar-toggle i {
   background: #fbfdff;
   color: var(--text);
   font-size: 12px;
-  transition: border-color .2s, box-shadow .2s;
+  transition: border-color .2s,box-shadow .2s;
 }
 
-.field input:focus {
-  border-color: #0b9b74;
-  box-shadow: 0 0 0 3px rgba(11,155,116,.08);
-}
+.field input:focus { border-color: #0b9b74; box-shadow: 0 0 0 3px rgba(11,155,116,.08); }
+.field input[readonly] { background: #f2f6fb; color: #637b9b; cursor: not-allowed; }
+.field-note { display: block; color: #8294ae; font-size: 10px; margin-top: 6px; }
 
-.field input[readonly] {
-  background: #f2f6fb;
-  color: #637b9b;
-  cursor: not-allowed;
-}
-
-.field-note {
-  display: block;
-  color: #8294ae;
-  font-size: 10px;
-  margin-top: 6px;
-}
-
-.actions {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 23px;
-}
+.actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 23px; }
 
 .btn {
   min-height: 43px;
@@ -639,31 +442,11 @@ body.sidebar-collapsed .sidebar-toggle i {
   transition: .2s;
 }
 
-.btn-primary {
-  background: linear-gradient(110deg, #0ba477, #07865f);
-  color: white;
-}
-
-.btn-primary:hover {
-  filter: brightness(.96);
-  transform: translateY(-1px);
-}
-
-.btn-light {
-  background: #edf4fc;
-  color: #34577e;
-}
-
-.btn-danger {
-  background: #fff0f0;
-  color: #d83e4c;
-}
-
-.btn:disabled {
-  opacity: .6;
-  cursor: not-allowed;
-  transform: none;
-}
+.btn-primary { background: linear-gradient(110deg,#0ba477,#07865f); color: white; }
+.btn-primary:hover { filter: brightness(.96); transform: translateY(-1px); }
+.btn-light { background: #edf4fc; color: #34577e; }
+.btn-danger { background: #fff0f0; color: #d83e4c; }
+.btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
 
 .message {
   display: none;
@@ -674,29 +457,11 @@ body.sidebar-collapsed .sidebar-toggle i {
   line-height: 1.8;
 }
 
-.message.success {
-  display: block;
-  background: #e8f8f0;
-  color: #087b50;
-}
+.message.success { display: block; background: #e8f8f0; color: #087b50; }
+.message.error { display: block; background: #fff0f0; color: #b52b3c; }
+.message.info { display: block; background: #edf5ff; color: #245a9d; }
 
-.message.error {
-  display: block;
-  background: #fff0f0;
-  color: #b52b3c;
-}
-
-.message.info {
-  display: block;
-  background: #edf5ff;
-  color: #245a9d;
-}
-
-.info-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+.info-list { display: flex; flex-direction: column; gap: 12px; }
 
 .info-item {
   display: flex;
@@ -718,18 +483,8 @@ body.sidebar-collapsed .sidebar-toggle i {
   flex-shrink: 0;
 }
 
-.info-item strong {
-  display: block;
-  font-size: 12px;
-}
-
-.info-item small {
-  display: block;
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 4px;
-  overflow-wrap: anywhere;
-}
+.info-item strong { display: block; font-size: 12px; }
+.info-item small { display: block; font-size: 11px; color: var(--muted); margin-top: 4px; overflow-wrap: anywhere; }
 
 .progress-track {
   width: 100%;
@@ -743,18 +498,12 @@ body.sidebar-collapsed .sidebar-toggle i {
 .progress-bar {
   width: 0%;
   height: 100%;
-  background: linear-gradient(90deg, #16b581, #078762);
+  background: linear-gradient(90deg,#16b581,#078762);
   border-radius: inherit;
   transition: width .4s ease;
 }
 
-.progress-caption {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  color: var(--muted);
-  font-size: 11px;
-}
+.progress-caption { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 11px; }
 
 .status-pill {
   display: inline-flex;
@@ -768,26 +517,9 @@ body.sidebar-collapsed .sidebar-toggle i {
   font-weight: 800;
 }
 
-.empty-state {
-  text-align: center;
-  padding: 24px 10px;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.empty-state i {
-  display: block;
-  font-size: 29px;
-  color: #a6bbd4;
-  margin-bottom: 10px;
-}
-
-.footer {
-  text-align: center;
-  color: #8095b1;
-  font-size: 11px;
-  padding: 15px 0 5px;
-}
+.empty-state { text-align: center; padding: 24px 10px; color: var(--muted); font-size: 12px; }
+.empty-state i { display: block; font-size: 29px; color: #a6bbd4; margin-bottom: 10px; }
+.footer { text-align: center; color: #8095b1; font-size: 11px; padding: 15px 0 5px; }
 
 .loading-screen {
   position: fixed;
@@ -813,9 +545,7 @@ body.sidebar-collapsed .sidebar-toggle i {
   animation: spin .8s linear infinite;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 .auth-screen {
   position: fixed;
@@ -838,270 +568,285 @@ body.sidebar-collapsed .sidebar-toggle i {
   box-shadow: 0 15px 50px rgba(20,60,100,.08);
 }
 
-.auth-logo {
-  width: 85px;
-  height: 85px;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto 12px;
+.auth-logo { width: 85px; height: 85px; object-fit: contain; display: block; margin: 0 auto 12px; }
+.auth-card h1 { font-size: 22px; text-align: center; margin-bottom: 8px; }
+.auth-card > p { font-size: 12px; color: var(--muted); text-align: center; margin-bottom: 22px; line-height: 1.9; }
+.auth-card .field { margin-bottom: 15px; }
+.auth-card .btn { width: 100%; margin-top: 5px; }
+.auth-error { font-size: 12px; color: #bf2d3b; margin-top: 12px; line-height: 1.8; }
+.overlay { display: none; }
+
+/* تحسينات واجهة الحساب */
+body { background: #f5f8fc; }
+.page { max-width: 1440px; }
+
+.welcome-banner {
+  background: linear-gradient(115deg,#004e4d 0%,#086b69 52%,#07375b 100%);
+  border: 0;
+  box-shadow: 0 15px 38px rgba(4,70,81,.15);
+  border-radius: 24px;
+  min-height: 205px;
+  color: #fff;
 }
 
-.auth-card h1 {
-  font-size: 22px;
-  text-align: center;
-  margin-bottom: 8px;
+.welcome-banner h1 { color: #fff; }
+.welcome-banner p { color: #d9f5ed; }
+.welcome-tag { background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.2); }
+.welcome-banner::after { color: rgba(255,255,255,.055); }
+.banner-icon { background: rgba(255,255,255,.12); color: #d7fff1; }
+
+.card,.stat-card {
+  border-color: #e5edf4;
+  box-shadow: 0 8px 28px rgba(10,52,83,.045);
+  border-radius: 20px;
 }
 
-.auth-card > p {
+.card-heading h2 { color: #0b3450; }
+.stat-card { transition: transform .2s,box-shadow .2s; }
+.stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(10,52,83,.09); }
+
+.account-welcome-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; position: relative; z-index: 2; }
+
+.account-hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 17px;
+  border-radius: 12px;
+  background: #fff;
+  color: #075e58;
+  font-weight: 900;
   font-size: 12px;
-  color: var(--muted);
-  text-align: center;
-  margin-bottom: 22px;
+}
+
+.account-hero-btn.ghost { background: rgba(255,255,255,.12); color: #fff; border: 1px solid rgba(255,255,255,.25); }
+
+.subscription-panel {
+  background: #fff;
+  border: 1px solid #e3edf4;
+  border-radius: 21px;
+  padding: 23px;
+  margin: 18px 0;
+  box-shadow: 0 8px 28px rgba(10,52,83,.045);
+}
+
+.subscription-panel-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.subscription-panel-head h2 { font-size: 19px; color: #0b3450; }
+.subscription-panel-head p { font-size: 12px; color: #71849b; margin-top: 3px; }
+.subscription-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 13px; }
+
+.subscription-tile {
+  border: 1px solid #e2edf0;
+  background: linear-gradient(125deg,#f3fbf7,#fff);
+  border-radius: 15px;
+  padding: 17px;
+  min-width: 0;
+}
+
+.subscription-tile .tile-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: #dcf3e9;
+  color: #07835d;
+  display: grid;
+  place-items: center;
+  font-size: 19px;
+  margin-bottom: 12px;
+}
+
+.subscription-tile strong { display: block; font-size: 15px; color: #113a50; }
+.subscription-tile p { font-size: 12px; color: #687f92; line-height: 1.9; margin: 7px 0; }
+.subscription-tile .tile-state { font-size: 12px; font-weight: 800; color: #087c5e; overflow-wrap: anywhere; }
+.subscription-tile .tile-state.muted { color: #71849b; }
+.subscription-tile .tile-state.warn { color: #a96d11; }
+.subscription-panel .btn { white-space: nowrap; }
+
+.profile-head { background: #f8fbfe; padding: 15px; border-radius: 16px; border: 1px solid #eaf0f6; }
+.info-item { transition: background .2s; }
+.info-item:hover { background: #f8fbfe; }
+
+.account-tabs { display: flex; gap: 10px; overflow-x: auto; padding: 5px 1px 14px; margin: 18px 0 5px; scrollbar-width: thin; }
+
+.account-tab {
+  flex: 0 0 auto;
+  border: 1px solid #dce9ec;
+  background: #fff;
+  color: #426075;
+  padding: 13px 21px;
+  border-radius: 14px;
+  font-weight: 900;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 5px 18px #07375b08;
+  transition: .2s;
+}
+
+.account-tab i { font-size: 17px; }
+.account-tab.active { background: linear-gradient(115deg,#087f68,#004e4d); color: #fff; border-color: transparent; box-shadow: 0 8px 22px #004e4d22; }
+.account-tab:hover { transform: translateY(-2px); }
+.account-pane[hidden] { display: none !important; }
+
+.account-section-title { font-size: 23px; color: #103b4f; margin: 18px 0 5px; font-weight: 900; }
+.account-section-sub { color: #72879a; font-size: 13px; margin-bottom: 18px; }
+.account-actions-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin: 16px 0 22px; }
+.student-services { margin: 18px 0 24px; }
+.student-services-heading { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; color: #103b4f; font-size: 19px; font-weight: 900; }
+.student-services-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
+
+.student-service-card {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #dfeaf2;
+  border-radius: 18px;
+  padding: 20px;
+  background: linear-gradient(120deg,#f0fbf6,#fff);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  text-align: right;
+  color: #12394e;
+  transition: transform .2s,box-shadow .2s,border-color .2s;
+}
+
+.student-service-card.exam { background: linear-gradient(120deg,#f0f5ff,#fff); border-color: #dce7ff; }
+.student-service-card:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(10,52,83,.08); border-color: #9ed9c8; }
+
+.student-service-icon {
+  width: 58px;
+  height: 58px;
+  flex: 0 0 58px;
+  border-radius: 16px;
+  background: #2eaa8b;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 25px;
+}
+
+.student-service-card.exam .student-service-icon { background: #5c86e8; }
+.student-service-copy { flex: 1; min-width: 0; }
+.student-service-copy strong { display: block; font-size: 17px; font-weight: 900; margin-bottom: 5px; }
+.student-service-copy small { display: block; font-size: 12px; color: #6d8297; line-height: 1.8; }
+
+.student-service-arrow {
+  width: 35px;
+  height: 35px;
+  flex: 0 0 35px;
+  border-radius: 50%;
+  background: #078f70;
+  color: #fff;
+  display: grid;
+  place-items: center;
+}
+
+.student-service-card.exam .student-service-arrow { background: #3d72dc; }
+
+.account-action {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  border: 1px solid #e1ebf0;
+  border-radius: 15px;
+  padding: 17px;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  transition: .2s;
+}
+
+.account-action:hover { border-color: #a5dccc; transform: translateY(-2px); }
+.account-action i { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; background: #e5f6ef; color: #087e64; font-size: 19px; }
+
+.account-data-table { width: 100%; border-collapse: collapse; min-width: 560px; font-size: 12px; }
+.account-data-table th { text-align: right; background: #f2f8f7; color: #406477; padding: 13px; border-bottom: 1px solid #e0e9ee; }
+.account-data-table td { padding: 14px 13px; border-bottom: 1px solid #edf2f5; }
+.table-scroll { overflow-x: auto; }
+.tag-pending { color: #9b680d; background: #fff4dc; padding: 5px 9px; border-radius: 20px; }
+.tag-approved { color: #08734f; background: #e4f7ee; padding: 5px 9px; border-radius: 20px; }
+.tag-rejected { color: #b52b3c; background: #ffeded; padding: 5px 9px; border-radius: 20px; }
+
+.connection-status {
+  display: none;
+  margin: 0 0 16px;
+  padding: 12px 15px;
+  border-radius: 12px;
+  background: #fff4dc;
+  color: #80580b;
+  font-size: 12px;
   line-height: 1.9;
 }
 
-.auth-card .field {
-  margin-bottom: 15px;
+.connection-status.show { display: block; }
+
+@media(max-width:1100px) {
+  .stats-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .content-grid { grid-template-columns: minmax(0,1fr); }
 }
 
-.auth-card .btn {
-  width: 100%;
-  margin-top: 5px;
-}
+@media(max-width:760px) {
+  :root { --sidebar-width: 0px; }
 
-.auth-error {
-  font-size: 12px;
-  color: #bf2d3b;
-  margin-top: 12px;
-  line-height: 1.8;
-}
-
-.overlay {
-  display: none;
-}
-
-@media (max-width: 1100px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .content-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-@media (max-width: 760px) {
-  :root {
-    --sidebar-width: 0px;
-  }
-
-  .sidebar {
-    width: 272px;
-    transform: translateX(100%);
-    box-shadow: none;
-  }
-
-  body.mobile-sidebar-open .sidebar {
-    transform: translateX(0);
-    box-shadow: -10px 0 35px rgba(0,0,0,.2);
-  }
-
-  body.sidebar-collapsed .sidebar {
-    width: 272px;
-  }
+  .sidebar { width: 272px; transform: translateX(100%); box-shadow: none; }
+  body.mobile-sidebar-open .sidebar { transform: translateX(0); box-shadow: -10px 0 35px rgba(0,0,0,.2); }
+  body.sidebar-collapsed .sidebar { width: 272px; }
 
   body.sidebar-collapsed .brand h2,
   body.sidebar-collapsed .brand small,
   body.sidebar-collapsed .menu-label,
   body.sidebar-collapsed .side-link span,
-  body.sidebar-collapsed .sidebar-bottom span {
-    display: initial;
-  }
+  body.sidebar-collapsed .sidebar-bottom span { display: initial; }
 
-  body.sidebar-collapsed .brand-logo {
-    width: 87px;
-    height: 87px;
-  }
+  body.sidebar-collapsed .brand-logo { width: 87px; height: 87px; }
+  body.sidebar-collapsed .side-link { justify-content: flex-start; padding: 12px 15px; }
+  body.sidebar-collapsed .sidebar-bottom { margin: 0 15px; }
 
-  body.sidebar-collapsed .side-link {
-    justify-content: flex-start;
-    padding: 12px 15px;
-  }
+  .main { margin-right: 0; }
+  .topbar { min-height: 67px; padding: 10px 15px; gap: 10px; }
+  .mobile-menu { display: block; }
+  .topbar-title { font-size: 14px; }
+  .topbar-user strong { max-width: 125px; font-size: 11px; }
+  .topbar-user small { font-size: 10px; }
+  .page { padding: 16px 13px 25px; }
+  .welcome-banner { min-height: 145px; padding: 20px; }
+  .banner-icon { width: 65px; height: 65px; font-size: 32px; }
+  .welcome-banner p { font-size: 12px; }
+  .stats-grid { gap: 10px; }
 
-  body.sidebar-collapsed .sidebar-bottom {
-    margin: 0 15px;
-  }
+  .stat-card { min-height: 105px; padding: 12px; gap: 9px; }
+  .stat-icon { width: 43px; height: 43px; font-size: 18px; }
+  .stat-text span { font-size: 10px; }
+  .stat-text strong { font-size: 21px; }
+  .stat-text small { font-size: 9px; }
+  .card { padding: 17px; }
+  .form-grid { grid-template-columns: minmax(0,1fr); gap: 13px; }
+  .profile-head h3 { font-size: 17px; }
 
-  .main {
-    margin-right: 0;
-  }
+  .overlay { position: fixed; inset: 0; z-index: 900; background: rgba(8,28,50,.4); }
+  body.mobile-sidebar-open .overlay { display: block; }
 
-  .topbar {
-    min-height: 67px;
-    padding: 10px 15px;
-    gap: 10px;
-  }
-
-  .mobile-menu {
-    display: block;
-  }
-
-  .topbar-title {
-    font-size: 14px;
-  }
-
-  .topbar-user strong {
-    max-width: 125px;
-    font-size: 11px;
-  }
-
-  .topbar-user small {
-    font-size: 10px;
-  }
-
-  .page {
-    padding: 16px 13px 25px;
-  }
-
-  .welcome-banner {
-    min-height: 145px;
-    padding: 20px;
-  }
-
-  .banner-icon {
-    width: 65px;
-    height: 65px;
-    font-size: 32px;
-  }
-
-  .welcome-banner p {
-    font-size: 12px;
-  }
-
-  .stats-grid {
-    gap: 10px;
-  }
-
-  .stat-card {
-    min-height: 105px;
-    padding: 12px;
-    gap: 9px;
-  }
-
-  .stat-icon {
-    width: 43px;
-    height: 43px;
-    font-size: 18px;
-  }
-
-  .stat-text span {
-    font-size: 10px;
-  }
-
-  .stat-text strong {
-    font-size: 21px;
-  }
-
-  .stat-text small {
-    font-size: 9px;
-  }
-
-  .card {
-    padding: 17px;
-  }
-
-  .form-grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 13px;
-  }
-
-  .profile-head h3 {
-    font-size: 17px;
-  }
-
-  .overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 900;
-    background: rgba(8,28,50,.4);
-  }
-
-  body.mobile-sidebar-open .overlay {
-    display: block;
-  }
+  .welcome-banner { min-height: 200px; }
+  .account-welcome-actions { margin-top: 16px; }
+  .subscription-grid { grid-template-columns: 1fr; }
+  .subscription-panel { padding: 17px; }
+  .subscription-panel-head h2 { font-size: 17px; }
+  .student-services-grid { grid-template-columns: 1fr; }
+  .student-service-card { padding: 16px; }
+  .student-service-copy strong { font-size: 15px; }
+  .account-tabs { gap: 7px; }
+  .account-tab { padding: 11px 13px; font-size: 11px; }
+  .account-actions-grid { grid-template-columns: 1fr; }
+  .account-section-title { font-size: 19px; }
 }
 
-@media (max-width: 380px) {
-  .topbar-user .avatar {
-    display: none;
-  }
-
-  .stats-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .welcome-banner {
-    padding: 16px;
-  }
-
-  .banner-icon {
-    display: none;
-  }
+@media(max-width:380px) {
+  .topbar-user .avatar { display: none; }
+  .stats-grid { grid-template-columns: minmax(0,1fr); }
+  .welcome-banner { padding: 16px; }
+  .banner-icon { display: none; }
 }
-
-/* لوحة الحساب الجديدة: بطاقات ناعمة وهوية أرض الأحياء */
-body{background:#f5f8fc}
-.page{max-width:1440px}
-.welcome-banner{background:linear-gradient(115deg,#004e4d 0%,#086b69 52%,#07375b 100%);border:0;box-shadow:0 15px 38px rgba(4,70,81,.15);border-radius:24px;min-height:205px;color:#fff}
-.welcome-banner h1{color:#fff}.welcome-banner p{color:#d9f5ed}.welcome-tag{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.2)}
-.welcome-banner::after{color:rgba(255,255,255,.055)}.banner-icon{background:rgba(255,255,255,.12);color:#d7fff1}
-.card,.stat-card{border-color:#e5edf4;box-shadow:0 8px 28px rgba(10,52,83,.045);border-radius:20px}
-.card-heading h2{color:#0b3450}.stat-card{transition:transform .2s,box-shadow .2s}.stat-card:hover{transform:translateY(-3px);box-shadow:0 12px 25px rgba(10,52,83,.09)}
-.account-welcome-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;position:relative;z-index:2}
-.account-hero-btn{display:inline-flex;align-items:center;gap:9px;padding:10px 17px;border-radius:12px;background:#fff;color:#075e58;font-weight:900;font-size:12px}
-.account-hero-btn.ghost{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25)}
-.subscription-panel{background:#fff;border:1px solid #e3edf4;border-radius:21px;padding:23px;margin:18px 0;box-shadow:0 8px 28px rgba(10,52,83,.045)}
-.subscription-panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
-.subscription-panel-head h2{font-size:19px;color:#0b3450}.subscription-panel-head p{font-size:12px;color:#71849b;margin-top:3px}
-.subscription-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
-.subscription-tile{border:1px solid #e2edf0;background:linear-gradient(125deg,#f3fbf7,#fff);border-radius:15px;padding:17px;min-width:0}
-.subscription-tile .tile-icon{width:42px;height:42px;border-radius:13px;background:#dcf3e9;color:#07835d;display:grid;place-items:center;font-size:19px;margin-bottom:12px}
-.subscription-tile strong{display:block;font-size:15px;color:#113a50}.subscription-tile p{font-size:12px;color:#687f92;line-height:1.9;margin:7px 0}
-.subscription-tile .tile-state{font-size:12px;font-weight:800;color:#087c5e;overflow-wrap:anywhere}
-.subscription-tile .tile-state.muted{color:#71849b}
-.subscription-tile .tile-state.warn{color:#a96d11}
-.subscription-panel .btn{white-space:nowrap}
-.profile-head{background:#f8fbfe;padding:15px;border-radius:16px;border:1px solid #eaf0f6}
-.info-item{transition:background .2s}.info-item:hover{background:#f8fbfe}
-@media(max-width:760px){.welcome-banner{min-height:200px}.account-welcome-actions{margin-top:16px}.subscription-grid{grid-template-columns:1fr}.subscription-panel{padding:17px}.subscription-panel-head h2{font-size:17px}}
-
-
-/* واجهة الحساب المبوبة */
-.account-tabs{display:flex;gap:10px;overflow-x:auto;padding:5px 1px 14px;margin:18px 0 5px;scrollbar-width:thin}
-.account-tab{flex:0 0 auto;border:1px solid #dce9ec;background:#fff;color:#426075;padding:13px 21px;border-radius:14px;font-weight:900;font-size:13px;display:flex;align-items:center;gap:10px;box-shadow:0 5px 18px #07375b08;transition:.2s}
-.account-tab i{font-size:17px}.account-tab.active{background:linear-gradient(115deg,#087f68,#004e4d);color:#fff;border-color:transparent;box-shadow:0 8px 22px #004e4d22}
-.account-tab:hover{transform:translateY(-2px)}.account-pane[hidden]{display:none!important}
-.account-section-title{font-size:23px;color:#103b4f;margin:18px 0 5px;font-weight:900}.account-section-sub{color:#72879a;font-size:13px;margin-bottom:18px}
- .account-actions-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0 22px}
-.student-services{margin:18px 0 24px}
-.student-services-heading{display:flex;align-items:center;gap:10px;margin-bottom:14px;color:#103b4f;font-size:19px;font-weight:900}
-.student-services-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.student-service-card{width:100%;min-width:0;border:1px solid #dfeaf2;border-radius:18px;padding:20px;background:linear-gradient(120deg,#f0fbf6,#fff);display:flex;align-items:center;gap:15px;text-align:right;color:#12394e;transition:transform .2s,box-shadow .2s,border-color .2s}
-.student-service-card.exam{background:linear-gradient(120deg,#f0f5ff,#fff);border-color:#dce7ff}
-.student-service-card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(10,52,83,.08);border-color:#9ed9c8}
-.student-service-icon{width:58px;height:58px;flex:0 0 58px;border-radius:16px;background:#2eaa8b;color:#fff;display:grid;place-items:center;font-size:25px}
-.student-service-card.exam .student-service-icon{background:#5c86e8}
-.student-service-copy{flex:1;min-width:0}
-.student-service-copy strong{display:block;font-size:17px;font-weight:900;margin-bottom:5px}
-.student-service-copy small{display:block;font-size:12px;color:#6d8297;line-height:1.8}
-.student-service-arrow{width:35px;height:35px;flex:0 0 35px;border-radius:50%;background:#078f70;color:#fff;display:grid;place-items:center}
-.student-service-card.exam .student-service-arrow{background:#3d72dc}
-@media(max-width:760px){.student-services-grid{grid-template-columns:1fr}.student-service-card{padding:16px}.student-service-copy strong{font-size:15px}}
-.account-action{display:flex;align-items:center;gap:13px;border:1px solid #e1ebf0;border-radius:15px;padding:17px;background:#fff;font-size:13px;font-weight:800;transition:.2s}
-.account-action:hover{border-color:#a5dccc;transform:translateY(-2px)}.account-action i{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:#e5f6ef;color:#087e64;font-size:19px}
-.account-data-table{width:100%;border-collapse:collapse;min-width:560px;font-size:12px}.account-data-table th{text-align:right;background:#f2f8f7;color:#406477;padding:13px;border-bottom:1px solid #e0e9ee}.account-data-table td{padding:14px 13px;border-bottom:1px solid #edf2f5}.table-scroll{overflow-x:auto}
-.tag-pending{color:#9b680d;background:#fff4dc;padding:5px 9px;border-radius:20px}.tag-approved{color:#08734f;background:#e4f7ee;padding:5px 9px;border-radius:20px}.tag-rejected{color:#b52b3c;background:#ffeded;padding:5px 9px;border-radius:20px}
-@media(max-width:760px){.account-tabs{gap:7px}.account-tab{padding:11px 13px;font-size:11px}.account-actions-grid{grid-template-columns:1fr}.account-section-title{font-size:19px}}
 </style>
 </head>
 
@@ -1109,13 +854,12 @@ body{background:#f5f8fc}
 
 <div class="loading-screen" id="loadingScreen">
   <div class="spinner"></div>
-  <span>جاري تحميل حساب الطالب...</span>
+  <span id="loadingText">جاري تحميل حساب الطالب...</span>
 </div>
 
 <div class="auth-screen" id="authScreen">
   <div class="auth-card">
-    <img src="../logo.png" alt="أرض الأحياء" class="auth-logo"
-         onerror="this.style.display='none'">
+    <img src="../logo.png" alt="أرض الأحياء" class="auth-logo" onerror="this.style.display='none'">
 
     <h1>أهلًا بك في أرض الأحياء</h1>
     <p>سجّل الدخول باستخدام البريد الإلكتروني وكلمة المرور لعرض حسابك الدراسي.</p>
@@ -1125,8 +869,7 @@ body{background:#f5f8fc}
         <label for="loginEmail">البريد الإلكتروني</label>
         <div class="input-wrap">
           <i class="fa-regular fa-envelope"></i>
-          <input id="loginEmail" type="email" autocomplete="email"
-                 placeholder="أدخل بريدك الإلكتروني" required>
+          <input id="loginEmail" type="email" autocomplete="email" placeholder="أدخل بريدك الإلكتروني" required>
         </div>
       </div>
 
@@ -1134,9 +877,7 @@ body{background:#f5f8fc}
         <label for="loginPassword">كلمة المرور</label>
         <div class="input-wrap">
           <i class="fa-solid fa-lock"></i>
-          <input id="loginPassword" type="password"
-                 autocomplete="current-password"
-                 placeholder="أدخل كلمة المرور" required>
+          <input id="loginPassword" type="password" autocomplete="current-password" placeholder="أدخل كلمة المرور" required>
         </div>
       </div>
 
@@ -1145,7 +886,12 @@ body{background:#f5f8fc}
         تسجيل الدخول
       </button>
 
-      <div id="authError" class="auth-error"></div>
+      <button class="btn btn-light" type="button" id="retryAuthButton" style="display:none;margin-top:10px">
+        <i class="fa-solid fa-rotate"></i>
+        إعادة محاولة الاتصال
+      </button>
+
+      <div id="authError" class="auth-error" role="status"></div>
     </form>
   </div>
 </div>
@@ -1153,78 +899,42 @@ body{background:#f5f8fc}
 <div class="overlay" id="sidebarOverlay"></div>
 
 <aside class="sidebar" id="sidebar" style="display:none">
-
   <div class="sidebar-inner">
-
     <div class="brand">
-      <img src="../logo.png" class="brand-logo" alt="شعار أرض الأحياء"
-           onerror="this.style.display='none'">
-
+      <img src="../logo.png" class="brand-logo" alt="شعار أرض الأحياء" onerror="this.style.display='none'">
       <div>
         <h2>أرض الأحياء</h2>
         <small>الثانوية العامة</small>
       </div>
     </div>
 
-    <button type="button" class="sidebar-toggle" id="sidebarToggle"
-            aria-label="تصغير القائمة" title="تصغير أو تكبير القائمة">
+    <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="تصغير القائمة" title="تصغير أو تكبير القائمة">
       <i class="fa-solid fa-angles-right"></i>
     </button>
 
     <div class="menu-label">القائمة الرئيسية</div>
 
     <nav class="side-menu" aria-label="القائمة الرئيسية">
-
-      <a href="../index.html" class="side-link">
-        <i class="fa-solid fa-house"></i>
-        <span>بيتك</span>
-      </a>
-
-      <a href="../videos/index.html" class="side-link">
-        <i class="fa-regular fa-circle-play"></i>
-        <span>كورساتك</span>
-      </a>
-
-      <a href="../notes/index.html" class="side-link">
-        <i class="fa-solid fa-book-open"></i>
-        <span>مزكراتك</span>
-      </a>
-
-      <a href="../champion/index.html" class="side-link">
-        <i class="fa-solid fa-trophy"></i>
-        <span>بطل الفصل</span>
-      </a>
-
-      <a href="../forum/index.html" class="side-link">
-        <i class="fa-regular fa-comments"></i>
-        <span>المنتدى</span>
-      </a>
-
-      <a href="index.html" class="side-link active" aria-current="page">
-        <i class="fa-regular fa-user"></i>
-        <span>حسابك</span>
-      </a>
-
+      <a href="../index.html" class="side-link"><i class="fa-solid fa-house"></i><span>بيتك</span></a>
+      <a href="../videos/index.html" class="side-link"><i class="fa-regular fa-circle-play"></i><span>كورساتك</span></a>
+      <a href="../notes/index.html" class="side-link"><i class="fa-solid fa-book-open"></i><span>مزكراتك</span></a>
+      <a href="../champion/index.html" class="side-link"><i class="fa-solid fa-trophy"></i><span>بطل الفصل</span></a>
+      <a href="../forum/index.html" class="side-link"><i class="fa-regular fa-comments"></i><span>المنتدى</span></a>
+      <a href="index.html" class="side-link active" aria-current="page"><i class="fa-regular fa-user"></i><span>حسابك</span></a>
     </nav>
   </div>
 
   <div class="sidebar-bottom">
-    <div class="sidebar-copyright">
-      <i class="fa-solid fa-leaf"></i>
-      <span>جميع الحقوق محفوظة © 2026</span>
-    </div>
+    <div class="sidebar-copyright"><i class="fa-solid fa-leaf"></i><span>جميع الحقوق محفوظة © 2026</span></div>
   </div>
 </aside>
 
 <div class="main" id="mainContent" style="display:none">
-
   <header class="topbar">
     <div class="topbar-right">
-      <button class="mobile-menu" id="mobileMenuButton"
-              type="button" aria-label="فتح القائمة">
+      <button class="mobile-menu" id="mobileMenuButton" type="button" aria-label="فتح القائمة">
         <i class="fa-solid fa-bars"></i>
       </button>
-
       <div>
         <div class="topbar-title">حساب الطالب</div>
         <div class="topbar-subtitle">تابع بياناتك وتقدمك الدراسي</div>
@@ -1241,419 +951,242 @@ body{background:#f5f8fc}
   </header>
 
   <main class="page">
+    <div class="connection-status" id="connectionStatus" role="status"></div>
 
     <section class="welcome-banner">
       <div class="welcome-content">
         <span class="welcome-tag">مرحبًا بك في</span>
         <h1>مساحتك التعليمية، على طريقتك</h1>
         <p>كل اللي يخص حسابك، اشتراكاتك، ومحاضراتك في مكان واحد.</p>
-        <div class="account-welcome-actions"><a class="account-hero-btn" href="../subscriptions/index.html"><i class="fa-solid fa-crown"></i> إدارة الاشتراكات</a><a class="account-hero-btn ghost" href="../videos/index.html"><i class="fa-regular fa-circle-play"></i> متابعة التعلم</a></div>
+        <div class="account-welcome-actions">
+          <a class="account-hero-btn" href="../subscriptions/index.html"><i class="fa-solid fa-crown"></i> إدارة الاشتراكات</a>
+          <a class="account-hero-btn ghost" href="../videos/index.html"><i class="fa-regular fa-circle-play"></i> متابعة التعلم</a>
+        </div>
       </div>
-
-      <div class="banner-icon">
-        <i class="fa-solid fa-leaf"></i>
-      </div>
+      <div class="banner-icon"><i class="fa-solid fa-leaf"></i></div>
     </section>
-
 
     <nav class="account-tabs" aria-label="أقسام حساب الطالب">
       <button type="button" class="account-tab active" data-account-tab="profile" aria-selected="true"><i class="fa-regular fa-user"></i> حساب الطالب</button>
       <button type="button" class="account-tab" data-account-tab="results" aria-selected="false"><i class="fa-solid fa-square-poll-vertical"></i> نتائج وواجبات الطالب</button>
       <button type="button" class="account-tab" data-account-tab="subscriptions" aria-selected="false"><i class="fa-solid fa-crown"></i> إدارة الاشتراكات</button>
     </nav>
+
     <div class="account-pane" id="accountPaneProfile">
-    <h2 class="account-section-title">حساب الطالب</h2><p class="account-section-sub">بياناتك الشخصية وتقدمك الدراسي واختصارات حسابك.</p>
-    <section class="stats-grid">
+      <h2 class="account-section-title">حساب الطالب</h2>
+      <p class="account-section-sub">بياناتك الشخصية وتقدمك الدراسي واختصارات حسابك.</p>
 
-      <div class="stat-card">
-        <div class="stat-icon icon-green">
-          <i class="fa-regular fa-bookmark"></i>
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon icon-green"><i class="fa-regular fa-bookmark"></i></div>
+          <div class="stat-text"><span>المحاضرات المحفوظة</span><strong id="savedCount">—</strong><small>المحاضرات المحفوظة في حسابك</small></div>
         </div>
-        <div class="stat-text">
-          <span>المحاضرات المحفوظة</span>
-          <strong id="savedCount">—</strong>
-          <small>المحاضرات المحفوظة في حسابك</small>
+        <div class="stat-card">
+          <div class="stat-icon icon-purple"><i class="fa-solid fa-circle-play"></i></div>
+          <div class="stat-text"><span>إجمالي المحاضرات</span><strong id="totalLectures">—</strong><small>المحاضرات المتاحة على المنصة</small></div>
         </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon icon-purple">
-          <i class="fa-solid fa-circle-play"></i>
+        <div class="stat-card">
+          <div class="stat-icon icon-blue"><i class="fa-solid fa-chart-line"></i></div>
+          <div class="stat-text"><span>المحاضرات المكتملة</span><strong id="completedCount">—</strong><small>المحاضرات التي أنهيتها</small></div>
         </div>
-        <div class="stat-text">
-          <span>إجمالي المحاضرات</span>
-          <strong id="totalLectures">—</strong>
-          <small>المحاضرات المتاحة على المنصة</small>
+        <div class="stat-card">
+          <div class="stat-icon icon-orange"><i class="fa-solid fa-trophy"></i></div>
+          <div class="stat-text"><span>الاختبارات المسجلة</span><strong id="resultsCount">—</strong><small>عدد النتائج المسجلة لحسابك</small></div>
         </div>
-      </div>
+      </section>
 
-      <div class="stat-card">
-        <div class="stat-icon icon-blue">
-          <i class="fa-solid fa-chart-line"></i>
-        </div>
-        <div class="stat-text">
-          <span>المحاضرات المكتملة</span>
-          <strong id="completedCount">—</strong>
-          <small>المحاضرات التي أنهيتها</small>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon icon-orange">
-          <i class="fa-solid fa-trophy"></i>
-        </div>
-        <div class="stat-text">
-          <span>الاختبارات المسجلة</span>
-          <strong id="resultsCount">—</strong>
-          <small>عدد النتائج المسجلة لحسابك</small>
-        </div>
-      </div>
-
-    </section>
-
-    <section class="student-services" aria-labelledby="studentServicesHeading">
-      <h2 class="student-services-heading" id="studentServicesHeading"><i class="fa-solid fa-shapes"></i> الواجبات والامتحانات في حسابك</h2>
-      <div class="student-services-grid">
-        <button type="button" class="student-service-card" data-open-account-section="homeworkResultsSection" aria-label="فتح قسم الواجبات">
-          <span class="student-service-icon"><i class="fa-solid fa-clipboard-check"></i></span>
-          <span class="student-service-copy"><strong>الواجبات</strong><small>تابع الواجبات وراجع النتائج المتاحة لحسابك.</small></span>
-          <span class="student-service-arrow"><i class="fa-solid fa-chevron-left"></i></span>
-        </button>
-        <button type="button" class="student-service-card exam" data-open-account-section="examResultsSection" aria-label="فتح قسم الامتحانات">
-          <span class="student-service-icon"><i class="fa-solid fa-file-circle-check"></i></span>
-          <span class="student-service-copy"><strong>الامتحانات</strong><small>اعرض نتائج الاختبارات المسجلة في حسابك.</small></span>
-          <span class="student-service-arrow"><i class="fa-solid fa-chevron-left"></i></span>
-        </button>
-      </div>
-    </section>
-
-    <section class="content-grid">
-
-      <div>
-
-        <section class="card">
-          <div class="card-heading">
-            <div>
-              <h2>البيانات الشخصية</h2>
-              <p>راجع بياناتك وحدّث معلومات التواصل الخاصة بك.</p>
-            </div>
-            <div class="heading-icon">
-              <i class="fa-regular fa-id-card"></i>
-            </div>
-          </div>
-
-          <div class="profile-head">
-            <div class="profile-avatar">
-              <i class="fa-solid fa-user-graduate"></i>
-            </div>
-            <div>
-              <h3 id="profileStudentName">جاري التحميل...</h3>
-              <p>طالب بالصف الثالث الثانوي</p>
-              <span class="status-pill">
-                <i class="fa-solid fa-circle-check"></i>
-                حساب طالب
-              </span>
-            </div>
-          </div>
-
-          <form id="profileForm">
-
-            <div class="form-grid">
-
-              <div class="field">
-                <label for="fullName">اسم الطالب</label>
-                <div class="input-wrap">
-                  <i class="fa-regular fa-user"></i>
-                  <input id="fullName" type="text" readonly
-                         aria-describedby="nameNote">
-                </div>
-                <small class="field-note" id="nameNote">
-                  الاسم للعرض فقط ولا يمكن تعديله من هذه الصفحة.
-                </small>
-              </div>
-
-              <div class="field">
-                <label for="studentEmail">البريد الإلكتروني</label>
-                <div class="input-wrap">
-                  <i class="fa-regular fa-envelope"></i>
-                  <input id="studentEmail" type="email"
-                         autocomplete="email" required>
-                </div>
-                <small class="field-note">
-                  تعديل هذا الحقل في ملف الطالب لا يغيّر بالضرورة بريد تسجيل الدخول في نظام المصادقة.
-                </small>
-              </div>
-
-              <div class="field">
-                <label for="studentPhone">رقم الهاتف</label>
-                <div class="input-wrap">
-                  <i class="fa-solid fa-phone"></i>
-                  <input id="studentPhone" type="tel"
-                         autocomplete="tel" maxlength="25"
-                         placeholder="أدخل رقم الهاتف">
-                </div>
-              </div>
-
-              <div class="field">
-                <label for="accountRole">نوع الحساب</label>
-                <div class="input-wrap">
-                  <i class="fa-solid fa-shield-halved"></i>
-                  <input id="accountRole" type="text" readonly>
-                </div>
-              </div>
-
-            </div>
-
-            <div id="profileMessage" class="message" role="status"></div>
-
-            <div class="actions">
-              <button class="btn btn-primary" id="saveProfileButton"
-                      type="submit">
-                <i class="fa-solid fa-floppy-disk"></i>
-                حفظ التعديلات
-              </button>
-
-              <button class="btn btn-light" id="reloadProfileButton"
-                      type="button">
-                <i class="fa-solid fa-rotate"></i>
-                إعادة تحميل البيانات
-              </button>
-            </div>
-
-          </form>
-        </section>
-
-        <section class="card">
-          <div class="card-heading">
-            <div>
-              <h2>تقدمك التعليمي</h2>
-              <p>ملخص المحاضرات المسجلة في حسابك.</p>
-            </div>
-            <div class="heading-icon">
-              <i class="fa-solid fa-chart-simple"></i>
-            </div>
-          </div>
-
-          <div class="progress-caption">
-            <span>نسبة إنجاز المحاضرات</span>
-            <strong id="progressPercentage">0%</strong>
-          </div>
-
-          <div class="progress-track">
-            <div class="progress-bar" id="progressBar"></div>
-          </div>
-
-          <div class="progress-caption">
-            <span>المحاضرات المكتملة</span>
-            <strong id="progressDetails">0 من 0</strong>
-          </div>
-
-          <div class="actions">
-            <a class="btn btn-primary" href="../videos/index.html">
-              <i class="fa-solid fa-play"></i>
-              متابعة المحاضرات
-            </a>
-          </div>
-        </section>
-
-
-
-      </div>
-
-      <div>
-
-        <section class="card">
-          <div class="card-heading">
-            <div>
-              <h2>ملخص الحساب</h2>
-              <p>معلومات حسابك على المنصة.</p>
-            </div>
-            <div class="heading-icon">
-              <i class="fa-solid fa-user-check"></i>
-            </div>
-          </div>
-
-          <div class="info-list">
-
-            <div class="info-item">
-              <div class="info-item-icon">
-                <i class="fa-regular fa-envelope"></i>
-              </div>
-              <div>
-                <strong>البريد الإلكتروني</strong>
-                <small id="summaryEmail">—</small>
-              </div>
-            </div>
-
-            <div class="info-item">
-              <div class="info-item-icon">
-                <i class="fa-solid fa-phone"></i>
-              </div>
-              <div>
-                <strong>رقم الهاتف</strong>
-                <small id="summaryPhone">غير مسجل</small>
-              </div>
-            </div>
-
-            <div class="info-item">
-              <div class="info-item-icon">
-                <i class="fa-solid fa-calendar-check"></i>
-              </div>
-              <div>
-                <strong>تاريخ إنشاء الحساب</strong>
-                <small id="accountCreated">—</small>
-              </div>
-            </div>
-
-            <div class="info-item">
-              <div class="info-item-icon">
-                <i class="fa-solid fa-shield-halved"></i>
-              </div>
-              <div>
-                <strong>حالة الحساب</strong>
-                <small>تم تسجيل الدخول بنجاح</small>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        <section class="card">
-          <div class="card-heading">
-            <div>
-              <h2>اختصارات سريعة</h2>
-              <p>انتقل مباشرة إلى أقسام المنصة.</p>
-            </div>
-            <div class="heading-icon">
-              <i class="fa-solid fa-bolt"></i>
-            </div>
-          </div>
-
-          <div class="info-list">
-
-            <a class="info-item" href="../videos/index.html">
-              <div class="info-item-icon">
-                <i class="fa-solid fa-circle-play"></i>
-              </div>
-              <div>
-                <strong>المحاضرات</strong>
-                <small>شاهد محاضرات الأحياء.</small>
-              </div>
-            </a>
-
-            <a class="info-item" href="../notes/index.html">
-              <div class="info-item-icon">
-                <i class="fa-solid fa-book-open"></i>
-              </div>
-              <div>
-                <strong>المذكرات</strong>
-                <small>تصفح المذكرات التعليمية.</small>
-              </div>
-            </a>
-
-            <a class="info-item" href="../champion/index.html">
-              <div class="info-item-icon">
-                <i class="fa-solid fa-trophy"></i>
-              </div>
-              <div>
-                <strong>بطل الفصل</strong>
-                <small>تابع المنافسة التعليمية.</small>
-              </div>
-            </a>
-
-            <a class="info-item" href="../forum/index.html">
-              <div class="info-item-icon">
-                <i class="fa-regular fa-comments"></i>
-              </div>
-              <div>
-                <strong>المنتدى</strong>
-                <small>شارك في مناقشات الطلاب.</small>
-              </div>
-            </a>
-
-          </div>
-        </section>
-
-        <section class="card">
-          <div class="card-heading">
-            <div>
-              <h2>تسجيل الخروج</h2>
-              <p>إنهاء جلستك الحالية بأمان.</p>
-            </div>
-            <div class="heading-icon">
-              <i class="fa-solid fa-right-from-bracket"></i>
-            </div>
-          </div>
-
-          <button type="button" class="btn btn-danger"
-                  id="logoutButton" style="width:100%">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            تسجيل الخروج من الحساب
+      <section class="student-services" aria-labelledby="studentServicesHeading">
+        <h2 class="student-services-heading" id="studentServicesHeading"><i class="fa-solid fa-shapes"></i> الواجبات والامتحانات في حسابك</h2>
+        <div class="student-services-grid">
+          <button type="button" class="student-service-card" data-open-account-section="homeworkResultsSection" aria-label="فتح قسم الواجبات">
+            <span class="student-service-icon"><i class="fa-solid fa-clipboard-check"></i></span>
+            <span class="student-service-copy"><strong>الواجبات</strong><small>تابع الواجبات وراجع النتائج المتاحة لحسابك.</small></span>
+            <span class="student-service-arrow"><i class="fa-solid fa-chevron-left"></i></span>
           </button>
-        </section>
+          <button type="button" class="student-service-card exam" data-open-account-section="examResultsSection" aria-label="فتح قسم الامتحانات">
+            <span class="student-service-icon"><i class="fa-solid fa-file-circle-check"></i></span>
+            <span class="student-service-copy"><strong>الامتحانات</strong><small>اعرض نتائج الاختبارات المسجلة في حسابك.</small></span>
+            <span class="student-service-arrow"><i class="fa-solid fa-chevron-left"></i></span>
+          </button>
+        </div>
+      </section>
 
-      </div>
+      <section class="content-grid">
+        <div>
+          <section class="card">
+            <div class="card-heading">
+              <div><h2>البيانات الشخصية</h2><p>راجع بياناتك وحدّث معلومات التواصل الخاصة بك.</p></div>
+              <div class="heading-icon"><i class="fa-regular fa-id-card"></i></div>
+            </div>
 
-    </section>
+            <div class="profile-head">
+              <div class="profile-avatar"><i class="fa-solid fa-user-graduate"></i></div>
+              <div>
+                <h3 id="profileStudentName">جاري التحميل...</h3>
+                <p>طالب بالصف الثالث الثانوي</p>
+                <span class="status-pill"><i class="fa-solid fa-circle-check"></i> حساب طالب</span>
+              </div>
+            </div>
 
-    </div><!-- نهاية حساب الطالب -->
+            <form id="profileForm">
+              <div class="form-grid">
+                <div class="field">
+                  <label for="fullName">اسم الطالب</label>
+                  <div class="input-wrap"><i class="fa-regular fa-user"></i><input id="fullName" type="text" readonly aria-describedby="nameNote"></div>
+                  <small class="field-note" id="nameNote">الاسم للعرض فقط ولا يمكن تعديله من هذه الصفحة.</small>
+                </div>
+
+                <div class="field">
+                  <label for="studentEmail">البريد الإلكتروني</label>
+                  <div class="input-wrap"><i class="fa-regular fa-envelope"></i><input id="studentEmail" type="email" autocomplete="email" required></div>
+                  <small class="field-note">تعديل هذا الحقل في ملف الطالب لا يغيّر بالضرورة بريد تسجيل الدخول في نظام المصادقة.</small>
+                </div>
+
+                <div class="field">
+                  <label for="studentPhone">رقم الهاتف</label>
+                  <div class="input-wrap"><i class="fa-solid fa-phone"></i><input id="studentPhone" type="tel" autocomplete="tel" maxlength="25" placeholder="أدخل رقم الهاتف"></div>
+                </div>
+
+                <div class="field">
+                  <label for="accountRole">نوع الحساب</label>
+                  <div class="input-wrap"><i class="fa-solid fa-shield-halved"></i><input id="accountRole" type="text" readonly></div>
+                </div>
+              </div>
+
+              <div id="profileMessage" class="message" role="status"></div>
+
+              <div class="actions">
+                <button class="btn btn-primary" id="saveProfileButton" type="submit"><i class="fa-solid fa-floppy-disk"></i> حفظ التعديلات</button>
+                <button class="btn btn-light" id="reloadProfileButton" type="button"><i class="fa-solid fa-rotate"></i> إعادة تحميل البيانات</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="card">
+            <div class="card-heading">
+              <div><h2>تقدمك التعليمي</h2><p>ملخص المحاضرات المسجلة في حسابك.</p></div>
+              <div class="heading-icon"><i class="fa-solid fa-chart-simple"></i></div>
+            </div>
+            <div class="progress-caption"><span>نسبة إنجاز المحاضرات</span><strong id="progressPercentage">0%</strong></div>
+            <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+            <div class="progress-caption"><span>المحاضرات المكتملة</span><strong id="progressDetails">0 من 0</strong></div>
+            <div class="actions"><a class="btn btn-primary" href="../videos/index.html"><i class="fa-solid fa-play"></i> متابعة المحاضرات</a></div>
+          </section>
+        </div>
+
+        <div>
+          <section class="card">
+            <div class="card-heading">
+              <div><h2>ملخص الحساب</h2><p>معلومات حسابك على المنصة.</p></div>
+              <div class="heading-icon"><i class="fa-solid fa-user-check"></i></div>
+            </div>
+
+            <div class="info-list">
+              <div class="info-item"><div class="info-item-icon"><i class="fa-regular fa-envelope"></i></div><div><strong>البريد الإلكتروني</strong><small id="summaryEmail">—</small></div></div>
+              <div class="info-item"><div class="info-item-icon"><i class="fa-solid fa-phone"></i></div><div><strong>رقم الهاتف</strong><small id="summaryPhone">غير مسجل</small></div></div>
+              <div class="info-item"><div class="info-item-icon"><i class="fa-solid fa-calendar-check"></i></div><div><strong>تاريخ إنشاء الحساب</strong><small id="accountCreated">—</small></div></div>
+              <div class="info-item"><div class="info-item-icon"><i class="fa-solid fa-shield-halved"></i></div><div><strong>حالة الحساب</strong><small id="accountStatusText">تم تسجيل الدخول بنجاح</small></div></div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-heading">
+              <div><h2>اختصارات سريعة</h2><p>انتقل مباشرة إلى أقسام المنصة.</p></div>
+              <div class="heading-icon"><i class="fa-solid fa-bolt"></i></div>
+            </div>
+            <div class="info-list">
+              <a class="info-item" href="../videos/index.html"><div class="info-item-icon"><i class="fa-solid fa-circle-play"></i></div><div><strong>المحاضرات</strong><small>شاهد محاضرات الأحياء.</small></div></a>
+              <a class="info-item" href="../notes/index.html"><div class="info-item-icon"><i class="fa-solid fa-book-open"></i></div><div><strong>المذكرات</strong><small>تصفح المذكرات التعليمية.</small></div></a>
+              <a class="info-item" href="../champion/index.html"><div class="info-item-icon"><i class="fa-solid fa-trophy"></i></div><div><strong>بطل الفصل</strong><small>تابع المنافسة التعليمية.</small></div></a>
+              <a class="info-item" href="../forum/index.html"><div class="info-item-icon"><i class="fa-regular fa-comments"></i></div><div><strong>المنتدى</strong><small>شارك في مناقشات الطلاب.</small></div></a>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-heading">
+              <div><h2>تسجيل الخروج</h2><p>إنهاء جلستك الحالية بأمان.</p></div>
+              <div class="heading-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
+            </div>
+            <button type="button" class="btn btn-danger" id="logoutButton" style="width:100%"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج من الحساب</button>
+          </section>
+        </div>
+      </section>
+    </div>
+
     <div class="account-pane" id="accountPaneResults" hidden>
       <h2 class="account-section-title">نتائج وواجبات الطالب</h2>
       <p class="account-section-sub">تابع نتائج الاختبارات والواجبات المرتبطة بحسابك، بدون درجات تجريبية.</p>
+
       <div class="account-actions-grid">
         <a class="account-action" href="../videos/index.html"><i class="fa-regular fa-circle-play"></i> تفاصيل محاضراتي</a>
         <a class="account-action" href="../notes/index.html"><i class="fa-solid fa-book-open"></i> المذكرات والمراجعات</a>
         <a class="account-action" href="../forum/index.html"><i class="fa-regular fa-comments"></i> اسأل في المنتدى</a>
       </div>
-              <section class="card" id="examResultsSection" tabindex="-1">
-          <div class="card-heading">
-            <div>
-              <h2>امتحاناتك</h2>
-              <p>النتائج المرتبطة بحسابك إذا كانت متاحة.</p>
-            </div>
-            <div class="heading-icon">
-              <i class="fa-solid fa-award"></i>
-            </div>
-          </div>
 
-          <div id="resultsList">
-            <div class="empty-state">
-              <i class="fa-solid fa-spinner fa-spin"></i>
-              جاري تحميل النتائج...
-            </div>
-          </div>
-        </section>
-      <section class="card" id="homeworkResultsSection" tabindex="-1"><div class="card-heading"><div><h2>الواجبات ونتائجها</h2><p>تظهر هنا النتائج المتاحة من قاعدة بيانات المنصة.</p></div><div class="heading-icon"><i class="fa-solid fa-list-check"></i></div></div>
+      <section class="card" id="examResultsSection" tabindex="-1">
+        <div class="card-heading">
+          <div><h2>امتحاناتك</h2><p>النتائج المرتبطة بحسابك إذا كانت متاحة.</p></div>
+          <div class="heading-icon"><i class="fa-solid fa-award"></i></div>
+        </div>
+        <div id="resultsList"><div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> جاري تحميل النتائج...</div></div>
+      </section>
+
+      <section class="card" id="homeworkResultsSection" tabindex="-1">
+        <div class="card-heading">
+          <div><h2>الواجبات ونتائجها</h2><p>تظهر هنا النتائج المتاحة من قاعدة بيانات المنصة.</p></div>
+          <div class="heading-icon"><i class="fa-solid fa-list-check"></i></div>
+        </div>
         <div id="homeworkResults" class="empty-state">جارٍ التحقق من نتائج الواجبات...</div>
       </section>
     </div>
+
     <div class="account-pane" id="accountPaneSubscriptions" hidden>
       <h2 class="account-section-title">إدارة الاشتراكات</h2>
       <p class="account-section-sub">اعرف حالة اشتراكاتك، وراجع طلبات الدفع، وجدّد الباقة المناسبة.</p>
-          <section class="subscription-panel" aria-labelledby="subscriptionsTitle">
-      <div class="subscription-panel-head">
-        <div><h2 id="subscriptionsTitle"><i class="fa-solid fa-crown" style="color:#09916e"></i> اشتراكاتي</h2><p>حالة الاشتراكات وطلبات التفعيل الخاصة بحسابك.</p></div>
-        <a class="btn btn-primary" href="../subscriptions/index.html"><i class="fa-solid fa-arrow-up-right-from-square"></i> ترقية الاشتراك</a>
-      </div>
-      <div class="subscription-grid">
-        <div class="subscription-tile"><div class="tile-icon"><i class="fa-solid fa-shield-check"></i></div><strong>الاشتراكات المفعّلة</strong><p>الباقات المتاحة لك حاليًا.</p><div class="tile-state muted" id="accountActiveSubscriptions">جارٍ التحقق...</div></div>
-        <div class="subscription-tile"><div class="tile-icon"><i class="fa-regular fa-clock"></i></div><strong>طلبات الاشتراك</strong><p>آخر حالة لطلبات الدفع التي أرسلتها.</p><div class="tile-state muted" id="accountSubscriptionRequests">جارٍ التحقق...</div></div>
-      </div>
-    </section>
 
+      <section class="subscription-panel" aria-labelledby="subscriptionsTitle">
+        <div class="subscription-panel-head">
+          <div><h2 id="subscriptionsTitle"><i class="fa-solid fa-crown" style="color:#09916e"></i> اشتراكاتي</h2><p>حالة الاشتراكات وطلبات التفعيل الخاصة بحسابك.</p></div>
+          <a class="btn btn-primary" href="../subscriptions/index.html"><i class="fa-solid fa-arrow-up-right-from-square"></i> ترقية الاشتراك</a>
+        </div>
+
+        <div class="subscription-grid">
+          <div class="subscription-tile">
+            <div class="tile-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <strong>الاشتراكات المفعّلة</strong>
+            <p>الباقات المتاحة لك حاليًا.</p>
+            <div class="tile-state muted" id="accountActiveSubscriptions">جارٍ التحقق...</div>
+          </div>
+          <div class="subscription-tile">
+            <div class="tile-icon"><i class="fa-regular fa-clock"></i></div>
+            <strong>طلبات الاشتراك</strong>
+            <p>آخر حالة لطلبات الدفع التي أرسلتها.</p>
+            <div class="tile-state muted" id="accountSubscriptionRequests">جارٍ التحقق...</div>
+          </div>
+        </div>
+      </section>
 
       <div class="account-actions-grid">
         <a class="account-action" href="../subscriptions/index.html"><i class="fa-solid fa-wallet"></i> طلب اشتراك أو تجديد</a>
         <a class="account-action" href="../videos/index.html"><i class="fa-regular fa-circle-play"></i> المحاضرات المتاحة</a>
         <button type="button" class="account-action" id="refreshSubscriptions"><i class="fa-solid fa-rotate"></i> تحديث حالة الطلبات</button>
       </div>
-      <section class="card"><div class="card-heading"><div><h2>سجل طلبات الاشتراك</h2><p>بيانات الطلبات المسجلة في أرض الأحياء، وليست فواتير مدفوعة إلا بعد الموافقة.</p></div><div class="heading-icon"><i class="fa-solid fa-receipt"></i></div></div>
-      <div class="table-scroll"><table class="account-data-table"><thead><tr><th>تاريخ الطلب</th><th>الباقة</th><th>المبلغ</th><th>حالة الطلب</th></tr></thead><tbody id="accountRequestsRows"><tr><td colspan="4">جارٍ تحميل الطلبات...</td></tr></tbody></table></div></section>
-    </div>
-    <footer class="footer">
-      أرض الأحياء — منصة تعليمية للصف الثالث الثانوي © 2026
-    </footer>
 
+      <section class="card">
+        <div class="card-heading">
+          <div><h2>سجل طلبات الاشتراك</h2><p>بيانات الطلبات المسجلة في أرض الأحياء، وليست فواتير مدفوعة إلا بعد الموافقة.</p></div>
+          <div class="heading-icon"><i class="fa-solid fa-receipt"></i></div>
+        </div>
+        <div class="table-scroll">
+          <table class="account-data-table">
+            <thead><tr><th>تاريخ الطلب</th><th>الباقة</th><th>المبلغ</th><th>حالة الطلب</th></tr></thead>
+            <tbody id="accountRequestsRows"><tr><td colspan="4">جارٍ تحميل الطلبات...</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <footer class="footer">أرض الأحياء — منصة تعليمية للصف الثالث الثانوي © 2026</footer>
   </main>
 </div>
 
@@ -1666,13 +1199,34 @@ const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
 
 const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
-  SUPABASE_KEY
+  SUPABASE_KEY,
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    },
+    global: {
+      fetch: (...args) => fetch(...args)
+    }
+  }
 );
 
 const $ = id => document.getElementById(id);
 
 let currentUser = null;
 let currentProfile = null;
+let dashboardLoadRunning = false;
+let retryAfterReconnectRunning = false;
+let intentionalLogout = false;
+
+/* اكتشاف أخطاء الشبكة دون اعتبار كل أخطاء قاعدة البيانات انقطاعًا للإنترنت */
+function isNetworkError(error) {
+  const message = String(error?.message || error || "").toLowerCase();
+
+  return !navigator.onLine ||
+    /failed to fetch|network request failed|networkerror|load failed|fetch failed|internet|offline|timed out|timeout|connection reset|connection refused|err_network|aborted/i.test(message);
+}
 
 function showMessage(id, message, type = "info") {
   const element = $(id);
@@ -1690,27 +1244,49 @@ function hideMessage(id) {
   element.textContent = "";
 }
 
-function setLoading(visible) {
-  $("loadingScreen").style.display = visible ? "flex" : "none";
+function setLoading(visible, text) {
+  const screen = $("loadingScreen");
+  if (!screen) return;
+
+  if (text) $("loadingText").textContent = text;
+  screen.style.display = visible ? "flex" : "none";
+}
+
+function showConnectionStatus(message) {
+  const box = $("connectionStatus");
+  if (!box) return;
+
+  box.textContent = message;
+  box.classList.add("show");
+}
+
+function hideConnectionStatus() {
+  const box = $("connectionStatus");
+  if (!box) return;
+
+  box.textContent = "";
+  box.classList.remove("show");
 }
 
 function showDashboard() {
   $("authScreen").style.display = "none";
   $("mainContent").style.display = "block";
   $("sidebar").style.display = "flex";
+  $("retryAuthButton").style.display = "none";
+  $("authError").textContent = "";
 }
 
-function showLogin() {
+function showLogin(message = "") {
   $("loadingScreen").style.display = "none";
   $("mainContent").style.display = "none";
   $("sidebar").style.display = "none";
   $("authScreen").style.display = "flex";
+
+  if (message) $("authError").textContent = message;
 }
 
 function safeText(value, fallback = "غير مسجل") {
-  if (value === null || value === undefined || value === "") {
-    return fallback;
-  }
+  if (value === null || value === undefined || value === "") return fallback;
   return String(value);
 }
 
@@ -1718,7 +1294,6 @@ function formatDate(value) {
   if (!value) return "غير متاح";
 
   const date = new Date(value);
-
   if (Number.isNaN(date.getTime())) return "غير متاح";
 
   return new Intl.DateTimeFormat("ar-EG", {
@@ -1735,9 +1310,32 @@ function displayName(profile, user) {
          "الطالب";
 }
 
+/* عرض بيانات المستخدم المتاحة محليًا إذا تعذرت قراءة جدول profiles */
+function renderProfileFallback() {
+  if (!currentUser) return;
+
+  const name = displayName(currentProfile || {}, currentUser);
+  const email = currentProfile?.email || currentUser.email || "";
+  const phone = currentProfile?.phone || "";
+  const role = currentProfile?.role || "student";
+
+  $("headerStudentName").textContent = name;
+  $("profileStudentName").textContent = name;
+  $("fullName").value = name;
+  $("studentEmail").value = email;
+  $("studentPhone").value = phone;
+  $("accountRole").value = role === "admin" ? "مسؤول" : "طالب";
+  $("summaryEmail").textContent = safeText(email);
+  $("summaryPhone").textContent = safeText(phone);
+  $("accountCreated").textContent = formatDate(currentUser.created_at);
+}
+
 function setupSidebar() {
-  const savedState =
-    localStorage.getItem("ardAlahyaaSidebarCollapsed") === "true";
+  let savedState = false;
+
+  try {
+    savedState = localStorage.getItem("ardAlahyaaSidebarCollapsed") === "true";
+  } catch (_) {}
 
   if (savedState && window.innerWidth > 760) {
     document.body.classList.add("sidebar-collapsed");
@@ -1751,10 +1349,12 @@ function setupSidebar() {
 
     document.body.classList.toggle("sidebar-collapsed");
 
-    localStorage.setItem(
-      "ardAlahyaaSidebarCollapsed",
-      document.body.classList.contains("sidebar-collapsed")
-    );
+    try {
+      localStorage.setItem(
+        "ardAlahyaaSidebarCollapsed",
+        document.body.classList.contains("sidebar-collapsed")
+      );
+    } catch (_) {}
   });
 
   $("mobileMenuButton").addEventListener("click", () => {
@@ -1781,6 +1381,8 @@ function setupSidebar() {
 }
 
 async function loadProfile() {
+  if (!currentUser) throw new Error("بيانات جلسة الطالب غير متاحة.");
+
   const { data, error } = await supabaseClient
     .from("profiles")
     .select("id, full_name, phone, email, role")
@@ -1789,127 +1391,97 @@ async function loadProfile() {
 
   if (error) {
     console.error("Profile loading error:", error);
-    throw new Error(
-      "تعذر تحميل بيانات الطالب من جدول profiles. تحقق من صلاحيات Supabase."
+
+    renderProfileFallback();
+
+    if (isNetworkError(error)) {
+      showMessage(
+        "profileMessage",
+        "تعذر الاتصال مؤقتًا. عرضنا بيانات الحساب المتاحة، وستتمكن من إعادة تحميل البيانات عند رجوع الإنترنت.",
+        "info"
+      );
+      return;
+    }
+
+    showMessage(
+      "profileMessage",
+      "تعذر تحميل بيانات الملف الشخصي من قاعدة البيانات. تحقق من صلاحيات جدول profiles في Supabase.",
+      "error"
     );
+    return;
   }
 
   currentProfile = data || {};
-
-  const name = displayName(currentProfile, currentUser);
-  const email = currentProfile.email || currentUser.email || "";
-  const phone = currentProfile.phone || "";
-  const role = currentProfile.role || "student";
-
-  $("headerStudentName").textContent = name;
-  $("profileStudentName").textContent = name;
-
-  $("fullName").value = name;
-  $("studentEmail").value = email;
-  $("studentPhone").value = phone;
-
-  $("accountRole").value =
-    role === "admin" ? "مسؤول" : "طالب";
-
-  $("summaryEmail").textContent = safeText(email);
-  $("summaryPhone").textContent = safeText(phone);
-
-  $("accountCreated").textContent =
-    formatDate(currentUser.created_at);
+  renderProfileFallback();
+  hideMessage("profileMessage");
 }
 
 async function saveProfile(event) {
   event.preventDefault();
   hideMessage("profileMessage");
 
+  if (!currentUser) {
+    showMessage("profileMessage", "جلسة الطالب غير متاحة. أعد تحميل الصفحة بعد التأكد من الاتصال.", "error");
+    return;
+  }
+
+  if (!navigator.onLine) {
+    showMessage("profileMessage", "لا يوجد اتصال بالإنترنت. لم يتم حفظ التعديلات؛ أعد المحاولة بعد عودة الاتصال.", "error");
+    return;
+  }
+
   const button = $("saveProfileButton");
   const originalText = button.innerHTML;
-
   const email = $("studentEmail").value.trim();
   const phone = $("studentPhone").value.trim();
 
   if (!email) {
-    showMessage(
-      "profileMessage",
-      "من فضلك أدخل البريد الإلكتروني.",
-      "error"
-    );
+    showMessage("profileMessage", "من فضلك أدخل البريد الإلكتروني.", "error");
     return;
   }
 
   if (email.length > 254) {
-    showMessage(
-      "profileMessage",
-      "البريد الإلكتروني طويل أكثر من اللازم.",
-      "error"
-    );
+    showMessage("profileMessage", "البريد الإلكتروني طويل أكثر من اللازم.", "error");
     return;
   }
 
   if (phone.length > 25) {
-    showMessage(
-      "profileMessage",
-      "رقم الهاتف طويل أكثر من اللازم.",
-      "error"
-    );
+    showMessage("profileMessage", "رقم الهاتف طويل أكثر من اللازم.", "error");
     return;
   }
 
   button.disabled = true;
-  button.innerHTML =
-    '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
+  button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
 
   try {
-    /*
-      يتم تحديث الهاتف والبريد داخل جدول profiles فقط.
-      اسم الطالب غير قابل للتعديل من هذه الصفحة.
-    */
     const { data, error } = await supabaseClient
       .from("profiles")
-      .update({
-        email: email,
-        phone: phone || null
-      })
+      .update({ email, phone: phone || null })
       .eq("id", currentUser.id)
       .select("id, full_name, phone, email, role")
       .maybeSingle();
 
     if (error) {
       console.error("Profile update error:", error);
-      throw new Error(
-        "تعذر حفظ البيانات. تحقق من سياسات RLS في Supabase."
-      );
+
+      if (isNetworkError(error)) {
+        throw new Error("انقطع الاتصال أثناء الحفظ. لم نتمكن من تأكيد حفظ التعديلات؛ تحقق من اتصال الإنترنت ثم أعد المحاولة.");
+      }
+
+      throw new Error("تعذر حفظ البيانات. تحقق من سياسات وصلاحيات التعديل في جدول profiles.");
     }
 
     if (!data) {
-      throw new Error(
-        "لم يتم تحديث البيانات. قد تحتاج إلى مراجعة صلاحيات التعديل على جدول profiles."
-      );
+      throw new Error("لم يتم تحديث البيانات. قد تحتاج إلى مراجعة صلاحيات التعديل على جدول profiles.");
     }
 
     currentProfile = data;
+    renderProfileFallback();
 
-    $("studentEmail").value = data.email || "";
-    $("studentPhone").value = data.phone || "";
-
-    $("summaryEmail").textContent =
-      safeText(data.email);
-
-    $("summaryPhone").textContent =
-      safeText(data.phone);
-
-    showMessage(
-      "profileMessage",
-      "تم حفظ بيانات التواصل في حسابك بنجاح.",
-      "success"
-    );
+    showMessage("profileMessage", "تم حفظ بيانات التواصل في حسابك بنجاح.", "success");
 
   } catch (error) {
-    showMessage(
-      "profileMessage",
-      error.message || "حدث خطأ أثناء حفظ البيانات.",
-      "error"
-    );
+    showMessage("profileMessage", error.message || "حدث خطأ أثناء حفظ البيانات.", "error");
   } finally {
     button.disabled = false;
     button.innerHTML = originalText;
@@ -1917,17 +1489,9 @@ async function saveProfile(event) {
 }
 
 async function loadLectureStats() {
-  /*
-    تُقرأ أسماء الجداول والحقول المستخدمة في إحصاءات المحاضرات
-    وفق البنية المعروفة للمشروع.
-  */
   const totalElement = $("totalLectures");
   const savedElement = $("savedCount");
   const completedElement = $("completedCount");
-
-  totalElement.textContent = "—";
-  savedElement.textContent = "—";
-  completedElement.textContent = "—";
 
   let total = null;
   let saved = null;
@@ -1949,7 +1513,6 @@ async function loadLectureStats() {
 
   if (!progressResponse.error) {
     const rows = progressResponse.data || [];
-
     saved = rows.filter(row => row.saved === true).length;
     completed = rows.filter(row => row.completed === true).length;
 
@@ -1964,23 +1527,17 @@ async function loadLectureStats() {
 
     $("progressPercentage").textContent = percentage + "%";
     $("progressBar").style.width = percentage + "%";
-    $("progressDetails").textContent =
-      completed + " من " + total;
+    $("progressDetails").textContent = completed + " من " + total;
   } else {
     $("progressPercentage").textContent = "—";
     $("progressBar").style.width = "0%";
-    $("progressDetails").textContent =
-      "تعذر تحميل بيانات التقدم";
+    $("progressDetails").textContent = "تعذر تحميل بيانات التقدم";
   }
 }
 
 async function loadResults() {
   const container = $("resultsList");
 
-  /*
-    لا تُعرض نتائج افتراضية. إذا لم يكن جدول النتائج موجودًا
-    أو كانت صلاحيات القراءة غير متاحة، تظهر رسالة توضيحية.
-  */
   const { data, error } = await supabaseClient
     .from("results")
     .select("*")
@@ -1990,16 +1547,22 @@ async function loadResults() {
 
   if (error) {
     console.warn("Results unavailable:", error.message);
-
     $("resultsCount").textContent = "—";
 
-    container.innerHTML = `
-      <div class="empty-state">
-        <i class="fa-solid fa-circle-info"></i>
-        لا يمكن عرض النتائج حاليًا. تحقق من وجود جدول
-        <b>results</b> وصلاحيات القراءة في Supabase.
-      </div>
-    `;
+    container.replaceChildren();
+
+    const box = document.createElement("div");
+    box.className = "empty-state";
+    const icon = document.createElement("i");
+    icon.className = "fa-solid fa-circle-info";
+    const message = document.createElement("span");
+
+    message.textContent = isNetworkError(error)
+      ? "تعذر الاتصال لتحميل النتائج. حاول مجددًا عند عودة الإنترنت."
+      : "لا يمكن عرض النتائج حاليًا. تحقق من وجود جدول results وصلاحيات القراءة في Supabase.";
+
+    box.append(icon, message);
+    container.appendChild(box);
     return;
   }
 
@@ -2007,12 +1570,7 @@ async function loadResults() {
   $("resultsCount").textContent = results.length;
 
   if (!results.length) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <i class="fa-solid fa-clipboard-check"></i>
-        لا توجد نتائج مسجلة لهذا الحساب حتى الآن.
-      </div>
-    `;
+    container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-clipboard-check"></i> لا توجد نتائج مسجلة لهذا الحساب حتى الآن.</div>';
     return;
   }
 
@@ -2027,18 +1585,12 @@ async function loadResults() {
     icon.innerHTML = '<i class="fa-solid fa-award"></i>';
 
     const content = document.createElement("div");
-
     const title = document.createElement("strong");
-    title.textContent =
-      result.exam_name || result.title || "اختبار";
+    title.textContent = result.exam_name || result.title || "اختبار";
 
     const detail = document.createElement("small");
-
-    const score = result.score ?? "—";
-    const total = result.total ?? "—";
-
-    detail.textContent =
-      "الدرجة: " + score + " من " + total +
+    detail.textContent = "الدرجة: " + (result.score ?? "—") +
+      " من " + (result.total ?? "—") +
       " • " + formatDate(result.created_at);
 
     content.append(title, detail);
@@ -2047,68 +1599,223 @@ async function loadResults() {
   });
 }
 
-
 async function loadAccountSubscriptions() {
   const active = $("accountActiveSubscriptions");
   const requests = $("accountSubscriptionRequests");
+
   if (!currentUser) return;
-  // لا نعرض حالة نشطة إلا من بيانات قاعدة البيانات؛ ولا نفترض أن طلب الدفع موافقة.
+
   const [grantsResult, subsResult, requestsResult] = await Promise.allSettled([
-    supabaseClient.from("student_subscription_grants").select("package_type,expires_at").eq("student_id",currentUser.id),
-    supabaseClient.from("student_subscriptions").select("*").eq("student_id",currentUser.id),
-    supabaseClient.from("subscription_requests").select("status,created_at").eq("student_id",currentUser.id).order("created_at",{ascending:false}).limit(10)
+    supabaseClient.from("student_subscription_grants").select("package_type,expires_at").eq("student_id", currentUser.id),
+    supabaseClient.from("student_subscriptions").select("*").eq("student_id", currentUser.id),
+    supabaseClient.from("subscription_requests").select("status,created_at").eq("student_id", currentUser.id).order("created_at", { ascending: false }).limit(10)
   ]);
-  const ok = r => r.status === 'fulfilled' && !r.value.error;
+
+  const ok = result => result.status === "fulfilled" && !result.value.error;
+
   if (!ok(grantsResult) && !ok(subsResult)) {
-    active.textContent = 'تعذر قراءة الاشتراكات حاليًا';
-    active.className = 'tile-state muted';
+    active.textContent = "تعذر قراءة الاشتراكات حاليًا";
+    active.className = "tile-state muted";
   } else {
     const now = Date.now();
-    const grants = ok(grantsResult) ? (grantsResult.value.data || []).filter(x => !x.expires_at || new Date(x.expires_at).getTime() > now) : [];
-    // لا نستنتج صلاحية الاشتراك المدفوع من أسماء أعمدة غير مؤكدة.
-    const paid = ok(subsResult) ? (subsResult.value.data || []).filter(x => {
-      if (x.status && !['active','approved'].includes(x.status)) return false;
-      const end = x.expires_at || x.end_date || x.valid_until;
-      return !end || new Date(end).getTime() > now;
-    }) : [];
+
+    const grants = ok(grantsResult)
+      ? (grantsResult.value.data || []).filter(item => !item.expires_at || new Date(item.expires_at).getTime() > now)
+      : [];
+
+    const paid = ok(subsResult)
+      ? (subsResult.value.data || []).filter(item => {
+          if (item.status && !["active", "approved"].includes(item.status)) return false;
+          const end = item.expires_at || item.end_date || item.valid_until;
+          return !end || new Date(end).getTime() > now;
+        })
+      : [];
+
     const count = grants.length + paid.length;
-    active.textContent = count ? `${count} اشتراك/منحة ظاهر في حسابك` : 'لا توجد اشتراكات مفعّلة ظاهرة';
-    active.className = count ? 'tile-state' : 'tile-state muted';
+    active.textContent = count ? `${count} اشتراك/منحة ظاهر في حسابك` : "لا توجد اشتراكات مفعّلة ظاهرة";
+    active.className = count ? "tile-state" : "tile-state muted";
   }
+
   if (!ok(requestsResult)) {
-    requests.textContent = 'تعذر قراءة الطلبات حاليًا';
-    requests.className = 'tile-state muted';
+    requests.textContent = "تعذر قراءة الطلبات حاليًا";
+    requests.className = "tile-state muted";
   } else {
     const rows = requestsResult.value.data || [];
-    const pending = rows.filter(x => x.status === 'pending').length;
-    const approved = rows.filter(x => x.status === 'approved').length;
-    requests.textContent = rows.length ? `${pending} قيد المراجعة • ${approved} تمت الموافقة عليها` : 'لم ترسل أي طلبات بعد';
-    requests.className = pending ? 'tile-state warn' : 'tile-state muted';
+    const pending = rows.filter(item => item.status === "pending").length;
+    const approved = rows.filter(item => item.status === "approved").length;
+
+    requests.textContent = rows.length
+      ? `${pending} قيد المراجعة • ${approved} تمت الموافقة عليها`
+      : "لم ترسل أي طلبات بعد";
+
+    requests.className = pending ? "tile-state warn" : "tile-state muted";
   }
 }
 
+async function loadAccountRequestHistory() {
+  const body = $("accountRequestsRows");
+  if (!currentUser) return;
+
+  const { data, error } = await supabaseClient
+    .from("subscription_requests")
+    .select("created_at,package_type,amount_egp,status")
+    .eq("student_id", currentUser.id)
+    .order("created_at", { ascending: false })
+    .limit(30);
+
+  body.replaceChildren();
+
+  if (error) {
+    const tr = body.insertRow();
+    tr.insertCell().colSpan = 4;
+    tr.cells[0].textContent = isNetworkError(error)
+      ? "تعذر الاتصال لتحميل الطلبات. حاول مجددًا عند عودة الإنترنت."
+      : "تعذر تحميل الطلبات. تحقق من صلاحيات جدول subscription_requests.";
+    return;
+  }
+
+  if (!data?.length) {
+    const tr = body.insertRow();
+    tr.insertCell().colSpan = 4;
+    tr.cells[0].textContent = "لا توجد طلبات اشتراك مسجلة بعد.";
+    return;
+  }
+
+  for (const row of data) {
+    const tr = body.insertRow();
+
+    tr.insertCell().textContent = formatDate(row.created_at);
+    tr.insertCell().textContent = row.package_type === "month"
+      ? "اشتراك شهر"
+      : row.package_type === "term" ? "اشتراك ترم" : "اشتراك";
+
+    tr.insertCell().textContent = row.amount_egp == null
+      ? "—"
+      : Number(row.amount_egp).toLocaleString("ar-EG") + " جنيه";
+
+    const cell = tr.insertCell();
+    const tag = document.createElement("span");
+
+    tag.className = row.status === "approved"
+      ? "tag-approved"
+      : row.status === "rejected" ? "tag-rejected" : "tag-pending";
+
+    tag.textContent = row.status === "approved"
+      ? "تمت الموافقة"
+      : row.status === "rejected" ? "مرفوض" : "قيد المراجعة";
+
+    cell.append(tag);
+  }
+}
+
+async function loadHomeworkResults() {
+  const box = $("homeworkResults");
+  if (!currentUser) return;
+
+  box.textContent = "نتائج الاختبارات تظهر بالأعلى. لعرض درجات الواجبات منفصلة، يلزم ربطها بحقل نوع الواجب في قاعدة البيانات.";
+}
+
+/*
+ * تحميل لوحة الطالب:
+ * وجود جلسة محفوظة يعني أننا لا نعرض شاشة الدخول لمجرد فشل طلب شبكي.
+ * أما إذا لم توجد جلسة فعلًا، فتظهر شاشة تسجيل الدخول.
+ */
 async function loadDashboard() {
-  setLoading(true);
+  if (dashboardLoadRunning) return;
+
+  dashboardLoadRunning = true;
+  setLoading(true, "جاري التحقق من جلسة الطالب...");
 
   try {
-    const { data, error } = await supabaseClient.auth.getUser();
+    let sessionResult;
 
-    if (error || !data.user) {
+    try {
+      sessionResult = await supabaseClient.auth.getSession();
+    } catch (sessionError) {
+      console.error("Session retrieval error:", sessionError);
+
+      if (currentUser) {
+        showDashboard();
+        showConnectionStatus("الاتصال متقطع حاليًا. ما زال حسابك معروضًا، وستُعاد محاولة تحميل البيانات عند عودة الإنترنت.");
+        return;
+      }
+
+      showLogin(
+        "تعذر التحقق من جلسة الدخول بسبب مشكلة اتصال. تأكد من الإنترنت ثم اضغط إعادة محاولة الاتصال."
+      );
+      $("retryAuthButton").style.display = "inline-flex";
+      return;
+    }
+
+    const session = sessionResult?.data?.session;
+    const sessionError = sessionResult?.error;
+
+    if (sessionError) {
+      console.warn("Session check warning:", sessionError);
+    }
+
+    if (!session || !session.user) {
+      currentUser = null;
+      currentProfile = null;
+
+      if (!navigator.onLine || isNetworkError(sessionError)) {
+        showLogin("لا يمكن التحقق من جلسة الدخول الآن بسبب الاتصال. تأكد من الإنترنت واضغط إعادة محاولة الاتصال.");
+        $("retryAuthButton").style.display = "inline-flex";
+        return;
+      }
+
       showLogin();
       return;
     }
 
-    currentUser = data.user;
+    /*
+     * نعتمد على الجلسة المحلية أولًا.
+     * لا نلغي ظهور الحساب بسبب فشل التحقق الشبكي من المستخدم.
+     */
+    currentUser = session.user;
 
-    await loadProfile();
+    try {
+      const userResult = await supabaseClient.auth.getUser();
+
+      if (!userResult.error && userResult.data?.user) {
+        currentUser = userResult.data.user;
+      } else if (userResult.error) {
+        console.warn("Remote user verification unavailable:", userResult.error);
+
+        if (isNetworkError(userResult.error)) {
+          showConnectionStatus("الاتصال بخدمة الحساب غير مستقر. سنعرض بيانات الجلسة المحفوظة ونحاول تحديث المعلومات عند عودة الإنترنت.");
+        }
+      }
+    } catch (userError) {
+      console.warn("Remote user verification failed:", userError);
+
+      if (isNetworkError(userError)) {
+        showConnectionStatus("تعذر الاتصال مؤقتًا. سنحتفظ بعرض حسابك ونحاول تحديث البيانات عند عودة الإنترنت.");
+      }
+    }
 
     showDashboard();
 
     /*
-      الإحصاءات مستقلة عن تحميل الملف الشخصي؛ فشل أحدها
-      لا يمنع الطالب من فتح صفحة حسابه.
-    */
-    await Promise.allSettled([
+     * لا نسمح لفشل تحميل الملف الشخصي بأن يعيد الطالب لشاشة الدخول.
+     */
+    try {
+      await loadProfile();
+    } catch (profileError) {
+      console.error("Profile loading failed:", profileError);
+      renderProfileFallback();
+
+      showMessage(
+        "profileMessage",
+        "تعذر تحميل بيانات الملف الشخصي حاليًا. حسابك ما زال مفتوحًا؛ حاول تحديث البيانات بعد استقرار الاتصال.",
+        "info"
+      );
+    }
+
+    /*
+     * تحميل الأقسام بشكل مستقل؛ فشل قسم لا يمنع فتح بقية الحساب.
+     */
+    const tasks = await Promise.allSettled([
       loadLectureStats(),
       loadResults(),
       loadAccountSubscriptions(),
@@ -2116,15 +1823,41 @@ async function loadDashboard() {
       loadHomeworkResults()
     ]);
 
+    const failedTasks = tasks.some(result => result.status === "rejected");
+
+    if (failedTasks || !navigator.onLine) {
+      showConnectionStatus("بعض البيانات لم تُحمّل بسبب الاتصال أو استجابة الخادم. لن يتم تسجيل خروجك تلقائيًا؛ يمكنك إعادة المحاولة.");
+    } else {
+      hideConnectionStatus();
+    }
+
   } catch (error) {
-    console.error("Dashboard error:", error);
+    console.error("Dashboard loading error:", error);
 
-    showLogin();
+    /*
+     * أهم تعديل: إذا كان لدينا مستخدم معروف، لا نعرض شاشة الدخول
+     * لمجرد فشل تحميل بيانات الصفحة.
+     */
+    if (currentUser) {
+      showDashboard();
+      renderProfileFallback();
 
-    $("authError").textContent =
-      error.message ||
-      "تعذر تحميل الحساب. تحقق من اتصال Supabase وصلاحيات الجداول.";
+      showConnectionStatus(
+        isNetworkError(error)
+          ? "انقطع الاتصال مؤقتًا. حسابك ما زال مفتوحًا؛ أعد المحاولة عند عودة الإنترنت."
+          : "تعذر تحميل بعض بيانات الحساب. لم يتم تسجيل خروجك؛ يمكنك إعادة المحاولة."
+      );
+    } else {
+      showLogin(
+        isNetworkError(error)
+          ? "تعذر الاتصال بخدمة الحساب. تحقق من الإنترنت ثم اضغط إعادة محاولة الاتصال."
+          : "تعذر تحميل الحساب. حاول إعادة المحاولة."
+      );
+      $("retryAuthButton").style.display = "inline-flex";
+    }
+
   } finally {
+    dashboardLoadRunning = false;
     setLoading(false);
   }
 }
@@ -2137,141 +1870,246 @@ async function handleLogin(event) {
   const button = $("loginButton");
 
   $("authError").textContent = "";
+  $("retryAuthButton").style.display = "none";
 
   button.disabled = true;
-  button.innerHTML =
-    '<i class="fa-solid fa-spinner fa-spin"></i> جاري تسجيل الدخول...';
+  button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري تسجيل الدخول...';
 
   try {
-    const { error } = await supabaseClient.auth.signInWithPassword({
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
       email,
       password
     });
 
     if (error) {
+      if (isNetworkError(error)) {
+        throw new Error("تعذر الاتصال بخدمة تسجيل الدخول. تحقق من الإنترنت ثم أعد المحاولة.");
+      }
+
       throw error;
     }
 
+    currentUser = data?.user || data?.session?.user || null;
     await loadDashboard();
 
   } catch (error) {
-    $("authError").textContent =
-      error.message ||
+    console.error("Login error:", error);
+
+    $("authError").textContent = error.message ||
       "تعذر تسجيل الدخول. تحقق من البريد الإلكتروني وكلمة المرور.";
+
+    if (isNetworkError(error)) {
+      $("retryAuthButton").style.display = "inline-flex";
+    }
 
   } finally {
     button.disabled = false;
-    button.innerHTML =
-      '<i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول';
+    button.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول';
   }
 }
 
 async function handleLogout() {
-  const confirmed = window.confirm(
-    "هل تريد تسجيل الخروج من حسابك؟"
-  );
-
+  const confirmed = window.confirm("هل تريد تسجيل الخروج من حسابك؟");
   if (!confirmed) return;
 
-  setLoading(true);
+  intentionalLogout = true;
+  setLoading(true, "جاري تسجيل الخروج...");
 
-  const { error } = await supabaseClient.auth.signOut();
+  try {
+    const { error } = await supabaseClient.auth.signOut();
 
-  if (error) {
+    if (error) {
+      intentionalLogout = false;
+      setLoading(false);
+      alert("تعذر تسجيل الخروج. تحقق من الاتصال وحاول مرة أخرى.");
+      return;
+    }
+
+    currentUser = null;
+    currentProfile = null;
+
+    showLogin();
+    $("authError").textContent = "";
+    $("retryAuthButton").style.display = "none";
+
+  } catch (error) {
+    console.error("Logout error:", error);
+    intentionalLogout = false;
+    alert("تعذر الاتصال لإكمال تسجيل الخروج. حاول مرة أخرى.");
+  } finally {
     setLoading(false);
-    alert("تعذر تسجيل الخروج. حاول مرة أخرى.");
-    return;
   }
-
-  currentUser = null;
-  currentProfile = null;
-
-  showLogin();
-  setLoading(false);
 }
 
+/* أزرار النموذج */
 $("profileForm").addEventListener("submit", saveProfile);
-
 $("loginForm").addEventListener("submit", handleLogin);
-
 $("logoutButton").addEventListener("click", handleLogout);
 
 $("reloadProfileButton").addEventListener("click", async () => {
   hideMessage("profileMessage");
 
+  if (!navigator.onLine) {
+    showMessage("profileMessage", "لا يوجد اتصال بالإنترنت حاليًا. حاول بعد عودة الاتصال.", "error");
+    return;
+  }
+
+  const button = $("reloadProfileButton");
+  const originalText = button.innerHTML;
+  button.disabled = true;
+  button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحديث...';
+
   try {
     await loadProfile();
-
-    showMessage(
-      "profileMessage",
-      "تم تحديث البيانات المعروضة من قاعدة البيانات.",
-      "success"
-    );
   } catch (error) {
-    showMessage(
-      "profileMessage",
-      error.message,
-      "error"
-    );
+    console.error(error);
+    showMessage("profileMessage", "تعذر تحديث البيانات حاليًا. حاول مرة أخرى.", "error");
+  } finally {
+    button.disabled = false;
+    button.innerHTML = originalText;
   }
 });
 
+$("retryAuthButton").addEventListener("click", async () => {
+  $("authError").textContent = "";
 
-function openAccountTab(name){
-  const names={profile:'Profile',results:'Results',subscriptions:'Subscriptions'};
-  if(!names[name])return;
-  Object.entries(names).forEach(([key,value])=>{
-    const pane=$('accountPane'+value);
-    pane.hidden=key!==name;
+  if (!navigator.onLine) {
+    $("authError").textContent = "لا يوجد اتصال بالإنترنت. شغّل الإنترنت ثم أعد المحاولة.";
+    return;
+  }
+
+  await loadDashboard();
+});
+
+/* التنقل بين تبويبات حساب الطالب */
+function openAccountTab(name) {
+  const names = {
+    profile: "Profile",
+    results: "Results",
+    subscriptions: "Subscriptions"
+  };
+
+  if (!names[name]) return;
+
+  Object.entries(names).forEach(([key, value]) => {
+    const pane = $("accountPane" + value);
+    if (pane) pane.hidden = key !== name;
   });
-  document.querySelectorAll('[data-account-tab]').forEach(btn=>{
-    const active=btn.dataset.accountTab===name;
-    btn.classList.toggle('active',active);
-    btn.setAttribute('aria-selected',String(active));
+
+  document.querySelectorAll("[data-account-tab]").forEach(button => {
+    const active = button.dataset.accountTab === name;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", String(active));
   });
-  try{history.replaceState(null,'','#'+name)}catch(_e){}
-}
-document.querySelectorAll('[data-account-tab]').forEach(btn=>btn.addEventListener('click',()=>openAccountTab(btn.dataset.accountTab)));
-openAccountTab(['profile','results','subscriptions'].includes(location.hash.slice(1))?location.hash.slice(1):'profile');
-$('refreshSubscriptions').addEventListener('click',()=>{loadAccountSubscriptions();loadAccountRequestHistory()});
-async function loadAccountRequestHistory(){
- const body=$('accountRequestsRows');if(!currentUser)return;
- const {data,error}=await supabaseClient.from('subscription_requests').select('created_at,package_type,amount_egp,status').eq('student_id',currentUser.id).order('created_at',{ascending:false}).limit(30);
- body.replaceChildren();
- if(error){const tr=body.insertRow();tr.insertCell().colSpan=4;tr.cells[0].textContent='تعذر تحميل الطلبات: '+error.message;return}
- if(!data?.length){const tr=body.insertRow();tr.insertCell().colSpan=4;tr.cells[0].textContent='لا توجد طلبات اشتراك مسجلة بعد.';return}
- for(const r of data){const tr=body.insertRow();tr.insertCell().textContent=formatDate(r.created_at);tr.insertCell().textContent=r.package_type==='month'?'اشتراك شهر':r.package_type==='term'?'اشتراك ترم':'اشتراك';tr.insertCell().textContent=r.amount_egp==null?'—':Number(r.amount_egp).toLocaleString('ar-EG')+' جنيه';const cell=tr.insertCell(),tag=document.createElement('span');tag.className=r.status==='approved'?'tag-approved':r.status==='rejected'?'tag-rejected':'tag-pending';tag.textContent=r.status==='approved'?'تمت الموافقة':r.status==='rejected'?'مرفوض':'قيد المراجعة';cell.append(tag)}
-}
-async function loadHomeworkResults(){
- const box=$('homeworkResults');if(!currentUser)return;
- // جدول results الحالي لا يحدد نوع الواجب بشكل موحد، لذا لا ننسب درجات اختبارات إلى واجبات دون دليل.
- box.textContent='نتائج الاختبارات تظهر بالأعلى. لعرض درجات الواجبات منفصلة، يلزم ربطها بحقل نوع الواجب في قاعدة البيانات.';
+
+  try {
+    history.replaceState(null, "", "#" + name);
+  } catch (_) {}
 }
 
-document.querySelectorAll('[data-open-account-section]').forEach(button => {
-  button.addEventListener('click', () => {
+document.querySelectorAll("[data-account-tab]").forEach(button => {
+  button.addEventListener("click", () => openAccountTab(button.dataset.accountTab));
+});
+
+openAccountTab(
+  ["profile", "results", "subscriptions"].includes(location.hash.slice(1))
+    ? location.hash.slice(1)
+    : "profile"
+);
+
+$("refreshSubscriptions").addEventListener("click", async () => {
+  if (!navigator.onLine) {
+    showConnectionStatus("لا يوجد اتصال بالإنترنت؛ لا يمكن تحديث الاشتراكات حاليًا.");
+    return;
+  }
+
+  await Promise.allSettled([
+    loadAccountSubscriptions(),
+    loadAccountRequestHistory()
+  ]);
+});
+
+/* الانتقال مباشرة لقسم الواجبات أو الامتحانات */
+document.querySelectorAll("[data-open-account-section]").forEach(button => {
+  button.addEventListener("click", () => {
     const targetId = button.dataset.openAccountSection;
-    openAccountTab('results');
+    openAccountTab("results");
+
     window.setTimeout(() => {
       const target = document.getElementById(targetId);
+
       if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
         target.focus({ preventScroll: true });
       }
     }, 80);
   });
 });
 
-setupSidebar();
+/* إعادة المحاولة تلقائيًا بعد عودة الإنترنت، دون تسجيل خروج الطالب */
+window.addEventListener("offline", () => {
+  if (currentUser) {
+    showConnectionStatus("انقطع اتصال الإنترنت. سيظل حسابك مفتوحًا، لكن بعض البيانات قد لا تتحدث حتى عودة الاتصال.");
+  } else {
+    $("authError").textContent = "لا يوجد اتصال بالإنترنت. سيُعاد التحقق من جلسة الدخول عند عودة الاتصال.";
+    $("retryAuthButton").style.display = "inline-flex";
+  }
+});
 
+window.addEventListener("online", async () => {
+  if (retryAfterReconnectRunning) return;
+
+  retryAfterReconnectRunning = true;
+
+  try {
+    if (currentUser) {
+      hideConnectionStatus();
+
+      await Promise.allSettled([
+        loadProfile(),
+        loadLectureStats(),
+        loadResults(),
+        loadAccountSubscriptions(),
+        loadAccountRequestHistory(),
+        loadHomeworkResults()
+      ]);
+
+      hideConnectionStatus();
+    } else {
+      await loadDashboard();
+    }
+  } catch (error) {
+    console.warn("Reconnect refresh error:", error);
+  } finally {
+    retryAfterReconnectRunning = false;
+  }
+});
+
+/*
+ * عند تغيّر حالة المصادقة:
+ * لا نعتبر أي خطأ شبكي خروجًا متعمدًا.
+ * حدث SIGNED_OUT الصريح فقط هو الذي يعرض شاشة تسجيل الدخول.
+ */
 supabaseClient.auth.onAuthStateChange((event, session) => {
-  if (event === "SIGNED_OUT") {
+  if (event === "SIGNED_IN" && session?.user) {
+    currentUser = session.user;
+    return;
+  }
+
+  if (event === "SIGNED_OUT" && intentionalLogout) {
     currentUser = null;
     currentProfile = null;
+    showLogin();
+    return;
+  }
+
+  if (event === "SIGNED_OUT" && !currentUser) {
     showLogin();
   }
 });
 
+/* بدء تشغيل الصفحة */
+setupSidebar();
 loadDashboard();
 </script>
 
