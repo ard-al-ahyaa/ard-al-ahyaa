@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#004e4d">
+<meta name="color-scheme" content="light">
+<title>الاختبار | منصة أرض الأحياء</title>
+<link rel="icon" href="../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<style>
+:root{--green:#008866;--dark:#004e4d;--blue:#07375b;--ink:#17334b;--muted:#6a7d8c;--line:#e1eaf0;--bg:#f3f7fa;--red:#c93636;--shadow:0 16px 45px rgba(6,52,72,.10)}
+*{box-sizing:border-box}
+body{margin:0;font-family:Cairo,sans-serif;color:var(--ink);background:radial-gradient(circle at 8% 0%,#e2f5ee 0,transparent 32%),linear-gradient(180deg,#f6fafb,#eef4f7);min-height:100vh}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid #72cbb1;outline-offset:3px}
+.topbar{height:72px;background:linear-gradient(110deg,var(--dark),#003d50 58%,var(--blue));color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 max(18px,calc((100% - 1100px)/2));gap:14px;box-shadow:0 8px 28px #003d5026}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900}
+.brand-icon{width:42px;height:42px;display:grid;place-items:center;border:1px solid #ffffff35;background:#ffffff12;border-radius:14px}
+.topbar small{display:block;color:#d1e7e5;font-weight:600;font-size:11px}
+.top-actions{display:flex;align-items:center;gap:10px}
+.pill{border:1px solid #ffffff30;background:#ffffff12;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:800}
+.wrap{width:min(920px,calc(100% - 28px));margin:26px auto 54px}
+.crumb{color:var(--muted);font-size:13px;margin:0 0 15px}
+.hero{background:#fff;border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;top:0;right:0;width:6px;height:100%;background:linear-gradient(var(--green),#0b7891)}
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
+.eyebrow{color:var(--green);font-size:12px;font-weight:900;display:flex;align-items:center;gap:7px}
+h1{font-size:clamp(22px,4vw,32px);margin:7px 0 8px;line-height:1.5}
+.sub{margin:0;color:var(--muted);font-size:14px;line-height:1.9}
+.hero-icon{flex:0 0 58px;width:58px;height:58px;display:grid;place-items:center;border-radius:18px;background:#e9f7f1;color:var(--green);font-size:24px}
+.progress-box{margin-top:22px}
+.progress-label{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted);font-weight:800;margin-bottom:8px}
+.track{height:8px;border-radius:99px;background:#e8eff2;overflow:hidden}
+.track span{height:100%;display:block;width:0;background:linear-gradient(90deg,var(--green),#0c7892);border-radius:99px;transition:width .2s}
+.question-card{margin-top:18px;padding:24px;background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 10px 28px #0634480a}
+.q-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--muted);font-size:12px;font-weight:800}
+.q-number{background:#eaf7f2;color:var(--green);padding:7px 12px;border-radius:999px}
+.question-text{white-space:pre-wrap;line-height:2;font-size:18px;font-weight:800;margin:20px 0}
+.q-image{max-width:100%;max-height:360px;display:block;margin:0 auto 18px;border-radius:14px;border:1px solid var(--line);object-fit:contain}
+.choices{display:grid;gap:11px}
+.choice{display:flex;align-items:center;gap:12px;text-align:right;width:100%;padding:14px;border:1px solid var(--line);background:#fbfdfe;border-radius:15px;color:var(--ink);transition:.18s}
+.choice:hover{border-color:#8bcab8;background:#f8fcfa}
+.choice.selected{border-color:var(--green);background:#eaf8f2;box-shadow:0 0 0 3px #00886612}
+.choice-letter{width:36px;height:36px;flex:0 0 36px;display:grid;place-items:center;background:#edf2f5;color:#486171;border-radius:11px;font-weight:900}
+.choice.selected .choice-letter{background:var(--green);color:#fff}
+.choice-text{font-size:14px;line-height:1.8}
+.actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:24px}
+.btn{border:0;border-radius:13px;padding:12px 18px;display:inline-flex;align-items:center;justify-content:center;gap:9px;font-weight:900;min-height:46px}
+.btn-primary{background:linear-gradient(110deg,var(--green),#087c80);color:#fff;box-shadow:0 8px 18px #00886624}
+.btn-secondary{background:#f0f5f7;color:#244354;border:1px solid #e0e8ed}
+.btn-danger{background:#fff1f1;color:#b42323;border:1px solid #f1cccc}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.notice{padding:13px 15px;background:#fff8e8;color:#805b16;border:1px solid #f1dfb2;border-radius:13px;font-size:12px;line-height:1.8;margin-top:18px}
+.state{padding:48px 20px;text-align:center;background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);margin-top:18px}
+.state-icon{width:62px;height:62px;border-radius:20px;background:#e9f7f1;color:var(--green);display:grid;place-items:center;margin:0 auto 15px;font-size:24px}
+.state h2{margin:0 0 8px}.state p{color:var(--muted);line-height:1.9;margin:0 0 18px}
+.result-score{font-size:42px;font-weight:900;color:var(--green);margin:10px 0}
+.review-item{text-align:right;padding:16px;border:1px solid var(--line);border-radius:15px;margin-top:12px}
+.review-item h3{font-size:15px;line-height:1.9;margin:0 0 10px}
+.review-correct{color:#087d51;font-weight:900}.review-selected{color:#b42323;font-weight:800}
+.modal-backdrop{position:fixed;inset:0;background:#0927379c;display:none;align-items:center;justify-content:center;padding:18px;z-index:20}
+.modal-backdrop.open{display:flex}
+.modal{width:min(460px,100%);background:#fff;border-radius:23px;padding:24px;box-shadow:0 30px 90px #001b2a55}
+.modal h2{margin:0 0 8px;font-size:22px}.modal p{color:var(--muted);font-size:13px;line-height:1.9;margin:0 0 18px}
+.modal-actions{display:grid;gap:10px}
+.modal-actions .btn{width:100%}
+.loading{color:var(--muted);font-weight:800}
+@media(max-width:620px){.topbar{height:64px;padding:0 14px}.brand{font-size:13px}.brand-icon{width:38px;height:38px}.pill{display:none}.wrap{width:calc(100% - 20px);margin-top:16px}.hero,.question-card{padding:17px;border-radius:18px}.hero-icon{width:46px;height:46px;flex-basis:46px;border-radius:14px;font-size:19px}.question-text{font-size:16px}.choice{padding:11px}.actions{flex-wrap:wrap}.actions .btn{flex:1}.q-meta{align-items:flex-start}}
+</style>
+</head>
+<body>
+<header class="topbar">
+ <div class="brand"><div class="brand-icon"><i class="fa-solid fa-leaf"></i></div><div>منصة أرض الأحياء<small>الصف الثالث الثانوي</small></div></div>
+ <div class="top-actions"><span class="pill"><i class="fa-solid fa-shield-halved"></i> اختبار إلكتروني</span><button class="btn btn-secondary" id="backTop" type="button"><i class="fa-solid fa-arrow-right"></i> رجوع</button></div>
+</header>
+<main class="wrap">
+ <p class="crumb"><i class="fa-solid fa-house"></i> المنصة / المحاضرات / <span id="typeLabel">الاختبار</span></p>
+ <section class="hero">
+  <div class="hero-top">
+   <div><div class="eyebrow"><i class="fa-solid fa-circle-check"></i> تقييم إلكتروني</div><h1 id="assessmentTitle">جارٍ تحميل التقييم...</h1><p class="sub" id="assessmentSubtitle">يتم تجهيز الأسئلة الخاصة بك.</p></div>
+   <div class="hero-icon"><i class="fa-solid fa-clipboard-question"></i></div>
+  </div>
+  <div class="progress-box"><div class="progress-label"><span id="progressText">السؤال 0 من 0</span><span id="answeredText">تمت الإجابة عن 0</span></div><div class="track"><span id="progressBar"></span></div></div>
+ </section>
+ <div id="content"><section class="state"><div class="state-icon"><i class="fa-solid fa-spinner fa-spin"></i></div><h2>جارٍ تحميل الأسئلة</h2><p>انتظر لحظات من فضلك.</p></section></div>
+</main>
+<div class="modal-backdrop" id="finishModal" role="dialog" aria-modal="true" aria-labelledby="finishTitle">
+ <div class="modal">
+  <h2 id="finishTitle">هل انتهيت من التقييم؟</h2>
+  <p id="finishDescription">يمكنك تسليم إجاباتك وحفظ النتيجة، أو الرجوع للأسئلة لمراجعتها واستكمالها.</p>
+  <div class="modal-actions">
+   <button class="btn btn-primary" id="submitNow"><i class="fa-solid fa-paper-plane"></i> تسليم الواجب علطول</button>
+   <button class="btn btn-secondary" id="returnToQuiz"><i class="fa-solid fa-arrow-right"></i> أنا رجعت وخلصت</button>
+  </div>
+ </div>
+</div>
+<script>
+"use strict";
+const SUPABASE_URL="https://fpfbmjtpzamzlyzitmsd.supabase.co";
+const SUPABASE_KEY="sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
+const params=new URLSearchParams(location.search);
+const assessmentId=params.get("id");
+const type=params.get("type")==="homework"?"homework":"exam";
+const returnPath=params.get("return")||"index.html";
+let assessment=null,questions=[],answers={},current=0,submitting=false,submitted=false;
+const letters=["A","B","C","D"];
+function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
+function goBack(){location.href=returnPath;}
+$("backTop").addEventListener("click",goBack);
+$("typeLabel").textContent=type==="homework"?"الواجبات":"الامتحانات";
+function updateProgress(){
+ const total=questions.length,answered=questions.filter(q=>answers[q.id]).length;
+ $("progressText").textContent=`السؤال ${total?current+1:0} من ${total}`;
+ $("answeredText").textContent=`تمت الإجابة عن ${answered}`;
+ $("progressBar").style.width=total?`${((current+1)/total)*100}%`:"0%";
+}
+function renderState(icon,title,desc,buttonText,buttonAction){
+ $("content").innerHTML=`<section class="state"><div class="state-icon"><i class="${icon}"></i></div><h2>${esc(title)}</h2><p>${esc(desc)}</p>${buttonText?`<button class="btn btn-primary" id="stateAction">${esc(buttonText)}</button>`:""}</section>`;
+ if(buttonText)$("stateAction").addEventListener("click",buttonAction);
+}
+async function load(){
+ if(!assessmentId){renderState("fa-solid fa-circle-exclamation","رابط غير مكتمل","لم يتم تحديد التقييم المطلوب.","العودة للمحاضرات",goBack);return;}
+ const {data:userData,error:userError}=await db.auth.getUser();
+ if(userError||!userData?.user){renderState("fa-solid fa-lock","سجّل الدخول أولًا","لازم تسجّل الدخول بحساب الطالب لفتح التقييم.","العودة للمحاضرات",goBack);return;}
+ const {data:a,error:ae}=await db.from("lecture_assessments").select("id,title,assessment_type,duration_minutes,is_published").eq("id",assessmentId).eq("is_published",true).maybeSingle();
+ if(ae||!a){renderState("fa-solid fa-circle-exclamation","التقييم غير متاح","قد يكون التقييم غير منشور أو لم يعد متاحًا.","العودة للمحاضرات",goBack);return;}
+ assessment=a;
+ $("assessmentTitle").textContent=a.title||"التقييم";
+ $("assessmentSubtitle").textContent=(type==="homework"?"واجب إلكتروني":"امتحان إلكتروني")+(a.duration_minutes?` • المدة المحددة ${a.duration_minutes} دقيقة`:" • أجب عن الأسئلة ثم سلّم إجاباتك");
+ const {data:q,error:qe}=await db.from("lecture_assessment_questions").select("id,question_text,image_path,option_a,option_b,option_c,option_d,sort_order").eq("assessment_id",assessmentId).order("sort_order",{ascending:true});
+ if(qe){console.error(qe);renderState("fa-solid fa-triangle-exclamation","تعذر تحميل الأسئلة","راجع صلاحيات جدول الأسئلة وسياسات RLS في Supabase.","العودة للمحاضرات",goBack);return;}
+ questions=q||[];
+ if(!questions.length){renderState("fa-solid fa-inbox","لا توجد أسئلة حتى الآن","لم تتم إضافة أسئلة إلى هذا التقييم بعد.","العودة للمحاضرات",goBack);return;}
+ const saved=sessionStorage.getItem("earth-assessment-"+assessmentId);
+ if(saved){try{const parsed=JSON.parse(saved);if(parsed&&parsed.answers)answers=parsed.answers;if(Number.isInteger(parsed.current))current=Math.max(0,Math.min(parsed.current,questions.length-1));}catch{}}
+ renderQuestion();
+}
+function persist(){try{sessionStorage.setItem("earth-assessment-"+assessmentId,JSON.stringify({answers,current}));}catch{}}
+function renderQuestion(){
+ if(submitted||!questions.length)return;
+ const q=questions[current];
+ const opts=[["A",q.option_a],["B",q.option_b],["C",q.option_c],["D",q.option_d]];
+ $("content").innerHTML=`<section class="question-card">
+  <div class="q-meta"><span class="q-number">السؤال ${current+1}</span><span>${questions.length} أسئلة</span></div>
+  <h2 class="question-text">${esc(q.question_text)}</h2>
+  ${q.image_path?`<div id="questionImage" class="loading">جارٍ تحميل صورة السؤال...</div>`:""}
+  <div class="choices">${opts.filter(([l,v])=>v!==null&&v!==undefined&&String(v).trim()!=="").map(([letter,value])=>`<button type="button" class="choice ${answers[q.id]===letter?"selected":""}" data-choice="${letter}"><span class="choice-letter">${letter}</span><span class="choice-text">${esc(value)}</span></button>`).join("")}</div>
+  <div class="actions">
+   <button type="button" class="btn btn-secondary" id="prev" ${current===0?"disabled":""}><i class="fa-solid fa-arrow-right"></i> السابق</button>
+   ${current<questions.length-1?`<button type="button" class="btn btn-primary" id="next">التالي <i class="fa-solid fa-arrow-left"></i></button>`:`<button type="button" class="btn btn-primary" id="finish"><i class="fa-solid fa-flag-checkered"></i> إنهاء الاختبار</button>`}
+  </div>
+  <div class="notice"><i class="fa-solid fa-circle-info"></i> إجاباتك تُحفظ مؤقتًا في هذا المتصفح حتى التسليم. لا تغلق الصفحة قبل إرسال الإجابات إذا كنت تريد حفظ النتيجة.</div>
+ </section>`;
+ $("content").querySelectorAll("[data-choice]").forEach(btn=>btn.addEventListener("click",()=>{answers[q.id]=btn.dataset.choice;persist();renderQuestion();}));
+ $("prev")?.addEventListener("click",()=>{if(current>0){current--;persist();renderQuestion();}});
+ $("next")?.addEventListener("click",()=>{if(current<questions.length-1){current++;persist();renderQuestion();}});
+ $("finish")?.addEventListener("click",()=>{$("finishDescription").textContent=`أجبت عن ${questions.filter(x=>answers[x.id]).length} من ${questions.length} سؤال. يمكنك تسليم الإجابات الآن أو الرجوع لمراجعتها واستكمالها.`;$("finishModal").classList.add("open");});
+ updateProgress();
+ if(q.image_path)loadImage(q.image_path);
+}
+async function loadImage(path){
+ const box=$("questionImage");if(!box)return;
+ // دعم روابط الصور والمسارات داخل bucket lectures، بما فيها الملفات الخاصة.
+ let url="";
+ if(/^https?:\/\//i.test(path)){
+  url=path;
+ }else{
+  const {data,error}=await db.storage.from("lectures").createSignedUrl(path,3600);
+  if(!error)url=data?.signedUrl||"";
+ }
+ if(!url){box.textContent="تعذر عرض صورة السؤال.";return;}
+ const img=document.createElement("img");img.className="q-image";img.alt="صورة السؤال";img.loading="lazy";img.src=url;
+ img.onerror=()=>{box.textContent="تعذر عرض صورة السؤال.";};
+ box.replaceChildren(img);
+}
+$("returnToQuiz").addEventListener("click",()=>{$("finishModal").classList.remove("open");});
+$("finishModal").addEventListener("click",e=>{if(e.target===$("finishModal"))$("finishModal").classList.remove("open");});
+$("submitNow").addEventListener("click",submit);
+async function submit(){
+ if(submitting||submitted)return;
+ const answered=questions.filter(q=>answers[q.id]).length;
+ if(answered<questions.length&&!confirm(`أجبت عن ${answered} من ${questions.length} سؤال. هل تريد التسليم الآن؟`))return;
+ submitting=true;$("submitNow").disabled=true;$("submitNow").innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> جارٍ التسليم...';
+ const payload=questions.map(q=>({question_id:q.id,selected_answer:answers[q.id]||null}));
+ const {data,error}=await db.rpc("submit_lecture_assessment",{p_assessment_id:assessmentId,p_answers:payload});
+ if(error){
+  console.error(error);submitting=false;$("submitNow").disabled=false;$("submitNow").innerHTML='<i class="fa-solid fa-paper-plane"></i> تسليم الواجب علطول';
+  $("finishModal").classList.remove("open");
+  renderState("fa-solid fa-triangle-exclamation","تعذر تسليم الإجابات","لم نتمكن من حفظ النتيجة. تأكد من اتصالك ثم حاول مرة أخرى.", "العودة للأسئلة",()=>renderQuestion());
+  return;
+ }
+ submitted=true;sessionStorage.removeItem("earth-assessment-"+assessmentId);$("finishModal").classList.remove("open");
+ const score=Number(data?.score||0),max=Number(data?.max_score||questions.length),pct=Number(data?.percentage??(max?score/max*100:0));
+ $("progressText").textContent="تم تسليم التقييم";$("answeredText").textContent=`${score} من ${max}`;$("progressBar").style.width="100%";
+ const review=Array.isArray(data?.review)?data.review:[];
+ $("content").innerHTML=`<section class="state"><div class="state-icon"><i class="fa-solid fa-trophy"></i></div><div class="eyebrow" style="justify-content:center">تم حفظ النتيجة بنجاح</div><h2>أحسنت! تم تسليم ${type==="homework"?"الواجب":"الامتحان"}</h2><div class="result-score">${score} / ${max}</div><p>النسبة المئوية: <strong>${pct.toFixed(2)}%</strong></p><button class="btn btn-primary" id="showReview"><i class="fa-solid fa-list-check"></i> مراجعة الإجابات</button> <button class="btn btn-secondary" id="returnLessons"><i class="fa-solid fa-arrow-right"></i> الرجوع للمحاضرات</button><div id="reviewList" style="margin-top:20px;display:none"></div></section>`;
+ $("returnLessons").addEventListener("click",goBack);
+ $("showReview").addEventListener("click",()=>{
+  const box=$("reviewList");box.style.display=box.style.display==="none"?"block":"none";
+  if(box.dataset.ready==="1")return;
+  box.dataset.ready="1";
+  box.innerHTML=review.map((item,i)=>`<article class="review-item"><h3>${i+1}. ${esc(item.question_text)}</h3><p class="review-selected">إجابتك: ${esc(item.selected_answer||"لم تتم الإجابة")}</p><p class="review-correct">الإجابة الصحيحة: ${esc(item.correct_answer||"غير متاحة")}</p>${item.explanation?`<p>${esc(item.explanation)}</p>`:""}</article>`).join("")||"<p>لا تتوفر مراجعة للإجابات.</p>";
+ });
+}
+load();
+</script>
+</body>
+</html>
