@@ -1,22 +1,22 @@
 {
-  "id": "/",
-  "name": "منصة أرض الأحياء",
-  "short_name": "أرض الأحياء",
-  "description": "منصة تعليم الأحياء للصف الثالث الثانوي",
-  "lang": "ar",
-  "dir": "rtl",
-  "start_url": "/index.html",
-  "scope": "/",
-  "display": "standalone",
-  "orientation": "any",
-  "background_color": "#f4f8fd",
-  "theme_color": "#006b57",
-  "icons": [
-    {
-      "src": "/logo.png",
-      "sizes": "any",
-      "type": "image/png",
-      "purpose": "any"
-    }
-  ]
+"id": "/",
+"name": "منصة أرض الأحياء",
+"short_name": "أرض الأحياء",
+"description": "منصة تعليم الأحياء للصف الثالث الثانوي",
+"lang": "ar",
+"dir": "rtl",
+"start_url": "/index.html",
+"scope": "/",
+"display": "standalone",
+"orientation": "any",
+"background_color": "#f4f8fd",
+"theme_color": "#006b57",
+"icons": [
+{
+"src": "/logo.png",
+"sizes": "any",
+"type": "image/png",
+"purpose": "any"
+}
+]
 }
