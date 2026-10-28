@@ -1,4 +1,4 @@
-html
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -6,29 +6,32 @@ html
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>بطل الفصل | منصة أرض الأحياء</title>
 <meta name="description" content="ترتيب أبطال الأحياء ودرجات الطلاب في منصة أرض الأحياء للصف الثالث الثانوي.">
-<meta name="theme-color" content="#026857">
+<meta name="theme-color" content="#004e4d">
+
 <link rel="icon" href="../favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 
 <style>
 :root{
   --green:#008866;
-  --green-dark:#004e4d;
-  --green-light:#e3f5ee;
-  --blue:#07375b;
-  --bg:#f4f7fb;
-  --text:#142f50;
-  --muted:#6b7f98;
-  --border:#e2eaf3;
-  --shadow:0 5px 22px rgba(18,55,91,.06);
+  --green-dark:#006653;
+  --green-light:#e5f6ef;
+  --blue:#2466d8;
+  --text:#142f54;
+  --muted:#7185a4;
+  --bg:#f4f8fd;
+  --border:#e0eaf6;
+  --shadow:0 5px 25px rgba(28,65,110,.045);
   --sidebar-width:272px;
-  --sidebar-small:82px;
 }
+
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
+
 body{
   margin:0;
   background:var(--bg);
@@ -36,324 +39,976 @@ body{
   font-family:"Cairo",sans-serif;
   min-height:100vh;
 }
+
 button{font-family:inherit;cursor:pointer}
-a{color:inherit}
+a{color:inherit;text-decoration:none}
+
 .icon{
-  width:22px;height:22px;display:block;flex-shrink:0;
-  fill:none;stroke:currentColor;stroke-width:1.8;
-  stroke-linecap:round;stroke-linejoin:round;
+  width:22px;
+  height:22px;
+  display:block;
+  flex-shrink:0;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
 }
 
-/* الشريط الجانبي */
+/* =================================
+   الشريط الجانبي - نفس الصفحة الرئيسية
+================================= */
+
 .sidebar{
-  position:fixed;top:0;right:0;width:var(--sidebar-width);
-  height:100vh;overflow-x:hidden;overflow-y:auto;
-  display:flex;flex-direction:column;justify-content:space-between;
-  padding:0;color:#fff;
+  width:var(--sidebar-width);
   background:linear-gradient(180deg,#004e4d 0%,#003d50 62%,#07375b 100%);
-  z-index:1000;box-shadow:none;
-  transition:width .25s;
+  color:#fff;
+  position:fixed;
+  right:0;
+  top:0;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  z-index:1000;
+  overflow:hidden;
+  transition:width .25s ease;
 }
-.sidebar-top{padding:18px 15px;min-width:0}
-.sidebar-toggle-wrap{display:flex;justify-content:flex-start;margin-bottom:16px}
+
+.sidebar-inner{
+  padding:17px 15px;
+  flex:1;
+  min-width:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+}
+
+.sidebar-top-actions{
+  display:flex;
+  justify-content:flex-start;
+  margin-bottom:8px;
+}
+
 .sidebar-toggle{
-  width:39px;height:39px;border:1px solid #ffffff30;border-radius:50%;
-  background:#ffffff15;color:#fff;display:grid;place-items:center;
+  width:39px;
+  height:39px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:50%;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  padding:0;
+  flex-shrink:0;
+  transition:background .2s;
 }
-.sidebar-toggle:hover{background:#ffffff25}
-.sidebar-toggle .icon{width:24px;height:24px}
+
+.sidebar-toggle:hover{
+  background:rgba(255,255,255,.18);
+}
+
+.sidebar-toggle i{
+  font-size:17px;
+  transition:transform .25s;
+}
+
 .brand{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:0;text-align:center;margin:0 0 27px;padding:0 0 23px;
-  border-bottom:1px solid #ffffff20;min-width:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  margin-bottom:27px;
+  padding:0 5px 20px;
+  border-bottom:1px solid rgba(255,255,255,.12);
+  min-width:0;
 }
-.brand-logo{width:75px;height:75px;object-fit:contain;margin-bottom:7px}
-.brand-text{min-width:0;overflow:hidden;white-space:nowrap}
-.brand h2{font-size:23px;line-height:1.5;font-weight:900;margin:0;color:#fff}
-.brand small{font-size:12px;opacity:.85;font-weight:500}
-.nav-title{font-size:11px;color:#ffffff88;font-weight:700;margin:0 10px 12px;padding:0}
-.sidebar nav{display:flex;flex-direction:column;gap:7px}
-.nav-link{
-  display:flex;align-items:center;gap:15px;min-height:48px;
-  padding:12px 15px;margin:0;border-radius:12px;
-  color:#f2fbff;text-decoration:none;font-size:14px;
-  font-weight:700;white-space:nowrap;transition:.2s;
+
+.brand-logo-wrap{
+  width:83px;
+  height:83px;
+  flex-shrink:0;
+  display:grid;
+  place-items:center;
 }
-.nav-link:hover{background:#ffffff18;transform:translateX(-2px)}
-.nav-link.active{
-  background:linear-gradient(110deg,#1da77b,#159b78);
-  box-shadow:0 5px 15px #001f3020;color:#fff;
+
+.brand-logo{
+  width:100%;
+  height:100%;
+  object-fit:contain;
 }
-.nav-icon{width:27px;height:27px;min-width:27px;display:flex;align-items:center;justify-content:center}
-.nav-icon .icon{width:24px;height:24px}
-.nav-text{overflow:hidden}
+
+.brand-text{
+  text-align:center;
+  min-width:0;
+}
+
+.brand h2{
+  font-size:22px;
+  line-height:1.5;
+  font-weight:900;
+  margin:0;
+  color:#fff;
+  white-space:nowrap;
+}
+
+.brand small{
+  display:block;
+  margin-top:1px;
+  font-size:13px;
+  color:#d2e8e5;
+  white-space:nowrap;
+}
+
+.menu-label{
+  color:rgba(255,255,255,.53);
+  font-size:10px;
+  font-weight:700;
+  padding:0 12px;
+  margin:0 0 9px;
+  white-space:nowrap;
+}
+
+.side-menu{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.side-link{
+  color:#f0f8f7;
+  padding:12px 14px;
+  border-radius:14px;
+  font-size:14px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  width:100%;
+  min-height:51px;
+  white-space:nowrap;
+  transition:background .2s,transform .2s;
+}
+
+.side-link:hover,
+.side-link.active{
+  background:linear-gradient(100deg,#13a77c,#159a77);
+  color:#fff;
+}
+
+.side-link:hover{
+  transform:translateX(-2px);
+}
+
+.side-link i{
+  width:25px;
+  min-width:25px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+}
+
+.side-link-text{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
 .sidebar-bottom{
-  margin:0 15px 18px;padding:13px 10px;border-top:1px solid #ffffff20;
-  text-align:center;font-size:11px;line-height:2;color:#ffffffc9;
+  margin:0 15px 17px;
+  padding:12px 5px;
+  font-size:11px;
+  line-height:2;
+  color:#e4f3ef;
+  text-align:center;
+  overflow:hidden;
+  white-space:nowrap;
 }
-.sidebar-bottom .icon{display:none}
-.sidebar-bottom-text{white-space:normal}
 
-body.sidebar-collapsed{--sidebar-width:82px}
-body.sidebar-collapsed .sidebar{padding:0}
-body.sidebar-collapsed .sidebar-top{padding:18px 10px}
-body.sidebar-collapsed .brand{padding-bottom:18px}
-body.sidebar-collapsed .brand-logo{width:48px;height:48px}
+.sidebar-bottom i{
+  color:#21bd83;
+  margin-left:4px;
+}
+
+/* تصغير الشريط الجانبي */
+
+body.sidebar-collapsed{
+  --sidebar-width:82px;
+}
+
+body.sidebar-collapsed .sidebar-inner{
+  padding:15px 9px;
+}
+
+body.sidebar-collapsed .sidebar-top-actions{
+  justify-content:center;
+}
+
+body.sidebar-collapsed .sidebar-toggle i{
+  transform:rotate(180deg);
+}
+
+body.sidebar-collapsed .brand{
+  padding-bottom:15px;
+}
+
+body.sidebar-collapsed .brand-logo-wrap{
+  width:54px;
+  height:54px;
+}
+
 body.sidebar-collapsed .brand-text,
-body.sidebar-collapsed .nav-title,
-body.sidebar-collapsed .nav-text,
-body.sidebar-collapsed .sidebar-bottom{display:none}
-body.sidebar-collapsed .nav-link{justify-content:center;padding:13px 5px}
-body.sidebar-collapsed .nav-link:hover{transform:none}
-body.sidebar-collapsed .sidebar-toggle-wrap{justify-content:center}
+body.sidebar-collapsed .menu-label,
+body.sidebar-collapsed .side-link-text,
+body.sidebar-collapsed .sidebar-bottom span{
+  display:none;
+}
 
-/* المحتوى الرئيسي */
+body.sidebar-collapsed .side-link{
+  justify-content:center;
+  gap:0;
+  padding:13px 5px;
+}
+
+body.sidebar-collapsed .side-link:hover{
+  transform:none;
+}
+
+body.sidebar-collapsed .sidebar-bottom{
+  padding:12px 3px;
+  margin:0 5px 15px;
+}
+
+/* =================================
+   المحتوى الرئيسي
+================================= */
+
 .main{
   margin-right:var(--sidebar-width);
+  min-height:100vh;
   padding:27px 28px 40px;
-  min-width:0;min-height:100vh;
-  transition:margin-right .25s;
+  min-width:0;
+  transition:margin-right .25s ease;
 }
-body.sidebar-collapsed .main{margin-right:var(--sidebar-small)}
+
 .topbar{
-  display:flex;align-items:center;justify-content:space-between;gap:15px;
-  background:#fff;border:1px solid var(--border);border-radius:17px;
-  padding:21px 24px;margin-bottom:23px;box-shadow:var(--shadow);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:17px;
+  padding:21px 24px;
+  margin-bottom:23px;
+  box-shadow:var(--shadow);
 }
-.page-heading h1{font-size:22px;font-weight:900;color:var(--green-dark);margin:0 0 5px}
-.page-heading p{font-size:12px;color:var(--muted);margin:0;line-height:1.9}
+
+.page-heading h1{
+  font-size:22px;
+  font-weight:900;
+  color:var(--green-dark);
+  margin:0 0 5px;
+}
+
+.page-heading p{
+  font-size:12px;
+  color:var(--muted);
+  margin:0;
+  line-height:1.9;
+}
+
 .student-badge{
-  display:flex;align-items:center;gap:9px;background:#f4f8fb;
-  border-radius:12px;padding:9px 13px;max-width:250px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  background:#f4f8fb;
+  border-radius:12px;
+  padding:9px 13px;
+  max-width:250px;
 }
+
 .student-avatar{
-  width:38px;height:38px;display:grid;place-items:center;flex-shrink:0;
-  border-radius:12px;background:#e3f5ee;color:var(--green);
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  flex-shrink:0;
+  border-radius:12px;
+  background:#e3f5ee;
+  color:var(--green);
 }
+
 .student-info{min-width:0}
-.student-info strong{display:block;font-size:12px;overflow-wrap:anywhere}
-.student-info small{color:var(--muted);font-size:10px}
+
+.student-info strong{
+  display:block;
+  font-size:12px;
+  overflow-wrap:anywhere;
+}
+
+.student-info small{
+  color:var(--muted);
+  font-size:10px;
+}
 
 .welcome-card{
-  position:relative;overflow:hidden;padding:26px 27px;
-  border-radius:16px;margin-bottom:23px;color:#fff;
+  position:relative;
+  overflow:hidden;
+  padding:26px 27px;
+  border-radius:16px;
+  margin-bottom:23px;
+  color:#fff;
   background:linear-gradient(110deg,#004e4d,#008866 65%,#07375b);
   box-shadow:0 8px 25px rgba(2,104,87,.12);
 }
-.welcome-card h2{margin:0 0 8px;font-size:21px;font-weight:900;position:relative;z-index:1}
-.welcome-card p{margin:0;font-size:13px;line-height:2;max-width:650px;position:relative;z-index:1;color:#ffffffed}
-.welcome-decoration{position:absolute;left:25px;top:-28px;opacity:.12;transform:rotate(-15deg);pointer-events:none}
-.welcome-decoration .icon{width:145px;height:145px;stroke-width:1.1}
+
+.welcome-card h2{
+  margin:0 0 8px;
+  font-size:21px;
+  font-weight:900;
+  position:relative;
+  z-index:1;
+}
+
+.welcome-card p{
+  margin:0;
+  font-size:13px;
+  line-height:2;
+  max-width:650px;
+  position:relative;
+  z-index:1;
+  color:#ffffffed;
+}
+
+.welcome-decoration{
+  position:absolute;
+  left:25px;
+  top:-28px;
+  opacity:.12;
+  transform:rotate(-15deg);
+  pointer-events:none;
+}
+
+.welcome-decoration .icon{
+  width:145px;
+  height:145px;
+  stroke-width:1.1;
+}
 
 .section-title{
-  display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:10px;margin:27px 0 15px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:27px 0 15px;
 }
-.section-title h2{margin:0;font-size:18px;font-weight:900}
-.section-title span{color:var(--muted);font-size:12px}
+
+.section-title h2{
+  margin:0;
+  font-size:18px;
+  font-weight:900;
+}
+
+.section-title span{
+  color:var(--muted);
+  font-size:12px;
+}
 
 .refresh-button{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  border:1px solid #dce8ef;border-radius:10px;padding:9px 14px;
-  background:#fff;color:var(--green-dark);font-size:12px;font-weight:800;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  border:1px solid #dce8ef;
+  border-radius:10px;
+  padding:9px 14px;
+  background:#fff;
+  color:var(--green-dark);
+  font-size:12px;
+  font-weight:800;
   transition:.2s;
 }
-.refresh-button:hover{background:#f1fbf6;border-color:#75c6a9}
-.refresh-button:disabled{opacity:.6;cursor:wait}
-.refresh-button .icon{width:18px;height:18px}
+
+.refresh-button:hover{
+  background:#f1fbf6;
+  border-color:#75c6a9;
+}
+
+.refresh-button:disabled{
+  opacity:.6;
+  cursor:wait;
+}
+
+.refresh-button .icon{
+  width:18px;
+  height:18px;
+}
 
 .stats-grid{
-  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:15px;margin-bottom:25px;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:15px;
+  margin-bottom:25px;
 }
+
 .stat-card{
-  position:relative;overflow:hidden;min-width:0;
-  background:#fff;border:1px solid var(--border);
-  border-radius:16px;padding:19px;box-shadow:var(--shadow);
-  display:flex;align-items:center;gap:14px;
+  position:relative;
+  overflow:hidden;
+  min-width:0;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:19px;
+  box-shadow:var(--shadow);
+  display:flex;
+  align-items:center;
+  gap:14px;
   transition:transform .2s,border-color .2s;
 }
-.stat-card:hover{transform:translateY(-3px);border-color:#b6dfd1}
-.stat-icon{
-  width:51px;height:51px;min-width:51px;
-  display:grid;place-items:center;border-radius:15px;
-  background:#e3f5ee;color:#008866;
+
+.stat-card:hover{
+  transform:translateY(-3px);
+  border-color:#b6dfd1;
 }
-.stat-icon .icon{width:27px;height:27px}
-.stat-card:nth-child(2) .stat-icon{background:#fff4d8;color:#bb8414}
-.stat-card:nth-child(3) .stat-icon{background:#eaf0ff;color:#3158a7}
+
+.stat-icon{
+  width:51px;
+  height:51px;
+  min-width:51px;
+  display:grid;
+  place-items:center;
+  border-radius:15px;
+  background:#e3f5ee;
+  color:#008866;
+}
+
+.stat-icon .icon{
+  width:27px;
+  height:27px;
+}
+
+.stat-card:nth-child(2) .stat-icon{
+  background:#fff4d8;
+  color:#bb8414;
+}
+
+.stat-card:nth-child(3) .stat-icon{
+  background:#eaf0ff;
+  color:#3158a7;
+}
+
 .stat-info{min-width:0}
-.stat-info span{display:block;color:var(--muted);font-size:11px;font-weight:700;margin-bottom:4px}
-.stat-info strong{display:block;font-size:21px;font-weight:900;color:var(--green-dark);overflow-wrap:anywhere}
-.stat-info small{display:block;color:var(--muted);font-size:10px;margin-top:2px;overflow-wrap:anywhere}
+
+.stat-info span{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:700;
+  margin-bottom:4px;
+}
+
+.stat-info strong{
+  display:block;
+  font-size:21px;
+  font-weight:900;
+  color:var(--green-dark);
+  overflow-wrap:anywhere;
+}
+
+.stat-info small{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:2px;
+  overflow-wrap:anywhere;
+}
 
 .panel{
-  background:#fff;border:1px solid var(--border);
-  border-radius:16px;box-shadow:var(--shadow);padding:20px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:20px;
 }
+
 .podium-grid{
-  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-  align-items:end;gap:14px;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  align-items:end;
+  gap:14px;
 }
+
 .podium-card{
-  min-width:0;position:relative;text-align:center;
-  border:1px solid var(--border);border-radius:15px;
-  padding:23px 12px 18px;background:linear-gradient(180deg,#fff,#f8fbfc);
+  min-width:0;
+  position:relative;
+  text-align:center;
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:23px 12px 18px;
+  background:linear-gradient(180deg,#fff,#f8fbfc);
   transition:transform .2s,border-color .2s;
 }
-.podium-card:hover{transform:translateY(-4px);border-color:#9bd5c2}
+
+.podium-card:hover{
+  transform:translateY(-4px);
+  border-color:#9bd5c2;
+}
+
 .podium-card.first{
-  padding-top:32px;padding-bottom:25px;
+  padding-top:32px;
+  padding-bottom:25px;
   border-color:#ead8a1;
   background:linear-gradient(180deg,#fffdf5,#fff);
   box-shadow:0 7px 22px rgba(191,149,39,.09);
 }
-.podium-card.second{background:linear-gradient(180deg,#fff,#f7f9fc)}
-.podium-card.third{background:linear-gradient(180deg,#fff,#fff9f4)}
-.podium-medal{
-  width:60px;height:60px;margin:0 auto 11px;
-  display:grid;place-items:center;border-radius:50%;
-  color:#b98412;background:#fff0bd;border:4px solid #ffdf7a;
-}
-.podium-medal .icon{width:31px;height:31px}
-.second .podium-medal{color:#65778a;background:#edf1f5;border-color:#d4dce5}
-.third .podium-medal{color:#a96936;background:#ffeadc;border-color:#f5c9a7}
-.podium-rank{
-  display:inline-flex;align-items:center;justify-content:center;
-  min-width:77px;padding:5px 11px;border-radius:30px;
-  background:#fff0bd;color:#93670c;font-size:11px;font-weight:900;margin-bottom:10px;
-}
-.second .podium-rank{background:#edf1f5;color:#58697b}
-.third .podium-rank{background:#ffeadc;color:#965b2d}
-.podium-name{
-  font-size:14px;font-weight:900;color:var(--text);
-  overflow-wrap:anywhere;line-height:1.8;margin:0 0 7px;
-}
-.podium-score{font-size:23px;font-weight:900;color:var(--green-dark);line-height:1.5}
-.podium-score small{font-size:11px;font-weight:700;color:var(--muted)}
-.podium-date{margin-top:7px;font-size:10px;color:var(--muted)}
 
-.ranking-panel{padding:0;overflow:hidden}
+.podium-card.second{
+  background:linear-gradient(180deg,#fff,#f7f9fc);
+}
+
+.podium-card.third{
+  background:linear-gradient(180deg,#fff,#fff9f4);
+}
+
+.podium-medal{
+  width:60px;
+  height:60px;
+  margin:0 auto 11px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  color:#b98412;
+  background:#fff0bd;
+  border:4px solid #ffdf7a;
+}
+
+.podium-medal .icon{
+  width:31px;
+  height:31px;
+}
+
+.second .podium-medal{
+  color:#65778a;
+  background:#edf1f5;
+  border-color:#d4dce5;
+}
+
+.third .podium-medal{
+  color:#a96936;
+  background:#ffeadc;
+  border-color:#f5c9a7;
+}
+
+.podium-rank{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:77px;
+  padding:5px 11px;
+  border-radius:30px;
+  background:#fff0bd;
+  color:#93670c;
+  font-size:11px;
+  font-weight:900;
+  margin-bottom:10px;
+}
+
+.second .podium-rank{
+  background:#edf1f5;
+  color:#58697b;
+}
+
+.third .podium-rank{
+  background:#ffeadc;
+  color:#965b2d;
+}
+
+.podium-name{
+  font-size:14px;
+  font-weight:900;
+  color:var(--text);
+  overflow-wrap:anywhere;
+  line-height:1.8;
+  margin:0 0 7px;
+}
+
+.podium-score{
+  font-size:23px;
+  font-weight:900;
+  color:var(--green-dark);
+  line-height:1.5;
+}
+
+.podium-score small{
+  font-size:11px;
+  font-weight:700;
+  color:var(--muted);
+}
+
+.podium-date{
+  margin-top:7px;
+  font-size:10px;
+  color:var(--muted);
+}
+
+.ranking-panel{
+  padding:0;
+  overflow:hidden;
+}
+
 .ranking-header{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:12px;padding:19px 21px;border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:19px 21px;
+  border-bottom:1px solid var(--border);
 }
-.ranking-header h3{margin:0;font-size:16px;font-weight:900}
-.ranking-header span{font-size:11px;color:var(--muted)}
-.ranking-list{display:flex;flex-direction:column}
+
+.ranking-header h3{
+  margin:0;
+  font-size:16px;
+  font-weight:900;
+}
+
+.ranking-header span{
+  font-size:11px;
+  color:var(--muted);
+}
+
+.ranking-list{
+  display:flex;
+  flex-direction:column;
+}
+
 .rank-row{
-  display:grid;grid-template-columns:45px minmax(0,1fr) auto;
-  align-items:center;gap:13px;padding:14px 20px;
-  border-bottom:1px solid #edf1f5;transition:background .2s;
+  display:grid;
+  grid-template-columns:45px minmax(0,1fr) auto;
+  align-items:center;
+  gap:13px;
+  padding:14px 20px;
+  border-bottom:1px solid #edf1f5;
+  transition:background .2s;
 }
+
 .rank-row:last-child{border-bottom:0}
 .rank-row:hover{background:#f8fbfc}
+
 .rank-number{
-  width:39px;height:39px;display:grid;place-items:center;
-  border-radius:12px;background:#f0f5f8;color:#62778d;
-  font-size:13px;font-weight:900;
+  width:39px;
+  height:39px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  background:#f0f5f8;
+  color:#62778d;
+  font-size:13px;
+  font-weight:900;
 }
-.rank-row:nth-child(1) .rank-number{background:#fff0bd;color:#956a0d}
-.rank-row:nth-child(2) .rank-number{background:#edf1f5;color:#53687d}
-.rank-row:nth-child(3) .rank-number{background:#ffeadc;color:#9a5f31}
+
+.rank-row:nth-child(1) .rank-number{
+  background:#fff0bd;
+  color:#956a0d;
+}
+
+.rank-row:nth-child(2) .rank-number{
+  background:#edf1f5;
+  color:#53687d;
+}
+
+.rank-row:nth-child(3) .rank-number{
+  background:#ffeadc;
+  color:#9a5f31;
+}
+
 .rank-student{min-width:0}
-.rank-student strong{display:block;font-size:13px;font-weight:800;overflow-wrap:anywhere}
-.rank-student small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
-.rank-score{
-  min-width:78px;text-align:center;padding:8px 12px;
-  background:#e3f5ee;color:#006d56;border-radius:10px;
-  font-size:13px;font-weight:900;white-space:nowrap;
+
+.rank-student strong{
+  display:block;
+  font-size:13px;
+  font-weight:800;
+  overflow-wrap:anywhere;
 }
-.rank-score small{font-size:10px;font-weight:700}
+
+.rank-student small{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:3px;
+}
+
+.rank-score{
+  min-width:78px;
+  text-align:center;
+  padding:8px 12px;
+  background:#e3f5ee;
+  color:#006d56;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.rank-score small{
+  font-size:10px;
+  font-weight:700;
+}
 
 .state-box{
-  background:#fff;border:1px solid var(--border);
-  border-radius:16px;box-shadow:var(--shadow);
-  padding:35px 18px;text-align:center;color:var(--muted);
-  font-size:13px;line-height:2;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:35px 18px;
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  line-height:2;
 }
-.state-icon{display:grid;place-items:center;color:var(--green);margin-bottom:10px}
-.state-icon .icon{width:43px;height:43px}
-.state-box strong{display:block;color:var(--text);font-size:15px;margin-bottom:5px}
+
+.state-icon{
+  display:grid;
+  place-items:center;
+  color:var(--green);
+  margin-bottom:10px;
+}
+
+.state-icon .icon{
+  width:43px;
+  height:43px;
+}
+
+.state-box strong{
+  display:block;
+  color:var(--text);
+  font-size:15px;
+  margin-bottom:5px;
+}
+
 .state-box p{margin:0}
+
 .state-box button{
-  border:1px solid var(--border);background:#fff;border-radius:9px;
-  padding:8px 14px;margin-top:12px;color:var(--green-dark);font-weight:800;
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:9px;
+  padding:8px 14px;
+  margin-top:12px;
+  color:var(--green-dark);
+  font-weight:800;
 }
-.error-box{color:#a7212f;background:#fffafa;border-color:#ffd5d9}
+
+.error-box{
+  color:#a7212f;
+  background:#fffafa;
+  border-color:#ffd5d9;
+}
+
 .error-box .state-icon{color:#dc3545}
-.footer{text-align:center;padding:25px 10px 5px;color:#8998a8;font-size:11px}
+
+.footer{
+  text-align:center;
+  padding:25px 10px 5px;
+  color:#8998a8;
+  font-size:11px;
+}
+
+/* القائمة السفلية للموبايل */
 .mobile-nav{display:none}
 
-/* استجابة الشاشات */
+/* =================================
+   استجابة الشاشات
+================================= */
+
+@media(max-width:1250px) and (min-width:761px){
+  :root{--sidebar-width:225px}
+  .main{padding:20px}
+}
+
 @media(max-width:1000px){
-  .main{padding:22px}
   .stats-grid{gap:10px}
   .stat-card{padding:15px;gap:10px}
   .stat-icon{width:44px;height:44px;min-width:44px}
 }
+
 @media(max-width:760px){
   .sidebar{display:none}
-  .main,body.sidebar-collapsed .main{margin-right:0;padding:14px 13px 95px}
-  .topbar{padding:15px;margin-bottom:17px;align-items:center}
+
+  .main,
+  body.sidebar-collapsed .main{
+    margin-right:0;
+    padding:14px 13px 95px;
+  }
+
+  .topbar{
+    padding:15px;
+    margin-bottom:17px;
+    align-items:center;
+  }
+
   .page-heading h1{font-size:18px}
   .page-heading p{font-size:11px}
-  .student-badge{padding:6px 8px;gap:6px;max-width:145px}
-  .student-avatar{width:32px;height:32px}
+
+  .student-badge{
+    padding:6px 8px;
+    gap:6px;
+    max-width:145px;
+  }
+
+  .student-avatar{
+    width:32px;
+    height:32px;
+  }
+
   .student-info strong{font-size:10px}
   .student-info small{font-size:9px}
-  .welcome-card{padding:19px 16px;margin-bottom:19px}
+
+  .welcome-card{
+    padding:19px 16px;
+    margin-bottom:19px;
+  }
+
   .welcome-card h2{font-size:16px}
   .welcome-card p{font-size:11px}
+
   .welcome-decoration{left:7px}
   .welcome-decoration .icon{width:105px;height:105px}
+
   .section-title{margin:22px 0 13px}
   .section-title h2{font-size:16px}
-  .stats-grid{grid-template-columns:1fr;gap:10px;margin-bottom:20px}
+
+  .stats-grid{
+    grid-template-columns:1fr;
+    gap:10px;
+    margin-bottom:20px;
+  }
+
   .stat-card{padding:13px 15px}
-  .stat-icon{width:45px;height:45px;min-width:45px}
+
+  .stat-icon{
+    width:45px;
+    height:45px;
+    min-width:45px;
+  }
+
   .stat-info strong{font-size:19px}
   .panel{padding:13px}
+
   .podium-grid{gap:7px}
-  .podium-card{padding:16px 5px 13px;border-radius:12px}
-  .podium-card.first{padding-top:22px;padding-bottom:18px}
-  .podium-medal{width:43px;height:43px;border-width:3px;margin-bottom:8px}
-  .podium-medal .icon{width:23px;height:23px}
-  .podium-rank{min-width:0;padding:4px 7px;font-size:9px}
-  .podium-name{font-size:11px;line-height:1.7}
+
+  .podium-card{
+    padding:16px 5px 13px;
+    border-radius:12px;
+  }
+
+  .podium-card.first{
+    padding-top:22px;
+    padding-bottom:18px;
+  }
+
+  .podium-medal{
+    width:43px;
+    height:43px;
+    border-width:3px;
+    margin-bottom:8px;
+  }
+
+  .podium-medal .icon{
+    width:23px;
+    height:23px;
+  }
+
+  .podium-rank{
+    min-width:0;
+    padding:4px 7px;
+    font-size:9px;
+  }
+
+  .podium-name{
+    font-size:11px;
+    line-height:1.7;
+  }
+
   .podium-score{font-size:18px}
   .podium-score small{font-size:9px}
   .podium-date{font-size:9px}
+
   .ranking-header{padding:15px 13px}
   .ranking-header h3{font-size:14px}
   .ranking-header span{font-size:10px}
-  .rank-row{grid-template-columns:35px minmax(0,1fr) auto;gap:9px;padding:12px 11px}
-  .rank-number{width:34px;height:34px;border-radius:10px;font-size:12px}
+
+  .rank-row{
+    grid-template-columns:35px minmax(0,1fr) auto;
+    gap:9px;
+    padding:12px 11px;
+  }
+
+  .rank-number{
+    width:34px;
+    height:34px;
+    border-radius:10px;
+    font-size:12px;
+  }
+
   .rank-student strong{font-size:11px}
   .rank-student small{font-size:9px}
-  .rank-score{min-width:61px;padding:7px 8px;font-size:11px}
+
+  .rank-score{
+    min-width:61px;
+    padding:7px 8px;
+    font-size:11px;
+  }
+
   .rank-score small{font-size:9px}
+
   .mobile-nav{
-    display:flex;position:fixed;z-index:1100;bottom:0;right:0;left:0;
-    justify-content:space-around;gap:3px;padding:8px 4px calc(8px + env(safe-area-inset-bottom));
-    background:#fff;border-top:1px solid #e6edf4;box-shadow:0 -4px 20px #12375b12;
+    display:flex;
+    position:fixed;
+    z-index:1100;
+    bottom:0;
+    right:0;
+    left:0;
+    justify-content:space-around;
+    gap:3px;
+    padding:8px 4px calc(8px + env(safe-area-inset-bottom));
+    background:#fff;
+    border-top:1px solid #e6edf4;
+    box-shadow:0 -4px 20px #12375b12;
   }
+
   .mobile-nav a{
-    display:flex;flex:1;flex-direction:column;align-items:center;
-    justify-content:center;gap:3px;min-width:0;padding:4px 1px;
-    color:#6b7f98;text-decoration:none;font-size:9px;font-weight:700;
+    display:flex;
+    flex:1;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    min-width:0;
+    padding:4px 1px;
+    color:#6b7f98;
+    font-size:9px;
+    font-weight:700;
   }
-  .mobile-nav a .icon{width:21px;height:21px}
+
+  .mobile-nav a i{font-size:20px}
   .mobile-nav a.active{color:#008866;font-weight:900}
 }
+
 @media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}
+  *,
+  *::before,
+  *::after{
+    scroll-behavior:auto!important;
+    transition-duration:.01ms!important;
+  }
 }
 </style>
 </head>
 
 <body>
 
+<!-- الأيقونات المستخدمة في محتوى الصفحة -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
   <symbol id="icon-plant" viewBox="0 0 24 24"><path d="M12 21v-9"/><path d="M12 14C5 14 3 9 3 4c6 0 9 3 9 10"/><path d="M12 17c0-6 3-10 9-11 0 6-2 10-9 11"/><path d="M7 21h10"/></symbol>
   <symbol id="icon-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7"/><path d="M5 9v12h14V9"/><path d="M9 21v-7h6v7"/></symbol>
@@ -366,42 +1021,87 @@ body.sidebar-collapsed .main{margin-right:var(--sidebar-small)}
   <symbol id="icon-medal" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="m8.2 13-1.2 9 5-3 5 3-1.2-9"/><path d="m9.5 8 1.7 1.7L15 6"/></symbol>
   <symbol id="icon-star" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"/></symbol>
   <symbol id="icon-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5"/><path d="M4 17v-5h5"/><path d="M5.6 9a7 7 0 0 1 11.8-2L20 12M4 12l2.6 5a7 7 0 0 0 11.8-2"/></symbol>
-  <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
   <symbol id="icon-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 2.2 18a2 2 0 0 0 1.7 3h16.2a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
-  <symbol id="icon-leaf" viewBox="0 0 24 24"><path d="M20 4c-9 0-15 4-15 11a5 5 0 0 0 5 5c7 0 11-7 10-16z"/><path d="M3 21c4-6 8-9 14-12"/></symbol>
   <symbol id="icon-crown" viewBox="0 0 24 24"><path d="m2 7 5 4 5-7 5 7 5-4-2 13H4z"/><path d="M4 22h16"/></symbol>
 </svg>
 
+<!-- الشريط الجانبي -->
 <aside class="sidebar" id="sidebar">
-  <div class="sidebar-top">
-    <div class="sidebar-toggle-wrap">
-      <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="تصغير القائمة الجانبية" aria-expanded="true" title="تصغير القائمة">
-        <svg class="icon"><use href="#icon-chevron"></use></svg>
+  <div class="sidebar-inner">
+
+    <div class="sidebar-top-actions">
+      <button
+        type="button"
+        class="sidebar-toggle"
+        id="sidebarToggle"
+        aria-label="تصغير القائمة الجانبية"
+        aria-expanded="true"
+        title="تصغير القائمة"
+      >
+        <i class="fa-solid fa-angles-right"></i>
       </button>
     </div>
 
     <div class="brand">
-      <img class="brand-logo" src="../logo.png" alt="شعار أرض الأحياء" onerror="this.style.display='none'">
-      <div class="brand-text"><h2>أرض الأحياء</h2><small>الثانوية العامة</small></div>
+      <div class="brand-logo-wrap">
+        <img
+          src="../logo.png"
+          class="brand-logo"
+          alt="شعار أرض الأحياء"
+          onerror="this.style.display='none'"
+        >
+      </div>
+
+      <div class="brand-text">
+        <h2>أرض الأحياء</h2>
+        <small>الثانوية العامة</small>
+      </div>
     </div>
 
-    <div class="nav-title">القائمة الرئيسية</div>
-    <nav>
-      <a class="nav-link" href="../index.html" data-title="الرئيسية"><span class="nav-icon"><svg class="icon"><use href="#icon-home"></use></svg></span><span class="nav-text">بيتك</span></a>
-      <a class="nav-link" href="../videos/index.html" data-title="المحاضرات"><span class="nav-icon"><svg class="icon"><use href="#icon-video"></use></svg></span><span class="nav-text">كورساتك</span></a>
-      <a class="nav-link" href="../notes/index.html" data-title="المذكرات"><span class="nav-icon"><svg class="icon"><use href="#icon-notes"></use></svg></span><span class="nav-text">المذكرات</span></a>
-      <a class="nav-link active" href="./index.html" data-title="بطل الفصل" aria-current="page"><span class="nav-icon"><svg class="icon"><use href="#icon-trophy"></use></svg></span><span class="nav-text">بطل الفصل</span></a>
-      <a class="nav-link" href="../forum/index.html" data-title="المنتدى"><span class="nav-icon"><svg class="icon"><use href="#icon-forum"></use></svg></span><span class="nav-text">المنتدى</span></a>
-      <a class="nav-link" href="../account/index.html" data-title="حساب الطالب"><span class="nav-icon"><svg class="icon"><use href="#icon-user"></use></svg></span><span class="nav-text"> حسابك </span></a>
+    <p class="menu-label">القائمة الرئيسية</p>
+
+    <nav class="side-menu" aria-label="القائمة الرئيسية">
+      <a href="../index.html" class="side-link" data-title="الرئيسية">
+        <i class="fa-solid fa-house"></i>
+        <span class="side-link-text">الرئيسية</span>
+      </a>
+
+      <a href="../videos/index.html" class="side-link" data-title="المحاضرات">
+        <i class="fa-regular fa-circle-play"></i>
+        <span class="side-link-text">المحاضرات</span>
+      </a>
+
+      <a href="../notes/index.html" class="side-link" data-title="المذكرات">
+        <i class="fa-regular fa-book-open"></i>
+        <span class="side-link-text">المذكرات</span>
+      </a>
+
+      <a href="./index.html" class="side-link active" data-title="بطل الفصل" aria-current="page">
+        <i class="fa-solid fa-trophy"></i>
+        <span class="side-link-text">بطل الفصل</span>
+      </a>
+
+      <a href="../forum/index.html" class="side-link" data-title="المنتدى">
+        <i class="fa-regular fa-comments"></i>
+        <span class="side-link-text">المنتدى</span>
+      </a>
+
+      <a href="../account/index.html" class="side-link" data-title="حساب الطالب">
+        <i class="fa-regular fa-user"></i>
+        <span class="side-link-text">حساب الطالب</span>
+      </a>
     </nav>
   </div>
 
   <div class="sidebar-bottom">
-    <div class="sidebar-bottom-text">معًا نحو التفوق في الأحياء<br>منصة أرض الأحياء © 2026</div>
+    <i class="fa-solid fa-leaf"></i>
+    <span>جميع الحقوق محفوظة © 2026</span>
   </div>
 </aside>
 
+<!-- المحتوى الرئيسي -->
 <main class="main">
+
   <header class="topbar">
     <div class="page-heading">
       <h1>بطل الفصل</h1>
@@ -409,7 +1109,10 @@ body.sidebar-collapsed .main{margin-right:var(--sidebar-small)}
     </div>
 
     <div class="student-badge">
-      <div class="student-avatar"><svg class="icon"><use href="#icon-user"></use></svg></div>
+      <div class="student-avatar">
+        <svg class="icon"><use href="#icon-user"></use></svg>
+      </div>
+
       <div class="student-info">
         <strong id="studentName">جارٍ التحقق...</strong>
         <small>طالب بالمنصة</small>
@@ -418,14 +1121,23 @@ body.sidebar-collapsed .main{margin-right:var(--sidebar-small)}
   </header>
 
   <section class="welcome-card">
-    <div class="welcome-decoration"><svg class="icon"><use href="#icon-trophy"></use></svg></div>
+    <div class="welcome-decoration">
+      <svg class="icon"><use href="#icon-trophy"></use></svg>
+    </div>
+
     <h2>🏆 مين هيكون بطل الفصل؟</h2>
-    <p>هنا بنحتفي بأبطال الأحياء! تابع ترتيب الطلاب وأعلى الدرجات، واجتهد علشان يكون اسمك في مقدمة لوحة الشرف.</p>
+    <p>
+      هنا بنحتفي بأبطال الأحياء! تابع ترتيب الطلاب وأعلى الدرجات،
+      واجتهد علشان يكون اسمك في مقدمة لوحة الشرف.
+    </p>
   </section>
 
   <section class="stats-grid" aria-label="إحصائيات لوحة الشرف">
+
     <article class="stat-card">
-      <div class="stat-icon"><svg class="icon"><use href="#icon-users"></use></svg></div>
+      <div class="stat-icon">
+        <svg class="icon"><use href="#icon-users"></use></svg>
+      </div>
       <div class="stat-info">
         <span>عدد المشاركين</span>
         <strong id="totalStudents">—</strong>
@@ -434,7 +1146,9 @@ body.sidebar-collapsed .main{margin-right:var(--sidebar-small)}
     </article>
 
     <article class="stat-card">
-      <div class="stat-icon"><svg class="icon"><use href="#icon-crown"></use></svg></div>
+      <div class="stat-icon">
+        <svg class="icon"><use href="#icon-crown"></use></svg>
+      </div>
       <div class="stat-info">
         <span>بطل الفصل الحالي</span>
         <strong id="firstPlaceName">—</strong>
@@ -443,13 +1157,16 @@ body.sidebar-collapsed .main{margin-right:var(--sidebar-small)}
     </article>
 
     <article class="stat-card">
-      <div class="stat-icon"><svg class="icon"><use href="#icon-star"></use></svg></div>
+      <div class="stat-icon">
+        <svg class="icon"><use href="#icon-star"></use></svg>
+      </div>
       <div class="stat-info">
         <span>أعلى درجة</span>
         <strong id="highestScore">—</strong>
         <small>درجة المركز الأول</small>
       </div>
     </article>
+
   </section>
 
   <div class="section-title">
@@ -459,12 +1176,15 @@ body.sidebar-collapsed .main{margin-right:var(--sidebar-small)}
 
   <section class="panel">
     <div id="podium" class="podium-grid">
-      <div class="state-box" style="grid-column:1/-1">جارٍ تحميل أبطال الفصل...</div>
+      <div class="state-box" style="grid-column:1/-1">
+        جارٍ تحميل أبطال الفصل...
+      </div>
     </div>
   </section>
 
   <div class="section-title">
     <h2>ترتيب الطلاب</h2>
+
     <button type="button" class="refresh-button" id="refreshBtn">
       <svg class="icon"><use href="#icon-refresh"></use></svg>
       <span>تحديث الترتيب</span>
@@ -476,21 +1196,47 @@ body.sidebar-collapsed .main{margin-right:var(--sidebar-small)}
       <h3>لوحة الشرف</h3>
       <span id="rankingCount">جارٍ تحميل الترتيب...</span>
     </div>
+
     <div id="rankingList" class="ranking-list" aria-live="polite">
       <div class="state-box">جارٍ تحميل الترتيب...</div>
     </div>
   </section>
 
   <div class="footer">جميع الحقوق محفوظة © 2026 منصة أرض الأحياء</div>
+
 </main>
 
+<!-- شريط التنقل للموبايل -->
 <nav class="mobile-nav" aria-label="التنقل الرئيسي">
-  <a href="../index.html"><svg class="icon"><use href="#icon-home"></use></svg><span>الرئيسية</span></a>
-  <a href="../videos/index.html"><svg class="icon"><use href="#icon-video"></use></svg><span>المحاضرات</span></a>
-  <a href="../notes/index.html"><svg class="icon"><use href="#icon-notes"></use></svg><span>المذكرات</span></a>
-  <a href="./index.html" class="active" aria-current="page"><svg class="icon"><use href="#icon-trophy"></use></svg><span>البطل</span></a>
-  <a href="../forum/index.html"><svg class="icon"><use href="#icon-forum"></use></svg><span>المنتدى</span></a>
-  <a href="../account/index.html"><svg class="icon"><use href="#icon-user"></use></svg><span>حسابي</span></a>
+  <a href="../index.html">
+    <i class="fa-solid fa-house"></i>
+    <span>الرئيسية</span>
+  </a>
+
+  <a href="../videos/index.html">
+    <i class="fa-solid fa-circle-play"></i>
+    <span>المحاضرات</span>
+  </a>
+
+  <a href="../notes/index.html">
+    <i class="fa-regular fa-file-lines"></i>
+    <span>المذكرات</span>
+  </a>
+
+  <a href="./index.html" class="active" aria-current="page">
+    <i class="fa-solid fa-trophy"></i>
+    <span>البطل</span>
+  </a>
+
+  <a href="../forum/index.html">
+    <i class="fa-regular fa-comments"></i>
+    <span>المنتدى</span>
+  </a>
+
+  <a href="../account/index.html">
+    <i class="fa-regular fa-user"></i>
+    <span>حسابي</span>
+  </a>
 </nav>
 
 <script>
@@ -521,14 +1267,20 @@ let isLoading = false;
 function applySidebarState(collapsed, save = true) {
   document.body.classList.toggle("sidebar-collapsed", collapsed);
 
-  const label = collapsed ? "توسيع الشريط الجانبي" : "تصغير الشريط الجانبي";
+  const label = collapsed
+    ? "توسيع الشريط الجانبي"
+    : "تصغير الشريط الجانبي";
+
   sidebarToggle.setAttribute("aria-expanded", String(!collapsed));
   sidebarToggle.setAttribute("aria-label", label);
   sidebarToggle.title = label;
 
-  document.querySelectorAll(".nav-link[data-title]").forEach(link => {
-    if (collapsed) link.title = link.dataset.title;
-    else link.removeAttribute("title");
+  document.querySelectorAll(".side-link[data-title]").forEach(link => {
+    if (collapsed) {
+      link.title = link.dataset.title;
+    } else {
+      link.removeAttribute("title");
+    }
   });
 
   if (save) {
@@ -540,9 +1292,11 @@ function applySidebarState(collapsed, save = true) {
   }
 }
 
-sidebarToggle.addEventListener("click", () => {
+function toggleSidebar() {
   applySidebarState(!document.body.classList.contains("sidebar-collapsed"));
-});
+}
+
+sidebarToggle.addEventListener("click", toggleSidebar);
 
 try {
   applySidebarState(localStorage.getItem(SIDEBAR_KEY) === "true", false);
@@ -555,17 +1309,23 @@ function makeIcon(symbolId) {
   const ns = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(ns, "svg");
   const use = document.createElementNS(ns, "use");
+
   svg.setAttribute("class", "icon");
   svg.setAttribute("aria-hidden", "true");
   use.setAttribute("href", "#" + symbolId);
+
   svg.appendChild(use);
   return svg;
 }
 
 function makeElement(tag, className, text) {
   const el = document.createElement(tag);
+
   if (className) el.className = className;
-  if (text !== undefined && text !== null) el.textContent = String(text);
+  if (text !== undefined && text !== null) {
+    el.textContent = String(text);
+  }
+
   return el;
 }
 
@@ -574,12 +1334,14 @@ function formatNumber(value) {
 }
 
 function getNumericScore(value) {
-  if (typeof value === "number") return Number.isFinite(value) ? value : 0;
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : 0;
+  }
 
   const arabicDigits = "٠١٢٣٤٥٦٧٨٩";
   const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
 
-  let normalized = String(value ?? "")
+  const normalized = String(value ?? "")
     .replace(/[٠-٩]/g, digit => String(arabicDigits.indexOf(digit)))
     .replace(/[۰-۹]/g, digit => String(persianDigits.indexOf(digit)))
     .replace(/[٬،]/g, "")
@@ -598,6 +1360,7 @@ function getScoreLabel(score) {
 
 function formatDate(value) {
   if (!value) return "";
+
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
 
@@ -609,12 +1372,19 @@ function formatDate(value) {
 }
 
 function showState(container, title, details, isError = false, retry = null) {
-  const box = makeElement("div", "state-box" + (isError ? " error-box" : ""));
+  const box = makeElement(
+    "div",
+    "state-box" + (isError ? " error-box" : "")
+  );
+
   const iconWrap = makeElement("div", "state-icon");
   iconWrap.appendChild(makeIcon(isError ? "icon-alert" : "icon-plant"));
   box.appendChild(iconWrap);
 
-  if (title) box.appendChild(makeElement("strong", "", title));
+  if (title) {
+    box.appendChild(makeElement("strong", "", title));
+  }
+
   box.appendChild(makeElement("p", "", details));
 
   if (retry) {
@@ -639,7 +1409,10 @@ async function checkUser() {
   }
 
   if (!supabaseClient) {
-    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
   }
 
   const { data, error } = await supabaseClient.auth.getSession();
@@ -651,14 +1424,15 @@ async function checkUser() {
     showState(
       rankingListElement,
       "سجّل الدخول أولًا",
-      "يجب تسجيل الدخول إلى حسابك لمتابعة لوحة الشرف.",
-      false
+      "يجب تسجيل الدخول إلى حسابك لمتابعة لوحة الشرف."
     );
 
     const loginButton = makeElement("button", "", "تسجيل الدخول");
+
     loginButton.addEventListener("click", () => {
       window.location.href = LOGIN_URL;
     });
+
     rankingListElement.firstElementChild.appendChild(loginButton);
 
     podiumElement.replaceChildren();
@@ -666,6 +1440,7 @@ async function checkUser() {
     firstPlaceNameElement.textContent = "—";
     highestScoreElement.textContent = "—";
     rankingCountElement.textContent = "يلزم تسجيل الدخول";
+
     return false;
   }
 
@@ -691,18 +1466,23 @@ async function checkUser() {
     console.warn("تعذر تحميل اسم الطالب:", error);
   }
 
-  studentNameElement.textContent = String(name || "").trim() || "طالب بالمنصة";
+  studentNameElement.textContent =
+    String(name || "").trim() || "طالب بالمنصة";
+
   return true;
 }
 
 /* ترتيب الدرجات */
 function sortStudents(students) {
   return [...students].sort((a, b) => {
-    const scoreDifference = getNumericScore(b.score) - getNumericScore(a.score);
+    const scoreDifference =
+      getNumericScore(b.score) - getNumericScore(a.score);
+
     if (scoreDifference !== 0) return scoreDifference;
 
     const dateA = new Date(a.created_at || 0).getTime();
     const dateB = new Date(b.created_at || 0).getTime();
+
     return dateA - dateB;
   });
 }
@@ -723,19 +1503,35 @@ function createPodiumCard(student, rank) {
 
   const card = makeElement("article", classes[rank]);
   const medal = makeElement("div", "podium-medal");
-  medal.appendChild(makeIcon(rank === 1 ? "icon-crown" : "icon-medal"));
+
+  medal.appendChild(
+    makeIcon(rank === 1 ? "icon-crown" : "icon-medal")
+  );
 
   const rankLabel = makeElement("div", "podium-rank", labels[rank]);
-  const name = makeElement("h3", "podium-name", student.student_name || "طالب بالمنصة");
+
+  const name = makeElement(
+    "h3",
+    "podium-name",
+    student.student_name || "طالب بالمنصة"
+  );
+
   const score = makeElement("div", "podium-score");
-  score.appendChild(document.createTextNode(getScoreLabel(student.score) + " "));
+
+  score.appendChild(
+    document.createTextNode(getScoreLabel(student.score) + " ")
+  );
+
   score.appendChild(makeElement("small", "", "درجة"));
 
   card.append(medal, rankLabel, name, score);
 
   const dateText = formatDate(student.created_at);
+
   if (dateText) {
-    card.appendChild(makeElement("div", "podium-date", "تاريخ التسجيل: " + dateText));
+    card.appendChild(
+      makeElement("div", "podium-date", "تاريخ التسجيل: " + dateText)
+    );
   }
 
   return card;
@@ -744,23 +1540,43 @@ function createPodiumCard(student, rank) {
 /* بطاقة طالب في الترتيب */
 function createStudentCard(student, index) {
   const row = makeElement("article", "rank-row");
-  const number = makeElement("div", "rank-number", formatNumber(index + 1));
+
+  const number = makeElement(
+    "div",
+    "rank-number",
+    formatNumber(index + 1)
+  );
 
   const studentInfo = makeElement("div", "rank-student");
+
   studentInfo.appendChild(
-    makeElement("strong", "", student.student_name || "طالب بالمنصة")
+    makeElement(
+      "strong",
+      "",
+      student.student_name || "طالب بالمنصة"
+    )
   );
 
   const date = formatDate(student.created_at);
+
   studentInfo.appendChild(
-    makeElement("small", "", date ? "تاريخ التسجيل: " + date : "من أبطال أرض الأحياء")
+    makeElement(
+      "small",
+      "",
+      date ? "تاريخ التسجيل: " + date : "من أبطال أرض الأحياء"
+    )
   );
 
   const score = makeElement("div", "rank-score");
-  score.appendChild(document.createTextNode(getScoreLabel(student.score) + " "));
+
+  score.appendChild(
+    document.createTextNode(getScoreLabel(student.score) + " ")
+  );
+
   score.appendChild(makeElement("small", "", "درجة"));
 
   row.append(number, studentInfo, score);
+
   return row;
 }
 
@@ -783,10 +1599,12 @@ function updateStats(students) {
   }
 
   const first = students[0];
+
   firstPlaceNameElement.textContent = first.student_name || "طالب";
   highestScoreElement.textContent = getScoreLabel(first.score);
 
   const podiumStudents = students.slice(0, 3);
+
   const order = podiumStudents.length === 3
     ? [podiumStudents[1], podiumStudents[0], podiumStudents[2]]
     : podiumStudents;
@@ -796,13 +1614,16 @@ function updateStats(students) {
     : podiumStudents.map((_, index) => index + 1);
 
   podiumElement.replaceChildren(
-    ...order.map((student, index) => createPodiumCard(student, ranks[index]))
+    ...order.map((student, index) =>
+      createPodiumCard(student, ranks[index])
+    )
   );
 }
 
 /* تحميل النتائج */
 async function loadChampions() {
   if (isLoading) return;
+
   isLoading = true;
   refreshBtn.disabled = true;
   refreshBtn.querySelector("span").textContent = "جارٍ التحديث...";
@@ -813,6 +1634,7 @@ async function loadChampions() {
 
   try {
     const loggedIn = await checkUser();
+
     if (!loggedIn) return;
 
     const { data, error } = await supabaseClient
@@ -847,7 +1669,9 @@ async function loadChampions() {
     const students = sortStudents(Array.isArray(data) ? data : []);
 
     updateStats(students);
-    rankingCountElement.textContent = formatNumber(students.length) + " طالب";
+
+    rankingCountElement.textContent =
+      formatNumber(students.length) + " طالب";
 
     if (!students.length) {
       showState(
@@ -859,7 +1683,9 @@ async function loadChampions() {
     }
 
     rankingListElement.replaceChildren(
-      ...students.map((student, index) => createStudentCard(student, index))
+      ...students.map((student, index) =>
+        createStudentCard(student, index)
+      )
     );
 
   } catch (error) {
@@ -872,6 +1698,7 @@ async function loadChampions() {
       true,
       loadChampions
     );
+
   } finally {
     isLoading = false;
     refreshBtn.disabled = false;
@@ -890,12 +1717,22 @@ async function initPage() {
       "تحقق من اتصال الإنترنت ثم أعد تحميل الصفحة.",
       true
     );
-    showState(podiumElement, "تعذر الاتصال", "لم يتم تحميل مكتبة Supabase.", true);
+
+    showState(
+      podiumElement,
+      "تعذر الاتصال",
+      "لم يتم تحميل مكتبة Supabase.",
+      true
+    );
+
     refreshBtn.disabled = true;
     return;
   }
 
-  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 
   supabaseClient.auth.onAuthStateChange((event) => {
     if (event === "SIGNED_OUT") {
@@ -908,6 +1745,7 @@ async function initPage() {
 
 initPage();
 </script>
+
 </body>
 </html>
 ```
