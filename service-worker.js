@@ -1,169 +1,154 @@
-"use strict";
-
-const CACHE_VERSION = "ard-alahyaa-v1";
+```javascript
+const CACHE_VERSION = "ardh-al-ahyaa-v3";
+const PAGE_CACHE = `${CACHE_VERSION}-pages`;
+const STATIC_CACHE = `${CACHE_VERSION}-static`;
 
 const APP_FILES = [
-  "/",
-  "/index.html",
-  "/manifest.json",
-  "/favicon.png",
-  "/logo.png",
-  "/progress.js",
-  "/videos/index.html",
-  "/notes/index.html",
-  "/champion/index.html",
-  "/forum/index.html",
-  "/account/index.html",
-  "/login/index.html"
+  "./",
+  "./index.html",
+  "./videos/index.html",
+  "./notes/index.html",
+  "./champion/index.html",
+  "./forum/index.html",
+  "./account/index.html",
+  "./login/index.html",
+  "./progress.js",
+  "./logo.png",
+  "./favicon.ico",
+  "./manifest.json"
 ];
 
-/* تثبيت التخزين المؤقت */
-self.addEventListener("install", function (event) {
+self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_VERSION).then(async function (cache) {
-      await Promise.all(
-        APP_FILES.map(async function (url) {
-          try {
-            const response = await fetch(
-              new Request(url, {
-                cache: "reload"
-              })
-            );
-
-            if (response.ok) {
-              await cache.put(url, response);
-            }
-          } catch (error) {
-            console.warn(
-              "تعذر تخزين الملف:",
-              url
-            );
-          }
-        })
-      );
-
-      await self.skipWaiting();
-    })
+    caches.open(PAGE_CACHE)
+      .then((cache) =>
+        Promise.allSettled(
+          APP_FILES.map((file) =>
+            cache.add(new Request(file, { cache: "reload" }))
+          )
+        )
+      )
+      .then(() => self.skipWaiting())
   );
 });
 
-/* تفعيل الإصدار الجديد */
-self.addEventListener("activate", function (event) {
+self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then(function (keys) {
-      return Promise.all(
-        keys
-          .filter(function (key) {
-            return (
-              key.startsWith("ard-alahyaa-") &&
-              key !== CACHE_VERSION
-            );
-          })
-          .map(function (key) {
-            return caches.delete(key);
-          })
-      );
-    }).then(function () {
-      return self.clients.claim();
-    })
+    caches.keys()
+      .then((keys) =>
+        Promise.all(
+          keys
+            .filter(
+              (key) =>
+                key.startsWith("ardh-al-ahyaa-") &&
+                key !== PAGE_CACHE &&
+                key !== STATIC_CACHE
+            )
+            .map((key) => caches.delete(key))
+        )
+      )
+      .then(() => self.clients.claim())
   );
 });
 
-/* إدارة الطلبات */
-self.addEventListener("fetch", function (event) {
+self.addEventListener("message", (event) => {
+  if (event.data?.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
+self.addEventListener("fetch", (event) => {
   const request = event.request;
 
-  if (request.method !== "GET") {
-    return;
-  }
+  if (request.method !== "GET") return;
 
   const url = new URL(request.url);
 
-  /* لا نتدخل في خدمات خارج الموقع */
-  if (url.origin !== self.location.origin) {
+  // لا نخزّن طلبات Supabase أو بيانات المستخدم الحساسة.
+  if (
+    url.hostname.includes("supabase.co") ||
+    url.pathname.includes("/auth/") ||
+    url.pathname.includes("/rest/v1/") ||
+    url.pathname.includes("/storage/v1/")
+  ) {
     return;
   }
 
-  /* التنقل بين الصفحات */
+  // التعامل مع صفحات المنصة فقط.
   if (request.mode === "navigate") {
     event.respondWith(
-      fetch(request)
-        .then(function (response) {
-          if (response.ok) {
-            const copy = response.clone();
+      (async () => {
+        const cache = await caches.open(PAGE_CACHE);
+        const cachedPage = await cache.match(request);
 
-            caches.open(CACHE_VERSION).then(
-              function (cache) {
-                cache.put(request, copy);
-              }
-            );
-          }
-
-          return response;
-        })
-        .catch(async function () {
-          const cached = await caches.match(request);
-
-          if (cached) {
-            return cached;
-          }
-
-          const home = await caches.match("/index.html");
-
-          if (home) {
-            return home;
-          }
-
-          return new Response(
-            "لا يوجد اتصال بالإنترنت. اتصل بالإنترنت وحاول مرة أخرى.",
-            {
-              status: 503,
-              headers: {
-                "Content-Type": "text/plain; charset=utf-8"
-              }
+        const networkRequest = fetch(request)
+          .then(async (response) => {
+            if (response && response.ok) {
+              await cache.put(request, response.clone());
             }
+            return response;
+          });
+
+        // عرض الصفحة المحفوظة فورًا، مع تحديثها في الخلفية.
+        if (cachedPage) {
+          event.waitUntil(
+            networkRequest.catch(() => {})
           );
-        })
+          return cachedPage;
+        }
+
+        try {
+          return await networkRequest;
+        } catch {
+          return (
+            (await cache.match("./index.html")) ||
+            new Response(
+              "أنت غير متصل بالإنترنت. افتح صفحة سبق تحميلها أو أعد الاتصال.",
+              {
+                status: 503,
+                headers: {
+                  "Content-Type": "text/plain; charset=utf-8"
+                }
+              }
+            )
+          );
+        }
+      })()
     );
 
     return;
   }
 
-  /* تخزين الملفات الثابتة من الموقع */
+  // الملفات الثابتة: الكاش أولًا، ثم تحديث النسخة في الخلفية.
   if (
-    url.pathname.endsWith(".css") ||
-    url.pathname.endsWith(".js") ||
-    url.pathname.endsWith(".png") ||
-    url.pathname.endsWith(".jpg") ||
-    url.pathname.endsWith(".jpeg") ||
-    url.pathname.endsWith(".webp") ||
-    url.pathname.endsWith(".svg") ||
-    url.pathname.endsWith(".woff2") ||
-    url.pathname.endsWith(".ico") ||
-    url.pathname.endsWith(".json")
+    url.origin === self.location.origin &&
+    /\.(?:css|js|png|jpg|jpeg|webp|svg|woff2?|ttf|ico)$/i.test(url.pathname)
   ) {
     event.respondWith(
-      caches.match(request).then(
-        async function (cached) {
-          if (cached) {
-            return cached;
-          }
+      (async () => {
+        const cache = await caches.open(STATIC_CACHE);
+        const cached = await cache.match(request);
 
-          const response = await fetch(request);
+        const update = fetch(request)
+          .then(async (response) => {
+            if (response && response.ok) {
+              await cache.put(request, response.clone());
+            }
+            return response;
+          });
 
-          if (response.ok) {
-            const copy = response.clone();
-
-            const cache = await caches.open(
-              CACHE_VERSION
-            );
-
-            await cache.put(request, copy);
-          }
-
-          return response;
+        if (cached) {
+          event.waitUntil(update.catch(() => {}));
+          return cached;
         }
-      )
+
+        try {
+          return await update;
+        } catch {
+          return new Response("", { status: 503 });
+        }
+      })()
     );
   }
 });
+```
