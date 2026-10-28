@@ -2112,6 +2112,80 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
 setupSidebar();
 loadDashboard();
 </script>
+```html
+<script>
+(() => {
+  const sectionLinks = [
+    "../index.html",
+    "../videos/index.html",
+    "../notes/index.html",
+    "../champion/index.html",
+    "../forum/index.html",
+    "../account/index.html"
+  ];
 
+  const loaded = new Set();
+
+  function preloadPage(href) {
+    if (!href || loaded.has(href)) return;
+
+    const url = new URL(href, location.href);
+
+    if (url.origin !== location.origin) return;
+
+    loaded.add(href);
+
+    const link = document.createElement("link");
+    link.rel = "prefetch";
+    link.href = url.href;
+    link.as = "document";
+
+    document.head.appendChild(link);
+  }
+
+  // تحميل مسبق خفيف عند ظهور الصفحة، بدون تعطيل الواجهة.
+  if ("requestIdleCallback" in window) {
+    requestIdleCallback(() => {
+      sectionLinks.forEach(preloadPage);
+    }, { timeout: 1500 });
+  } else {
+    setTimeout(() => {
+      sectionLinks.forEach(preloadPage);
+    }, 500);
+  }
+
+  // إعطاء أولوية للقسم الذي ينوي الطالب فتحه.
+  document.addEventListener("pointerover", (event) => {
+    const link = event.target.closest("a[href]");
+    if (link) preloadPage(link.href);
+  }, { passive: true });
+
+  document.addEventListener("touchstart", (event) => {
+    const link = event.target.closest("a[href]");
+    if (link) preloadPage(link.href);
+  }, { passive: true });
+
+  // استجابة فورية عند الضغط على روابط الأقسام.
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest("a[href]");
+    if (!link) return;
+
+    if (
+      event.ctrlKey ||
+      event.metaKey ||
+      event.shiftKey ||
+      event.altKey ||
+      link.target === "_blank" ||
+      link.hasAttribute("download")
+    ) return;
+
+    const url = new URL(link.href, location.href);
+
+    if (url.origin !== location.origin) return;
+
+    // لا نمنع التنقل الطبيعي؛ المتصفح وذاكرة الصفحات يتوليان الباقي.
+  });
+})();
+</script>
 </body>
 </html>
