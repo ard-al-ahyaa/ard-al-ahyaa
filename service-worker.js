@@ -1,3 +1,4 @@
+```javascript
 const CACHE_VERSION = "ardh-al-ahyaa-v4";
 
 const PAGE_CACHE = `${CACHE_VERSION}-pages`;
@@ -50,14 +51,14 @@ self.addEventListener("install", (event) => {
                 cache: "reload"
               })
             )
-          )
-        );
+          );
+        )
       })
     ]).then(() => self.skipWaiting())
   );
 });
 
-// حذف الإصدارات القديمة.
+// حذف الإصدارات القديمة الخاصة بالمنصة فقط.
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys()
@@ -104,40 +105,37 @@ self.addEventListener("fetch", (event) => {
     url.hostname.includes("supabase.co") ||
     url.pathname.includes("/auth/") ||
     url.pathname.includes("/rest/v1/") ||
-    url.pathname.includes("/storage/v1/")
+    url.pathname.includes("/storage/v1/") ||
+    url.pathname.includes("/functions/v1/")
   ) {
     return;
   }
 
   // التنقل بين صفحات المنصة.
   if (request.mode === "navigate") {
+    const networkPromise = fetch(request)
+      .then(async (response) => {
+        if (response && response.ok) {
+          const cache = await caches.open(PAGE_CACHE);
+          await cache.put(request, response.clone());
+        }
+        return response;
+      });
+
+    event.waitUntil(
+      networkPromise.then(() => undefined).catch(() => undefined)
+    );
+
     event.respondWith(
       (async () => {
         const cache = await caches.open(PAGE_CACHE);
-
-        // عرض الصفحة المحفوظة بأسرع وقت.
         const cachedPage = await cache.match(request);
 
-        // تحديث الصفحة من الإنترنت في الخلفية.
-        const networkPromise = fetch(request)
-          .then(async (response) => {
-            if (response && response.ok) {
-              await cache.put(request, response.clone());
-            }
-
-            return response;
-          });
-
-        // عند وجود نسخة محفوظة، اعرضها فورًا.
+        // عرض الصفحة المحفوظة فورًا.
         if (cachedPage) {
-          event.waitUntil(
-            networkPromise.catch(() => {})
-          );
-
           return cachedPage;
         }
 
-        // عند عدم وجود نسخة محفوظة، استخدم الإنترنت.
         try {
           return await networkPromise;
         } catch {
@@ -155,6 +153,7 @@ self.addEventListener("fetch", (event) => {
             <head>
               <meta charset="UTF-8">
               <meta name="viewport" content="width=device-width, initial-scale=1">
+              <meta name="theme-color" content="#004e4d">
               <title>منصة أرض الأحياء</title>
               <style>
                 body {
@@ -194,32 +193,31 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // الملفات الثابتة: الكاش أولًا.
+  // الملفات الثابتة: الكاش أولًا مع تحديث النسخة المحفوظة.
   if (
-    /\.(?:css|js|png|jpg|jpeg|webp|svg|woff2?|ttf|ico)$/i.test(
+    /\.(?:css|js|png|jpg|jpeg|webp|gif|svg|woff2?|ttf|ico)$/i.test(
       url.pathname
     )
   ) {
+    const networkPromise = fetch(request)
+      .then(async (response) => {
+        if (response && response.ok) {
+          const cache = await caches.open(STATIC_CACHE);
+          await cache.put(request, response.clone());
+        }
+        return response;
+      });
+
+    event.waitUntil(
+      networkPromise.then(() => undefined).catch(() => undefined)
+    );
+
     event.respondWith(
       (async () => {
         const cache = await caches.open(STATIC_CACHE);
         const cachedFile = await cache.match(request);
 
-        // تحديث الملف المحفوظ في الخلفية.
-        const networkPromise = fetch(request)
-          .then(async (response) => {
-            if (response && response.ok) {
-              await cache.put(request, response.clone());
-            }
-
-            return response;
-          });
-
         if (cachedFile) {
-          event.waitUntil(
-            networkPromise.catch(() => {})
-          );
-
           return cachedFile;
         }
 
@@ -234,3 +232,4 @@ self.addEventListener("fetch", (event) => {
     );
   }
 });
+```
