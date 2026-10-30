@@ -67,198 +67,6 @@ a{
 }
 
 /* =====================================
-   الشريط الجانبي
-===================================== */
-
-.sidebar{
-  position:fixed;
-  top:0;
-  right:0;
-  width:var(--sidebar-width);
-  height:100vh;
-  z-index:1000;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  overflow-x:hidden;
-  overflow-y:auto;
-  color:#fff;
-  background:linear-gradient(
-    180deg,
-    #004e4d 0%,
-    #003d50 62%,
-    #07375b 100%
-  );
-  transition:width .25s ease;
-}
-
-.sidebar-top{
-  padding:18px 15px;
-  min-width:0;
-}
-
-.sidebar-toggle-wrap{
-  display:flex;
-  justify-content:flex-start;
-  margin-bottom:16px;
-}
-
-.sidebar-toggle{
-  width:39px;
-  height:39px;
-  border:1px solid #ffffff30;
-  border-radius:50%;
-  background:#ffffff15;
-  color:#fff;
-  display:grid;
-  place-items:center;
-}
-
-.sidebar-toggle:hover{
-  background:#ffffff25;
-}
-
-.sidebar-toggle i{
-  font-size:18px;
-}
-
-.brand{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  margin-bottom:27px;
-  padding-bottom:23px;
-  border-bottom:1px solid #ffffff20;
-}
-
-.brand-logo{
-  width:75px;
-  height:75px;
-  object-fit:contain;
-  margin-bottom:7px;
-}
-
-.brand-text{
-  white-space:nowrap;
-}
-
-.brand h2{
-  font-size:23px;
-  line-height:1.5;
-  font-weight:900;
-  margin:0;
-}
-
-.brand small{
-  font-size:12px;
-  opacity:.85;
-}
-
-.nav-title{
-  font-size:11px;
-  color:#ffffff88;
-  font-weight:700;
-  margin:0 10px 12px;
-}
-
-.sidebar nav{
-  display:flex;
-  flex-direction:column;
-  gap:7px;
-}
-
-.nav-link{
-  display:flex;
-  align-items:center;
-  gap:15px;
-  min-height:48px;
-  padding:12px 15px;
-  border-radius:12px;
-  color:#f2fbff;
-  font-size:14px;
-  font-weight:700;
-  text-decoration:none;
-  white-space:nowrap;
-  transition:.2s;
-}
-
-.nav-link:hover{
-  background:#ffffff18;
-  transform:translateX(-2px);
-}
-
-.nav-link.active{
-  background:linear-gradient(110deg,#1da77b,#159b78);
-  box-shadow:0 5px 15px #001f3020;
-  color:#fff;
-}
-
-.nav-icon{
-  width:27px;
-  min-width:27px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.nav-icon i{
-  font-size:21px;
-}
-
-.nav-text{
-  overflow:hidden;
-}
-
-.sidebar-bottom{
-  margin:0 15px 18px;
-  padding:13px 10px;
-  border-top:1px solid #ffffff20;
-  text-align:center;
-  font-size:11px;
-  line-height:2;
-  color:#ffffffc9;
-}
-
-body.sidebar-collapsed{
-  --sidebar-width:82px;
-}
-
-body.sidebar-collapsed .sidebar-top{
-  padding:18px 10px;
-}
-
-body.sidebar-collapsed .brand{
-  padding-bottom:18px;
-}
-
-body.sidebar-collapsed .brand-logo{
-  width:48px;
-  height:48px;
-}
-
-body.sidebar-collapsed .brand-text,
-body.sidebar-collapsed .nav-title,
-body.sidebar-collapsed .nav-text,
-body.sidebar-collapsed .sidebar-bottom{
-  display:none;
-}
-
-body.sidebar-collapsed .nav-link{
-  justify-content:center;
-  padding:13px 5px;
-}
-
-body.sidebar-collapsed .nav-link:hover{
-  transform:none;
-}
-
-body.sidebar-collapsed .sidebar-toggle-wrap{
-  justify-content:center;
-}
-
-/* =====================================
    المحتوى الرئيسي
 ===================================== */
 
@@ -887,10 +695,6 @@ body.sidebar-collapsed .sidebar-toggle-wrap{
   font-size:11px;
 }
 
-.mobile-nav{
-  display:none;
-}
-
 /* =====================================
    الهواتف
 ===================================== */
@@ -902,15 +706,10 @@ body.sidebar-collapsed .sidebar-toggle-wrap{
 }
 
 @media(max-width:760px){
-
-  .sidebar{
-    display:none;
-  }
-
-  .main,
-  body.sidebar-collapsed .main{
+.main,
+  
     margin-right:0;
-    padding:14px 13px 95px;
+    padding:14px 13px 40px;
   }
 
   .topbar{
@@ -999,45 +798,6 @@ body.sidebar-collapsed .sidebar-toggle-wrap{
   .section-title h2{
     font-size:16px;
   }
-
-  .mobile-nav{
-    display:flex;
-    position:fixed;
-    z-index:1100;
-    bottom:0;
-    right:0;
-    left:0;
-    justify-content:space-around;
-    gap:3px;
-    padding:8px 4px calc(8px + env(safe-area-inset-bottom));
-    background:#fff;
-    border-top:1px solid #e6edf4;
-    box-shadow:0 -4px 20px #12375b12;
-  }
-
-  .mobile-nav a{
-    display:flex;
-    flex:1;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:3px;
-    min-width:0;
-    padding:4px 1px;
-    color:#6b7f98;
-    text-decoration:none;
-    font-size:9px;
-    font-weight:700;
-  }
-
-  .mobile-nav a i{
-    font-size:19px;
-  }
-
-  .mobile-nav a.active{
-    color:var(--green);
-    font-weight:900;
-  }
 }
 
 @media(prefers-reduced-motion:reduce){
@@ -1052,128 +812,6 @@ body.sidebar-collapsed .sidebar-toggle-wrap{
 </head>
 
 <body>
-
-<!-- =====================================
-     الشريط الجانبي
-===================================== -->
-
-<aside class="sidebar" id="sidebar">
-
-  <div class="sidebar-top">
-
-    <div class="sidebar-toggle-wrap">
-      <button
-        type="button"
-        class="sidebar-toggle"
-        id="sidebarToggle"
-        aria-label="تصغير القائمة الجانبية"
-        aria-expanded="true"
-        title="تصغير القائمة"
-      >
-        <i class="fa-solid fa-chevron-left"></i>
-      </button>
-    </div>
-
-    <div class="brand">
-
-      <img
-        class="brand-logo"
-        src="../logo.png"
-        alt="شعار أرض الأحياء"
-        onerror="this.style.display='none'"
-      >
-
-      <div class="brand-text">
-        <h2>أرض الأحياء</h2>
-        <small>الثانوية العامة</small>
-      </div>
-
-    </div>
-
-    <div class="nav-title">
-      القائمة الرئيسية
-    </div>
-
-    <nav>
-
-      <a
-        class="nav-link"
-        href="../index.html"
-        data-title="الرئيسية"
-        aria-label="الرئيسية"
-      >
-        <span class="nav-icon">
-          <i class="fa-solid fa-house"></i>
-        </span>
-        <span class="nav-text">الرئيسية</span>
-      </a>
-
-      <a
-        class="nav-link"
-        href="../videos/index.html"
-        data-title="المحاضرات"
-        aria-label="المحاضرات"
-      >
-        <span class="nav-icon">
-          <i class="fa-regular fa-circle-play"></i>
-        </span>
-        <span class="nav-text">المحاضرات</span>
-      </a>
-
-      <a
-        class="nav-link"
-        href="../notes/index.html"
-        data-title="المذكرات"
-        aria-label="المذكرات"
-      >
-        <span class="nav-icon">
-          <i class="fa-solid fa-book-open"></i>
-        </span>
-        <span class="nav-text">المذكرات</span>
-      </a>
-
-      <a
-        class="nav-link"
-        href="../champion/index.html"
-        data-title="بطل الفصل"
-        aria-label="بطل الفصل"
-      >
-        <span class="nav-icon">
-          <i class="fa-solid fa-trophy"></i>
-        </span>
-        <span class="nav-text">بطل الفصل</span>
-      </a>
-
-      <a
-        class="nav-link active"
-        href="./index.html"
-        data-title="المنتدى"
-        aria-label="المنتدى"
-        aria-current="page"
-      >
-        <span class="nav-icon">
-          <i class="fa-regular fa-comments"></i>
-        </span>
-        <span class="nav-text">المنتدى</span>
-      </a>
-
-      <a
-        class="nav-link"
-        href="../account/index.html"
-        data-title="حساب الطالب"
-        aria-label="حساب الطالب"
-      >
-        <span class="nav-icon">
-          <i class="fa-regular fa-user"></i>
-        </span>
-        <span class="nav-text">حساب الطالب</span>
-      </a>
-
-    </nav>
-
-  </div>
-
-</aside>
 
 <!-- =====================================
      المحتوى الرئيسي
@@ -1340,48 +978,6 @@ body.sidebar-collapsed .sidebar-toggle-wrap{
 
 </main>
 
-<!-- =====================================
-     قائمة الهاتف
-===================================== -->
-
-<nav class="mobile-nav" aria-label="التنقل الرئيسي">
-
-  <a href="../index.html">
-    <i class="fa-solid fa-house"></i>
-    <span>الرئيسية</span>
-  </a>
-
-  <a href="../videos/index.html">
-    <i class="fa-regular fa-circle-play"></i>
-    <span>المحاضرات</span>
-  </a>
-
-  <a href="../notes/index.html">
-    <i class="fa-solid fa-book-open"></i>
-    <span>المذكرات</span>
-  </a>
-
-  <a href="../champion/index.html">
-    <i class="fa-solid fa-trophy"></i>
-    <span>البطل</span>
-  </a>
-
-  <a
-    href="./index.html"
-    class="active"
-    aria-current="page"
-  >
-    <i class="fa-regular fa-comments"></i>
-    <span>المنتدى</span>
-  </a>
-
-  <a href="../account/index.html">
-    <i class="fa-regular fa-user"></i>
-    <span>حسابي</span>
-  </a>
-
-</nav>
-
 <script>
 "use strict";
 
@@ -1450,8 +1046,6 @@ const composerNameElement = $("composerName");
 const charCount = $("charCount");
 const postsCount = $("postsCount");
 
-const sidebarToggle = $("sidebarToggle");
-
 let currentUser = null;
 
 let currentStudentName = "طالب بالمنصة";
@@ -1461,83 +1055,6 @@ let selectedImage = null;
 let previewObjectUrl = null;
 
 let isPublishing = false;
-
-/* =====================================
-   الشريط الجانبي
-===================================== */
-
-const SIDEBAR_KEY =
-  "ardAlahyaaSidebarCollapsed";
-
-function applySidebarState(collapsed, save = true) {
-
-  document.body.classList.toggle(
-    "sidebar-collapsed",
-    collapsed
-  );
-
-  const text = collapsed
-    ? "توسيع الشريط الجانبي"
-    : "تصغير الشريط الجانبي";
-
-  sidebarToggle.setAttribute(
-    "aria-expanded",
-    String(!collapsed)
-  );
-
-  sidebarToggle.setAttribute(
-    "aria-label",
-    text
-  );
-
-  sidebarToggle.title = text;
-
-  document.querySelectorAll(
-    ".nav-link[data-title]"
-  ).forEach(link => {
-
-    if (collapsed) {
-      link.title = link.dataset.title;
-    } else {
-      link.removeAttribute("title");
-    }
-
-  });
-
-  if (save) {
-    try {
-      localStorage.setItem(
-        SIDEBAR_KEY,
-        collapsed ? "true" : "false"
-      );
-    } catch (error) {
-      console.warn(
-        "تعذر حفظ وضع الشريط الجانبي.",
-        error
-      );
-    }
-  }
-}
-
-sidebarToggle.addEventListener(
-  "click",
-  () => {
-    applySidebarState(
-      !document.body.classList.contains(
-        "sidebar-collapsed"
-      )
-    );
-  }
-);
-
-try {
-  applySidebarState(
-    localStorage.getItem(SIDEBAR_KEY) === "true",
-    false
-  );
-} catch {
-  applySidebarState(false, false);
-}
 
 /* =====================================
    رسائل الصفحة
@@ -3016,5 +2533,6 @@ initForum();
 
 })();
 </script>
+  <script src="../sidebar.js"></script>
 </body>
 </html>
