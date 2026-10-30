@@ -1066,7 +1066,6 @@ function formatTime(value){
 }
 
 /* صلاحيات الاشتراكات: فحص مستقل للمدفوع والمجاني */
-```javascript
 async function loadSubscriptionAccess(user) {
   viewerId = user.id;
   viewerIsAdmin = false;
@@ -1156,6 +1155,8 @@ async function loadSubscriptionAccess(user) {
       notice.className = "";
     }
   }
+
+}
 
 /* الشريط الجانبي */
 function setSidebar(collapsed){
@@ -2793,12 +2794,6 @@ async function initializePage(){
 }
 
 initializePage();
-</script>
- ```html
-<script>
-(() => {
-  "use strict";
-
 </script>
 </body>
 </html>
