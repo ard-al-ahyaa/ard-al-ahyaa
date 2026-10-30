@@ -2635,8 +2635,14 @@ async function checkUser() {
       error
     );
 
+    const errorDetails =
+      error?.message ||
+      error?.error_description ||
+      String(error || "سبب غير معروف");
+
     showLogin(
-      "تعذر تحميل الحساب. تأكد من الإنترنت ثم أعد المحاولة."
+      "تعذر تحميل الحساب: " + errorDetails +
+      " — أعد تحميل الصفحة، وإذا استمرت المشكلة أرسل هذه الرسالة."
     );
 
   }
@@ -3570,7 +3576,6 @@ if ("serviceWorker" in navigator) {
   });
 }
   </script>
-  ```html
 <script>
 (() => {
   "use strict";
