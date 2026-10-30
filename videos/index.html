@@ -41,61 +41,6 @@ button{cursor:pointer}
 a{text-decoration:none}
 button:disabled{opacity:.55;cursor:not-allowed}
 
-/* الشريط الجانبي */
-.sidebar{
- position:fixed;
- top:0;
- right:0;
- bottom:0;
- width:272px;
- padding:20px 15px;
- background:linear-gradient(180deg,#004e4d,#003d50 62%,#07375b);
- color:white;
- z-index:1000;
- overflow-y:auto;
- transition:width .25s;
-}
-.sidebar.collapsed{width:82px}
-.sidebar-toggle{
- width:40px;
- height:40px;
- border:1px solid #ffffff30;
- border-radius:50%;
- background:#ffffff15;
- color:white;
- font-size:18px;
-}
-.brand{
- text-align:center;
- padding:15px 0 24px;
- border-bottom:1px solid #ffffff20;
- margin-bottom:23px;
-}
-.brand img{width:75px;height:75px;object-fit:contain}
-.brand h2{font-size:23px;font-weight:900;margin:8px 0 0}
-.brand p{font-size:12px;opacity:.8;margin:0}
-.menu{display:flex;flex-direction:column;gap:7px}
-.menu a{
- display:flex;
- align-items:center;
- gap:15px;
- min-height:48px;
- padding:12px 15px;
- border-radius:12px;
- color:white;
- font-size:14px;
- font-weight:700;
- white-space:nowrap;
-}
-.menu a:hover{background:#ffffff18}
-.menu a.active{background:linear-gradient(110deg,#1da77b,#159b78)}
-.menu i{width:27px;text-align:center;font-size:19px}
-.sidebar.collapsed .brand h2,
-.sidebar.collapsed .brand p,
-.sidebar.collapsed .menu span{display:none}
-.sidebar.collapsed .brand img{width:48px;height:48px}
-.sidebar.collapsed .menu a{justify-content:center;padding:13px 5px}
-
 /* المحتوى */
 .main{
  margin-right:272px;
@@ -702,7 +647,6 @@ button:disabled{opacity:.55;cursor:not-allowed}
  font-size:13px;
  line-height:2;
 }
-.mobile-bottom{display:none}
 
 @media(max-width:1100px){
  .months-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -731,32 +675,6 @@ button:disabled{opacity:.55;cursor:not-allowed}
  .center-play{width:60px;height:60px}
  .quality-trigger{width:29px;height:29px;font-size:15px}
  .quality-popup{width:195px;right:-34px}
- .mobile-bottom{
-  display:flex;
-  position:fixed;
-  bottom:0;
-  right:0;
-  left:0;
-  background:white;
-  border-top:1px solid #e6edf4;
-  z-index:1500;
-  justify-content:space-around;
-  padding:8px 3px calc(8px + env(safe-area-inset-bottom));
- }
- .mobile-bottom a{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:4px;
-  font-size:9px;
-  color:#6b7f98;
- }
- .mobile-bottom a.active{
-  color:var(--green);
-  font-weight:900;
- }
- .mobile-bottom i{font-size:19px}
 }
 @media(max-width:360px){
  .months-grid{grid-template-columns:1fr}
@@ -805,14 +723,6 @@ button:disabled{opacity:.55;cursor:not-allowed}
  --shadow-hover:0 18px 42px rgba(4,55,75,.13);
 }
 body{background:linear-gradient(180deg,#f4f8fb 0%,#eef5f7 100%);}
-.sidebar{
- background:linear-gradient(165deg,#004e4d 0%,#003d50 55%,#07375b 100%);
- box-shadow:8px 0 28px rgba(0,35,48,.12);
-}
-.sidebar-toggle{
- border:1px solid rgba(255,255,255,.16);
- box-shadow:0 8px 18px rgba(0,0,0,.12);
-}
 .main{padding-top:28px;}
 .page-header,.hero,.welcome-card,.months-grid,.month-heading,.lecture-card,
 .assessment-card,.resource-card,.empty,.notice,.panel,.handout-card{
@@ -907,40 +817,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{
 </head>
 
 <body>
-
-<aside class="sidebar" id="sidebar">
- <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="تصغير القائمة">
-  <i class="fa-solid fa-bars"></i>
- </button>
-
- <div class="brand">
-  <img src="../logo.png" alt="أرض الأحياء">
-  <h2>أرض الأحياء</h2>
-  <p>الثانوية العامة</p>
- </div>
-
- <nav class="menu">
-  <a href="../index.html" title="الرئيسية">
-   <i class="fa-solid fa-house"></i><span>الرئيسية</span>
-  </a>
-  <a href="index.html" class="active" title="المحاضرات">
-   <i class="fa-regular fa-circle-play"></i><span>المحاضرات</span>
-  </a>
-  <a href="../notes/index.html" title="المذكرات">
-   <i class="fa-solid fa-book-open"></i><span>المذكرات</span>
-  </a>
-  <a href="../champion/index.html" title="بطل الفصل">
-   <i class="fa-solid fa-trophy"></i><span>بطل الفصل</span>
-  </a>
-  <a href="../forum/index.html" title="المنتدى">
-   <i class="fa-regular fa-comments"></i><span>المنتدى</span>
-  </a>
-  <a href="../account/index.html" title="حساب الطالب">
-   <i class="fa-regular fa-user"></i><span>حساب الطالب</span>
-  </a>
- </nav>
-</aside>
-
 <main class="main" id="main">
 
  <header class="topbar">
@@ -969,28 +845,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{
  </div>
 
 </main>
-
-<nav class="mobile-bottom">
- <a href="../index.html">
-  <i class="fa-solid fa-house"></i>الرئيسية
- </a>
- <a href="index.html" class="active">
-  <i class="fa-regular fa-circle-play"></i>المحاضرات
- </a>
- <a href="../notes/index.html">
-  <i class="fa-solid fa-book-open"></i>المذكرات
- </a>
- <a href="../champion/index.html">
-  <i class="fa-solid fa-trophy"></i>البطل
- </a>
- <a href="../forum/index.html">
-  <i class="fa-regular fa-comments"></i>المنتدى
- </a>
- <a href="../account/index.html">
-  <i class="fa-regular fa-user"></i>حسابي
- </a>
-</nav>
-
 <script>
 "use strict";
 
@@ -1158,22 +1012,6 @@ async function loadSubscriptionAccess(user) {
 
 }
 
-/* الشريط الجانبي */
-function setSidebar(collapsed){
- $("sidebar").classList.toggle("collapsed",collapsed);
- $("main").classList.toggle("expanded",collapsed);
- try{
-  localStorage.setItem("ardAlahyaaSidebarCollapsed",String(collapsed));
- }catch{}
-}
-
-$("sidebarToggle").addEventListener("click",()=>{
- setSidebar(!$("sidebar").classList.contains("collapsed"));
-});
-
-try{
- setSidebar(localStorage.getItem("ardAlahyaaSidebarCollapsed")==="true");
-}catch{}
 
 /* روابط Supabase */
 function storagePath(raw,bucket){
@@ -2795,6 +2633,67 @@ async function initializePage(){
 
 initializePage();
 </script>
- <script src="sidebar.js"></script>
+ <script src="../sidebar.js"></script>
+<script>
+/* تحميل مسبق انتقائي لأقسام المنصة لتقليل وقت التنقل */
+(() => {
+  "use strict";
+
+  const prefetched = new Set();
+
+  function canPrefetch() {
+    const connection = navigator.connection ||
+      navigator.mozConnection ||
+      navigator.webkitConnection;
+
+    if (!("prefetch" in document.createElement("link"))) return false;
+    if (connection?.saveData) return false;
+    if (["slow-2g", "2g"].includes(connection?.effectiveType)) return false;
+
+    return true;
+  }
+
+  function prefetch(url) {
+    if (!canPrefetch() || !url || prefetched.has(url) || url === location.href) return;
+
+    try {
+      const target = new URL(url, location.href);
+      if (target.origin !== location.origin) return;
+
+      prefetched.add(target.href);
+
+      const hint = document.createElement("link");
+      hint.rel = "prefetch";
+      hint.href = target.href;
+      hint.as = "document";
+      document.head.appendChild(hint);
+    } catch (_) {}
+  }
+
+  function attachPrefetch() {
+    document.querySelectorAll(
+      '#ard-shared-sidebar nav a'
+    ).forEach(link => {
+      if (link.dataset.ardPrefetchBound) return;
+      link.dataset.ardPrefetchBound = "1";
+
+      link.addEventListener("pointerenter", () => prefetch(link.href), { passive: true });
+      link.addEventListener("focus", () => prefetch(link.href), { passive: true });
+      link.addEventListener("touchstart", () => prefetch(link.href), { passive: true });
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", attachPrefetch, { once: true });
+  } else {
+    attachPrefetch();
+  }
+
+  // يلتقط القائمة المشتركة إذا تم تركيبها بعد تنفيذ هذا السكربت.
+  const observer = new MutationObserver(attachPrefetch);
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+  window.addEventListener("pagehide", () => observer.disconnect(), { once: true });
+})();
+</script>
 </body>
 </html>
