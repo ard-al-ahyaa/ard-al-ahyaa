@@ -5,19 +5,21 @@
   مكتبة إدارة تقدم الطالب على Supabase.
 
   التحسينات:
-  1. منع تكرار طلبات تحميل التقدم المتزامنة.
-  2. تخزين مؤقت لمدة 20 ثانية.
-  3. إلغاء التخزين المؤقت عند تغيير البيانات.
-  4. منع تكرار نقل البيانات المحلية.
-  5. حذف البيانات المحلية بعد نجاح النقل فقط.
-  6. تحديد بيانات الطالب الحالي في الاستعلام.
+  1. منع تكرار طلبات تحميل التقدم.
+  2. تخزين مؤقت لمدة 30 ثانية.
+  3. ترتيب عمليات الحفظ لكل محاضرة.
+  4. الحفاظ على حالة الحفظ والإكمال معًا.
+  5. تحديث الكاش بعد نجاح الحفظ.
+  6. منع تكرار نقل البيانات المحلية.
+  7. دمج البيانات المحلية مع بيانات Supabase.
+  8. تحديد بيانات الطالب الحالي في الاستعلام.
 */
 
 window.ArdProgress = (function () {
 
   let db = null;
 
-  const CACHE_DURATION = 20000;
+  const CACHE_DURATION = 30000;
 
   let cache = null;
   let cacheTime = 0;
@@ -26,7 +28,8 @@ window.ArdProgress = (function () {
   let fetchPromise = null;
   let migrationPromise = null;
 
-  const mutationLocks = new Map();
+  // سلسلة عمليات الحفظ لكل محاضرة.
+  const mutationQueues = new Map();
 
   /* التحقق من الاتصال */
 
@@ -63,6 +66,16 @@ window.ArdProgress = (function () {
 
   }
 
+  /* نسخ البيانات */
+
+  function cloneRows(rows) {
+
+    return (rows || []).map(row => ({
+      ...row
+    }));
+
+  }
+
   /* إبطال التخزين المؤقت */
 
   function invalidateCache() {
@@ -70,6 +83,42 @@ window.ArdProgress = (function () {
     cache = null;
     cacheTime = 0;
     cacheUserId = null;
+
+  }
+
+  /* تحديث صف داخل الكاش */
+
+  function updateCachedRow(uid, row) {
+
+    if (
+      !cache ||
+      cacheUserId !== uid
+    ) {
+      return;
+    }
+
+    const id = String(row.lecture_id);
+
+    const index = cache.findIndex(
+      item =>
+        String(item.lecture_id) === id
+    );
+
+    if (index >= 0) {
+
+      cache[index] = {
+        ...row
+      };
+
+    } else {
+
+      cache.push({
+        ...row
+      });
+
+    }
+
+    cacheTime = Date.now();
 
   }
 
@@ -81,35 +130,32 @@ window.ArdProgress = (function () {
 
     const force = options.force === true;
 
-    const uid = await userId();
+    // منع الطلبات المتزامنة.
+    if (fetchPromise) {
 
-    const now = Date.now();
-
-    /* استخدام البيانات المحفوظة */
-
-    if (
-      !force &&
-      cache &&
-      cacheUserId === uid &&
-      now - cacheTime < CACHE_DURATION
-    ) {
-
-      return cache.map(row => ({ ...row }));
-
-    }
-
-    /* منع تكرار الطلب المتزامن */
-
-    if (
-      fetchPromise &&
-      !force
-    ) {
-
-      return fetchPromise;
+      return cloneRows(
+        await fetchPromise
+      );
 
     }
 
     const request = (async function () {
+
+      const uid = await userId();
+
+      const now = Date.now();
+
+      // استخدام الكاش إذا كانت البيانات حديثة.
+      if (
+        !force &&
+        cache &&
+        cacheUserId === uid &&
+        now - cacheTime < CACHE_DURATION
+      ) {
+
+        return cloneRows(cache);
+
+      }
 
       const {
         data,
@@ -125,11 +171,11 @@ window.ArdProgress = (function () {
 
       const rows = data || [];
 
-      cache = rows.map(row => ({ ...row }));
+      cache = cloneRows(rows);
       cacheUserId = uid;
       cacheTime = Date.now();
 
-      return rows;
+      return cloneRows(rows);
 
     })();
 
@@ -137,7 +183,9 @@ window.ArdProgress = (function () {
 
     try {
 
-      return await request;
+      return cloneRows(
+        await request
+      );
 
     } finally {
 
@@ -161,50 +209,105 @@ window.ArdProgress = (function () {
 
     const lockKey = uid + ":" + id;
 
-    /* منع إرسال نفس العملية المتزامنة */
+    /*
+      ترتيب عمليات الحفظ:
+      كل عملية تنتظر انتهاء العملية السابقة
+      الخاصة بالمحاضرة نفسها.
+    */
 
-    if (mutationLocks.has(lockKey)) {
+    const previous =
+      mutationQueues.get(lockKey) ||
+      Promise.resolve();
 
-      await mutationLocks.get(lockKey);
+    const operation = previous
+      .catch(() => {})
+      .then(async function () {
 
-    }
+        /*
+          نقرأ الحالة الحالية أولًا،
+          حتى لا يؤدي تحديث saved إلى
+          مسح completed أو العكس.
+        */
 
-    const operation = (async function () {
+        const rows = await fetchAll();
 
-      const row = {
+        const existing = rows.find(
+          row =>
+            String(row.lecture_id) === id
+        ) || {};
 
-        user_id: uid,
+        const now =
+          new Date().toISOString();
 
-        lecture_id: id,
+        const merged = {
 
-        ...patch,
+          user_id: uid,
 
-        updated_at: new Date().toISOString()
+          lecture_id: id,
 
-      };
+          saved:
+            existing.saved === true,
 
-      const {
-        error
-      } = await db
-        .from("lecture_progress")
-        .upsert(
-          row,
-          {
-            onConflict: "user_id,lecture_id"
-          }
+          completed:
+            existing.completed === true,
+
+          completed_at:
+            existing.completed_at || null,
+
+          ...patch,
+
+          updated_at: now
+
+        };
+
+        // عند إلغاء الإكمال نمسح تاريخه.
+        if (
+          patch.completed === false &&
+          !Object.prototype.hasOwnProperty.call(
+            patch,
+            "completed_at"
+          )
+        ) {
+
+          merged.completed_at = null;
+
+        }
+
+        const {
+          error
+        } = await db
+          .from("lecture_progress")
+          .upsert(
+            merged,
+            {
+              onConflict: "user_id,lecture_id"
+            }
+          );
+
+        if (error) throw error;
+
+        // تحديث الكاش بدل إبطاله.
+        updateCachedRow(uid, {
+
+          lecture_id: id,
+
+          saved: !!merged.saved,
+
+          completed: !!merged.completed,
+
+          completed_at:
+            merged.completed_at
+
+        });
+
+        // إشعار لوحة الطالب بتغيير البيانات.
+        window.dispatchEvent(
+          new Event("ard:progress")
         );
 
-      if (error) throw error;
+      });
 
-      invalidateCache();
-
-      window.dispatchEvent(
-        new Event("ard:progress")
-      );
-
-    })();
-
-    mutationLocks.set(
+    mutationQueues.set(
       lockKey,
       operation
     );
@@ -216,10 +319,10 @@ window.ArdProgress = (function () {
     } finally {
 
       if (
-        mutationLocks.get(lockKey) === operation
+        mutationQueues.get(lockKey) === operation
       ) {
 
-        mutationLocks.delete(lockKey);
+        mutationQueues.delete(lockKey);
 
       }
 
@@ -247,6 +350,7 @@ window.ArdProgress = (function () {
     return upsert(
       lectureId,
       {
+
         completed: !!value,
 
         completed_at: value
@@ -286,8 +390,7 @@ window.ArdProgress = (function () {
 
     need();
 
-    /* منع تشغيل النقل أكثر من مرة بالتزامن */
-
+    // منع تشغيل النقل أكثر من مرة بالتزامن.
     if (migrationPromise) {
       return migrationPromise;
     }
@@ -317,6 +420,21 @@ window.ArdProgress = (function () {
 
       }
 
+      /*
+        تحميل بيانات Supabase الحالية
+        قبل النقل حتى لا نمسح حالات سابقة.
+      */
+
+      const serverRows =
+        await fetchAll();
+
+      const serverMap = new Map(
+        serverRows.map(row => [
+          String(row.lecture_id),
+          row
+        ])
+      );
+
       const ids = [
         ...new Set([
           ...saved,
@@ -327,23 +445,44 @@ window.ArdProgress = (function () {
       const now =
         new Date().toISOString();
 
-      const rows = ids.map(id => ({
+      const rows = ids.map(id => {
 
-        user_id: uid,
+        const existing =
+          serverMap.get(id) || {};
 
-        lecture_id: id,
+        const localSaved =
+          saved.includes(id);
 
-        saved: saved.includes(id),
+        const localCompleted =
+          completed.includes(id);
 
-        completed: completed.includes(id),
+        return {
 
-        completed_at: completed.includes(id)
-          ? now
-          : null,
+          user_id: uid,
 
-        updated_at: now
+          lecture_id: id,
 
-      }));
+          saved:
+            existing.saved === true ||
+            localSaved,
+
+          completed:
+            existing.completed === true ||
+            localCompleted,
+
+          completed_at:
+            existing.completed_at ||
+            (
+              localCompleted
+                ? now
+                : null
+            ),
+
+          updated_at: now
+
+        };
+
+      });
 
       const {
         error
@@ -356,19 +495,39 @@ window.ArdProgress = (function () {
           }
         );
 
-      if (error) {
+      if (error) throw error;
 
-        throw error;
+      /*
+        تحديث الكاش بعد نجاح النقل.
+      */
 
-      }
+      rows.forEach(row => {
 
-      /* الحذف بعد نجاح النقل فقط */
+        updateCachedRow(uid, {
+
+          lecture_id: String(row.lecture_id),
+
+          saved: !!row.saved,
+
+          completed: !!row.completed,
+
+          completed_at: row.completed_at
+
+        });
+
+      });
+
+      /*
+        حذف البيانات المحلية بعد نجاح النقل فقط.
+      */
 
       localStorage.removeItem(savedKey);
 
       localStorage.removeItem(completedKey);
 
-      invalidateCache();
+      window.dispatchEvent(
+        new Event("ard:progress")
+      );
 
     })();
 
@@ -414,11 +573,11 @@ window.ArdProgress = (function () {
     fetchPromise = null;
     migrationPromise = null;
 
-    mutationLocks.clear();
+    mutationQueues.clear();
 
   }
 
-  /* تنظيف البيانات عند تغيير الحساب */
+  /* تنظيف البيانات المؤقتة */
 
   function clearCache() {
 
