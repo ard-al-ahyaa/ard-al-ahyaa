@@ -1171,7 +1171,7 @@ body.sidebar-collapsed .sidebar-toggle-wrap{
         aria-expanded="true"
         title="تصغير القائمة"
       >
-        <i class="fa-solid fa-chevron-left"></i>
+        <i class="fa-solid fa-angles-left"></i>
       </button>
     </div>
 
@@ -1607,7 +1607,16 @@ function applySidebarState(collapsed, save = true) {
     text
   );
 
-  sidebarToggle.title = text;
+  sidebarToggle.title = collapsed
+    ? "توسيع القائمة"
+    : "تصغير القائمة";
+
+  /* تغيير اتجاه السهم بصريًا حسب حالة الشريط */
+  const toggleIcon = sidebarToggle.querySelector("i");
+  if (toggleIcon) {
+    toggleIcon.classList.toggle("fa-angles-right", collapsed);
+    toggleIcon.classList.toggle("fa-angles-left", !collapsed);
+  }
 
   document.querySelectorAll(
     ".nav-link[data-title]"
