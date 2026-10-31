@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="manifest" href="manifest.json">
-  
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="progress.js"></script>
 
@@ -301,14 +301,6 @@ a:focus-visible{
 .sidebar-bottom i{
   color:#21bd83;
   margin-right:4px;
-}
-
-.main{
-  margin-right:var(--sidebar-width);
-  min-height:100vh;
-  padding:15px 27px 25px;
-  max-width:1900px;
-  transition:margin-right .28s ease;
 }
 
 /* تصغير القائمة */
@@ -3555,6 +3547,9 @@ initializeSidebar();
 checkUser();
 
 </script>
+
+<!-- تسجيل Service Worker مرة واحدة فقط -->
+
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function () {
@@ -3568,14 +3563,9 @@ if ("serviceWorker" in navigator) {
   });
 }
 </script>
-  <script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js")
-      .catch(error => console.error("Service Worker Error:", error));
-  });
-}
-  </script>
+
+<!-- تحسين سرعة التنقل -->
+
 <script>
 (() => {
   "use strict";
@@ -3646,5 +3636,6 @@ if ("serviceWorker" in navigator) {
 
 })();
 </script>
+
 </body>
 </html>
