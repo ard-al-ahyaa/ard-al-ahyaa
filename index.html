@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="manifest" href="manifest.json">
-
+  
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="progress.js"></script>
 
@@ -189,6 +189,28 @@ a:focus-visible{
   transition:transform .25s;
 }
 
+.sidebar-toggle i.rotate-multiple{
+  animation:sidebarIconSpin .75s ease-in-out;
+}
+
+@keyframes sidebarIconSpin{
+  0%{transform:rotate(0deg)}
+  35%{transform:rotate(720deg)}
+  70%{transform:rotate(1080deg)}
+  100%{transform:rotate(1440deg)}
+}
+
+body.sidebar-collapsed .sidebar-toggle i.rotate-multiple{
+  animation:sidebarIconSpinCollapsed .75s ease-in-out;
+}
+
+@keyframes sidebarIconSpinCollapsed{
+  0%{transform:rotate(180deg)}
+  35%{transform:rotate(900deg)}
+  70%{transform:rotate(1260deg)}
+  100%{transform:rotate(1620deg)}
+}
+
 .brand{
   display:flex;
   flex-direction:column;
@@ -301,6 +323,14 @@ a:focus-visible{
 .sidebar-bottom i{
   color:#21bd83;
   margin-right:4px;
+}
+
+.main{
+  margin-right:var(--sidebar-width);
+  min-height:100vh;
+  padding:15px 27px 25px;
+  max-width:1900px;
+  transition:margin-right .28s ease;
 }
 
 /* تصغير القائمة */
@@ -2202,6 +2232,14 @@ let lectureCache = null;
 let progressRows = [];
 let dashboardLoading = false;
 
+// تقليل طلبات Supabase المتكررة
+let walletPromise = null;
+let walletCacheAt = 0;
+let lecturePromise = null;
+let lectureCacheAt = 0;
+const DATA_CACHE_TIME = 30000;
+let progressRefreshTimer = null;
+
 const byId = id => document.getElementById(id);
 
 /* شاشة تسجيل الدخول */
@@ -2326,6 +2364,18 @@ function setSidebarCollapsed(collapsed) {
 }
 
 function toggleSidebar() {
+
+  const icon = byId("sidebarToggle")?.querySelector("i");
+
+  if (icon) {
+    icon.classList.remove("rotate-multiple");
+    // إعادة تشغيل الحركة مع كل ضغطة
+    void icon.offsetWidth;
+    icon.classList.add("rotate-multiple");
+    icon.addEventListener("animationend", () => {
+      icon.classList.remove("rotate-multiple");
+    }, { once:true });
+  }
 
   setSidebarCollapsed(
     !document.body.classList.contains(
@@ -2643,63 +2693,50 @@ async function checkUser() {
 
 /* رصيد الطالب */
 
-async function loadWalletBalance() {
+async function loadWalletBalance(force = false) {
 
   const target = byId("walletBalance");
+  if (!target || !currentUser) return;
 
-  if (
-    !target ||
-    !currentUser
-  ) {
-
+  const now = Date.now();
+  if (!force && walletCacheAt && now - walletCacheAt < DATA_CACHE_TIME && target.textContent !== "...") {
     return;
-
   }
+  if (walletPromise) return walletPromise;
 
   target.textContent = "...";
 
-  try {
+  walletPromise = (async () => {
+    try {
+      const { data, error } = await supabaseClient
+        .from("student_wallets")
+        .select("balance_egp")
+        .eq("student_id", currentUser.id)
+        .maybeSingle();
 
-    const {
-      data,
-      error
-    } = await supabaseClient
-      .from("student_wallets")
-      .select("balance_egp")
-      .eq("student_id",currentUser.id)
-      .maybeSingle();
+      if (error) throw error;
 
-    if (error) throw error;
-
-    if (!data) {
-
-      target.textContent = "غير متاح";
-      return;
-
-    }
-
-    const balance =
-      Number(data.balance_egp);
-
-    target.textContent =
-      balance.toLocaleString(
-        "ar-EG",
-        {
+      if (!data) {
+        target.textContent = "غير متاح";
+      } else {
+        const balance = Number(data.balance_egp);
+        target.textContent = balance.toLocaleString("ar-EG", {
           minimumFractionDigits:2,
           maximumFractionDigits:2
-        }
-      ) + " ج.م";
+        }) + " ج.م";
+      }
+      walletCacheAt = Date.now();
+    } catch (error) {
+      console.error("Wallet loading error:", error);
+      target.textContent = "غير متاح";
+      // لا نثبت وقت الكاش عند الفشل حتى يمكن إعادة المحاولة لاحقًا
+      walletCacheAt = 0;
+    } finally {
+      walletPromise = null;
+    }
+  })();
 
-  } catch (error) {
-
-    console.error(
-      "Wallet loading error:",
-      error
-    );
-
-    target.textContent = "غير متاح";
-
-  }
+  return walletPromise;
 
 }
 
@@ -2715,24 +2752,31 @@ function showRechargeInfo() {
 
 /* تحميل المحاضرات */
 
-async function fetchLectures() {
+async function fetchLectures(force = false) {
 
-  const {
-    data,
-    error
-  } = await supabaseClient
-    .from("lectures")
-    .select(
-      "id, title, description, video_url, created_at"
-    )
-    .order(
-      "created_at",
-      {ascending:false}
-    );
+  const now = Date.now();
+  if (!force && Array.isArray(lectureCache) && lectureCacheAt && now - lectureCacheAt < DATA_CACHE_TIME) {
+    return lectureCache;
+  }
+  if (lecturePromise) return lecturePromise;
 
-  if (error) throw error;
+  lecturePromise = (async () => {
+    try {
+      const { data, error } = await supabaseClient
+        .from("lectures")
+        .select("id, title, description, video_url, created_at")
+        .order("created_at", { ascending:false });
 
-  return data || [];
+      if (error) throw error;
+      lectureCache = data || [];
+      lectureCacheAt = Date.now();
+      return lectureCache;
+    } finally {
+      lecturePromise = null;
+    }
+  })();
+
+  return lecturePromise;
 
 }
 
@@ -2875,8 +2919,6 @@ async function loadDashboard() {
   dashboardLoading = true;
 
   try {
-
-    loadWalletBalance();
 
     byId("lectureList").innerHTML =
       '<div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i>جاري تحديث البيانات...</div>';
@@ -3424,7 +3466,12 @@ byId("lectureList").addEventListener(
 
 window.addEventListener(
   "ard:progress",
-  loadDashboard
+  function() {
+    clearTimeout(progressRefreshTimer);
+    progressRefreshTimer = setTimeout(() => {
+      if (!dashboardLoading && currentUser) loadDashboard();
+    }, 350);
+  }
 );
 
 /* تسجيل الخروج */
@@ -3500,6 +3547,10 @@ supabaseClient.auth.onAuthStateChange(
       lectureCache = null;
 
       progressRows = [];
+      walletCacheAt = 0;
+      lectureCacheAt = 0;
+      walletPromise = null;
+      lecturePromise = null;
 
       showLogin();
 
@@ -3513,13 +3564,8 @@ supabaseClient.auth.onAuthStateChange(
 window.addEventListener(
   "pageshow",
   function(event) {
-
-    if (event.persisted) {
-
-      loadDashboard();
-
-    }
-
+    // عند الرجوع من BFCache تظل البيانات المعروضة محفوظة؛ لا نكرر طلبات Supabase.
+    if (event.persisted) requestAnimationFrame(redrawCurrentChart);
   }
 );
 
@@ -3547,9 +3593,6 @@ initializeSidebar();
 checkUser();
 
 </script>
-
-<!-- تسجيل Service Worker مرة واحدة فقط -->
-
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function () {
@@ -3563,10 +3606,7 @@ if ("serviceWorker" in navigator) {
   });
 }
 </script>
-
-<!-- تحسين سرعة التنقل -->
-
-<script>
+  <script>
 (() => {
   "use strict";
 
@@ -3636,6 +3676,5 @@ if ("serviceWorker" in navigator) {
 
 })();
 </script>
-
 </body>
 </html>
