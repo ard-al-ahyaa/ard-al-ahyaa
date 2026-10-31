@@ -1,9 +1,11 @@
+```javascript
 /* القائمة الجانبية المشتركة - منصة أرض الأحياء
-   إصدار محسّن: Smart Prefetch
-   ضع الملف بجانب index.html الرئيسي، واستدعه من كل صفحة. */
+   تصميم موحد + حفظ حالة التصغير + حركة الزر + Smart Prefetch */
 
 (() => {
   'use strict';
+
+  if (document.getElementById('ard-shared-sidebar')) return;
 
   const currentScript = document.currentScript;
   const scriptURL = currentScript
@@ -11,7 +13,7 @@
     : new URL('sidebar.js', location.href).href;
 
   const rootURL = new URL('.', scriptURL);
-  const pageURL = location.pathname.replace(/\\/g, '/');
+  const pageURL = location.pathname.replace(/\\/g, '/').replace(/\/$/, '');
 
   const links = [
     { id: 'home', label: 'الرئيسية', icon: 'fa-solid fa-house', path: 'index.html' },
@@ -22,10 +24,7 @@
     { id: 'account', label: 'حساب الطالب', icon: 'fa-regular fa-user', path: 'account/index.html' }
   ];
 
-  /* =====================================
-     1- تحسين تحميل الأيقونات
-  ===================================== */
-
+  /* تحميل Font Awesome عند الحاجة */
   if (!document.querySelector('link[href*="font-awesome"],link[href*="fontawesome"]')) {
     const icons = document.createElement('link');
     icons.rel = 'stylesheet';
@@ -33,10 +32,7 @@
     document.head.appendChild(icons);
   }
 
-  /* =====================================
-     2- تنسيقات القائمة الجانبية
-  ===================================== */
-
+  /* التصميم الموحد */
   const style = document.createElement('style');
   style.id = 'ard-shared-sidebar-style';
 
@@ -60,9 +56,10 @@
       overflow-x: hidden;
       transition: width .25s ease;
       direction: rtl;
-      font-family: Cairo, sans-serif;
+      font-family: Cairo,sans-serif;
       box-sizing: border-box;
       scrollbar-width: thin;
+      scrollbar-color: #ffffff40 transparent;
     }
 
     #ard-shared-sidebar * {
@@ -86,6 +83,19 @@
       color: #fff;
       font-size: 18px;
       cursor: pointer;
+      transition: background .2s, transform .35s ease;
+    }
+
+    #ard-shared-sidebar .ard-toggle:hover {
+      background: #ffffff28;
+    }
+
+    #ard-shared-sidebar .ard-toggle i {
+      transition: transform .35s ease;
+    }
+
+    #ard-shared-sidebar .ard-toggle.rotating i {
+      transform: rotate(360deg);
     }
 
     #ard-shared-sidebar .ard-brand {
@@ -135,15 +145,17 @@
       font-weight: 700;
       white-space: nowrap;
       text-decoration: none;
-      transition: background .2s;
+      transition: background .2s, transform .2s;
     }
 
     #ard-shared-sidebar nav a:hover {
       background: #ffffff18;
+      transform: translateX(-2px);
     }
 
     #ard-shared-sidebar nav a.active {
       background: linear-gradient(110deg,#1da77b,#159b78);
+      box-shadow: 0 5px 14px #00000012;
     }
 
     #ard-shared-sidebar nav a i {
@@ -180,40 +192,36 @@
 
     @media (max-width: 850px) {
       #ard-shared-sidebar {
-        width: var(--ard-sidebar-collapsed);
         padding: 12px 8px;
       }
 
-      #ard-shared-sidebar .ard-brand h2,
-      #ard-shared-sidebar .ard-brand p,
-      #ard-shared-sidebar nav a span {
-        display: none;
-      }
-
-      #ard-shared-sidebar .ard-brand img {
-        width: 48px;
-        height: 48px;
-      }
-
-      #ard-shared-sidebar nav a {
-        justify-content: center;
-        padding: 13px 5px;
-      }
-
       body.ard-has-sidebar .main {
+        margin-right: var(--ard-sidebar-width) !important;
+      }
+
+      body.ard-has-sidebar .main.ard-sidebar-collapsed {
         margin-right: var(--ard-sidebar-collapsed) !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #ard-shared-sidebar {
+        padding: 12px 7px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #ard-shared-sidebar,
+      #ard-shared-sidebar * {
+        transition: none !important;
       }
     }
   `;
 
   document.head.appendChild(style);
 
-  /* =====================================
-     3- إنشاء القائمة الجانبية
-  ===================================== */
-
+  /* إنشاء القائمة */
   const sidebar = document.createElement('aside');
-
   sidebar.id = 'ard-shared-sidebar';
   sidebar.setAttribute('aria-label', 'القائمة الرئيسية');
 
@@ -223,20 +231,16 @@
     const href = new URL(item.path, rootURL).href;
     const targetPath = new URL(href).pathname.replace(/\/$/, '');
 
-    const active =
-      pageURL.replace(/\/$/, '') === targetPath ||
-      (
-        item.id === 'home' &&
-        (pageURL.endsWith('/') || pageURL.endsWith('/index.html'))
-      );
+    const active = pageURL === targetPath ||
+      (item.id === 'home' &&
+       (location.pathname.endsWith('/') ||
+        location.pathname.endsWith('/index.html')));
 
     return `
-      <a
-        href="${href}"
-        class="${active ? 'active' : ''}"
-        title="${item.label}"
-        ${active ? 'aria-current="page"' : ''}
-      >
+      <a href="${href}"
+         class="${active ? 'active' : ''}"
+         title="${item.label}"
+         ${active ? 'aria-current="page"' : ''}>
         <i class="${item.icon}" aria-hidden="true"></i>
         <span>${item.label}</span>
       </a>
@@ -244,13 +248,9 @@
   }).join('');
 
   sidebar.innerHTML = `
-    <button
-      class="ard-toggle"
-      type="button"
-      aria-label="تصغير أو تكبير القائمة"
-      title="تصغير أو تكبير القائمة"
-    >
-      <i class="fa-solid fa-bars" aria-hidden="true"></i>
+    <button class="ard-toggle" type="button"
+      aria-label="تصغير القائمة" title="تصغير أو تكبير القائمة">
+      <i class="fa-solid fa-angles-right" aria-hidden="true"></i>
     </button>
 
     <div class="ard-brand">
@@ -262,88 +262,59 @@
     <nav>${navHTML}</nav>
   `;
 
-  /* =====================================
-     4- التحميل المسبق الذكي للأقسام
-  ===================================== */
-
+  /* التحميل المسبق */
   const prefetchedPages = new Set();
 
   function canPrefetch() {
-    const connection =
-      navigator.connection ||
+    const connection = navigator.connection ||
       navigator.mozConnection ||
       navigator.webkitConnection;
 
-    if (connection) {
-      if (connection.saveData) return false;
+    if (!('prefetch' in document.createElement('link'))) return false;
+    if (connection?.saveData) return false;
 
-      const slowTypes = ['slow-2g', '2g'];
-
-      if (slowTypes.includes(connection.effectiveType)) {
-        return false;
-      }
-    }
-
-    return true;
+    return !['slow-2g', '2g'].includes(connection?.effectiveType);
   }
 
   function prefetchPage(url) {
-    if (!canPrefetch()) return;
+    if (!canPrefetch() || prefetchedPages.has(url) || url === location.href) return;
 
-    if (prefetchedPages.has(url)) return;
+    try {
+      const target = new URL(url, location.href);
+      if (target.origin !== location.origin) return;
 
-    if (url === location.href) return;
+      prefetchedPages.add(target.href);
 
-    prefetchedPages.add(url);
-
-    const link = document.createElement('link');
-
-    link.rel = 'prefetch';
-    link.href = url;
-    link.as = 'document';
-
-    document.head.appendChild(link);
+      const hint = document.createElement('link');
+      hint.rel = 'prefetch';
+      hint.href = target.href;
+      hint.as = 'document';
+      document.head.appendChild(hint);
+    } catch (_) {}
   }
 
   function setupSmartPrefetch() {
-    const navLinks = sidebar.querySelectorAll('nav a');
-
-    navLinks.forEach(link => {
+    sidebar.querySelectorAll('nav a').forEach(link => {
       const url = link.href;
 
-      // عند اقتراب مؤشر الماوس من القسم
-      link.addEventListener('pointerenter', () => {
-        prefetchPage(url);
-      }, { passive: true });
-
-      // عند الوصول إلى القسم باستخدام لوحة المفاتيح
-      link.addEventListener('focus', () => {
-        prefetchPage(url);
-      }, { passive: true });
-
-      // عند لمس القسم على الهاتف
-      link.addEventListener('touchstart', () => {
-        prefetchPage(url);
-      }, { passive: true });
+      link.addEventListener('pointerenter', () => prefetchPage(url), { passive: true });
+      link.addEventListener('focus', () => prefetchPage(url), { passive: true });
+      link.addEventListener('touchstart', () => prefetchPage(url), { passive: true });
     });
   }
 
-  /* =====================================
-     5- تركيب القائمة والتحكم فيها
-  ===================================== */
-
-  const mount = () => {
+  /* تركيب القائمة والتحكم */
+  function mount() {
     if (document.getElementById('ard-shared-sidebar')) return;
 
     document.body.insertBefore(sidebar, document.body.firstChild);
-
     document.body.classList.add('ard-has-sidebar');
 
     const main = document.querySelector('.main');
     const toggle = sidebar.querySelector('.ard-toggle');
     const icon = toggle.querySelector('i');
 
-    const applyState = collapsed => {
+    function applyState(collapsed, save = true) {
       sidebar.classList.toggle('is-collapsed', collapsed);
 
       if (main) {
@@ -359,34 +330,35 @@
         collapsed ? 'تكبير القائمة' : 'تصغير القائمة'
       );
 
-      try {
-        localStorage.setItem(
-          'ardAlahyaaSidebarCollapsed',
-          String(collapsed)
-        );
-      } catch (_) {}
-    };
+      toggle.title = collapsed ? 'تكبير القائمة' : 'تصغير القائمة';
+
+      if (save) {
+        try {
+          localStorage.setItem('ardAlahyaaSidebarCollapsed', String(collapsed));
+        } catch (_) {}
+      }
+    }
 
     let saved = false;
 
     try {
-      saved =
-        localStorage.getItem('ardAlahyaaSidebarCollapsed') === 'true';
+      saved = localStorage.getItem('ardAlahyaaSidebarCollapsed') === 'true';
     } catch (_) {}
 
-    if (window.matchMedia('(max-width: 850px)').matches) {
-      saved = true;
-    }
-
-    applyState(saved);
+    applyState(saved, false);
 
     toggle.addEventListener('click', () => {
+      toggle.classList.remove('rotating');
+      void toggle.offsetWidth;
+      toggle.classList.add('rotating');
+
       applyState(!sidebar.classList.contains('is-collapsed'));
+
+      setTimeout(() => toggle.classList.remove('rotating'), 400);
     });
 
-    // تفعيل التحميل المسبق
     setupSmartPrefetch();
-  };
+  }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', mount, { once: true });
@@ -395,3 +367,4 @@
   }
 
 })();
+```
