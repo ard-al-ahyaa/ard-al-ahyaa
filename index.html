@@ -189,28 +189,6 @@ a:focus-visible{
   transition:transform .25s;
 }
 
-.sidebar-toggle i.rotate-multiple{
-  animation:sidebarIconSpin .75s ease-in-out;
-}
-
-@keyframes sidebarIconSpin{
-  0%{transform:rotate(0deg)}
-  35%{transform:rotate(720deg)}
-  70%{transform:rotate(1080deg)}
-  100%{transform:rotate(1440deg)}
-}
-
-body.sidebar-collapsed .sidebar-toggle i.rotate-multiple{
-  animation:sidebarIconSpinCollapsed .75s ease-in-out;
-}
-
-@keyframes sidebarIconSpinCollapsed{
-  0%{transform:rotate(180deg)}
-  35%{transform:rotate(900deg)}
-  70%{transform:rotate(1260deg)}
-  100%{transform:rotate(1620deg)}
-}
-
 .brand{
   display:flex;
   flex-direction:column;
@@ -2231,14 +2209,11 @@ let currentUser = null;
 let lectureCache = null;
 let progressRows = [];
 let dashboardLoading = false;
-
-// تقليل طلبات Supabase المتكررة
+let checkUserPromise = null;
 let walletPromise = null;
-let walletCacheAt = 0;
-let lecturePromise = null;
-let lectureCacheAt = 0;
-const DATA_CACHE_TIME = 30000;
-let progressRefreshTimer = null;
+let walletLastLoadedAt = 0;
+let migrationPromise = null;
+let dashboardLastLoadedAt = 0;
 
 const byId = id => document.getElementById(id);
 
@@ -2364,18 +2339,6 @@ function setSidebarCollapsed(collapsed) {
 }
 
 function toggleSidebar() {
-
-  const icon = byId("sidebarToggle")?.querySelector("i");
-
-  if (icon) {
-    icon.classList.remove("rotate-multiple");
-    // إعادة تشغيل الحركة مع كل ضغطة
-    void icon.offsetWidth;
-    icon.classList.add("rotate-multiple");
-    icon.addEventListener("animationend", () => {
-      icon.classList.remove("rotate-multiple");
-    }, { once:true });
-  }
 
   setSidebarCollapsed(
     !document.body.classList.contains(
@@ -2598,14 +2561,31 @@ document.addEventListener(
 
 /* تسجيل الدخول وبيانات الطالب */
 
-async function checkUser() {
+async function performCheckUser() {
 
   try {
 
-    const {
-      data:{session},
-      error
-    } = await supabaseClient.auth.getSession();
+    /* قراءة الجلسة مع إعادة محاولة محدودة عند ضغط الطلبات */
+    let sessionResult = null;
+    let sessionError = null;
+
+    for (let attempt = 0; attempt < 3; attempt++) {
+      sessionResult = await supabaseClient.auth.getSession();
+      sessionError = sessionResult.error;
+
+      if (!sessionError) break;
+
+      const status = Number(sessionError.status || sessionError.statusCode || 0);
+      const message = String(sessionError.message || "").toLowerCase();
+      const isRateLimit = status === 429 || message.includes("rate limit") || message.includes("too many requests");
+
+      if (!isRateLimit || attempt === 2) break;
+
+      await new Promise(resolve => setTimeout(resolve, 1200 * (attempt + 1)));
+    }
+
+    const session = sessionResult?.data?.session;
+    const error = sessionError;
 
     if (error) throw error;
 
@@ -2665,9 +2645,10 @@ async function checkUser() {
     byId("welcomeTitle").textContent =
       "أهلاً بك يا " + name + " 🌿";
 
+    /* loadDashboard يتولى تحديث بيانات اللوحة فقط، والمحفظة تُحمّل مرة واحدة هنا */
     await Promise.all([
-      loadDashboard(),
-      loadWalletBalance()
+      loadDashboard(true),
+      loadWalletBalance(true)
     ]);
 
   } catch (error) {
@@ -2682,13 +2663,27 @@ async function checkUser() {
       error?.error_description ||
       String(error || "سبب غير معروف");
 
+    const status = Number(error?.status || error?.statusCode || 0);
+    const message = String(errorDetails).toLowerCase();
+    const isRateLimit = status === 429 || message.includes("rate limit") || message.includes("too many requests");
+
     showLogin(
-      "تعذر تحميل الحساب: " + errorDetails +
-      " — أعد تحميل الصفحة، وإذا استمرت المشكلة أرسل هذه الرسالة."
+      isRateLimit
+        ? "خدمة تسجيل الدخول مشغولة بسبب كثرة الطلبات. انتظر دقيقة ثم اضغط إعادة تحميل الصفحة. لن تحتاج إلى إنشاء حساب جديد."
+        : "تعذر تحميل الحساب: " + errorDetails + " — تحقق من الاتصال ثم أعد المحاولة."
     );
 
   }
 
+}
+
+/* يمنع تنفيذ فحص الحساب أكثر من مرة بالتزامن */
+async function checkUser() {
+  if (checkUserPromise) return checkUserPromise;
+  checkUserPromise = performCheckUser().finally(() => {
+    checkUserPromise = null;
+  });
+  return checkUserPromise;
 }
 
 /* رصيد الطالب */
@@ -2696,17 +2691,22 @@ async function checkUser() {
 async function loadWalletBalance(force = false) {
 
   const target = byId("walletBalance");
-  if (!target || !currentUser) return;
 
-  const now = Date.now();
-  if (!force && walletCacheAt && now - walletCacheAt < DATA_CACHE_TIME && target.textContent !== "...") {
+  if (
+    !target ||
+    !currentUser
+  ) {
+
     return;
-  }
-  if (walletPromise) return walletPromise;
 
-  target.textContent = "...";
+  }
+
+  if (walletPromise) return walletPromise;
+  if (!force && Date.now() - walletLastLoadedAt < 20000) return;
 
   walletPromise = (async () => {
+    target.textContent = "...";
+
     try {
       const { data, error } = await supabaseClient
         .from("student_wallets")
@@ -2718,26 +2718,25 @@ async function loadWalletBalance(force = false) {
 
       if (!data) {
         target.textContent = "غير متاح";
-      } else {
-        const balance = Number(data.balance_egp);
-        target.textContent = balance.toLocaleString("ar-EG", {
-          minimumFractionDigits:2,
-          maximumFractionDigits:2
-        }) + " ج.م";
+        return;
       }
-      walletCacheAt = Date.now();
+
+      const balance = Number(data.balance_egp);
+      target.textContent = balance.toLocaleString("ar-EG", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) + " ج.م";
+
     } catch (error) {
       console.error("Wallet loading error:", error);
       target.textContent = "غير متاح";
-      // لا نثبت وقت الكاش عند الفشل حتى يمكن إعادة المحاولة لاحقًا
-      walletCacheAt = 0;
     } finally {
+      walletLastLoadedAt = Date.now();
       walletPromise = null;
     }
   })();
 
   return walletPromise;
-
 }
 
 /* زر الشحن */
@@ -2752,31 +2751,24 @@ function showRechargeInfo() {
 
 /* تحميل المحاضرات */
 
-async function fetchLectures(force = false) {
+async function fetchLectures() {
 
-  const now = Date.now();
-  if (!force && Array.isArray(lectureCache) && lectureCacheAt && now - lectureCacheAt < DATA_CACHE_TIME) {
-    return lectureCache;
-  }
-  if (lecturePromise) return lecturePromise;
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("lectures")
+    .select(
+      "id, title, description, video_url, created_at"
+    )
+    .order(
+      "created_at",
+      {ascending:false}
+    );
 
-  lecturePromise = (async () => {
-    try {
-      const { data, error } = await supabaseClient
-        .from("lectures")
-        .select("id, title, description, video_url, created_at")
-        .order("created_at", { ascending:false });
+  if (error) throw error;
 
-      if (error) throw error;
-      lectureCache = data || [];
-      lectureCacheAt = Date.now();
-      return lectureCache;
-    } finally {
-      lecturePromise = null;
-    }
-  })();
-
-  return lecturePromise;
+  return data || [];
 
 }
 
@@ -2905,16 +2897,15 @@ function getDailySeries() {
 
 /* تحديث لوحة الطالب */
 
-async function loadDashboard() {
+async function loadDashboard(force = false) {
 
   if (
     dashboardLoading ||
     !currentUser
-  ) {
+  ) return;
 
-    return;
-
-  }
+  /* يمنع التحديثات المتتابعة الناتجة عن أحداث متعددة */
+  if (!force && Date.now() - dashboardLastLoadedAt < 3000) return;
 
   dashboardLoading = true;
 
@@ -2923,21 +2914,17 @@ async function loadDashboard() {
     byId("lectureList").innerHTML =
       '<div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i>جاري تحديث البيانات...</div>';
 
+    /* تنفيذ ترحيل البيانات المحلية مرة واحدة فقط لكل تحميل للصفحة */
     if (
-      typeof ArdProgress.migrateLocal ===
-      "function"
+      !migrationPromise &&
+      typeof ArdProgress.migrateLocal === "function"
     ) {
-
-      await ArdProgress
-        .migrateLocal()
-        .catch(
-          e => console.warn(
-            "Migration skipped:",
-            e
-          )
-        );
-
+      migrationPromise = ArdProgress.migrateLocal().catch(e => {
+        console.warn("Migration skipped:", e);
+      });
     }
+
+    if (migrationPromise) await migrationPromise;
 
     [
       lectureCache,
@@ -2988,6 +2975,7 @@ async function loadDashboard() {
     renderChart();
 
     renderLectures(lectureCache);
+    dashboardLastLoadedAt = Date.now();
 
     byId("chartNote").textContent =
       stats.total > 0
@@ -3464,15 +3452,11 @@ byId("lectureList").addEventListener(
 
 /* تحديث التقدم */
 
-window.addEventListener(
-  "ard:progress",
-  function() {
-    clearTimeout(progressRefreshTimer);
-    progressRefreshTimer = setTimeout(() => {
-      if (!dashboardLoading && currentUser) loadDashboard();
-    }, 350);
-  }
-);
+let progressRefreshTimer = null;
+window.addEventListener("ard:progress", function() {
+  clearTimeout(progressRefreshTimer);
+  progressRefreshTimer = setTimeout(() => loadDashboard(false), 900);
+});
 
 /* تسجيل الخروج */
 
@@ -3537,20 +3521,13 @@ window.addEventListener(
 supabaseClient.auth.onAuthStateChange(
   function(event,session) {
 
-    if (
-      event === "SIGNED_OUT" ||
-      !session
-    ) {
+    if (event === "SIGNED_OUT") {
 
       currentUser = null;
 
       lectureCache = null;
 
       progressRows = [];
-      walletCacheAt = 0;
-      lectureCacheAt = 0;
-      walletPromise = null;
-      lecturePromise = null;
 
       showLogin();
 
@@ -3564,8 +3541,13 @@ supabaseClient.auth.onAuthStateChange(
 window.addEventListener(
   "pageshow",
   function(event) {
-    // عند الرجوع من BFCache تظل البيانات المعروضة محفوظة؛ لا نكرر طلبات Supabase.
-    if (event.persisted) requestAnimationFrame(redrawCurrentChart);
+
+    if (event.persisted) {
+
+      loadDashboard();
+
+    }
+
   }
 );
 
@@ -3594,6 +3576,7 @@ checkUser();
 
 </script>
 <script>
+/* تسجيل Service Worker مرة واحدة فقط */
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function () {
     navigator.serviceWorker.register("./service-worker.js")
@@ -3603,10 +3586,10 @@ if ("serviceWorker" in navigator) {
       .catch(function (error) {
         console.error("فشل تسجيل Service Worker:", error);
       });
-  });
+  }, { once: true });
 }
 </script>
-  <script>
+<script>
 (() => {
   "use strict";
 
