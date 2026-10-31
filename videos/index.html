@@ -39,60 +39,62 @@ button{cursor:pointer}
 a{text-decoration:none}
 button:disabled{opacity:.55;cursor:not-allowed}
 
-/* الشريط الجانبي */
+/* الشريط الجانبي - مطابق لشريط لوحة الطالب */
 .sidebar{
- position:fixed;
- top:0;
- right:0;
- bottom:0;
  width:272px;
- padding:20px 15px;
- background:linear-gradient(180deg,#004e4d,#003d50 62%,#07375b);
- color:white;
+ background:linear-gradient(180deg,#004e4d 0%,#003d50 62%,#07375b 100%);
+ color:#fff;
+ position:fixed;
+ right:0;
+ top:0;
+ bottom:0;
+ display:flex;
+ flex-direction:column;
  z-index:1000;
- overflow-y:auto;
- transition:width .25s;
+ overflow:hidden;
+ transition:width .25s ease,transform .25s ease;
 }
 .sidebar.collapsed{width:82px}
+.sidebar-inner{padding:17px 15px;flex:1;min-width:0;overflow-y:auto;overflow-x:hidden}
+.sidebar-top-actions{display:flex;justify-content:flex-start;margin-bottom:8px}
 .sidebar-toggle{
- width:40px;
- height:40px;
- border:1px solid #ffffff30;
- border-radius:50%;
- background:#ffffff15;
- color:white;
- font-size:18px;
+ width:39px;height:39px;display:grid;place-items:center;
+ border:1px solid rgba(255,255,255,.15);border-radius:50%;
+ background:rgba(255,255,255,.08);color:#fff;padding:0;font-size:17px;
 }
+.sidebar-toggle:hover{background:rgba(255,255,255,.18)}
+.sidebar-toggle i{transition:transform .25s}
 .brand{
- text-align:center;
- padding:15px 0 24px;
- border-bottom:1px solid #ffffff20;
- margin-bottom:23px;
+ display:flex;flex-direction:column;align-items:center;gap:8px;
+ margin-bottom:27px;padding:0 5px 20px;
+ border-bottom:1px solid rgba(255,255,255,.12);min-width:0;
 }
-.brand img{width:75px;height:75px;object-fit:contain}
-.brand h2{font-size:23px;font-weight:900;margin:8px 0 0}
-.brand p{font-size:12px;opacity:.8;margin:0}
-.menu{display:flex;flex-direction:column;gap:7px}
+.brand-logo-wrap{width:83px;height:83px;flex-shrink:0;display:grid;place-items:center}
+.brand img{width:100%;height:100%;object-fit:contain}
+.brand-text{text-align:center;min-width:0}
+.brand h2{font-size:22px;font-weight:900;white-space:nowrap;margin:0}
+.brand p{display:block;margin:1px 0 0;font-size:13px;color:#d2e8e5;opacity:1}
+.menu-label{color:rgba(255,255,255,.53);font-size:10px;font-weight:700;padding:0 12px;margin:0 0 9px;white-space:nowrap}
+.menu{display:flex;flex-direction:column;gap:8px}
 .menu a{
- display:flex;
- align-items:center;
- gap:15px;
- min-height:48px;
- padding:12px 15px;
- border-radius:12px;
- color:white;
- font-size:14px;
- font-weight:700;
- white-space:nowrap;
+ color:#f0f8f7;padding:12px 14px;border-radius:14px;font-size:14px;
+ font-weight:700;display:flex;align-items:center;gap:14px;width:100%;
+ min-height:51px;white-space:nowrap;transition:background .2s,transform .2s;
 }
-.menu a:hover{background:#ffffff18}
-.menu a.active{background:linear-gradient(110deg,#1da77b,#159b78)}
-.menu i{width:27px;text-align:center;font-size:19px}
-.sidebar.collapsed .brand h2,
-.sidebar.collapsed .brand p,
-.sidebar.collapsed .menu span{display:none}
-.sidebar.collapsed .brand img{width:48px;height:48px}
-.sidebar.collapsed .menu a{justify-content:center;padding:13px 5px}
+.menu a:hover,.menu a.active{background:linear-gradient(100deg,#13a77c,#159a77);color:#fff}
+.menu a:hover{transform:translateX(-2px)}
+.menu i{width:25px;min-width:25px;display:inline-flex;align-items:center;justify-content:center;font-size:22px}
+.menu span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.sidebar.collapsed .sidebar-inner{padding:15px 9px}
+.sidebar.collapsed .sidebar-top-actions{justify-content:center}
+.sidebar.collapsed .sidebar-toggle i{transform:rotate(180deg)}
+.sidebar.collapsed .brand{padding-bottom:15px}
+.sidebar.collapsed .brand-logo-wrap{width:54px;height:54px}
+.sidebar.collapsed .brand-text,.sidebar.collapsed .menu-label,.sidebar.collapsed .menu span{display:none}
+.sidebar.collapsed .menu a{justify-content:center;gap:0;padding:13px 5px}
+.sidebar.collapsed .menu a:hover{transform:none}
+.sidebar-overlay{display:none}
+.mobile-sidebar-button{display:none}
 
 /* المحتوى */
 .main{
@@ -707,7 +709,19 @@ button:disabled{opacity:.55;cursor:not-allowed}
  .main{padding:22px}
 }
 @media(max-width:768px){
- .sidebar{display:none}
+ .sidebar{display:flex;width:272px;max-width:86vw;right:0;transform:translateX(100%);box-shadow:none}
+ .sidebar.collapsed{width:272px}
+ body.mobile-sidebar-open .sidebar{transform:translateX(0);box-shadow:-12px 0 35px #061b2b35}
+ .sidebar-overlay{display:block;position:fixed;inset:0;background:#07182780;z-index:990;opacity:0;visibility:hidden;transition:.25s}
+ body.mobile-sidebar-open .sidebar-overlay{opacity:1;visibility:visible}
+ .sidebar.collapsed .brand-text,.sidebar.collapsed .menu-label,.sidebar.collapsed .menu span{display:initial}
+ .sidebar.collapsed .brand-logo-wrap{width:83px;height:83px}
+ .sidebar.collapsed .menu a{justify-content:flex-start;gap:14px;padding:12px 14px}
+ .sidebar.collapsed .sidebar-top-actions{justify-content:flex-start}
+ .sidebar.collapsed .sidebar-toggle i{transform:none}
+ .mobile-sidebar-button{display:grid;place-items:center;width:40px;height:40px;flex-shrink:0;border:0;border-radius:11px;background:#eaf5f1;color:#006e65;font-size:18px}
+ .topbar{justify-content:flex-start}
+ .topbar>i{margin-right:auto}
  .main,.main.expanded{
   margin-right:0;
   padding:14px 13px 95px;
@@ -790,47 +804,47 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .lecture-locked p{color:#627a77;font-size:12px;line-height:1.9;margin:0 auto 14px;max-width:430px}
 .lecture-locked .primary-btn{display:inline-flex}
 @media(max-width:768px){.month-upgrade{padding:9px}.month-upgrade .upgrade-text b{font-size:10px}}
+@media(max-width:768px){
+ .sidebar{padding:0}
+ .sidebar-inner{padding:17px 15px}
+ .sidebar.collapsed .sidebar-inner{padding:17px 15px}
+}
+
 </style>
 </head>
 
 <body>
 
-<aside class="sidebar" id="sidebar">
- <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="تصغير القائمة">
-  <i class="fa-solid fa-bars"></i>
- </button>
-
- <div class="brand">
-  <img src="../logo.png" alt="أرض الأحياء">
-  <h2>أرض الأحياء</h2>
-  <p>الثانوية العامة</p>
+<aside class="sidebar" id="sidebar" aria-label="القائمة الرئيسية">
+ <div class="sidebar-inner">
+  <div class="sidebar-top-actions">
+   <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="تصغير القائمة الجانبية" aria-expanded="true" title="تصغير القائمة">
+    <i class="fa-solid fa-angles-right"></i>
+   </button>
+  </div>
+  <div class="brand">
+   <div class="brand-logo-wrap"><img src="../logo.png" alt="شعار أرض الأحياء"></div>
+   <div class="brand-text"><h2>أرض الأحياء</h2><p>الثانوية العامة</p></div>
+  </div>
+  <p class="menu-label">القائمة الرئيسية</p>
+  <nav class="menu">
+   <a href="../index.html" title="الرئيسية" data-title="الرئيسية"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
+   <a href="index.html" class="active" title="المحاضرات" data-title="المحاضرات" aria-current="page"><i class="fa-regular fa-circle-play"></i><span>المحاضرات</span></a>
+   <a href="../notes/index.html" title="المذكرات" data-title="المذكرات"><i class="fa-regular fa-book-open"></i><span>المذكرات</span></a>
+   <a href="../champion/index.html" title="بطل الفصل" data-title="بطل الفصل"><i class="fa-solid fa-trophy"></i><span>بطل الفصل</span></a>
+   <a href="../forum/index.html" title="المنتدى" data-title="المنتدى"><i class="fa-regular fa-comments"></i><span>المنتدى</span></a>
+   <a href="../account/index.html" title="حساب الطالب" data-title="حساب الطالب"><i class="fa-regular fa-user"></i><span>حساب الطالب</span></a>
+  </nav>
  </div>
-<div class="menu-label">القائمة الرئيسية</div>
- <nav class="menu">
-  <a href="../index.html" title="الرئيسية">
-   <i class="fa-solid fa-house"></i><span>الرئيسية</span>
-  </a>
-  <a href="index.html" class="active" title="المحاضرات">
-   <i class="fa-regular fa-circle-play"></i><span>المحاضرات</span>
-  </a>
-  <a href="../notes/index.html" title="المذكرات">
-   <i class="fa-solid fa-book-open"></i><span>المذكرات</span>
-  </a>
-  <a href="../champion/index.html" title="بطل الفصل">
-   <i class="fa-solid fa-trophy"></i><span>بطل الفصل</span>
-  </a>
-  <a href="../forum/index.html" title="المنتدى">
-   <i class="fa-regular fa-comments"></i><span>المنتدى</span>
-  </a>
-  <a href="../account/index.html" title="حساب الطالب">
-   <i class="fa-regular fa-user"></i><span>حساب الطالب</span>
-  </a>
- </nav>
 </aside>
+<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
 
 <main class="main" id="main">
 
  <header class="topbar">
+  <button type="button" class="mobile-sidebar-button" id="mobileSidebarButton" aria-label="فتح القائمة الجانبية" aria-expanded="false">
+   <i class="fa-solid fa-bars"></i>
+  </button>
   <div>
    <h1>محاضرات منهج الأحياء</h1>
    <p>اختار الشهر، وافتح المحاضرة، وكمّل رحلتك نحو التفوق.</p>
@@ -1023,22 +1037,37 @@ function lockedLectureHTML(){
  </div>`;
 }
 
-/* الشريط الجانبي */
+/* الشريط الجانبي - نفس إعدادات لوحة الطالب */
 function setSidebar(collapsed){
- $("sidebar").classList.toggle("collapsed",collapsed);
+ const sidebar=$("sidebar");
+ sidebar.classList.toggle("collapsed",collapsed);
  $("main").classList.toggle("expanded",collapsed);
- try{
-  localStorage.setItem("ardAlahyaaSidebarCollapsed",String(collapsed));
- }catch{}
+ const toggle=$("sidebarToggle");
+ toggle.setAttribute("aria-expanded",collapsed?"false":"true");
+ toggle.setAttribute("aria-label",collapsed?"توسيع القائمة الجانبية":"تصغير القائمة الجانبية");
+ toggle.title=collapsed?"توسيع القائمة":"تصغير القائمة";
+ sidebar.querySelectorAll(".menu a[data-title]").forEach(link=>{
+  if(collapsed)link.title=link.dataset.title;
+  else link.removeAttribute("title");
+ });
+ try{localStorage.setItem("ardAlahyaaSidebarCollapsed",collapsed?"true":"false")}catch(error){console.warn("تعذر حفظ حالة القائمة:",error)}
 }
-
+function openMobileSidebar(){
+ document.body.classList.add("mobile-sidebar-open");
+ $("mobileSidebarButton").setAttribute("aria-expanded","true");
+}
+function closeMobileSidebar(){
+ document.body.classList.remove("mobile-sidebar-open");
+ $("mobileSidebarButton").setAttribute("aria-expanded","false");
+}
 $("sidebarToggle").addEventListener("click",()=>{
  setSidebar(!$("sidebar").classList.contains("collapsed"));
 });
-
-try{
- setSidebar(localStorage.getItem("ardAlahyaaSidebarCollapsed")==="true");
-}catch{}
+$("mobileSidebarButton").addEventListener("click",openMobileSidebar);
+$("sidebarOverlay").addEventListener("click",closeMobileSidebar);
+$("sidebar").querySelectorAll(".menu a").forEach(link=>link.addEventListener("click",closeMobileSidebar));
+document.addEventListener("keydown",event=>{if(event.key==="Escape")closeMobileSidebar()});
+try{setSidebar(localStorage.getItem("ardAlahyaaSidebarCollapsed")==="true")}catch{setSidebar(false)}
 
 /* روابط Supabase */
 function storagePath(raw,bucket){
