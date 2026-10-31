@@ -258,6 +258,24 @@ body.sidebar-collapsed .sidebar-toggle-wrap{
   justify-content:center;
 }
 
+/* زر قائمة الهاتف والخلفية */
+.mobile-menu-button{
+  display:none;
+  width:40px;
+  height:40px;
+  flex:0 0 40px;
+  border:1px solid var(--border);
+  border-radius:11px;
+  background:#f4f8fb;
+  color:var(--green-dark);
+  place-items:center;
+  font-size:18px;
+}
+
+.sidebar-overlay{
+  display:none;
+}
+
 /* =====================================
    المحتوى الرئيسي
 ===================================== */
@@ -903,8 +921,91 @@ body.sidebar-collapsed .sidebar-toggle-wrap{
 
 @media(max-width:760px){
 
+  .mobile-menu-button{
+    display:grid;
+  }
+
   .sidebar{
-    display:none;
+    display:flex;
+    width:272px;
+    max-width:85vw;
+    height:100dvh;
+    z-index:1200;
+    transform:translateX(100%);
+    transition:transform .25s ease;
+    box-shadow:-12px 0 35px rgba(0,0,0,.16);
+  }
+
+  body.mobile-sidebar-open .sidebar{
+    transform:translateX(0);
+  }
+
+  /* لا نطبق وضع التصغير على الهاتف */
+  body.sidebar-collapsed{
+    --sidebar-width:272px;
+  }
+
+  body.sidebar-collapsed .sidebar-top{
+    padding:18px 15px;
+  }
+
+  body.sidebar-collapsed .brand{
+    padding-bottom:23px;
+  }
+
+  body.sidebar-collapsed .brand-logo{
+    width:75px;
+    height:75px;
+  }
+
+  body.sidebar-collapsed .brand-text,
+  body.sidebar-collapsed .nav-title,
+  body.sidebar-collapsed .nav-text,
+  body.sidebar-collapsed .sidebar-bottom{
+    display:initial;
+  }
+
+  body.sidebar-collapsed .brand-text{
+    display:block;
+  }
+
+  body.sidebar-collapsed .nav-title{
+    display:block;
+  }
+
+  body.sidebar-collapsed .nav-text{
+    display:inline;
+  }
+
+  body.sidebar-collapsed .nav-link{
+    justify-content:flex-start;
+    padding:12px 15px;
+  }
+
+  body.sidebar-collapsed .sidebar-toggle-wrap{
+    justify-content:flex-start;
+  }
+
+  .sidebar-overlay{
+    display:block;
+    position:fixed;
+    inset:0;
+    z-index:1150;
+    background:rgba(8,25,35,.45);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity .25s ease,visibility .25s ease;
+  }
+
+  body.mobile-sidebar-open .sidebar-overlay{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+  }
+
+  body.mobile-sidebar-open{
+    overflow:hidden;
   }
 
   .main,
@@ -1175,6 +1276,8 @@ body.sidebar-collapsed .sidebar-toggle-wrap{
 
 </aside>
 
+<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
 <!-- =====================================
      المحتوى الرئيسي
 ===================================== -->
@@ -1182,6 +1285,18 @@ body.sidebar-collapsed .sidebar-toggle-wrap{
 <main class="main">
 
   <header class="topbar">
+
+    <button
+      type="button"
+      class="mobile-menu-button"
+      id="mobileMenuButton"
+      aria-label="فتح القائمة"
+      aria-controls="sidebar"
+      aria-expanded="false"
+      title="فتح القائمة"
+    >
+      <i class="fa-solid fa-bars" aria-hidden="true"></i>
+    </button>
 
     <div class="page-heading">
       <h1>المنتدى الطلابي</h1>
@@ -1451,6 +1566,8 @@ const charCount = $("charCount");
 const postsCount = $("postsCount");
 
 const sidebarToggle = $("sidebarToggle");
+const mobileMenuButton = $("mobileMenuButton");
+const sidebarOverlay = $("sidebarOverlay");
 
 let currentUser = null;
 
@@ -1538,6 +1655,61 @@ try {
 } catch {
   applySidebarState(false, false);
 }
+
+/* =====================================
+   قائمة الشريط الجانبي على الهاتف
+===================================== */
+
+function openMobileSidebar(){
+  if (!window.matchMedia("(max-width:760px)").matches) return;
+  document.body.classList.add("mobile-sidebar-open");
+  mobileMenuButton.setAttribute("aria-expanded","true");
+  mobileMenuButton.setAttribute("aria-label","إغلاق القائمة");
+  mobileMenuButton.title = "إغلاق القائمة";
+}
+
+function closeMobileSidebar(){
+  document.body.classList.remove("mobile-sidebar-open");
+  mobileMenuButton.setAttribute("aria-expanded","false");
+  mobileMenuButton.setAttribute("aria-label","فتح القائمة");
+  mobileMenuButton.title = "فتح القائمة";
+}
+
+mobileMenuButton.addEventListener("click", () => {
+  if (document.body.classList.contains("mobile-sidebar-open")) {
+    closeMobileSidebar();
+  } else {
+    openMobileSidebar();
+  }
+});
+
+sidebarOverlay.addEventListener("click", closeMobileSidebar);
+
+document.querySelectorAll(".sidebar .nav-link").forEach(link => {
+  link.addEventListener("click", closeMobileSidebar);
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") closeMobileSidebar();
+});
+
+function syncSidebarForViewport(){
+  if (window.matchMedia("(max-width:760px)").matches) {
+    /* احتفظ بالقيمة في localStorage، لكن لا تطبق التصغير على الهاتف */
+    document.body.classList.remove("sidebar-collapsed");
+    closeMobileSidebar();
+  } else {
+    closeMobileSidebar();
+    let collapsed = false;
+    try {
+      collapsed = localStorage.getItem(SIDEBAR_KEY) === "true";
+    } catch (error) {}
+    applySidebarState(collapsed, false);
+  }
+}
+
+window.addEventListener("resize", syncSidebarForViewport);
+syncSidebarForViewport();
 
 /* =====================================
    رسائل الصفحة
