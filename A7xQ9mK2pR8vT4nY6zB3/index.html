@@ -5,293 +5,65 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>لوحة تحكم أرض الأحياء</title>
 <meta name="theme-color" content="#004e4d">
-
 <link rel="icon" href="../favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 
 <style>
-:root{
-  --green:#008866;
-  --dark:#004e4d;
-  --blue:#07375b;
-  --bg:#f3f7fb;
-  --text:#18334e;
-  --muted:#64748b;
-  --border:#e2e8f0;
-  --red:#dc2626;
-}
+:root{--green:#008866;--dark:#004e4d;--bg:#f3f7fb;--text:#18334e;--muted:#64748b;--border:#e2e8f0;--red:#dc2626}
 *{box-sizing:border-box}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Cairo,sans-serif;
-}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Cairo,sans-serif}
 button,input,textarea,select{font:inherit}
 button{cursor:pointer}
 .hidden{display:none!important}
 .layout{display:flex;min-height:100vh}
-.sidebar{
-  width:272px;
-  min-width:272px;
-  background:linear-gradient(155deg,#004e4d,#003d50,#07375b);
-  color:white;
-  padding:22px 14px;
-  position:sticky;
-  top:0;
-  height:100vh;
-  overflow:auto;
-}
-.brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:10px 12px 25px;
-  font-size:20px;
-  font-weight:900;
-}
-.brand img{
-  width:45px;
-  height:45px;
-  object-fit:contain;
-}
-.nav-btn{
-  width:100%;
-  background:transparent;
-  border:0;
-  color:#e5f4f3;
-  display:flex;
-  align-items:center;
-  gap:14px;
-  padding:14px;
-  border-radius:12px;
-  margin-bottom:6px;
-  text-align:right;
-  font-weight:700;
-}
+.sidebar{width:272px;min-width:272px;background:linear-gradient(155deg,#004e4d,#003d50,#07375b);color:#fff;padding:22px 14px;position:sticky;top:0;height:100vh;overflow:auto}
+.brand{display:flex;align-items:center;gap:12px;padding:10px 12px 22px;font-size:20px;font-weight:900}
+.brand img{width:45px;height:45px;object-fit:contain}
+.nav-group{margin:16px 0 6px;padding:0 14px;font-size:11px;font-weight:800;color:#9fd8cf;letter-spacing:.2px}
+.nav-btn{width:100%;background:transparent;border:0;color:#e5f4f3;display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:12px;margin-bottom:4px;text-align:right;font-weight:700;text-decoration:none;font-size:14px}
 .nav-btn i{width:23px;text-align:center}
-.nav-btn:hover,.nav-btn.active{
-  background:rgba(255,255,255,.15);
-  color:#fff;
-}
-.main{
-  flex:1;
-  min-width:0;
-  padding:26px;
-}
-.topbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:12px;
-  margin-bottom:24px;
-}
+.nav-btn:hover,.nav-btn.active{background:rgba(255,255,255,.15);color:#fff}
+.main{flex:1;min-width:0;padding:26px}
+.topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:24px}
 h1{font-size:25px;margin:0}
 h2{font-size:21px;margin:0 0 16px}
 h3{font-size:17px;margin:0 0 12px}
 p{line-height:1.9}
-.card{
-  background:white;
-  border:1px solid var(--border);
-  border-radius:17px;
-  padding:22px;
-  margin-bottom:20px;
-  box-shadow:0 5px 22px rgba(10,45,65,.035);
-}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:15px;
-}
-.stats{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-  gap:15px;
-}
-.stat{
-  padding:20px;
-  border-radius:15px;
-  background:#edf8f4;
-  border:1px solid #d4ede4;
-}
-.stat strong{
-  display:block;
-  font-size:29px;
-  color:var(--dark);
-}
+.card{background:#fff;border:1px solid var(--border);border-radius:17px;padding:22px;margin-bottom:20px;box-shadow:0 5px 22px rgba(10,45,65,.035)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:15px}
+.stat{padding:20px;border-radius:15px;background:#edf8f4;border:1px solid #d4ede4}
+.stat strong{display:block;font-size:29px;color:var(--dark)}
 .stat span{color:var(--muted);font-size:13px}
-label{
-  display:block;
-  font-size:13px;
-  font-weight:800;
-  margin-bottom:12px;
-}
-input,textarea,select{
-  display:block;
-  width:100%;
-  padding:12px 13px;
-  margin-top:7px;
-  border:1px solid #d8e2ea;
-  border-radius:10px;
-  background:white;
-  color:var(--text);
-  outline:none;
-  min-width:0;
-}
-input:focus,textarea:focus,select:focus{
-  border-color:var(--green);
-}
+label{display:block;font-size:13px;font-weight:800;margin-bottom:12px}
+input,textarea,select{display:block;width:100%;padding:12px 13px;margin-top:7px;border:1px solid #d8e2ea;border-radius:10px;background:#fff;color:var(--text);outline:none;min-width:0}
+input:focus,textarea:focus,select:focus{border-color:var(--green)}
 textarea{min-height:85px;resize:vertical}
-.btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  padding:11px 16px;
-  border:0;
-  border-radius:10px;
-  background:var(--green);
-  color:white;
-  font-weight:800;
-}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;border:0;border-radius:10px;background:var(--green);color:#fff;font-weight:800;text-decoration:none}
 .btn:hover{filter:brightness(.95)}
 .btn:disabled{opacity:.55;cursor:not-allowed}
 .btn.gray{background:#e9eef3;color:#234}
 .btn.red{background:#fee2e2;color:#b91c1c}
 .btn.blue{background:#2563eb}
 .actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
-.list-item{
-  border:1px solid var(--border);
-  border-radius:13px;
-  padding:16px;
-  margin:12px 0;
-  background:#fff;
-}
+.list-item{border:1px solid var(--border);border-radius:13px;padding:16px;margin:12px 0;background:#fff}
 .list-item strong{display:block;margin-bottom:6px}
 .muted{color:var(--muted);font-size:13px}
-.notice{
-  padding:14px;
-  background:#eff6ff;
-  border:1px solid #bfdbfe;
-  border-radius:11px;
-  color:#1e40af;
-  margin-bottom:15px;
-}
-.error{
-  background:#fff1f2;
-  border-color:#fecdd3;
-  color:#be123c;
-}
-.success{
-  background:#ecfdf5;
-  border-color:#a7f3d0;
-  color:#047857;
-}
-.table-wrap{overflow-x:auto}
-table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:650px;
-}
-th,td{
-  padding:13px;
-  text-align:right;
-  border-bottom:1px solid var(--border);
-  font-size:13px;
-}
-th{background:#f1f5f9}
+.notice{padding:14px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:11px;color:#1e40af;margin-bottom:15px}
+.notice.error{background:#fff1f2;border-color:#fecdd3;color:#be123c}
+.badge{display:inline-block;background:#e2f4ec;color:#087f5b;border-radius:50px;padding:4px 11px;font-size:12px;font-weight:800}
 .section{display:none}
 .section.active{display:block}
-.question-card{
-  border:1px solid #d8e5ed;
-  border-radius:14px;
-  padding:18px;
-  margin:15px 0;
-  background:#fbfdff;
-}
+.question-card{border:1px solid #d8e5ed;border-radius:14px;padding:18px;margin:15px 0;background:#fbfdff}
 .question-card h3{color:var(--dark)}
-.question-image{
-  max-width:260px;
-  max-height:200px;
-  object-fit:contain;
-  display:block;
-  margin:12px 0;
-  border-radius:10px;
-}
-.badge{
-  display:inline-block;
-  background:#e2f4ec;
-  color:#087f5b;
-  border-radius:50px;
-  padding:4px 11px;
-  font-size:12px;
-  font-weight:800;
-}
-#loginScreen{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-}
-.login-box{
-  background:white;
-  width:100%;
-  max-width:430px;
-  padding:30px;
-  border-radius:20px;
-  box-shadow:0 12px 40px #0001;
-}
+.question-image{max-width:260px;max-height:200px;object-fit:contain;display:block;margin:12px 0;border-radius:10px}
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{background:#fff;width:100%;max-width:430px;padding:30px;border-radius:20px;box-shadow:0 12px 40px #0001}
 .login-box h1{text-align:center;margin-bottom:15px}
-#message{
-  position:fixed;
-  bottom:20px;
-  left:20px;
-  right:20px;
-  max-width:550px;
-  margin:auto;
-  z-index:100;
-  padding:15px;
-  border-radius:12px;
-  background:#18334e;
-  color:white;
-  box-shadow:0 5px 25px #0002;
-  display:none;
-  overflow-wrap:anywhere;
-}
-@media(max-width:850px){
-  .layout{display:block}
-  .sidebar{
-    width:100%;
-    min-width:0;
-    height:auto;
-    position:relative;
-    padding:12px;
-  }
-  .brand{padding:5px 8px 12px}
-  .nav{
-    display:flex;
-    overflow-x:auto;
-    gap:6px;
-    padding-bottom:6px;
-  }
-  .nav-btn{
-    width:auto;
-    white-space:nowrap;
-    flex-shrink:0;
-    margin:0;
-    padding:11px;
-    font-size:12px;
-  }
-  .main{padding:15px}
-  .card{padding:15px}
-  h1{font-size:20px}
-}
-
-/* ردود المنتدى */
+#message{position:fixed;bottom:20px;left:20px;right:20px;max-width:550px;margin:auto;z-index:100;padding:15px;border-radius:12px;background:#18334e;color:#fff;box-shadow:0 5px 25px #0002;display:none;overflow-wrap:anywhere}
+table{width:100%;border-collapse:collapse}
 .forum-post{border:1px solid var(--border);border-radius:15px;padding:18px;margin:15px 0;background:#fff}
 .forum-replies{border-right:3px solid #008866;margin:14px 0;padding:5px 14px;background:#f7fbfa;border-radius:8px}
 .forum-reply{padding:11px 0;border-bottom:1px solid #e3ebe8;overflow-wrap:anywhere}
@@ -300,9 +72,17 @@ th{background:#f1f5f9}
 .forum-reply audio{max-width:100%;display:block;margin:10px 0}
 .forum-compose{background:#f3f8f7;padding:15px;border-radius:12px;margin-top:15px}
 .forum-compose textarea{min-height:90px}
-.forum-compose .grid{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
 .record-status{font-size:12px;color:#64748b;margin:8px 0}
-
+@media(max-width:850px){
+  .layout{display:block}
+  .sidebar{width:100%;min-width:0;height:auto;position:relative;padding:12px}
+  .nav{display:flex;overflow-x:auto;gap:6px;padding-bottom:6px}
+  .nav-group{display:none}
+  .nav-btn{width:auto;white-space:nowrap;flex-shrink:0;margin:0;padding:11px;font-size:12px}
+  .main{padding:15px}
+  .card{padding:15px}
+  h1{font-size:20px}
+}
 </style>
 </head>
 
@@ -311,565 +91,235 @@ th{background:#f1f5f9}
 <div id="loginScreen">
   <div class="login-box">
     <h1>🌿 إدارة أرض الأحياء</h1>
-    <p class="muted" style="text-align:center">
-      تسجيل دخول مسؤول المنصة
-    </p>
-
-    <label>
-      البريد الإلكتروني
-      <input type="email" id="loginEmail">
-    </label>
-
-    <label>
-      كلمة المرور
-      <input type="password" id="loginPassword">
-    </label>
-
-    <button class="btn" style="width:100%" onclick="login()">
-      تسجيل الدخول
-    </button>
-
-    <p id="loginError" style="color:#dc2626"></p>
+    <p class="muted" style="text-align:center">تسجيل دخول مسؤول المنصة</p>
+    <form id="loginForm">
+      <label>البريد الإلكتروني<input type="email" id="loginEmail" autocomplete="username"></label>
+      <label>كلمة المرور<input type="password" id="loginPassword" autocomplete="current-password"></label>
+      <button class="btn" type="submit" style="width:100%">تسجيل الدخول</button>
+      <p id="loginError" style="color:#dc2626"></p>
+    </form>
   </div>
 </div>
 
 <div id="adminApp" class="layout hidden">
 
   <aside class="sidebar">
-
     <div class="brand">
       <img src="../logo.png" alt="الشعار">
       <span>أرض الأحياء</span>
     </div>
 
     <nav class="nav">
+      <button class="nav-btn active" data-section="dashboard" data-title="الرئيسية"><i class="fa-solid fa-chart-line"></i> الرئيسية</button>
 
-      <button class="nav-btn active" onclick="showSection('dashboard',this)">
-        <i class="fa-solid fa-chart-line"></i>
-        الرئيسية
-      </button>
+      <div class="nav-group">المحتوى</div>
+      <button class="nav-btn" data-section="lectures" data-title="المحاضرات"><i class="fa-regular fa-circle-play"></i> المحاضرات</button>
+      <button class="nav-btn" data-section="months" data-title="الشهور"><i class="fa-regular fa-calendar"></i> الشهور</button>
+      <button class="nav-btn" data-section="content" data-title="محتوى المحاضرة"><i class="fa-solid fa-layer-group"></i> محتوى المحاضرة</button>
 
-      <button class="nav-btn" onclick="showSection('lectures',this)">
-        <i class="fa-regular fa-circle-play"></i>
-        المحاضرات
-      </button>
+      <div class="nav-group">التعليم</div>
+      <button class="nav-btn" data-section="notes" data-title="المذكرات"><i class="fa-solid fa-book-open"></i> المذكرات</button>
+      <button class="nav-btn" data-section="exams" data-title="الاختبارات العامة"><i class="fa-solid fa-file-circle-question"></i> الاختبارات العامة</button>
+      <a class="nav-btn" href="../admin/subscriptions.html"><i class="fa-solid fa-credit-card"></i> الاشتراكات</a>
 
-      <button class="nav-btn" onclick="showSection('months',this)">
-        <i class="fa-regular fa-calendar"></i>
-        الشهور
-      </button>
+      <div class="nav-group">المستخدمين</div>
+      <button class="nav-btn" data-section="students" data-title="الطلاب"><i class="fa-solid fa-users"></i> الطلاب</button>
 
-      <button class="nav-btn" onclick="showSection('content',this)">
-        <i class="fa-solid fa-layer-group"></i>
-        محتوى المحاضرة
-      </button>
-
-      <button class="nav-btn" onclick="showSection('notes',this)">
-        <i class="fa-solid fa-book-open"></i>
-        المذكرات
-      </button>
-
-      <button class="nav-btn" onclick="showSection('exams',this)">
-        <i class="fa-solid fa-file-circle-question"></i>
-        الاختبارات
-      </button>
-
-      <a class="nav-btn" href="../admin/subscriptions.html" style="text-decoration:none">
-        <i class="fa-solid fa-credit-card"></i>
-        إدارة الاشتراكات
-      </a>
-
-      <button class="nav-btn" onclick="showSection('students',this)">
-        <i class="fa-solid fa-users"></i>
-        الطلاب
-      </button>
-
-      <button class="nav-btn" onclick="showSection('forum',this)">
-        <i class="fa-regular fa-comments"></i>
-        المنتدى
-      </button>
-
+      <div class="nav-group">المجتمع</div>
+      <button class="nav-btn" data-section="forum" data-title="المنتدى"><i class="fa-regular fa-comments"></i> المنتدى</button>
     </nav>
-
   </aside>
 
   <main class="main">
-
     <div class="topbar">
-      <h1 id="pageTitle">لوحة التحكم</h1>
-
-      <button class="btn red" onclick="logout()">
-        <i class="fa-solid fa-right-from-bracket"></i>
-        تسجيل الخروج
-      </button>
+      <h1 id="pageTitle">الرئيسية</h1>
+      <button class="btn red" id="logoutBtn" type="button"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</button>
     </div>
 
-    <!-- الرئيسية -->
-
     <section id="dashboard" class="section active">
-
       <div class="stats">
-
-        <div class="stat">
-          <strong id="lectureCount">0</strong>
-          <span>المحاضرات</span>
-        </div>
-
-        <div class="stat">
-          <strong id="studentCount">0</strong>
-          <span>الطلاب</span>
-        </div>
-
-        <div class="stat">
-          <strong id="assessmentCount">0</strong>
-          <span>الواجبات والامتحانات</span>
-        </div>
-
-        <div class="stat">
-          <strong id="noteCount">0</strong>
-          <span>المذكرات</span>
-        </div>
-
+        <div class="stat"><strong id="lectureCount">0</strong><span>المحاضرات</span></div>
+        <div class="stat"><strong id="studentCount">0</strong><span>الطلاب</span></div>
+        <div class="stat"><strong id="assessmentCount">0</strong><span>الواجبات والامتحانات</span></div>
+        <div class="stat"><strong id="noteCount">0</strong><span>المذكرات</span></div>
       </div>
-
       <div class="card" style="margin-top:20px">
         <h2>مرحبًا بك في إدارة أرض الأحياء</h2>
-        <p>
-          يمكنك إدارة المحاضرات والمذكرات والواجبات
-          والامتحانات والطلاب من لوحة واحدة.
-        </p>
+        <p>من القائمة الجانبية تدير المحتوى (المحاضرات والشهور ومحتوى كل محاضرة)، والتعليم (المذكرات والاختبارات العامة)، والطلاب، والمنتدى.</p>
       </div>
-
     </section>
 
-    <!-- المحاضرات -->
-
     <section id="lectures" class="section">
-
       <div class="card">
-
         <h2>إضافة أو تعديل محاضرة</h2>
-
         <input type="hidden" id="lectureId">
-
-        <label>
-          عنوان المحاضرة
-          <input id="lectureTitle" placeholder="مثال: الدعامة في النبات">
-        </label>
-
-        <label>
-          رقم الشهر
-          <input id="lectureMonth" type="number" min="1" value="1">
-        </label>
-
-        <label>
-          وصف المحاضرة
-          <textarea id="lectureDescription"></textarea>
-        </label>
-
-        <label>
-          رابط الفيديو
-          <input id="lectureVideo" placeholder="https://...">
-        </label>
-
+        <label>عنوان المحاضرة<input id="lectureTitle" placeholder="مثال: الدعامة في النبات"></label>
+        <label>رقم الشهر<input id="lectureMonth" type="number" min="1" value="1"></label>
+        <label>وصف المحاضرة<textarea id="lectureDescription"></textarea></label>
+        <label>رابط الفيديو<input id="lectureVideo" placeholder="https://..."></label>
         <div class="grid">
-
-          <label>
-            جودة 1080p
-            <input id="video1080">
-          </label>
-
-          <label>
-            جودة 720p
-            <input id="video720">
-          </label>
-
-          <label>
-            جودة 480p
-            <input id="video480">
-          </label>
-
-          <label>
-            جودة 360p
-            <input id="video360">
-          </label>
-
+          <label>جودة 1080p<input id="video1080"></label>
+          <label>جودة 720p<input id="video720"></label>
+          <label>جودة 480p<input id="video480"></label>
+          <label>جودة 360p<input id="video360"></label>
         </div>
-
         <div class="actions">
-
-          <button class="btn" onclick="saveLecture()">
-            <i class="fa-solid fa-floppy-disk"></i>
-            حفظ المحاضرة
-          </button>
-
-          <button class="btn gray" onclick="resetLecture()">
-            إلغاء التعديل
-          </button>
-
+          <button class="btn" type="button" id="saveLectureBtn"><i class="fa-solid fa-floppy-disk"></i> حفظ المحاضرة</button>
+          <button class="btn gray" type="button" id="resetLectureBtn">إلغاء التعديل</button>
         </div>
-
       </div>
-
       <div class="card">
         <h2>جميع المحاضرات</h2>
         <div id="lecturesList"></div>
       </div>
-
     </section>
 
-    <!-- الشهور -->
-
     <section id="months" class="section">
-
       <div class="card">
-
         <h2>إدارة الشهور</h2>
-
         <input type="hidden" id="monthId">
-
         <div class="grid">
-
-          <label>
-            رقم الشهر
-            <input id="monthNumber" type="number" min="1">
-          </label>
-
-          <label>
-            عنوان الشهر
-            <input id="monthTitle">
-          </label>
-
-          <label>
-            ترتيب العرض
-            <input id="monthSort" type="number" value="1">
-          </label>
-
-          <label>
-            الحالة
+          <label>رقم الشهر<input id="monthNumber" type="number" min="1"></label>
+          <label>عنوان الشهر<input id="monthTitle"></label>
+          <label>ترتيب العرض<input id="monthSort" type="number" value="1"></label>
+          <label>الحالة
             <select id="monthVisible">
               <option value="true">ظاهر</option>
               <option value="false">مخفي</option>
             </select>
           </label>
-
         </div>
-
         <div class="actions">
-
-          <button class="btn" onclick="saveMonth()">
-            حفظ الشهر
-          </button>
-
-          <button class="btn gray" onclick="resetMonth()">
-            إلغاء
-          </button>
-
+          <button class="btn" type="button" id="saveMonthBtn">حفظ الشهر</button>
+          <button class="btn gray" type="button" id="resetMonthBtn">إلغاء</button>
         </div>
-
       </div>
-
       <div class="card">
         <h2>الشهور المسجلة</h2>
         <div id="monthsList"></div>
       </div>
-
     </section>
 
-    <!-- محتوى المحاضرة -->
-
     <section id="content" class="section">
-
       <div class="card">
-
         <h2>إدارة محتوى المحاضرة</h2>
-
-        <p class="muted">
-          اختر المحاضرة لإضافة المذكرات والواجبات والامتحانات.
-        </p>
-
-        <label>
-          اختر المحاضرة
-          <select id="selectedLecture" onchange="loadLectureContent()">
+        <p class="muted">اختر المحاضرة لإضافة المذكرات والواجبات والامتحانات.</p>
+        <label>اختر المحاضرة
+          <select id="selectedLecture">
             <option value="">اختر المحاضرة</option>
           </select>
         </label>
-
       </div>
 
       <div id="lectureContentArea" class="hidden">
-
         <div class="card">
-
-          <h2>📚 مذكرات المحاضرة</h2>
-
-          <label>
-            عنوان المذكرة
-            <input id="resourceTitle" placeholder="مذكرة الشرح">
-          </label>
-
-          <label>
-            رفع ملف PDF من الجهاز
-            <input id="resourceFile" type="file" accept=".pdf,application/pdf">
-          </label>
-
-          <button class="btn" onclick="addResource()">
-            <i class="fa-solid fa-upload"></i>
-            رفع المذكرة
-          </button>
-
+          <h2>مذكرات المحاضرة</h2>
+          <label>عنوان المذكرة<input id="resourceTitle" placeholder="مذكرة الشرح"></label>
+          <label>رفع ملف PDF<input id="resourceFile" type="file" accept=".pdf,application/pdf"></label>
+          <button class="btn" type="button" id="addResourceBtn"><i class="fa-solid fa-upload"></i> رفع المذكرة</button>
           <div id="resourcesList"></div>
-
         </div>
 
         <div class="card">
-
-          <h2>📝 إضافة واجب أو امتحان</h2>
-
-          <label>
-            نوع التقييم
+          <h2>إضافة واجب أو امتحان</h2>
+          <label>نوع التقييم
             <select id="assessmentType">
               <option value="homework">واجب</option>
               <option value="exam">امتحان</option>
             </select>
           </label>
-
-          <label>
-            عنوان التقييم
-            <input id="assessmentTitle" placeholder="امتحان المحاضرة الأولى">
-          </label>
-
-          <label>
-            المدة بالدقائق
-            <input id="assessmentDuration" type="number" min="1" placeholder="مثال: 30">
-          </label>
-
-          <button class="btn" onclick="createAssessment()">
-            <i class="fa-solid fa-plus"></i>
-            إنشاء التقييم
-          </button>
-
+          <label>عنوان التقييم<input id="assessmentTitle" placeholder="امتحان المحاضرة الأولى"></label>
+          <label>المدة بالدقائق<input id="assessmentDuration" type="number" min="1" placeholder="مثال: 30"></label>
+          <button class="btn" type="button" id="createAssessmentBtn"><i class="fa-solid fa-plus"></i> إنشاء التقييم</button>
         </div>
 
         <div class="card">
-
           <h2>الواجبات والامتحانات</h2>
-
           <div id="assessmentsList"></div>
-
         </div>
 
         <div id="questionEditor" class="card hidden">
-
           <h2 id="questionEditorTitle">إضافة أسئلة</h2>
-
           <input type="hidden" id="currentAssessmentId">
           <input type="hidden" id="questionId">
-
-          <div class="notice">
-            الطالب لن يرى الإجابة الصحيحة أو الشرح أثناء الحل.
-          </div>
-
-          <label>
-            نص السؤال
-            <textarea id="questionText" placeholder="اكتب السؤال هنا"></textarea>
-          </label>
-
-          <label>
-            صورة السؤال (اختياري)
-            <input id="questionImage" type="file" accept="image/*">
-          </label>
-
-          <label>
-            أ) الاختيار الأول
-            <input id="optionA">
-          </label>
-
-          <label>
-            ب) الاختيار الثاني
-            <input id="optionB">
-          </label>
-
-          <label>
-            ج) الاختيار الثالث
-            <input id="optionC">
-          </label>
-
-          <label>
-            د) الاختيار الرابع
-            <input id="optionD">
-          </label>
-
+          <div class="notice">الطالب لن يرى الإجابة الصحيحة أو الشرح أثناء الحل.</div>
+          <label>نص السؤال<textarea id="questionText"></textarea></label>
+          <label>صورة السؤال (اختياري)<input id="questionImage" type="file" accept="image/*"></label>
+          <label>أ) الاختيار الأول<input id="optionA"></label>
+          <label>ب) الاختيار الثاني<input id="optionB"></label>
+          <label>ج) الاختيار الثالث<input id="optionC"></label>
+          <label>د) الاختيار الرابع<input id="optionD"></label>
           <div class="grid">
-
-            <label>
-              الإجابة الصحيحة
+            <label>الإجابة الصحيحة
               <select id="correctAnswer">
-                <option value="A">أ</option>
-                <option value="B">ب</option>
-                <option value="C">ج</option>
-                <option value="D">د</option>
+                <option value="A">أ</option><option value="B">ب</option>
+                <option value="C">ج</option><option value="D">د</option>
               </select>
             </label>
-
-            <label>
-              درجة السؤال
-              <input id="questionPoints" type="number" min="0.25" step="0.25" value="1">
-            </label>
-
-            <label>
-              ترتيب السؤال
-              <input id="questionOrder" type="number" min="1" value="1">
-            </label>
-
+            <label>درجة السؤال<input id="questionPoints" type="number" min="0.25" step="0.25" value="1"></label>
+            <label>ترتيب السؤال<input id="questionOrder" type="number" min="1" value="1"></label>
           </div>
-
-          <label>
-            شرح الإجابة الصحيحة
-            <textarea id="answerExplanation" placeholder="اكتب شرح الإجابة هنا"></textarea>
-          </label>
-
+          <label>شرح الإجابة الصحيحة<textarea id="answerExplanation"></textarea></label>
           <div class="actions">
-
-            <button class="btn" onclick="saveQuestion()">
-              <i class="fa-solid fa-floppy-disk"></i>
-              حفظ السؤال
-            </button>
-
-            <button class="btn gray" onclick="resetQuestion()">
-              سؤال جديد
-            </button>
-
+            <button class="btn" type="button" id="saveQuestionBtn"><i class="fa-solid fa-floppy-disk"></i> حفظ السؤال</button>
+            <button class="btn gray" type="button" id="resetQuestionBtn">سؤال جديد</button>
           </div>
-
           <hr style="border:0;border-top:1px solid #eee;margin:25px 0">
-
           <h3>الأسئلة الموجودة</h3>
-
           <div id="questionsList"></div>
-
         </div>
-
       </div>
-
     </section>
 
-    <!-- المذكرات العامة -->
-
     <section id="notes" class="section">
-
       <div class="card">
-
         <h2>إضافة مذكرة عامة</h2>
-
-        <input type="hidden" id="noteId">
-
-        <label>
-          عنوان المذكرة
-          <input id="noteTitle">
-        </label>
-
-        <label>
-          ملف PDF
-          <input id="noteFile" type="file" accept=".pdf,application/pdf">
-        </label>
-
-        <button class="btn" onclick="saveNote()">
-          حفظ المذكرة
-        </button>
-
+        <label>عنوان المذكرة<input id="noteTitle"></label>
+        <label>ملف PDF<input id="noteFile" type="file" accept=".pdf,application/pdf"></label>
+        <button class="btn" type="button" id="saveNoteBtn">حفظ المذكرة</button>
       </div>
-
       <div class="card">
         <h2>المذكرات العامة</h2>
         <div id="notesList"></div>
       </div>
-
     </section>
 
-    <!-- الاختبارات القديمة -->
-
     <section id="exams" class="section">
-
       <div class="card">
-
         <h2>الاختبارات العامة</h2>
-
-        <p class="muted">
-          هذا القسم خاص بجدول الاختبارات العام الموجود مسبقًا.
-          أما امتحانات المحاضرات الجديدة فتُدار من قسم
-          «محتوى المحاضرة».
-        </p>
-
+        <p class="muted">هذا القسم خاص بجدول الاختبارات العام. امتحانات المحاضرات تُدار من «محتوى المحاضرة».</p>
         <input type="hidden" id="examId">
-
-        <label>
-          عنوان الامتحان
-          <input id="examTitle">
-        </label>
-
-        <label>
-          وصف الامتحان
-          <textarea id="examDescription"></textarea>
-        </label>
-
-        <label>
-          المدة بالدقائق
-          <input id="examDuration" type="number" min="1">
-        </label>
-
+        <label>عنوان الامتحان<input id="examTitle"></label>
+        <label>وصف الامتحان<textarea id="examDescription"></textarea></label>
+        <label>المدة بالدقائق<input id="examDuration" type="number" min="1"></label>
         <div class="actions">
-
-          <button class="btn" onclick="saveExam()">
-            حفظ الامتحان
-          </button>
-
-          <button class="btn gray" onclick="resetExam()">
-            إلغاء
-          </button>
-
+          <button class="btn" type="button" id="saveExamBtn">حفظ الامتحان</button>
+          <button class="btn gray" type="button" id="resetExamBtn">إلغاء</button>
         </div>
-
       </div>
-
       <div class="card">
         <h2>الاختبارات المسجلة</h2>
         <div id="examsList"></div>
       </div>
-
     </section>
-
-    <!-- الطلاب -->
 
     <section id="students" class="section">
-
       <div class="card">
-
         <h2>إدارة الطلاب</h2>
-
-        <label>
-          البحث عن طالب
-          <input id="studentSearch" placeholder="اسم الطالب أو رقم الهاتف" oninput="renderStudents()">
-        </label>
-
+        <label>البحث عن طالب<input id="studentSearch" placeholder="اسم الطالب أو رقم الهاتف"></label>
         <div id="studentsList"></div>
-
       </div>
-
     </section>
 
-    <!-- المنتدى والردود -->
     <section id="forum" class="section">
       <div class="card">
-        <h2><i class="fa-regular fa-comments"></i> إدارة المنتدى والرد على الطلاب</h2>
+        <h2>إدارة المنتدى والرد على الطلاب</h2>
         <p class="muted">يمكنك الرد بالنص أو بالصوت أو بالصورة أو بالفيديو.</p>
-        <button class="btn" onclick="loadForum()"><i class="fa-solid fa-rotate"></i> تحديث المنشورات</button>
+        <button class="btn" type="button" id="reloadForumBtn"><i class="fa-solid fa-rotate"></i> تحديث المنشورات</button>
         <div id="forumList" aria-live="polite"></div>
       </div>
     </section>
-
   </main>
-
 </div>
 
 <div id="message"></div>
@@ -877,316 +327,145 @@ th{background:#f1f5f9}
 <script>
 "use strict";
 
-/* ===========================
-   إعداد Supabase
-=========================== */
+const SUPABASE_URL="https://fpfbmjtpzamzlyzitmsd.supabase.co";
+const SUPABASE_KEY="sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+const BUCKET="lectures";
 
-const SUPABASE_URL =
-  "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+/* مفتاح جلسة منفصل للإدارة حتى لا يتأثر حساب الطالب على نفس المتصفح */
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{
+  auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:"ardAdminAuth"}
+});
 
-const SUPABASE_KEY =
-  "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+let currentUser=null;
+let lectures=[],months=[],notes=[],exams=[],students=[],assessments=[],resources=[],questions=[];
+let forumPosts=[],forumReplies=[],activeRecorder=null;
+const recordedAudio=new Map();
 
-const db = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-const BUCKET = "lectures";
-
-let currentUser = null;
-let lectures = [];
-let months = [];
-let notes = [];
-let exams = [];
-let students = [];
-let assessments = [];
-let resources = [];
-let questions = [];
-
-/* ===========================
-   أدوات مساعدة
-=========================== */
-
-function el(id){
-  return document.getElementById(id);
-}
-
-function value(id){
-  return el(id).value.trim();
-}
+/* ===== أدوات مساعدة ===== */
+const el=id=>document.getElementById(id);
+const value=id=>el(id).value.trim();
 
 function escapeHTML(input){
-  return String(input ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#39;");
+  return String(input??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 }
-
 function notify(text,isError=false){
   const box=el("message");
   box.textContent=text;
   box.style.background=isError?"#b91c1c":"#004e4d";
   box.style.display="block";
-
   clearTimeout(window.notifyTimer);
-
-  window.notifyTimer=setTimeout(()=>{
-    box.style.display="none";
-  },5000);
+  window.notifyTimer=setTimeout(()=>{box.style.display="none"},5000);
 }
-
 function handleError(error){
   console.error(error);
-  notify(error?.message || "حدث خطأ غير متوقع",true);
+  notify(error?.message||"حدث خطأ غير متوقع",true);
 }
-
-function confirmDelete(){
-  return confirm("هل أنت متأكد من الحذف؟");
-}
-
+function confirmDelete(){return confirm("هل أنت متأكد من الحذف؟")}
+function empty(text){return `<p class="muted">${escapeHTML(text)}</p>`}
+function listError(error){return `<div class="notice error">${escapeHTML(error.message)}</div>`}
 function publicFileUrl(path){
   if(!path)return "";
-
   if(/^https?:\/\//i.test(path))return path;
-
-  return db.storage
-    .from(BUCKET)
-    .getPublicUrl(path)
-    .data.publicUrl;
+  return db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
 }
-
-async function uploadFile(file,folder){
+async function uploadFile(file,folder,allowedExt){
   if(!file)throw new Error("اختر ملفًا أولًا");
-
-  const extension=(file.name.split(".").pop()||"bin")
-    .toLowerCase();
-
-  const allowed={
-    pdf:["pdf"],
-    images:["jpg","jpeg","png","webp","gif"]
-  };
-
-  if(allowed[folder] && !allowed[folder].includes(extension)){
-    throw new Error("نوع الملف غير مدعوم");
-  }
-
-  const path=
-    folder+"/"+
-    crypto.randomUUID()+"."+extension;
-
-  const {error}=await db.storage
-    .from(BUCKET)
-    .upload(path,file,{
-      upsert:false,
-      contentType:file.type || undefined
-    });
-
+  const ext=(file.name.split(".").pop()||"bin").toLowerCase();
+  if(allowedExt&&!allowedExt.includes(ext))throw new Error("نوع الملف غير مدعوم");
+  const path=folder+"/"+crypto.randomUUID()+"."+ext;
+  const {error}=await db.storage.from(BUCKET).upload(path,file,{upsert:false,contentType:file.type||undefined});
   if(error)throw error;
-
   return path;
 }
-
 async function removeUploadedFile(path){
-  if(!path || /^https?:\/\//i.test(path))return;
-
-  const {error}=await db.storage
-    .from(BUCKET)
-    .remove([path]);
-
+  if(!path||/^https?:\/\//i.test(path))return;
+  const {error}=await db.storage.from(BUCKET).remove([path]);
   if(error)console.warn(error);
 }
 
-function empty(text){
-  return `<p class="muted">${escapeHTML(text)}</p>`;
-}
-
-function listError(error){
-  return `<div class="notice error">${escapeHTML(error.message)}</div>`;
-}
-
-/* ===========================
-   تسجيل الدخول
-=========================== */
-
-async function login(){
-  try{
-    el("loginError").textContent="";
-
-    const email=value("loginEmail");
-    const password=value("loginPassword");
-
-    if(!email || !password){
-      throw new Error("أدخل البريد وكلمة المرور");
-    }
-
-    const {data,error}=await db.auth.signInWithPassword({
-      email,password
-    });
-
-    if(error)throw error;
-
-    await checkAdmin(data.user);
-
-  }catch(error){
-    el("loginError").textContent=error.message;
-  }
-}
-
+/* ===== تسجيل الدخول ===== */
 async function checkAdmin(user){
   if(!user)return;
-
-  const {data,error}=await db
-    .from("profiles")
-    .select("role")
-    .eq("id",user.id)
-    .single();
-
+  const {data,error}=await db.from("profiles").select("role").eq("id",user.id).single();
   if(error)throw error;
-
   if(data?.role!=="admin"){
     await db.auth.signOut();
     throw new Error("هذا الحساب لا يمتلك صلاحية الإدارة");
   }
-
   currentUser=user;
-
   el("loginScreen").classList.add("hidden");
   el("adminApp").classList.remove("hidden");
-
   await loadAll();
 }
-
-async function logout(){
+el("loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  try{
+    el("loginError").textContent="";
+    const email=value("loginEmail"),password=value("loginPassword");
+    if(!email||!password)throw new Error("أدخل البريد وكلمة المرور");
+    const {data,error}=await db.auth.signInWithPassword({email,password});
+    if(error)throw error;
+    await checkAdmin(data.user);
+  }catch(error){el("loginError").textContent=error.message}
+});
+el("logoutBtn").addEventListener("click",async()=>{
   await db.auth.signOut();
   location.reload();
-}
-
+});
 async function init(){
   try{
     const {data}=await db.auth.getUser();
-
-    if(data?.user){
-      await checkAdmin(data.user);
-    }
-  }catch(error){
-    el("loginError").textContent=error.message;
-  }
+    if(data?.user)await checkAdmin(data.user);
+  }catch(error){el("loginError").textContent=error.message}
 }
 
-/* ===========================
-   التنقل
-=========================== */
-
+/* ===== التنقل ===== */
 function showSection(id,button){
-  document.querySelectorAll(".section").forEach(section=>{
-    section.classList.remove("active");
-  });
-
-  document.querySelectorAll(".nav-btn").forEach(btn=>{
-    btn.classList.remove("active");
-  });
-
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
   el(id).classList.add("active");
   button.classList.add("active");
-
-  el("pageTitle").textContent=button.textContent.trim();
+  el("pageTitle").textContent=button.dataset.title||button.textContent.trim();
   if(id==="forum")loadForum();
 }
+document.querySelectorAll(".nav-btn[data-section]").forEach(btn=>{
+  btn.addEventListener("click",()=>showSection(btn.dataset.section,btn));
+});
 
-/* ===========================
-   تحميل البيانات
-=========================== */
-
+/* ===== تحميل البيانات ===== */
 async function loadAll(){
-  const jobs=[
-    loadLectures(),
-    loadMonths(),
-    loadNotes(),
-    loadExams(),
-    loadStudents()
-  ];
-
-  const results=await Promise.allSettled(jobs);
-
-  results.forEach(result=>{
-    if(result.status==="rejected"){
-      console.error(result.reason);
-      notify(result.reason.message,true);
-    }
-  });
-
-  await loadAssessmentsCount();
+  const results=await Promise.allSettled([loadLectures(),loadMonths(),loadNotes(),loadExams(),loadStudents(),loadAssessmentsCount()]);
+  results.forEach(r=>{if(r.status==="rejected"){console.error(r.reason);notify(r.reason.message,true)}});
 }
 
-/* ===========================
-   المحاضرات
-=========================== */
-
+/* ===== المحاضرات ===== */
 async function loadLectures(){
-  const {data,error}=await db
-    .from("lectures")
-    .select("*")
-    .order("created_at",{ascending:false});
-
+  const {data,error}=await db.from("lectures").select("*").order("created_at",{ascending:false});
   if(error)throw error;
-
   lectures=data||[];
-
   el("lectureCount").textContent=lectures.length;
-
   renderLectures();
   fillLectureSelect();
 }
-
 function renderLectures(){
-  el("lecturesList").innerHTML=lectures.length
-    ? lectures.map(item=>`
-      <div class="list-item">
-        <strong>${escapeHTML(item.title)}</strong>
-        <div class="muted">
-          الشهر: ${escapeHTML(item.month_number)}
-        </div>
-        <div class="actions">
-          <button class="btn gray"
-            onclick="editLecture('${item.id}')">
-            تعديل
-          </button>
-          <button class="btn blue"
-            onclick="openLectureContent('${item.id}')">
-            المحتوى
-          </button>
-          <button class="btn red"
-            onclick="deleteLecture('${item.id}')">
-            حذف
-          </button>
-        </div>
+  el("lecturesList").innerHTML=lectures.length?lectures.map(item=>`
+    <div class="list-item">
+      <strong>${escapeHTML(item.title)}</strong>
+      <div class="muted">الشهر: ${escapeHTML(item.month_number)}</div>
+      <div class="actions">
+        <button class="btn gray" type="button" data-action="edit-lecture" data-id="${escapeHTML(item.id)}">تعديل</button>
+        <button class="btn blue" type="button" data-action="lecture-content" data-id="${escapeHTML(item.id)}">المحتوى</button>
+        <button class="btn red" type="button" data-action="delete-lecture" data-id="${escapeHTML(item.id)}">حذف</button>
       </div>
-    `).join("")
-    :empty("لا توجد محاضرات");
+    </div>`).join(""):empty("لا توجد محاضرات");
 }
-
 function resetLecture(){
-  [
-    "lectureId",
-    "lectureTitle",
-    "lectureDescription",
-    "lectureVideo",
-    "video1080",
-    "video720",
-    "video480",
-    "video360"
-  ].forEach(id=>el(id).value="");
-
+  ["lectureId","lectureTitle","lectureDescription","lectureVideo","video1080","video720","video480","video360"].forEach(id=>el(id).value="");
   el("lectureMonth").value=1;
 }
-
 function editLecture(id){
   const item=lectures.find(x=>x.id===id);
   if(!item)return;
-
   el("lectureId").value=item.id;
   el("lectureTitle").value=item.title||"";
   el("lectureMonth").value=item.month_number||1;
@@ -1196,18 +475,12 @@ function editLecture(id){
   el("video720").value=item.video_720_url||"";
   el("video480").value=item.video_480_url||"";
   el("video360").value=item.video_360_url||"";
-
   window.scrollTo({top:0,behavior:"smooth"});
 }
-
 async function saveLecture(){
   try{
     const id=value("lectureId");
-
-    if(!value("lectureTitle")){
-      throw new Error("أدخل عنوان المحاضرة");
-    }
-
+    if(!value("lectureTitle"))throw new Error("أدخل عنوان المحاضرة");
     const payload={
       title:value("lectureTitle"),
       month_number:Number(value("lectureMonth"))||1,
@@ -1218,617 +491,274 @@ async function saveLecture(){
       video_480_url:value("video480"),
       video_360_url:value("video360")
     };
-
-    const query=id
-      ?db.from("lectures").update(payload).eq("id",id)
-      :db.from("lectures").insert(payload);
-
+    const query=id?db.from("lectures").update(payload).eq("id",id):db.from("lectures").insert(payload);
     const {error}=await query;
-
     if(error)throw error;
-
     notify("تم حفظ المحاضرة");
     resetLecture();
     await loadLectures();
-
-  }catch(error){
-    handleError(error);
-  }
+  }catch(error){handleError(error)}
 }
-
 async function deleteLecture(id){
   if(!confirmDelete())return;
-
   try{
-    const {error}=await db
-      .from("lectures")
-      .delete()
-      .eq("id",id);
-
+    const {error}=await db.from("lectures").delete().eq("id",id);
     if(error)throw error;
-
     notify("تم حذف المحاضرة");
     await loadLectures();
-
-  }catch(error){
-    handleError(error);
-  }
+  }catch(error){handleError(error)}
 }
 
-/* ===========================
-   الشهور
-=========================== */
-
+/* ===== الشهور ===== */
 async function loadMonths(){
-  const {data,error}=await db
-    .from("lecture_months")
-    .select("*")
-    .order("sort_order");
-
+  const {data,error}=await db.from("lecture_months").select("*").order("sort_order");
   if(error)throw error;
-
   months=data||[];
-
-  el("monthsList").innerHTML=months.length
-    ?months.map(m=>`
-      <div class="list-item">
-        <strong>${escapeHTML(m.title)}</strong>
-        <span class="muted">
-          الشهر ${escapeHTML(m.month_number)}
-          — ${m.is_visible?"ظاهر":"مخفي"}
-        </span>
-        <div class="actions">
-          <button class="btn gray"
-            onclick="editMonth('${m.id}')">تعديل</button>
-          <button class="btn red"
-            onclick="deleteMonth('${m.id}')">حذف</button>
-        </div>
+  el("monthsList").innerHTML=months.length?months.map(m=>`
+    <div class="list-item">
+      <strong>${escapeHTML(m.title)}</strong>
+      <span class="muted">الشهر ${escapeHTML(m.month_number)} — ${m.is_visible?"ظاهر":"مخفي"}</span>
+      <div class="actions">
+        <button class="btn gray" type="button" data-action="edit-month" data-id="${escapeHTML(m.id)}">تعديل</button>
+        <button class="btn red" type="button" data-action="delete-month" data-id="${escapeHTML(m.id)}">حذف</button>
       </div>
-    `).join("")
-    :empty("لا توجد شهور");
+    </div>`).join(""):empty("لا توجد شهور");
 }
-
 function editMonth(id){
   const m=months.find(x=>x.id===id);
   if(!m)return;
-
   el("monthId").value=m.id;
   el("monthNumber").value=m.month_number;
   el("monthTitle").value=m.title||"";
   el("monthSort").value=m.sort_order||1;
   el("monthVisible").value=String(m.is_visible);
 }
-
 function resetMonth(){
-  ["monthId","monthNumber","monthTitle"].forEach(id=>{
-    el(id).value="";
-  });
-
+  ["monthId","monthNumber","monthTitle"].forEach(id=>el(id).value="");
   el("monthSort").value=1;
   el("monthVisible").value="true";
 }
-
 async function saveMonth(){
   try{
     const id=value("monthId");
-
-    if(!value("monthTitle")){
-      throw new Error("أدخل عنوان الشهر");
-    }
-
+    if(!value("monthTitle"))throw new Error("أدخل عنوان الشهر");
     const payload={
       month_number:Number(value("monthNumber")),
       title:value("monthTitle"),
       sort_order:Number(value("monthSort"))||1,
       is_visible:value("monthVisible")==="true"
     };
-
-    if(!Number.isInteger(payload.month_number) ||
-       payload.month_number<1){
-      throw new Error("رقم الشهر غير صحيح");
-    }
-
-    const query=id
-      ?db.from("lecture_months").update(payload).eq("id",id)
-      :db.from("lecture_months").insert(payload);
-
+    if(!Number.isInteger(payload.month_number)||payload.month_number<1)throw new Error("رقم الشهر غير صحيح");
+    const query=id?db.from("lecture_months").update(payload).eq("id",id):db.from("lecture_months").insert(payload);
     const {error}=await query;
     if(error)throw error;
-
     resetMonth();
     await loadMonths();
     notify("تم حفظ الشهر");
-
-  }catch(error){
-    handleError(error);
-  }
+  }catch(error){handleError(error)}
 }
-
 async function deleteMonth(id){
   if(!confirmDelete())return;
-
   try{
-    const {error}=await db
-      .from("lecture_months")
-      .delete()
-      .eq("id",id);
-
+    const {error}=await db.from("lecture_months").delete().eq("id",id);
     if(error)throw error;
-
     await loadMonths();
     notify("تم الحذف");
-
-  }catch(error){
-    handleError(error);
-  }
+  }catch(error){handleError(error)}
 }
 
-/* ===========================
-   محتوى المحاضرة
-=========================== */
-
+/* ===== محتوى المحاضرة ===== */
 function fillLectureSelect(){
   const selected=value("selectedLecture");
-
-  el("selectedLecture").innerHTML=
-    `<option value="">اختر المحاضرة</option>`+
-    lectures.map(l=>`
-      <option value="${escapeHTML(l.id)}">
-        ${escapeHTML(l.title)}
-      </option>
-    `).join("");
-
-  if(lectures.some(l=>l.id===selected)){
-    el("selectedLecture").value=selected;
-  }
+  el("selectedLecture").innerHTML=`<option value="">اختر المحاضرة</option>`+
+    lectures.map(l=>`<option value="${escapeHTML(l.id)}">${escapeHTML(l.title)}</option>`).join("");
+  if(lectures.some(l=>l.id===selected))el("selectedLecture").value=selected;
 }
-
 function openLectureContent(id){
-  document.querySelector(
-    '[onclick="showSection(\'content\',this)"]'
-  ).click();
-
+  document.querySelector('.nav-btn[data-section="content"]').click();
   el("selectedLecture").value=id;
   loadLectureContent();
 }
-
 async function loadLectureContent(){
   const id=value("selectedLecture");
-
   el("lectureContentArea").classList.toggle("hidden",!id);
   el("questionEditor").classList.add("hidden");
-
   if(!id)return;
-
-  await Promise.all([
-    loadResources(),
-    loadAssessments()
-  ]);
+  await Promise.all([loadResources(),loadAssessments()]);
 }
 
-/* ===========================
-   مذكرات المحاضرة
-=========================== */
-
+/* ===== مذكرات المحاضرة ===== */
 async function loadResources(){
   const lectureId=value("selectedLecture");
   if(!lectureId)return;
-
-  const {data,error}=await db
-    .from("lecture_resources")
-    .select("*")
-    .eq("lecture_id",lectureId)
-    .order("created_at",{ascending:false});
-
-  if(error){
-    el("resourcesList").innerHTML=listError(error);
-    return;
-  }
-
+  const {data,error}=await db.from("lecture_resources").select("*").eq("lecture_id",lectureId).order("created_at",{ascending:false});
+  if(error){el("resourcesList").innerHTML=listError(error);return}
   resources=data||[];
-
-  el("resourcesList").innerHTML=resources.length
-    ?resources.map(r=>`
-      <div class="list-item">
-        <strong>${escapeHTML(r.title)}</strong>
-        <div class="actions">
-          <a class="btn blue"
-            href="${escapeHTML(publicFileUrl(r.file_path))}"
-            target="_blank"
-            rel="noopener noreferrer">
-            فتح الملف
-          </a>
-          <button class="btn red"
-            onclick="deleteResource('${r.id}')">
-            حذف
-          </button>
-        </div>
+  el("resourcesList").innerHTML=resources.length?resources.map(r=>`
+    <div class="list-item">
+      <strong>${escapeHTML(r.title)}</strong>
+      <div class="actions">
+        <a class="btn blue" href="${escapeHTML(publicFileUrl(r.file_path))}" target="_blank" rel="noopener noreferrer">فتح الملف</a>
+        <button class="btn red" type="button" data-action="delete-resource" data-id="${escapeHTML(r.id)}">حذف</button>
       </div>
-    `).join("")
-    :empty("لم تتم إضافة مذكرات لهذه المحاضرة");
+    </div>`).join(""):empty("لم تتم إضافة مذكرات لهذه المحاضرة");
 }
-
 async function addResource(){
   try{
     const lectureId=value("selectedLecture");
     const title=value("resourceTitle");
     const file=el("resourceFile").files[0];
-
     if(!lectureId)throw new Error("اختر المحاضرة");
     if(!title)throw new Error("أدخل عنوان المذكرة");
-    if(!file)throw new Error("اختر ملف PDF");
-
-    const path=await uploadFile(file,"pdf");
-
-    const {error}=await db
-      .from("lecture_resources")
-      .insert({
-        lecture_id:lectureId,
-        title,
-        file_path:path
-      });
-
-    if(error){
-      await removeUploadedFile(path);
-      throw error;
-    }
-
+    const path=await uploadFile(file,"pdf",["pdf"]);
+    const {error}=await db.from("lecture_resources").insert({lecture_id:lectureId,title,file_path:path});
+    if(error){await removeUploadedFile(path);throw error}
     el("resourceTitle").value="";
     el("resourceFile").value="";
-
     await loadResources();
     notify("تم رفع المذكرة بنجاح");
-
-  }catch(error){
-    handleError(error);
-  }
+  }catch(error){handleError(error)}
 }
-
 async function deleteResource(id){
   if(!confirmDelete())return;
-
   try{
     const resource=resources.find(x=>x.id===id);
-
-    const {error}=await db
-      .from("lecture_resources")
-      .delete()
-      .eq("id",id);
-
+    const {error}=await db.from("lecture_resources").delete().eq("id",id);
     if(error)throw error;
-
-    if(resource){
-      await removeUploadedFile(resource.file_path);
-    }
-
+    if(resource)await removeUploadedFile(resource.file_path);
     await loadResources();
     notify("تم حذف المذكرة");
-
-  }catch(error){
-    handleError(error);
-  }
+  }catch(error){handleError(error)}
 }
 
-/* ===========================
-   الواجبات والامتحانات
-=========================== */
-
+/* ===== الواجبات والامتحانات ===== */
 async function loadAssessments(){
   const lectureId=value("selectedLecture");
   if(!lectureId)return;
-
-  const {data,error}=await db
-    .from("lecture_assessments")
-    .select("*")
-    .eq("lecture_id",lectureId)
-    .order("created_at",{ascending:false});
-
-  if(error){
-    el("assessmentsList").innerHTML=listError(error);
-    return;
-  }
-
+  const {data,error}=await db.from("lecture_assessments").select("*").eq("lecture_id",lectureId).order("created_at",{ascending:false});
+  if(error){el("assessmentsList").innerHTML=listError(error);return}
   assessments=data||[];
   renderAssessments();
 }
-
 function renderAssessments(){
-  el("assessmentsList").innerHTML=assessments.length
-    ?assessments.map(a=>`
-      <div class="list-item">
-
-        <span class="badge">
-          ${a.assessment_type==="exam"?"امتحان":"واجب"}
-        </span>
-
-        <strong style="margin-top:10px">
-          ${escapeHTML(a.title)}
-        </strong>
-
-        <p class="muted">
-          المدة:
-          ${a.duration_minutes||"بدون"}
-          دقيقة
-          —
-          ${a.is_published?"منشور":"غير منشور"}
-        </p>
-
-        <div class="actions">
-
-          <button class="btn blue"
-            onclick="openQuestionEditor('${a.id}')">
-            إدارة الأسئلة
-          </button>
-
-          <button class="btn gray"
-            onclick="toggleAssessment('${a.id}',${!a.is_published})">
-            ${a.is_published?"إخفاء":"نشر"}
-          </button>
-
-          <button class="btn red"
-            onclick="deleteAssessment('${a.id}')">
-            حذف
-          </button>
-
-        </div>
-
+  el("assessmentsList").innerHTML=assessments.length?assessments.map(a=>`
+    <div class="list-item">
+      <span class="badge">${a.assessment_type==="exam"?"امتحان":"واجب"}</span>
+      <strong style="margin-top:10px">${escapeHTML(a.title)}</strong>
+      <p class="muted">المدة: ${escapeHTML(a.duration_minutes||"بدون")} دقيقة — ${a.is_published?"منشور":"غير منشور"}</p>
+      <div class="actions">
+        <button class="btn blue" type="button" data-action="open-questions" data-id="${escapeHTML(a.id)}">إدارة الأسئلة</button>
+        <button class="btn gray" type="button" data-action="toggle-assessment" data-id="${escapeHTML(a.id)}" data-published="${!a.is_published}">${a.is_published?"إخفاء":"نشر"}</button>
+        <button class="btn red" type="button" data-action="delete-assessment" data-id="${escapeHTML(a.id)}">حذف</button>
       </div>
-    `).join("")
-    :empty("لا توجد واجبات أو امتحانات لهذه المحاضرة");
+    </div>`).join(""):empty("لا توجد واجبات أو امتحانات لهذه المحاضرة");
 }
-
 async function createAssessment(){
   try{
     const lectureId=value("selectedLecture");
     const title=value("assessmentTitle");
     const type=value("assessmentType");
     const duration=value("assessmentDuration");
-
     if(!lectureId)throw new Error("اختر المحاضرة");
     if(!title)throw new Error("أدخل عنوان التقييم");
-
-    if(duration && Number(duration)<1){
-      throw new Error("مدة الامتحان غير صحيحة");
-    }
-
-    const {data,error}=await db
-      .from("lecture_assessments")
-      .insert({
-        lecture_id:lectureId,
-        title,
-        assessment_type:type,
-        duration_minutes:duration?Number(duration):null,
-        is_published:false
-      })
-      .select()
-      .single();
-
+    if(duration&&Number(duration)<1)throw new Error("مدة الامتحان غير صحيحة");
+    const {data,error}=await db.from("lecture_assessments").insert({
+      lecture_id:lectureId,title,assessment_type:type,
+      duration_minutes:duration?Number(duration):null,is_published:false
+    }).select().single();
     if(error)throw error;
-
     el("assessmentTitle").value="";
     el("assessmentDuration").value="";
-
     await loadAssessments();
     await loadAssessmentsCount();
-
     notify("تم إنشاء التقييم. أضف الأسئلة الآن.");
-
     await openQuestionEditor(data.id);
-
-  }catch(error){
-    handleError(error);
-  }
+  }catch(error){handleError(error)}
 }
-
 async function toggleAssessment(id,published){
   try{
     if(published){
-      const {count,error:countError}=await db
-        .from("lecture_assessment_questions")
-        .select("id",{count:"exact",head:true})
-        .eq("assessment_id",id);
-
+      const {count,error:countError}=await db.from("lecture_assessment_questions").select("id",{count:"exact",head:true}).eq("assessment_id",id);
       if(countError)throw countError;
-
-      if(!count){
-        throw new Error("أضف سؤالًا واحدًا على الأقل قبل النشر");
-      }
+      if(!count)throw new Error("أضف سؤالًا واحدًا على الأقل قبل النشر");
     }
-
-    const {error}=await db
-      .from("lecture_assessments")
-      .update({is_published:published})
-      .eq("id",id);
-
+    const {error}=await db.from("lecture_assessments").update({is_published:published}).eq("id",id);
     if(error)throw error;
-
     await loadAssessments();
-
-    notify(
-      published
-      ?"تم نشر التقييم في قاعدة البيانات"
-      :"تم إخفاء التقييم"
-    );
-
-  }catch(error){
-    handleError(error);
-  }
+    notify(published?"تم نشر التقييم":"تم إخفاء التقييم");
+  }catch(error){handleError(error)}
 }
-
 async function deleteAssessment(id){
   if(!confirmDelete())return;
-
   try{
-    const {error}=await db
-      .from("lecture_assessments")
-      .delete()
-      .eq("id",id);
-
+    const {error}=await db.from("lecture_assessments").delete().eq("id",id);
     if(error)throw error;
-
     el("questionEditor").classList.add("hidden");
-
     await loadAssessments();
     await loadAssessmentsCount();
-
     notify("تم حذف التقييم");
-
-  }catch(error){
-    handleError(error);
-  }
+  }catch(error){handleError(error)}
 }
-
 async function loadAssessmentsCount(){
-  const {count,error}=await db
-    .from("lecture_assessments")
-    .select("id",{count:"exact",head:true});
-
-  if(!error){
-    el("assessmentCount").textContent=count||0;
-  }
+  const {count,error}=await db.from("lecture_assessments").select("id",{count:"exact",head:true});
+  if(!error)el("assessmentCount").textContent=count||0;
 }
 
-/* ===========================
-   إدارة الأسئلة
-=========================== */
-
+/* ===== إدارة الأسئلة ===== */
 async function openQuestionEditor(id){
   const assessment=assessments.find(x=>x.id===id);
-
   if(!assessment)return;
-
   el("currentAssessmentId").value=id;
-  el("questionEditorTitle").textContent=
-    "أسئلة "+assessment.title;
-
+  el("questionEditorTitle").textContent="أسئلة: "+assessment.title;
   el("questionEditor").classList.remove("hidden");
-
   resetQuestion();
   await loadQuestions();
-
-  el("questionEditor").scrollIntoView({
-    behavior:"smooth",
-    block:"start"
-  });
+  el("questionEditor").scrollIntoView({behavior:"smooth",block:"start"});
 }
-
 function resetQuestion(){
-  [
-    "questionId",
-    "questionText",
-    "questionImage",
-    "optionA",
-    "optionB",
-    "optionC",
-    "optionD",
-    "answerExplanation"
-  ].forEach(id=>el(id).value="");
-
+  ["questionId","questionText","questionImage","optionA","optionB","optionC","optionD","answerExplanation"].forEach(id=>el(id).value="");
   el("correctAnswer").value="A";
   el("questionPoints").value=1;
   el("questionOrder").value=questions.length+1;
 }
-
 async function loadQuestions(){
   const assessmentId=value("currentAssessmentId");
   if(!assessmentId)return;
-
-  const {data,error}=await db
-    .from("lecture_assessment_questions")
-    .select("*")
-    .eq("assessment_id",assessmentId)
-    .order("sort_order");
-
-  if(error){
-    el("questionsList").innerHTML=listError(error);
-    return;
-  }
-
+  const {data,error}=await db.from("lecture_assessment_questions").select("*").eq("assessment_id",assessmentId).order("sort_order");
+  if(error){el("questionsList").innerHTML=listError(error);return}
   questions=data||[];
-
   const ids=questions.map(q=>q.id);
-
   let answers=[];
-
   if(ids.length){
-    const result=await db
-      .from("lecture_question_answers")
-      .select("*")
-      .in("question_id",ids);
-
-    if(result.error){
-      el("questionsList").innerHTML=listError(result.error);
-      return;
-    }
-
+    const result=await db.from("lecture_question_answers").select("*").in("question_id",ids);
+    if(result.error){el("questionsList").innerHTML=listError(result.error);return}
     answers=result.data||[];
   }
-
-  questions=questions.map(q=>({
-    ...q,
-    answer:answers.find(a=>a.question_id===q.id)||null
-  }));
-
+  questions=questions.map(q=>({...q,answer:answers.find(a=>a.question_id===q.id)||null}));
   renderQuestions();
 }
-
 function renderQuestions(){
-  el("questionsList").innerHTML=questions.length
-    ?questions.map((q,index)=>`
-      <div class="question-card">
-
-        <h3>السؤال ${index+1}</h3>
-
-        <p>${escapeHTML(q.question_text)}</p>
-
-        ${q.image_path?`
-          <img class="question-image"
-            src="${escapeHTML(publicFileUrl(q.image_path))}"
-            alt="صورة السؤال">
-        `:""}
-
-        <p>أ) ${escapeHTML(q.option_a)}</p>
-        <p>ب) ${escapeHTML(q.option_b)}</p>
-        <p>ج) ${escapeHTML(q.option_c)}</p>
-        <p>د) ${escapeHTML(q.option_d)}</p>
-
-        <p>
-          <strong>الإجابة الصحيحة:</strong>
-          ${escapeHTML(q.answer?.correct_answer||"غير محددة")}
-        </p>
-
-        <p class="muted">
-          الشرح:
-          ${escapeHTML(q.answer?.explanation||"لا يوجد")}
-        </p>
-
-        <p class="muted">
-          الدرجة: ${escapeHTML(q.points)}
-        </p>
-
-        <div class="actions">
-
-          <button class="btn gray"
-            onclick="editQuestion('${q.id}')">
-            تعديل
-          </button>
-
-          <button class="btn red"
-            onclick="deleteQuestion('${q.id}')">
-            حذف
-          </button>
-
-        </div>
-
+  el("questionsList").innerHTML=questions.length?questions.map((q,i)=>`
+    <div class="question-card">
+      <h3>السؤال ${i+1}</h3>
+      <p>${escapeHTML(q.question_text)}</p>
+      ${q.image_path?`<img class="question-image" src="${escapeHTML(publicFileUrl(q.image_path))}" alt="صورة السؤال">`:""}
+      <p>أ) ${escapeHTML(q.option_a)}</p>
+      <p>ب) ${escapeHTML(q.option_b)}</p>
+      <p>ج) ${escapeHTML(q.option_c)}</p>
+      <p>د) ${escapeHTML(q.option_d)}</p>
+      <p><strong>الإجابة الصحيحة:</strong> ${escapeHTML(q.answer?.correct_answer||"غير محددة")}</p>
+      <p class="muted">الشرح: ${escapeHTML(q.answer?.explanation||"لا يوجد")}</p>
+      <p class="muted">الدرجة: ${escapeHTML(q.points)}</p>
+      <div class="actions">
+        <button class="btn gray" type="button" data-action="edit-question" data-id="${escapeHTML(q.id)}">تعديل</button>
+        <button class="btn red" type="button" data-action="delete-question" data-id="${escapeHTML(q.id)}">حذف</button>
       </div>
-    `).join("")
-    :empty("لا توجد أسئلة بعد");
+    </div>`).join(""):empty("لا توجد أسئلة بعد");
 }
-
 function editQuestion(id){
   const q=questions.find(x=>x.id===id);
   if(!q)return;
-
   el("questionId").value=q.id;
   el("questionText").value=q.question_text||"";
   el("optionA").value=q.option_a||"";
@@ -1839,462 +769,207 @@ function editQuestion(id){
   el("answerExplanation").value=q.answer?.explanation||"";
   el("questionPoints").value=q.points||1;
   el("questionOrder").value=q.sort_order||1;
-
-  el("questionText").scrollIntoView({
-    behavior:"smooth",
-    block:"center"
-  });
+  el("questionText").scrollIntoView({behavior:"smooth",block:"center"});
 }
-
 async function saveQuestion(){
   try{
     const assessmentId=value("currentAssessmentId");
     const questionId=value("questionId");
-
-    if(!assessmentId){
-      throw new Error("اختر الامتحان أو الواجب");
-    }
-
+    if(!assessmentId)throw new Error("اختر الامتحان أو الواجب");
     const text=value("questionText");
-
-    const options=[
-      value("optionA"),
-      value("optionB"),
-      value("optionC"),
-      value("optionD")
-    ];
-
-    if(!text || options.some(x=>!x)){
-      throw new Error("أدخل السؤال والاختيارات الأربعة");
-    }
-
+    const options=[value("optionA"),value("optionB"),value("optionC"),value("optionD")];
+    if(!text||options.some(x=>!x))throw new Error("أدخل السؤال والاختيارات الأربعة");
     const points=Number(value("questionPoints"));
     const sortOrder=Number(value("questionOrder"));
-
-    if(!Number.isFinite(points) || points<=0){
-      throw new Error("درجة السؤال غير صحيحة");
-    }
-
-    if(!Number.isInteger(sortOrder) || sortOrder<1){
-      throw new Error("ترتيب السؤال غير صحيح");
-    }
+    if(!Number.isFinite(points)||points<=0)throw new Error("درجة السؤال غير صحيحة");
+    if(!Number.isInteger(sortOrder)||sortOrder<1)throw new Error("ترتيب السؤال غير صحيح");
 
     let imagePath=null;
     const file=el("questionImage").files[0];
-
-    if(file){
-      imagePath=await uploadFile(file,"images");
-    }
+    if(file)imagePath=await uploadFile(file,"images",["jpg","jpeg","png","webp","gif"]);
 
     const oldQuestion=questions.find(q=>q.id===questionId);
-
     const payload={
-      assessment_id:assessmentId,
-      question_text:text,
-      option_a:options[0],
-      option_b:options[1],
-      option_c:options[2],
-      option_d:options[3],
-      points,
-      sort_order:sortOrder
+      assessment_id:assessmentId,question_text:text,
+      option_a:options[0],option_b:options[1],option_c:options[2],option_d:options[3],
+      points,sort_order:sortOrder
     };
-
-    if(imagePath){
-      payload.image_path=imagePath;
-    }
+    if(imagePath)payload.image_path=imagePath;
 
     let savedId=questionId;
-
     try{
       if(questionId){
-        const {error}=await db
-          .from("lecture_assessment_questions")
-          .update(payload)
-          .eq("id",questionId);
-
+        const {error}=await db.from("lecture_assessment_questions").update(payload).eq("id",questionId);
         if(error)throw error;
-
       }else{
-        const {data,error}=await db
-          .from("lecture_assessment_questions")
-          .insert(payload)
-          .select("id")
-          .single();
-
+        const {data,error}=await db.from("lecture_assessment_questions").insert(payload).select("id").single();
         if(error)throw error;
-
         savedId=data.id;
       }
-
-      const {error:answerError}=await db
-        .from("lecture_question_answers")
-        .upsert({
-          question_id:savedId,
-          correct_answer:value("correctAnswer"),
-          explanation:value("answerExplanation")
-        });
-
+      const {error:answerError}=await db.from("lecture_question_answers").upsert({
+        question_id:savedId,
+        correct_answer:value("correctAnswer"),
+        explanation:value("answerExplanation")
+      });
       if(answerError)throw answerError;
-
     }catch(error){
       if(imagePath)await removeUploadedFile(imagePath);
       throw error;
     }
-
-    if(imagePath && oldQuestion?.image_path){
-      await removeUploadedFile(oldQuestion.image_path);
-    }
+    if(imagePath&&oldQuestion?.image_path)await removeUploadedFile(oldQuestion.image_path);
 
     await loadQuestions();
     resetQuestion();
-
     notify("تم حفظ السؤال والإجابة والشرح");
-
-  }catch(error){
-    handleError(error);
-  }
+  }catch(error){handleError(error)}
 }
-
 async function deleteQuestion(id){
   if(!confirmDelete())return;
-
   try{
     const q=questions.find(x=>x.id===id);
-
-    const {error}=await db
-      .from("lecture_assessment_questions")
-      .delete()
-      .eq("id",id);
-
+    const {error}=await db.from("lecture_assessment_questions").delete().eq("id",id);
     if(error)throw error;
-
-    if(q?.image_path){
-      await removeUploadedFile(q.image_path);
-    }
-
+    if(q?.image_path)await removeUploadedFile(q.image_path);
     await loadQuestions();
-
     notify("تم حذف السؤال");
-
-  }catch(error){
-    handleError(error);
-  }
+  }catch(error){handleError(error)}
 }
 
-/* ===========================
-   المذكرات العامة
-=========================== */
-
+/* ===== المذكرات العامة ===== */
 async function loadNotes(){
-  const {data,error}=await db
-    .from("notes")
-    .select("*")
-    .order("created_at",{ascending:false});
-
+  const {data,error}=await db.from("notes").select("*").order("created_at",{ascending:false});
   if(error)throw error;
-
   notes=data||[];
-
   el("noteCount").textContent=notes.length;
-
-  el("notesList").innerHTML=notes.length
-    ?notes.map(n=>`
-      <div class="list-item">
-        <strong>${escapeHTML(n.title)}</strong>
-        <div class="actions">
-          <a class="btn blue"
-            href="${escapeHTML(publicFileUrl(n.file_path))}"
-            target="_blank"
-            rel="noopener noreferrer">
-            فتح
-          </a>
-          <button class="btn red"
-            onclick="deleteNote('${n.id}')">
-            حذف
-          </button>
-        </div>
+  el("notesList").innerHTML=notes.length?notes.map(n=>`
+    <div class="list-item">
+      <strong>${escapeHTML(n.title)}</strong>
+      <div class="actions">
+        <a class="btn blue" href="${escapeHTML(publicFileUrl(n.file_path))}" target="_blank" rel="noopener noreferrer">فتح</a>
+        <button class="btn red" type="button" data-action="delete-note" data-id="${escapeHTML(n.id)}">حذف</button>
       </div>
-    `).join("")
-    :empty("لا توجد مذكرات");
+    </div>`).join(""):empty("لا توجد مذكرات");
 }
-
 async function saveNote(){
   try{
     const title=value("noteTitle");
-    const file=el("noteFile").files[0];
-
     if(!title)throw new Error("أدخل عنوان المذكرة");
-    if(!file)throw new Error("اختر ملف PDF");
-
-    const path=await uploadFile(file,"pdf");
-
-    const {error}=await db
-      .from("notes")
-      .insert({
-        title,
-        file_path:path
-      });
-
-    if(error){
-      await removeUploadedFile(path);
-      throw error;
-    }
-
+    const path=await uploadFile(el("noteFile").files[0],"pdf",["pdf"]);
+    const {error}=await db.from("notes").insert({title,file_path:path});
+    if(error){await removeUploadedFile(path);throw error}
     el("noteTitle").value="";
     el("noteFile").value="";
-
     await loadNotes();
     notify("تم إضافة المذكرة");
-
-  }catch(error){
-    handleError(error);
-  }
+  }catch(error){handleError(error)}
 }
-
 async function deleteNote(id){
   if(!confirmDelete())return;
-
   try{
     const note=notes.find(n=>n.id===id);
-
-    const {error}=await db
-      .from("notes")
-      .delete()
-      .eq("id",id);
-
+    const {error}=await db.from("notes").delete().eq("id",id);
     if(error)throw error;
-
-    if(note?.file_path){
-      await removeUploadedFile(note.file_path);
-    }
-
+    if(note?.file_path)await removeUploadedFile(note.file_path);
     await loadNotes();
     notify("تم الحذف");
-
-  }catch(error){
-    handleError(error);
-  }
+  }catch(error){handleError(error)}
 }
 
-/* ===========================
-   الاختبارات العامة
-=========================== */
-
+/* ===== الاختبارات العامة ===== */
 async function loadExams(){
-  const {data,error}=await db
-    .from("exams")
-    .select("*");
-
+  const {data,error}=await db.from("exams").select("*");
   if(error)throw error;
-
   exams=data||[];
-
-  el("examsList").innerHTML=exams.length
-    ?exams.map(e=>`
-      <div class="list-item">
-        <strong>${escapeHTML(e.title)}</strong>
-        <p class="muted">
-          ${escapeHTML(e.description||"")}
-        </p>
-        <div class="actions">
-          <button class="btn gray"
-            onclick="editExam('${e.id}')">
-            تعديل
-          </button>
-          <button class="btn red"
-            onclick="deleteExam('${e.id}')">
-            حذف
-          </button>
-        </div>
+  el("examsList").innerHTML=exams.length?exams.map(e=>`
+    <div class="list-item">
+      <strong>${escapeHTML(e.title)}</strong>
+      <p class="muted">${escapeHTML(e.description||"")}</p>
+      <div class="actions">
+        <button class="btn gray" type="button" data-action="edit-exam" data-id="${escapeHTML(e.id)}">تعديل</button>
+        <button class="btn red" type="button" data-action="delete-exam" data-id="${escapeHTML(e.id)}">حذف</button>
       </div>
-    `).join("")
-    :empty("لا توجد اختبارات عامة");
+    </div>`).join(""):empty("لا توجد اختبارات عامة");
 }
-
 function editExam(id){
   const e=exams.find(x=>x.id===id);
   if(!e)return;
-
   el("examId").value=e.id;
   el("examTitle").value=e.title||"";
   el("examDescription").value=e.description||"";
   el("examDuration").value=e.duration||"";
 }
-
-function resetExam(){
-  [
-    "examId",
-    "examTitle",
-    "examDescription",
-    "examDuration"
-  ].forEach(id=>el(id).value="");
-}
-
+function resetExam(){["examId","examTitle","examDescription","examDuration"].forEach(id=>el(id).value="")}
 async function saveExam(){
   try{
     const id=value("examId");
-
-    if(!value("examTitle")){
-      throw new Error("أدخل عنوان الامتحان");
-    }
-
-    const payload={
-      title:value("examTitle"),
-      description:value("examDescription"),
-      duration:Number(value("examDuration"))||0
-    };
-
-    const query=id
-      ?db.from("exams").update(payload).eq("id",id)
-      :db.from("exams").insert(payload);
-
+    if(!value("examTitle"))throw new Error("أدخل عنوان الامتحان");
+    const payload={title:value("examTitle"),description:value("examDescription"),duration:Number(value("examDuration"))||0};
+    const query=id?db.from("exams").update(payload).eq("id",id):db.from("exams").insert(payload);
     const {error}=await query;
-
     if(error)throw error;
-
     resetExam();
     await loadExams();
     notify("تم حفظ الامتحان");
-
-  }catch(error){
-    handleError(error);
-  }
+  }catch(error){handleError(error)}
 }
-
 async function deleteExam(id){
   if(!confirmDelete())return;
-
   try{
-    const {error}=await db
-      .from("exams")
-      .delete()
-      .eq("id",id);
-
+    const {error}=await db.from("exams").delete().eq("id",id);
     if(error)throw error;
-
     await loadExams();
     notify("تم الحذف");
-
-  }catch(error){
-    handleError(error);
-  }
+  }catch(error){handleError(error)}
 }
 
-/* ===========================
-   الطلاب
-=========================== */
-
+/* ===== الطلاب ===== */
 async function loadStudents(){
-  const {data,error}=await db
-    .from("profiles")
-    .select("id,full_name,email,phone,role")
-    .order("full_name");
-
+  const {data,error}=await db.from("profiles").select("id,full_name,email,phone,role").order("full_name");
   if(error)throw error;
-
   students=data||[];
-
   el("studentCount").textContent=students.length;
-
   renderStudents();
 }
-
 function renderStudents(){
   const search=value("studentSearch").toLowerCase();
-
   const filtered=students.filter(s=>
     String(s.full_name||"").toLowerCase().includes(search)||
-    String(s.phone||"").includes(search)
-  );
-
-  el("studentsList").innerHTML=filtered.length
-    ?filtered.map(s=>`
-      <div class="list-item">
-
-        <strong>${escapeHTML(s.full_name||"بدون اسم")}</strong>
-
-        <p class="muted">
-          ${escapeHTML(s.email||"")}
-        </p>
-
-        <p>
-          الهاتف: ${escapeHTML(s.phone||"غير مسجل")}
-        </p>
-
-        <p class="muted">
-          الصلاحية: ${escapeHTML(s.role||"student")}
-        </p>
-
-        <button class="btn gray"
-          onclick="editStudent('${s.id}')">
-          تعديل بيانات الطالب
-        </button>
-
-      </div>
-    `).join("")
-    :empty("لا توجد نتائج");
+    String(s.phone||"").includes(search));
+  el("studentsList").innerHTML=filtered.length?filtered.map(s=>`
+    <div class="list-item">
+      <strong>${escapeHTML(s.full_name||"بدون اسم")}</strong>
+      <p class="muted">${escapeHTML(s.email||"")}</p>
+      <p>الهاتف: ${escapeHTML(s.phone||"غير مسجل")}</p>
+      <p class="muted">الصلاحية: ${escapeHTML(s.role||"student")}</p>
+      <button class="btn gray" type="button" data-action="edit-student" data-id="${escapeHTML(s.id)}">تعديل بيانات الطالب</button>
+    </div>`).join(""):empty("لا توجد نتائج");
 }
-
 async function editStudent(id){
   const student=students.find(s=>s.id===id);
   if(!student)return;
-
-  const name=prompt(
-    "اسم الطالب:",
-    student.full_name||""
-  );
-
+  const name=prompt("اسم الطالب:",student.full_name||"");
   if(name===null)return;
-
-  const phone=prompt(
-    "رقم هاتف الطالب:",
-    student.phone||""
-  );
-
+  const phone=prompt("رقم هاتف الطالب:",student.phone||"");
   if(phone===null)return;
-
   try{
-    if(!name.trim()){
-      throw new Error("اسم الطالب لا يمكن أن يكون فارغًا");
-    }
-
-    const {error}=await db
-      .from("profiles")
-      .update({
-        full_name:name.trim(),
-        phone:phone.trim()
-      })
-      .eq("id",id);
-
+    if(!name.trim())throw new Error("اسم الطالب لا يمكن أن يكون فارغًا");
+    const {error}=await db.from("profiles").update({full_name:name.trim(),phone:phone.trim()}).eq("id",id);
     if(error)throw error;
-
     await loadStudents();
     notify("تم تحديث بيانات الطالب");
-
-  }catch(error){
-    handleError(error);
-  }
+  }catch(error){handleError(error)}
 }
 
-/* ===========================
-   المنتدى
-=========================== */
-
-let forumPosts=[];
-let forumReplies=[];
-let activeRecorder=null;
-let recordedAudio=new Map();
-const forumMediaBucket="lectures";
-
+/* ===== المنتدى ===== */
 function forumDate(v){try{return new Date(v).toLocaleString("ar-EG")}catch{return ""}}
 function forumSafeUrl(v){try{const u=new URL(v);return u.protocol==="https:"?u.href:""}catch{return ""}}
 function forumMediaUrl(v){
   if(!v)return "";
   if(/^https:\/\//i.test(v))return forumSafeUrl(v);
-  return db.storage.from(forumMediaBucket).getPublicUrl(v).data.publicUrl;
+  return db.storage.from(BUCKET).getPublicUrl(v).data.publicUrl;
 }
 function forumMediaView(r){
-  const kind=r.media_type||((r.audio_url)?"audio":"text");
+  const kind=r.media_type||(r.audio_url?"audio":"text");
   const src=forumMediaUrl(r.media_url||r.audio_url);
   if(!src)return "";
   const safe=escapeHTML(src);
@@ -2336,27 +1011,34 @@ function renderForum(){
           <span class="muted"> — ${escapeHTML(forumDate(r.created_at))}</span>
           ${r.content?`<p style="white-space:pre-wrap">${escapeHTML(r.content)}</p>`:""}
           ${forumMediaView(r)}
-          ${r.user_id===currentUser?.id?`<button class="btn red" onclick="deleteForumReply('${r.id}')">حذف ردي</button>`:""}
+          ${r.user_id===currentUser?.id?`<button class="btn red" type="button" data-action="delete-reply" data-id="${escapeHTML(r.id)}">حذف ردي</button>`:""}
         </div>`).join(""):empty("لا توجد ردود بعد")}
       </div>
-      <div class="forum-compose" id="compose-${p.id}">
+      <div class="forum-compose">
         <h3>الرد على الطالب</h3>
-        <label>نص الرد (اختياري مع الوسائط)<textarea id="forum-text-${p.id}" placeholder="اكتب ردك هنا..."></textarea></label>
+        <label>نص الرد<textarea id="forum-text-${escapeHTML(p.id)}" placeholder="اكتب ردك هنا..."></textarea></label>
         <div class="grid">
-          <label>نوع الرد<select id="forum-type-${p.id}" onchange="forumTypeChanged('${p.id}')">
-            <option value="text">نص فقط</option><option value="audio">صوت</option><option value="image">صورة</option><option value="video">فيديو</option>
-          </select></label>
-          <label id="forum-file-label-${p.id}" class="hidden">رفع ملف<input type="file" id="forum-file-${p.id}" accept="audio/*"></label>
+          <label>نوع الرد
+            <select id="forum-type-${escapeHTML(p.id)}" data-action="forum-type" data-id="${escapeHTML(p.id)}">
+              <option value="text">نص فقط</option><option value="audio">صوت</option>
+              <option value="image">صورة</option><option value="video">فيديو</option>
+            </select>
+          </label>
+          <label id="forum-file-label-${escapeHTML(p.id)}" class="hidden">رفع ملف
+            <input type="file" id="forum-file-${escapeHTML(p.id)}" accept="audio/*">
+          </label>
         </div>
-        <label id="forum-link-label-${p.id}" class="hidden">أو رابط فيديو مباشر (HTTPS)<input id="forum-link-${p.id}" type="url" placeholder="https://..."></label>
-        <div class="actions hidden" id="forum-record-actions-${p.id}">
-          <button class="btn blue" id="forum-record-${p.id}" onclick="startForumRecording('${p.id}')" type="button"><i class="fa-solid fa-microphone"></i> بدء التسجيل</button>
-          <button class="btn gray" id="forum-stop-${p.id}" onclick="stopForumRecording('${p.id}')" type="button" disabled>إيقاف التسجيل</button>
+        <label id="forum-link-label-${escapeHTML(p.id)}" class="hidden">أو رابط فيديو مباشر (HTTPS)
+          <input id="forum-link-${escapeHTML(p.id)}" type="url" placeholder="https://...">
+        </label>
+        <div class="actions hidden" id="forum-record-actions-${escapeHTML(p.id)}">
+          <button class="btn blue" type="button" data-action="rec-start" data-id="${escapeHTML(p.id)}" id="forum-record-${escapeHTML(p.id)}"><i class="fa-solid fa-microphone"></i> بدء التسجيل</button>
+          <button class="btn gray" type="button" data-action="rec-stop" data-id="${escapeHTML(p.id)}" id="forum-stop-${escapeHTML(p.id)}" disabled>إيقاف التسجيل</button>
         </div>
-        <div id="forum-record-status-${p.id}" class="record-status"></div>
+        <div id="forum-record-status-${escapeHTML(p.id)}" class="record-status"></div>
         <div class="actions">
-          <button class="btn" id="forum-send-${p.id}" onclick="sendForumReply('${p.id}')"><i class="fa-solid fa-paper-plane"></i> إرسال الرد</button>
-          <button class="btn red" onclick="deleteForumPost('${p.id}')">حذف المنشور</button>
+          <button class="btn" type="button" data-action="send-reply" data-id="${escapeHTML(p.id)}" id="forum-send-${escapeHTML(p.id)}"><i class="fa-solid fa-paper-plane"></i> إرسال الرد</button>
+          <button class="btn red" type="button" data-action="delete-post" data-id="${escapeHTML(p.id)}">حذف المنشور</button>
         </div>
       </div>
     </article>`;
@@ -2373,8 +1055,8 @@ function forumTypeChanged(id){
 }
 async function startForumRecording(id){
   try{
-    if(activeRecorder)throw Error("أوقف التسجيل الحالي أولًا");
-    if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder)throw Error("التسجيل غير مدعوم في المتصفح");
+    if(activeRecorder)throw new Error("أوقف التسجيل الحالي أولًا");
+    if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder)throw new Error("التسجيل غير مدعوم في المتصفح");
     const stream=await navigator.mediaDevices.getUserMedia({audio:true});
     const mime=["audio/webm;codecs=opus","audio/webm","audio/mp4"].find(x=>MediaRecorder.isTypeSupported(x))||"";
     const recorder=new MediaRecorder(stream,mime?{mimeType:mime}:undefined);
@@ -2387,8 +1069,7 @@ async function startForumRecording(id){
       recordedAudio.set(String(id),new File(chunks,"reply."+ext,{type}));
       stream.getTracks().forEach(t=>t.stop());
       activeRecorder=null;
-      const status=el("forum-record-status-"+id);
-      if(status)status.textContent="التسجيل جاهز للإرسال.";
+      const status=el("forum-record-status-"+id);if(status)status.textContent="التسجيل جاهز للإرسال.";
       const stop=el("forum-stop-"+id);if(stop)stop.disabled=true;
       const start=el("forum-record-"+id);if(start)start.disabled=false;
     };
@@ -2407,46 +1088,51 @@ async function sendForumReply(id){
   button.disabled=true;
   let uploaded="";
   try{
-    if(activeRecorder?.id===id)throw Error("أوقف التسجيل أولًا");
+    if(activeRecorder?.id===id)throw new Error("أوقف التسجيل أولًا");
     const content=value("forum-text-"+id);
     const type=value("forum-type-"+id);
     const file=el("forum-file-"+id).files[0]||(type==="audio"?recordedAudio.get(String(id)):null);
     const link=type==="video"?value("forum-link-"+id):"";
-    if(!content&&!file&&!link)throw Error("اكتب ردًا أو اختر ملفًا");
+    if(!content&&!file&&!link)throw new Error("اكتب ردًا أو اختر ملفًا");
     if(file){
       const allowed={audio:["audio/"],image:["image/"],video:["video/"]};
-      if(!allowed[type]?.some(prefix=>file.type.startsWith(prefix)))throw Error("نوع الملف غير مناسب للرد");
+      if(!allowed[type]?.some(prefix=>file.type.startsWith(prefix)))throw new Error("نوع الملف غير مناسب للرد");
       const max={audio:25,image:10,video:100}[type]*1024*1024;
-      if(file.size>max)throw Error("حجم الملف كبير. استخدم رابط فيديو أو ملفًا أصغر");
+      if(file.size>max)throw new Error("حجم الملف كبير. استخدم رابط فيديو أو ملفًا أصغر");
       const ext=(file.name.split(".").pop()||"bin").replace(/[^a-zA-Z0-9]/g,"").toLowerCase();
       uploaded="forum-replies/"+currentUser.id+"/"+crypto.randomUUID()+"."+ext;
-      const {error}=await db.storage.from(forumMediaBucket).upload(uploaded,file,{contentType:file.type,upsert:false});
+      const {error}=await db.storage.from(BUCKET).upload(uploaded,file,{contentType:file.type,upsert:false});
       if(error)throw error;
     }
-    if(link&&!forumSafeUrl(link))throw Error("أدخل رابط HTTPS صحيحًا");
-    const payload={post_id:Number(id),user_id:currentUser.id,content:content||" ",reply_type:type,
+    if(link&&!forumSafeUrl(link))throw new Error("أدخل رابط HTTPS صحيحًا");
+    const payload={
+      post_id:Number(id),user_id:currentUser.id,content:content||" ",reply_type:type,
       audio_url:type==="audio"?uploaded||null:null,
-      media_type:type,media_url:uploaded||link||null};
+      media_type:type,media_url:uploaded||link||null
+    };
     const {error}=await db.from("forum_replies").insert(payload);
     if(error)throw error;
     recordedAudio.delete(String(id));
     notify("تم إرسال الرد بنجاح");
     await loadForum();
   }catch(error){
-    if(uploaded)await db.storage.from(forumMediaBucket).remove([uploaded]);
+    if(uploaded)await db.storage.from(BUCKET).remove([uploaded]);
     handleError(error);
-  }finally{if(button.isConnected)button.disabled=false}
+  }finally{
+    if(button.isConnected)button.disabled=false;
+  }
 }
 async function deleteForumReply(id){
   if(!confirmDelete())return;
   try{
     const reply=forumReplies.find(r=>String(r.id)===String(id));
-    if(!reply||reply.user_id!==currentUser?.id)throw Error("لا يمكنك حذف رد لا يخص حسابك");
+    if(!reply||reply.user_id!==currentUser?.id)throw new Error("لا يمكنك حذف رد لا يخص حسابك");
     const {error}=await db.from("forum_replies").delete().eq("id",id).eq("user_id",currentUser.id);
     if(error)throw error;
     const path=reply.media_url||reply.audio_url;
-    if(path&&!/^https:\/\//i.test(path))await db.storage.from(forumMediaBucket).remove([path]);
-    notify("تم حذف الرد");await loadForum();
+    if(path&&!/^https:\/\//i.test(path))await db.storage.from(BUCKET).remove([path]);
+    notify("تم حذف الرد");
+    await loadForum();
   }catch(error){handleError(error)}
 }
 async function deleteForumPost(id){
@@ -2456,17 +1142,62 @@ async function deleteForumPost(id){
     if(repliesError)throw repliesError;
     const {error}=await db.from("forum").delete().eq("id",id);
     if(error)throw error;
-    await loadForum();notify("تم حذف المنشور");
+    await loadForum();
+    notify("تم حذف المنشور");
   }catch(error){handleError(error)}
 }
 
-/* ===========================
-   تشغيل لوحة التحكم
-=========================== */
+/* ===== ربط الأحداث (بدل onclick المضمّن) ===== */
+const actions={
+  "edit-lecture":id=>editLecture(id),
+  "lecture-content":id=>openLectureContent(id),
+  "delete-lecture":id=>deleteLecture(id),
+  "edit-month":id=>editMonth(id),
+  "delete-month":id=>deleteMonth(id),
+  "delete-resource":id=>deleteResource(id),
+  "open-questions":id=>openQuestionEditor(id),
+  "toggle-assessment":(id,btn)=>toggleAssessment(id,btn.dataset.published==="true"),
+  "delete-assessment":id=>deleteAssessment(id),
+  "edit-question":id=>editQuestion(id),
+  "delete-question":id=>deleteQuestion(id),
+  "delete-note":id=>deleteNote(id),
+  "edit-exam":id=>editExam(id),
+  "delete-exam":id=>deleteExam(id),
+  "edit-student":id=>editStudent(id),
+  "delete-reply":id=>deleteForumReply(id),
+  "delete-post":id=>deleteForumPost(id),
+  "send-reply":id=>sendForumReply(id),
+  "rec-start":id=>startForumRecording(id),
+  "rec-stop":id=>stopForumRecording(id)
+};
+document.addEventListener("click",e=>{
+  const btn=e.target.closest("[data-action]");
+  if(!btn)return;
+  const fn=actions[btn.dataset.action];
+  if(fn)fn(btn.dataset.id,btn);
+});
+document.addEventListener("change",e=>{
+  const sel=e.target.closest('[data-action="forum-type"]');
+  if(sel)forumTypeChanged(sel.dataset.id);
+});
+
+/* ===== أزرار ثابتة ===== */
+el("saveLectureBtn").addEventListener("click",saveLecture);
+el("resetLectureBtn").addEventListener("click",resetLecture);
+el("saveMonthBtn").addEventListener("click",saveMonth);
+el("resetMonthBtn").addEventListener("click",resetMonth);
+el("selectedLecture").addEventListener("change",loadLectureContent);
+el("addResourceBtn").addEventListener("click",addResource);
+el("createAssessmentBtn").addEventListener("click",createAssessment);
+el("saveQuestionBtn").addEventListener("click",saveQuestion);
+el("resetQuestionBtn").addEventListener("click",resetQuestion);
+el("saveNoteBtn").addEventListener("click",saveNote);
+el("saveExamBtn").addEventListener("click",saveExam);
+el("resetExamBtn").addEventListener("click",resetExam);
+el("studentSearch").addEventListener("input",renderStudents);
+el("reloadForumBtn").addEventListener("click",loadForum);
 
 init();
-
 </script>
-
 </body>
 </html>
