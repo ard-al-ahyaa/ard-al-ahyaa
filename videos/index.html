@@ -457,10 +457,10 @@ async function toggleLecture(i){
   const open=!wrap.classList.contains("open");
   wrap.classList.toggle("open",open);
   body.hidden=!open;
-  if(open&&!body.dataset.ready){
+  if(open){
     body.innerHTML='<p class="muted" style="padding:12px">جارٍ التحميل...</p>';
+    await loadAttempts();
     await renderLecture(i,body);
-    body.dataset.ready="1";
   }
 }
 
