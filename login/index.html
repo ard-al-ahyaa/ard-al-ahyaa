@@ -8,15 +8,15 @@
 <meta name="description" content="سجل دخولك إلى منصة أرض الأحياء التعليمية لطلاب الصف الثالث الثانوي.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="canonical" href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/login/">
-<link rel="icon" type="image/png" href="https://ard-al-ahyaa.github.io/ard-al-ahyaa/favicon.png">
+<link rel="icon" type="image/png" href="../favicon.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/auth-guard.js"></script>
-  
+<script src="../auth-guard.js"></script>
+
 <style>
 :root{
   --green:#087f5b;
@@ -45,8 +45,6 @@ button,a{-webkit-tap-highlight-color:transparent}
   direction:ltr;
   overflow:hidden;
 }
-
-/* القسم البصري على الشمال */
 .visual{
   position:relative;
   min-height:100vh;
@@ -209,7 +207,6 @@ button,a{-webkit-tap-highlight-color:transparent}
 .visual-footer span{display:flex;align-items:center;gap:7px}
 .visual-footer i{color:#70ffdb;font-style:normal}
 
-/* قسم تسجيل الدخول على اليمين */
 .login-side{
   min-height:100vh;
   min-height:100dvh;
@@ -444,7 +441,6 @@ input:focus{
 
 <main class="page">
 
-  <!-- الجزء البصري الأيسر -->
   <section class="visual" aria-label="منصة أرض الأحياء">
 
     <div class="glow glow-one"></div>
@@ -475,19 +471,12 @@ input:focus{
       <div class="logo-stage">
         <div class="logo-ring"></div>
         <div class="logo-box">
-          <img
-            src="https://ard-al-ahyaa.github.io/ard-al-ahyaa/logo.png"
-            alt="شعار أرض الأحياء"
-            onerror="this.style.opacity='.15'"
-          >
+          <img src="../logo.png" alt="شعار أرض الأحياء" onerror="this.style.opacity='.15'">
         </div>
       </div>
 
       <h1>أرض الأحياء</h1>
-
-      <p class="visual-subtitle">
-        منصة تعليمية للثانوية العامة
-      </p>
+      <p class="visual-subtitle">منصة تعليمية للثانوية العامة</p>
 
       <div class="visual-tagline">
         <span class="tagline-dot"></span>
@@ -504,13 +493,12 @@ input:focus{
 
   </section>
 
-  <!-- قسم تسجيل الدخول -->
   <section class="login-side">
 
     <div class="login-card">
 
       <div class="mobile-brand">
-        <img src="https://ard-al-ahyaa.github.io/ard-al-ahyaa/logo.png" alt="شعار أرض الأحياء">
+        <img src="../logo.png" alt="شعار أرض الأحياء">
         <strong>منصة أرض الأحياء</strong>
       </div>
 
@@ -587,7 +575,6 @@ input:focus{
 
 </main>
 
-<!-- زر تليجرام -->
 <a
   href="https://t.me/+KB1Z0dws0f01YjNk"
   target="_blank"
@@ -698,10 +685,6 @@ loginForm.addEventListener("submit", async function (event) {
   }
 });
 </script>
-<script>
-(() => {
-  "use strict";
 
-</script>
 </body>
 </html>
