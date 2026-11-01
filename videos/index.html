@@ -65,7 +65,7 @@ a{text-decoration:none;color:inherit}
 .course-top{display:flex;align-items:center;gap:12px;margin:22px 0 14px;flex-wrap:wrap}
 .course-top h2{margin:0;font-size:20px;font-weight:900;color:var(--dark)}
 
-/* ===== المحاضرات (أكورديون) ===== */
+/* ===== المحاضرات ===== */
 .lec{background:#fff;border:1px solid var(--border);border-radius:16px;margin-bottom:12px;overflow:hidden}
 .lec-head{width:100%;display:flex;align-items:center;gap:14px;padding:16px 18px;background:#fff;border:0;text-align:right;font-weight:900;font-size:15px;color:var(--text)}
 .lec-num{width:38px;height:38px;border-radius:12px;background:#e8f6f1;color:#0a6558;display:grid;place-items:center;flex-shrink:0}
@@ -313,7 +313,7 @@ function getQualities(l){
   return out;
 }
 
-/* ================= الكورسات ================= */
+/* ================= بيانات الطالب ================= */
 async function loadViewer(){
   const {data}=await sb.from("profiles").select("phone").eq("id",user.id).maybeSingle();
   watermark=String(data?.phone||"").trim()||"أرض الأحياء";
@@ -336,21 +336,69 @@ async function loadAttempts(){
   attempts=new Map((data||[]).map(r=>[String(r.assessment_id),r]));
 }
 
+/* ================= التحقق من الاشتراك ================= */
+/* الطريقة الأساسية: دالة my_month_access في Supabase */
+/* الطريقة الاحتياطية: قراءة student_access و student_subscription_grants مباشرة */
+async function hasAccessFallback(month){
+  const monthId=String(month.id);
+  const termCode=String(month.term_code||"").trim();
+
+  const [acc,grants]=await Promise.all([
+    sb.from("student_access").select("month_id,term_code").eq("student_id",user.id),
+    sb.from("student_subscription_grants").select("month_id,term_code,expires_at").eq("student_id",user.id)
+  ]);
+
+  const now=Date.now();
+  const rows=[
+    ...(acc.error?[]:(acc.data||[])),
+    ...(grants.error?[]:(grants.data||[])).filter(g=>!g.expires_at||new Date(g.expires_at).getTime()>now)
+  ];
+
+  return rows.some(r=>
+    (r.month_id!=null && String(r.month_id)===monthId) ||
+    (termCode && r.term_code && String(r.term_code).trim()===termCode)
+  );
+}
+
+async function checkMonthAccess(month){
+  const r=await sb.rpc("my_month_access",{p_month_id:String(month.id)});
+  if(!r.error)return r.data===true;
+
+  console.warn("my_month_access failed, using fallback:",r.error);
+  try{
+    return await hasAccessFallback(month);
+  }catch(e){
+    console.error("fallback access check failed:",e);
+    return false;
+  }
+}
+
 async function loadMonths(){
   const {data,error}=await sb.from("lecture_months").select("*").order("sort_order",{ascending:true});
-  if(error){showNotice("تعذر تحميل الكورسات: "+errText(error));$("coursesGrid").innerHTML="";return}
+  if(error){
+    showNotice("تعذر تحميل الكورسات: "+errText(error));
+    $("coursesGrid").innerHTML="";
+    return;
+  }
   months=(data||[]).filter(m=>m.is_visible!==false&&m.visible!==false);
-  const checks=await Promise.all(months.map(m=>sb.rpc("my_month_access",{p_month_id:String(m.id)})));
-  months.forEach((m,i)=>accessMap.set(String(m.id),!checks[i].error&&checks[i].data===true));
+
+  const results=await Promise.all(months.map(m=>checkMonthAccess(m)));
+  accessMap=new Map();
+  months.forEach((m,i)=>accessMap.set(String(m.id),results[i]));
+
   renderCourses();
 }
 
+/* ================= الكورسات ================= */
 function renderCourses(){
   $("coursesView").hidden=false;
   $("courseView").hidden=true;
-  if(!months.length){$("coursesGrid").innerHTML='<p class="muted">لا توجد كورسات متاحة حاليًا.</p>';return}
+  if(!months.length){
+    $("coursesGrid").innerHTML='<p class="muted">لا توجد كورسات متاحة حاليًا.</p>';
+    return;
+  }
   $("coursesGrid").innerHTML=months.map(m=>{
-    const ok=accessMap.get(String(m.id));
+    const ok=accessMap.get(String(m.id))===true;
     const img=safeUrl(m.cover_url||m.image_url);
     const btn=ok
       ?`<button class="btn" type="button" data-open="${esc(m.id)}"><i class="fa-solid fa-lock-open"></i> فتح الكورس</button>`
@@ -380,9 +428,15 @@ async function openCourse(monthId){
     .eq("month_id",monthId)
     .order("created_at",{ascending:true});
 
-  if(error){$("lecAcc").innerHTML=`<div class="lock-box">تعذر تحميل المحاضرات: ${esc(errText(error))}</div>`;return}
+  if(error){
+    $("lecAcc").innerHTML=`<div class="lock-box">تعذر تحميل المحاضرات: ${esc(errText(error))}</div>`;
+    return;
+  }
   lectures=data||[];
-  if(!lectures.length){$("lecAcc").innerHTML='<div class="lock-box">لا توجد محاضرات في هذا الكورس بعد.</div>';return}
+  if(!lectures.length){
+    $("lecAcc").innerHTML='<div class="lock-box">لا توجد محاضرات في هذا الكورس بعد.</div>';
+    return;
+  }
 
   $("lecAcc").innerHTML=lectures.map((l,i)=>`
     <div class="lec">
