@@ -303,22 +303,6 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .reader-pages{max-height:70vh;overflow-y:auto;padding:12px;text-align:center}
 .reader-pages canvas{display:block;max-width:100%;height:auto;margin:0 auto 14px;box-shadow:0 3px 16px #0002;background:#fff}
 
-/* Quiz */
-.quiz-panel{background:#f8fcfa;border:1px solid #cfe7dd;border-radius:14px;padding:18px;margin-top:12px}
-.quiz-choice{
- display:flex;align-items:center;gap:12px;width:100%;background:#fff;border:2px solid #e1e8ef;border-radius:11px;
- padding:13px;text-align:right;color:var(--text);margin:9px 0;font-size:13px;
-}
-.quiz-choice.selected{background:#e8f8f1;border-color:var(--green)}
-.quiz-choice b{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#e8eef2;flex-shrink:0}
-.quiz-choice.selected b{background:var(--green);color:#fff}
-.quiz-nav{display:flex;gap:10px;justify-content:space-between;margin-top:16px;flex-wrap:wrap}
-.quiz-meter{height:7px;background:#e2e8f0;border-radius:10px;overflow:hidden;margin:13px 0}
-.quiz-meter span{display:block;height:100%;background:var(--green)}
-.quiz-photo{max-width:100%;max-height:280px;object-fit:contain;border-radius:10px;margin:10px auto;display:block}
-.quiz-review{border-right:4px solid var(--green);padding:13px;margin:10px 0;background:#fff;border-radius:9px}
-.quiz-warning{padding:12px;background:#eff6ff;border-radius:10px;color:#1e40af;margin:12px 0}
-
 /* Playlist */
 .playlist-card{
  background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);
@@ -367,7 +351,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
  .sidebar.collapsed .sidebar-inner{padding:17px 15px}
  .mobile-sidebar-button{
   display:grid;place-items:center;width:40px;height:40px;flex-shrink:0;border:0;border-radius:11px;
-  background:#eaf5f1;color:#006e65;font-size:18px;
+  background:#ffffff1f;color:#fff;font-size:18px;margin-bottom:10px;
  }
  .main,.main.expanded{margin-right:0;padding:14px 13px 95px}
  .hero{padding:20px}
@@ -487,7 +471,6 @@ button:disabled{opacity:.55;cursor:not-allowed}
 /* إعدادات Supabase */
 const SUPABASE_URL="https://fpfbmjtpzamzlyzitmsd.supabase.co";
 const SUPABASE_KEY="sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
-
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 const $=id=>document.getElementById(id);
@@ -508,7 +491,6 @@ const SUBSCRIPTION_PAGE="../subscriptions/index.html";
 
 const players=new Map();
 const pdfReaders=new Map();
-const quizSessions=new Map();
 const resourcesCache=new Map();
 const assessmentsCache=new Map();
 
@@ -519,8 +501,7 @@ if(window.pdfjsLib){
 
 /* ================= أدوات مساعدة ================= */
 function escapeHtml(value){
- return String(value??"")
-  .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+ return String(value??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
   .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
 }
 
@@ -662,15 +643,11 @@ function storagePath(raw,bucket){
   const parts=new URL(value).pathname.split("/").filter(Boolean);
   const objectIndex=parts.indexOf("object");
   if(objectIndex<0)return "";
-
   const after=parts.slice(objectIndex+1);
   if(["public","sign","authenticated"].includes(after[0]))after.shift();
   if(after[0]!==bucket)return "";
   after.shift();
-
-  return after.map(part=>{
-   try{return decodeURIComponent(part)}catch{return part}
-  }).join("/");
+  return after.map(part=>{try{return decodeURIComponent(part)}catch{return part}}).join("/");
  }catch{return ""}
 }
 
@@ -1439,7 +1416,7 @@ async function openLecturePdf(index,number){
  }
 }
 
-/* ================= الواجبات والامتحانات ================= */
+/* ================= الواجبات والامتحانات (صفحة منفصلة) ================= */
 async function getAssessments(lectureId){
  const key=String(lectureId);
  if(assessmentsCache.has(key))return assessmentsCache.get(key);
@@ -1478,216 +1455,14 @@ async function renderAssessments(index){
    <div class="assessment-card">
     <strong><i class="fa-solid fa-clipboard-question" style="color:#008866;margin-left:6px"></i>${escapeHtml(item.title)}</strong>
     <p>${item.duration_minutes?"المدة المحددة: "+escapeHtml(item.duration_minutes)+" دقيقة":"اختبار إلكتروني"}</p>
-    <button type="button" class="primary-btn" data-assessment-id="${escapeHtml(item.id)}">
+    <a class="primary-btn" href="exam.html?id=${encodeURIComponent(item.id)}">
      <i class="fa-solid fa-play"></i> ابدأ ${type==="homework"?"الواجب":"الامتحان"}
-    </button>
-    <div id="assessment-panel-${escapeHtml(item.id)}"></div>
+    </a>
    </div>`).join("");
  }
 
  homework.innerHTML=cards("homework");
  exam.innerHTML=cards("exam");
-
- [homework,exam].forEach(box=>{
-  box.querySelectorAll("[data-assessment-id]").forEach(button=>{
-   button.addEventListener("click",()=>startAssessment(button.dataset.assessmentId,index));
-  });
- });
-}
-
-async function startAssessment(id,index){
- const panel=$("assessment-panel-"+id);
- const lecture=currentList[index];
- if(!panel||!lecture)return;
-
- panel.innerHTML='<div class="loading">جارٍ تجهيز الأسئلة...</div>';
-
- const assessments=await getAssessments(lecture.id);
- const assessment=assessments.find(x=>String(x.id)===String(id));
-
- if(!assessment){
-  panel.innerHTML='<div class="empty">الاختبار غير متاح.</div>';
-  return;
- }
-
- const {data,error}=await supabaseClient
-  .from("lecture_assessment_questions")
-  .select("id,question_text,image_path,option_a,option_b,option_c,option_d,sort_order")
-  .eq("assessment_id",id)
-  .order("sort_order",{ascending:true});
-
- if(error){
-  console.error(error);
-  panel.innerHTML='<div class="empty">تعذر تحميل أسئلة الاختبار.</div>';
-  return;
- }
-
- if(!data?.length){
-  panel.innerHTML='<div class="empty">لم تتم إضافة أسئلة بعد.</div>';
-  return;
- }
-
- quizSessions.set(String(id),{
-  assessment,questions:data,answers:{},current:0,submitting:false,finished:false
- });
-
- renderQuizQuestion(id);
-}
-
-function renderQuizQuestion(id){
- const session=quizSessions.get(String(id));
- const panel=$("assessment-panel-"+id);
- if(!session||!panel||session.finished)return;
-
- const n=session.current;
- const question=session.questions[n];
- const total=session.questions.length;
- const selected=session.answers[String(question.id)]||"";
-
- const choices=[
-  ["A",question.option_a],["B",question.option_b],
-  ["C",question.option_c],["D",question.option_d]
- ];
-
- panel.innerHTML=`
-  <div class="quiz-panel">
-   <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
-    <strong>${escapeHtml(session.assessment.title)}</strong>
-    <span>السؤال ${n+1} من ${total}</span>
-   </div>
-   <div class="quiz-meter"><span style="width:${(n+1)*100/total}%"></span></div>
-   <h3 style="font-size:15px;white-space:pre-wrap;line-height:2">${escapeHtml(question.question_text)}</h3>
-   <div id="quiz-image-${escapeHtml(id)}"></div>
-   ${choices.map(([letter,value])=>`
-    <button type="button" class="quiz-choice ${selected===letter?"selected":""}" data-answer="${letter}">
-     <b>${letter}</b><span>${escapeHtml(value||"")}</span>
-    </button>`).join("")}
-   <div class="quiz-nav">
-    <button type="button" class="secondary-btn" id="quiz-prev-${escapeHtml(id)}" ${n===0?"disabled":""}>
-     <i class="fa-solid fa-arrow-right"></i> السابق
-    </button>
-    ${n===total-1
-     ?`<button type="button" class="primary-btn" id="quiz-submit-${escapeHtml(id)}">
-        <i class="fa-solid fa-check"></i> تسليم الإجابات</button>`
-     :`<button type="button" class="primary-btn" id="quiz-next-${escapeHtml(id)}">
-        التالي <i class="fa-solid fa-arrow-left"></i></button>`}
-   </div>
-  </div>`;
-
- panel.querySelectorAll("[data-answer]").forEach(button=>{
-  button.addEventListener("click",()=>{
-   session.answers[String(question.id)]=button.dataset.answer;
-   renderQuizQuestion(id);
-  });
- });
-
- $("quiz-prev-"+id)?.addEventListener("click",()=>{
-  if(session.current>0){
-   session.current--;
-   renderQuizQuestion(id);
-  }
- });
-
- $("quiz-next-"+id)?.addEventListener("click",()=>{
-  if(session.current<total-1){
-   session.current++;
-   renderQuizQuestion(id);
-  }
- });
-
- $("quiz-submit-"+id)?.addEventListener("click",()=>submitAssessment(id));
-
- if(question.image_path)loadQuizImage(id,question.image_path);
-}
-
-async function loadQuizImage(id,path){
- const container=$("quiz-image-"+id);
- if(!container)return;
-
- const url=await resolveMedia(path,"lectures");
- if(!url||!container.isConnected)return;
-
- const img=document.createElement("img");
- img.src=url;
- img.alt="صورة السؤال";
- img.className="quiz-photo";
- img.loading="lazy";
- container.replaceChildren(img);
-}
-
-async function submitAssessment(id){
- const session=quizSessions.get(String(id));
- const panel=$("assessment-panel-"+id);
- if(!session||!panel||session.submitting||session.finished)return;
-
- const total=session.questions.length;
- const answered=session.questions.filter(q=>session.answers[String(q.id)]).length;
-
- if(!confirm(answered<total
-  ?`أجبت عن ${answered} من ${total} سؤال. هل تريد التسليم؟`
-  :"هل أنت متأكد من تسليم إجاباتك؟")) return;
-
- session.submitting=true;
-
- const answers=session.questions.map(q=>({
-  question_id:q.id,
-  selected_answer:session.answers[String(q.id)]||null
- }));
-
- panel.innerHTML='<div class="loading">جارٍ تصحيح الإجابات...</div>';
-
- try{
-  const {data,error}=await supabaseClient.rpc("submit_lecture_assessment",{
-   p_assessment_id:id,
-   p_answers:answers
-  });
-
-  if(error)throw error;
-
-  const result=Array.isArray(data)?data[0]:data;
-  if(!result)throw Error("لم يتم إرجاع نتيجة");
-
-  session.finished=true;
-  renderAssessmentResult(id,result);
- }catch(error){
-  console.error(error);
-  session.submitting=false;
-  panel.innerHTML=`
-   <div class="quiz-warning">تعذر تسليم الاختبار. تأكد من إعداد دالة التصحيح في Supabase.</div>
-   <button type="button" class="primary-btn" id="retry-${escapeHtml(id)}">إعادة المحاولة</button>`;
-  $("retry-"+id)?.addEventListener("click",()=>submitAssessment(id));
- }
-}
-
-function renderAssessmentResult(id,result){
- const panel=$("assessment-panel-"+id);
- if(!panel)return;
-
- const score=Number(result.score??0);
- const max=Number(result.max_score??0);
- const percent=max>0?Math.round(score*100/max):0;
- const review=Array.isArray(result.review)?result.review:[];
-
- panel.innerHTML=`
-  <div class="quiz-panel">
-   <div style="text-align:center;padding:20px 10px">
-    <i class="fa-solid fa-circle-check" style="font-size:42px;color:#008866"></i>
-    <h2 style="color:#004e4d">تم تسليم الاختبار</h2>
-    <p>نتيجتك</p>
-    <div style="font-size:35px;font-weight:900;color:#008866">${escapeHtml(score)} / ${escapeHtml(max)}</div>
-    <strong>النسبة المئوية: ${escapeHtml(percent)}%</strong>
-   </div>
-   ${review.length?`
-    <h3>مراجعة الإجابات</h3>
-    ${review.map((item,n)=>`
-     <div class="quiz-review">
-      <strong>السؤال ${n+1}</strong>
-      <p>${escapeHtml(item.question_text||"")}</p>
-      <p>إجابتك: <b>${escapeHtml(item.selected_answer||"لم تتم الإجابة")}</b></p>
-      <p>الإجابة الصحيحة: <b style="color:#008866">${escapeHtml(item.correct_answer||"")}</b></p>
-      ${item.explanation?`<p><strong>التفسير:</strong> ${escapeHtml(item.explanation)}</p>`:""}
-     </div>`).join("")}`:""}
-  </div>`;
 }
 
 /* ================= تنظيف المشغلات ================= */
@@ -1734,7 +1509,6 @@ function renderMonths(){
 
  tabs.innerHTML=visibleMonths.map(month=>{
   const active=String(selectedMonth)===String(month.id);
-  const status=getMonthStatus(month);
   const locked=!canOpenMonth(month);
   return `
    <button type="button" class="month-tab ${active?"active":""}" data-month-id="${escapeHtml(month.id)}">
@@ -1775,7 +1549,6 @@ async function loadLectures(monthId){
 
  destroyPlayers();
  destroyPdfReaders();
- quizSessions.clear();
  selectedLecture=-1;
 
  $("lecturesList").innerHTML='<div class="loading">جارٍ تحميل المحاضرات...</div>';
@@ -1846,7 +1619,6 @@ function selectLecture(index){
 
  destroyPlayers();
  destroyPdfReaders();
- quizSessions.clear();
  selectedLecture=index;
  renderPlaylist();
 
