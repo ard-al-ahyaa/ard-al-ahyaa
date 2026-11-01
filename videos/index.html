@@ -718,7 +718,7 @@ async function init(){
   await loadAttempts();
   await loadMonths();
 }
-
+window.addEventListener("pageshow",e=>{if(e.persisted)location.reload()});
 init();
 </script>
 </body>
