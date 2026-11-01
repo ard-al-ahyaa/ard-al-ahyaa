@@ -1,35 +1,653 @@
-async function renderAssessments(index){
- const lecture=currentList[index];
- const homework=$("homework-"+index);
- const exam=$("exam-"+index);
- if(!lecture||!homework||!exam)return;
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>الاختبار | أرض الأحياء</title>
+<meta name="theme-color" content="#004e4d">
+<link rel="icon" href="../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/auth-guard.js"></script>
 
- const assessments=await getAssessments(lecture.id);
- if(!homework.isConnected)return;
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f7fb;color:#142f50;font-family:Cairo,sans-serif}
+button{font-family:inherit;cursor:pointer}
+a{text-decoration:none;color:inherit}
+[hidden]{display:none!important}
 
- function cards(type){
-  const items=assessments.filter(x=>x.assessment_type===type);
+/* ===== الهيدر الثابت ===== */
+.top{
+ position:sticky;top:0;z-index:50;color:#fff;
+ background:linear-gradient(120deg,#004e4d,#006e65 50%,#07375b);
+ box-shadow:0 8px 24px #004e4d33;
+}
+.top-inner{
+ max-width:1200px;margin:0 auto;padding:14px 20px;
+ display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+}
+.top-title{display:flex;align-items:center;gap:12px;min-width:0}
+.back{
+ width:40px;height:40px;border-radius:12px;flex-shrink:0;display:grid;place-items:center;
+ background:#ffffff1a;border:1px solid #ffffff26;color:#fff;font-size:15px;
+}
+.top-title h1{
+ margin:0;font-size:16px;font-weight:900;white-space:nowrap;overflow:hidden;
+ text-overflow:ellipsis;max-width:46vw;
+}
+.top-title p{margin:3px 0 0;font-size:11px;color:#d2e8e5}
+.top-actions{display:flex;align-items:center;gap:10px}
+.timer{
+ display:flex;align-items:center;gap:8px;min-width:130px;justify-content:center;
+ background:#ffffff1a;border:1px solid #ffffff30;border-radius:14px;padding:8px 14px;
+ font-size:20px;font-weight:900;color:#fff;
+}
+.timer span{direction:ltr;font-variant-numeric:tabular-nums}
+.timer.warn{background:#ff6b6b33;border-color:#ff9b9b80;color:#ffe3e3;animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.7}}
+.end-btn{
+ background:#fff;color:#006e65;border:0;border-radius:12px;padding:11px 16px;
+ font-weight:900;font-size:13px;
+}
+.end-btn:disabled{opacity:.55;cursor:not-allowed}
 
-  if(!items.length){
-   return `<div class="empty">لا توجد ${type==="homework"?"واجبات":"امتحانات"} متاحة حاليًا.</div>`;
-  }
+/* ===== التخطيط ===== */
+.wrap{
+ max-width:1200px;margin:0 auto;padding:22px 20px 40px;
+ display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start;
+}
+.card{background:#fff;border:1px solid #e4ecf3;border-radius:18px;box-shadow:0 10px 30px #12375b0d}
 
-  return items.map(item=>`
-   <div class="assessment-card">
-    <strong>
-     <i class="fa-solid fa-clipboard-question" style="color:#008866;margin-left:6px"></i>
-     ${escapeHtml(item.title)}
-    </strong>
-    <p>${item.duration_minutes
-     ?"المدة المحددة: "+escapeHtml(item.duration_minutes)+" دقيقة"
-     :"اختبار إلكتروني"}</p>
-    <a class="primary-btn" href="exam.html?id=${encodeURIComponent(item.id)}">
-     <i class="fa-solid fa-play"></i>
-     ابدأ ${type==="homework"?"الواجب":"الامتحان"}
-    </a>
-   </div>`).join("");
+/* ===== السؤال ===== */
+.q-card{padding:22px;min-width:0}
+.q-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.q-badge{background:#e8f6f1;color:#0a6558;font-size:12px;font-weight:800;padding:6px 12px;border-radius:999px}
+.q-state{font-size:12px;color:#6b7f98;font-weight:700}
+.bar{height:7px;background:#e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:20px}
+.bar span{display:block;height:100%;background:linear-gradient(90deg,#13a77c,#008866);transition:width .3s}
+.q-body{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;align-items:start}
+.q-body.has-img{grid-template-columns:minmax(0,1fr) 170px}
+.q-text{
+ margin:0;font-size:17px;font-weight:800;line-height:2;white-space:pre-wrap;overflow-wrap:anywhere;
+}
+.q-thumb{
+ position:relative;display:block;width:170px;padding:0;overflow:hidden;cursor:zoom-in;
+ border:1px solid #dce8ef;border-radius:14px;background:#f6faf9;
+}
+.q-thumb img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+.q-thumb .ph{display:grid;place-items:center;aspect-ratio:4/3;font-size:11px;color:#6b7f98;padding:8px}
+.q-thumb .zoom-tag{
+ position:absolute;bottom:6px;right:6px;background:#000000a0;color:#fff;
+ font-size:10px;padding:3px 8px;border-radius:7px;
+}
+.choices{display:grid;gap:10px;margin-top:20px}
+.choice{
+ display:flex;align-items:center;gap:12px;width:100%;text-align:right;
+ background:#fff;border:2px solid #e1e8ef;border-radius:13px;padding:14px;
+ color:#142f50;font-size:14px;font-weight:700;transition:.15s;
+}
+.choice:hover{border-color:#8fd3bd}
+.choice b{
+ width:32px;height:32px;border-radius:50%;background:#eef3f7;flex-shrink:0;
+ display:grid;place-items:center;font-size:13px;
+}
+.choice.selected{background:#e8f8f1;border-color:#008866}
+.choice.selected b{background:#008866;color:#fff}
+.q-nav{display:flex;justify-content:space-between;gap:10px;margin-top:22px;flex-wrap:wrap}
+
+/* ===== الأزرار ===== */
+.btn{
+ display:inline-flex;align-items:center;justify-content:center;gap:8px;
+ padding:12px 18px;border-radius:12px;font-weight:800;font-size:13px;border:0;text-decoration:none;
+}
+.btn-primary{background:linear-gradient(110deg,#008866,#006e65);color:#fff}
+.btn-ghost{background:#fff;border:1px solid #dce8ef;color:#34536c}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* ===== أرقام الأسئلة ===== */
+.nav-card{padding:18px;position:sticky;top:110px}
+.nav-card h3{margin:0 0 12px;font-size:15px;font-weight:900;color:#004e4d}
+.num-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.num{
+ aspect-ratio:1;border:1px solid #dce8ef;border-radius:11px;background:#fff;
+ font-weight:800;font-size:13px;color:#34536c;
+}
+.num:hover{border-color:#008866}
+.num.answered{background:#e8f8f1;border-color:#a6dec2;color:#087a57}
+.num.current{background:#008866;border-color:#008866;color:#fff}
+.legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;font-size:11px;color:#6b7f98}
+.legend i{
+ display:inline-block;width:11px;height:11px;border-radius:4px;margin-left:5px;
+ vertical-align:-1px;border:1px solid #dce8ef;
+}
+.summary{
+ margin-top:14px;padding:12px;border-radius:12px;background:#f6faf9;
+ font-size:12px;color:#0a6558;font-weight:700;text-align:center;
+}
+
+/* ===== حالات ===== */
+.loading-box{padding:50px 20px;text-align:center;color:#6b7f98;font-size:14px}
+.warn-box{padding:14px;border-radius:12px;background:#eff6ff;color:#1e40af;font-size:13px;margin-bottom:14px}
+.result{text-align:center;padding:20px 10px}
+.score{font-size:40px;font-weight:900;color:#008866;margin:8px 0}
+.review-wrap{margin-top:26px;text-align:right}
+.review-wrap h3{color:#004e4d}
+.review-item{
+ border-right:4px solid #008866;background:#f9fcfb;padding:14px;border-radius:12px;margin:12px 0;
+}
+.review-item p{margin:6px 0;font-size:13px;line-height:1.8}
+
+/* ===== المكبّر ===== */
+.lb{
+ position:fixed;inset:0;z-index:2000;background:#06121ce6;display:none;
+ flex-direction:column;align-items:center;justify-content:center;padding:20px;
+}
+.lb.open{display:flex}
+.lb-tools{display:flex;gap:8px;margin-bottom:12px}
+.lb-tools button{
+ background:#ffffff1a;color:#fff;border:1px solid #ffffff30;border-radius:10px;
+ padding:9px 14px;font-weight:800;font-size:13px;
+}
+.lb-scroll{max-width:100%;max-height:78vh;overflow:auto;border-radius:12px;background:#fff}
+.lb-scroll img{display:block;max-width:100%;max-height:78vh;margin:auto;cursor:zoom-in}
+.lb.zoomed .lb-scroll img{max-width:none;max-height:none;width:180%;cursor:zoom-out}
+
+/* ===== الموبايل ===== */
+@media(max-width:900px){
+ .wrap{grid-template-columns:minmax(0,1fr)}
+ .nav-card{position:static}
+}
+@media(max-width:600px){
+ .top-inner{padding:12px 14px}
+ .top-title h1{font-size:14px}
+ .timer{min-width:104px;font-size:17px;padding:7px 10px}
+ .end-btn{padding:10px 12px;font-size:12px}
+ .wrap{padding:14px 12px 30px}
+ .q-card{padding:16px}
+ .q-body.has-img{grid-template-columns:minmax(0,1fr)}
+ .q-thumb{width:100%;order:-1;max-width:320px}
+ .q-text{font-size:15px}
+ .choice{padding:12px;font-size:13px}
+ .num-grid{grid-template-columns:repeat(7,1fr);gap:6px}
+}
+</style>
+</head>
+
+<body>
+
+<header class="top">
+ <div class="top-inner">
+  <div class="top-title">
+   <a class="back" href="index.html" title="رجوع للمحاضرات"><i class="fa-solid fa-arrow-right"></i></a>
+   <div style="min-width:0">
+    <h1 id="examTitle">جارٍ التحميل...</h1>
+    <p id="examType">اختبار إلكتروني</p>
+   </div>
+  </div>
+  <div class="top-actions">
+   <div class="timer" id="timer" title="الوقت المتبقي">
+    <i class="fa-regular fa-clock"></i>
+    <span id="timerText">--:--</span>
+   </div>
+   <button class="end-btn" id="endBtn" type="button" disabled>إنهاء الاختبار</button>
+  </div>
+ </div>
+</header>
+
+<main class="wrap">
+ <section class="card q-card" id="examArea">
+  <div class="loading-box"><i class="fa-solid fa-spinner fa-spin"></i> جارٍ تحميل الاختبار...</div>
+ </section>
+
+ <aside class="card nav-card" id="navArea" hidden>
+  <h3>أرقام الأسئلة</h3>
+  <div class="num-grid" id="navGrid"></div>
+  <div class="legend">
+   <span><i style="background:#008866;border-color:#008866"></i>الحالي</span>
+   <span><i style="background:#e8f8f1;border-color:#a6dec2"></i>تمت الإجابة</span>
+   <span><i style="background:#fff"></i>لم يُجَب</span>
+  </div>
+  <div class="summary" id="summary"></div>
+ </aside>
+</main>
+
+<div class="lb" id="lightbox" role="dialog" aria-modal="true" aria-label="تكبير الصورة">
+ <div class="lb-tools">
+  <button type="button" id="lbZoom"><i class="fa-solid fa-magnifying-glass-plus"></i> تكبير</button>
+  <button type="button" id="lbClose"><i class="fa-solid fa-xmark"></i> إغلاق</button>
+ </div>
+ <div class="lb-scroll"><img id="lbImg" alt="صورة السؤال"></div>
+</div>
+
+<script>
+"use strict";
+
+const SUPABASE_URL="https://fpfbmjtpzamzlyzitmsd.supabase.co";
+const SUPABASE_KEY="sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+const $=id=>document.getElementById(id);
+const ASSESSMENT_ID=new URLSearchParams(location.search).get("id")||"";
+const SUBSCRIPTION_PAGE="../subscriptions/index.html";
+const STORAGE_KEY="ardExamStart_"+ASSESSMENT_ID;
+
+let assessment=null;
+let questions=[];
+let answers={};
+let current=0;
+let startAt=0;
+let durationMs=0;
+let timerId=null;
+let timeUp=false;
+let submitting=false;
+let finished=false;
+let thumbUrl="";
+const mediaCache=new Map();
+
+/* ================= أدوات ================= */
+function esc(v){
+ return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+}
+function pad(n){return String(n).padStart(2,"0")}
+function fmt(sec){
+ sec=Math.max(0,Math.floor(sec));
+ const h=Math.floor(sec/3600);
+ const m=Math.floor((sec%3600)/60);
+ const s=sec%60;
+ return h?`${h}:${pad(m)}:${pad(s)}`:`${pad(m)}:${pad(s)}`;
+}
+function errText(error){
+ if(!error)return "";
+ return [error.message,error.details,error.hint,error.code].filter(Boolean).join(" | ");
+}
+function fail(message,detail){
+ $("examArea").innerHTML=`
+  <div class="result">
+   <i class="fa-solid fa-circle-exclamation" style="font-size:40px;color:#98621d"></i>
+   <p style="font-size:14px;line-height:2">${esc(message)}</p>
+   ${detail?`<p style="font-size:12px;color:#6b7f98;direction:ltr;word-break:break-word">${esc(detail)}</p>`:""}
+   <a class="btn btn-primary" href="index.html">الرجوع للمحاضرات</a>
+  </div>`;
+ $("navArea").hidden=true;
+ $("endBtn").disabled=true;
+}
+
+/* ================= روابط الملفات ================= */
+function storagePath(raw,bucket){
+ const value=String(raw||"").trim();
+ if(!value)return "";
+ if(!/^https?:\/\//i.test(value)){
+  let path=value.replace(/^\/+/,"");
+  if(path.startsWith(bucket+"/"))path=path.slice(bucket.length+1);
+  return path;
+ }
+ try{
+  const parts=new URL(value).pathname.split("/").filter(Boolean);
+  const objectIndex=parts.indexOf("object");
+  if(objectIndex<0)return "";
+  const after=parts.slice(objectIndex+1);
+  if(["public","sign","authenticated"].includes(after[0]))after.shift();
+  if(after[0]!==bucket)return "";
+  after.shift();
+  return after.map(p=>{try{return decodeURIComponent(p)}catch{return p}}).join("/");
+ }catch{return ""}
+}
+
+async function resolveMedia(raw,bucket="lectures"){
+ const value=String(raw||"").trim();
+ if(!value)return "";
+ if(/^https:\/\//i.test(value)){
+  try{
+   const u=new URL(value);
+   if(!u.pathname.includes("/storage/v1/object/")||u.pathname.includes("/storage/v1/object/public/"))return u.href;
+   if(u.pathname.includes("/storage/v1/object/sign/")&&u.searchParams.has("token"))return u.href;
+  }catch{return ""}
+ }
+ const path=storagePath(value,bucket);
+ if(!path)return "";
+ const {data,error}=await supabaseClient.storage.from(bucket).createSignedUrl(path,3600);
+ if(error){console.warn("Media error:",error);return ""}
+ return data?.signedUrl||"";
+}
+
+async function getMediaUrl(path){
+ if(mediaCache.has(path))return mediaCache.get(path);
+ const url=await resolveMedia(path,"lectures");
+ if(url)mediaCache.set(path,url);
+ return url;
+}
+
+/* ================= الصلاحيات ================= */
+async function checkAccess(user,lectureId){
+ const {data:lec,error:lecError}=await supabaseClient
+  .from("lectures").select("month_id").eq("id",lectureId).maybeSingle();
+ if(lecError||!lec)return false;
+
+ const [profile,month,paid,free]=await Promise.all([
+  supabaseClient.from("profiles").select("role").eq("id",user.id).maybeSingle(),
+  supabaseClient.from("lecture_months").select("id,term_code").eq("id",lec.month_id).maybeSingle(),
+  supabaseClient.from("student_access").select("month_id,term_code").eq("student_id",user.id),
+  supabaseClient.from("student_subscription_grants").select("month_id,term_code,expires_at")
+   .eq("student_id",user.id).gt("expires_at",new Date().toISOString())
+ ]);
+
+ if(profile.data?.role==="admin")return true;
+ if(profile.error||month.error||paid.error||free.error)return false;
+
+ const monthId=String(month.data?.id??"").trim();
+ const termCode=String(month.data?.term_code??"").trim().toLowerCase();
+
+ return [...(paid.data||[]),...(free.data||[])].some(row=>{
+  const grantMonth=row.month_id==null?"":String(row.month_id).trim();
+  const grantTerm=String(row.term_code??"").trim().toLowerCase();
+  return (monthId!==""&&grantMonth!==""&&grantMonth===monthId)||
+         (termCode!==""&&grantTerm!==""&&grantTerm===termCode);
+ });
+}
+
+/* ================= بدء الصفحة ================= */
+async function init(){
+ if(!ASSESSMENT_ID){fail("الاختبار غير محدد.");return}
+
+ const {data:sess}=await supabaseClient.auth.getSession();
+ const user=sess?.session?.user;
+ if(!user){location.href="../login/index.html";return}
+
+ const {data:a,error}=await supabaseClient
+  .from("lecture_assessments")
+  .select("id,lecture_id,title,assessment_type,duration_minutes")
+  .eq("id",ASSESSMENT_ID).eq("is_published",true).maybeSingle();
+
+ if(error){console.error(error);fail("تعذر تحميل بيانات الاختبار.",errText(error));return}
+ if(!a){fail("الاختبار غير متاح.");return}
+
+ const allowed=await checkAccess(user,a.lecture_id);
+ if(!allowed){
+  fail("المحتوى ده ضمن الاشتراك. اشترك علشان تدخل الاختبار، ولو اشتراكك متفعّل حدّث الصفحة.");
+  return;
  }
 
- homework.innerHTML=cards("homework");
- exam.innerHTML=cards("exam");
+ assessment=a;
+ const isHomework=a.assessment_type==="homework";
+ $("examTitle").textContent=a.title||(isHomework?"واجب":"امتحان");
+ $("examType").textContent=isHomework?"واجب المحاضرة":"امتحان المحاضرة";
+ document.title=(a.title||"الاختبار")+" | أرض الأحياء";
+
+ const {data:qs,error:qe}=await supabaseClient
+  .from("lecture_assessment_questions")
+  .select("id,question_text,image_path,option_a,option_b,option_c,option_d,sort_order")
+  .eq("assessment_id",ASSESSMENT_ID)
+  .order("sort_order",{ascending:true});
+
+ if(qe){console.error(qe);fail("تعذر تحميل أسئلة الاختبار.",errText(qe));return}
+ if(!qs?.length){fail("لم تتم إضافة أسئلة لهذا الاختبار بعد.");return}
+
+ questions=qs;
+ setupTimer();
+
+ $("navArea").hidden=false;
+ $("endBtn").disabled=false;
+ $("endBtn").addEventListener("click",()=>submitExam(false));
+ $("lbZoom").addEventListener("click",toggleZoom);
+ $("lbClose").addEventListener("click",closeLightbox);
+ $("lbImg").addEventListener("click",toggleZoom);
+ $("lightbox").addEventListener("click",e=>{if(e.target===$("lightbox"))closeLightbox()});
+ document.addEventListener("keydown",e=>{if(e.key==="Escape")closeLightbox()});
+ window.addEventListener("beforeunload",e=>{
+  if(!finished){e.preventDefault();e.returnValue=""}
+ });
+
+ renderNav();
+ renderQuestion();
 }
+
+/* ================= العداد ================= */
+function setupTimer(){
+ const minutes=Number(assessment.duration_minutes);
+ durationMs=minutes>0?minutes*60000:0;
+
+ let saved=Number(sessionStorage.getItem(STORAGE_KEY));
+ if(!saved){
+  saved=Date.now();
+  sessionStorage.setItem(STORAGE_KEY,String(saved));
+ }
+ startAt=saved;
+
+ if(!durationMs)$("timer").title="الوقت المنقضي";
+ tick();
+ timerId=setInterval(tick,1000);
+}
+
+function tick(){
+ if(finished)return;
+ const now=Date.now();
+ const timerEl=$("timer");
+ if(durationMs){
+  const left=(startAt+durationMs-now)/1000;
+  $("timerText").textContent=fmt(left);
+  timerEl.classList.toggle("warn",left<=300);
+  if(left<=0&&!timeUp){
+   timeUp=true;
+   submitExam(true);
+  }
+ }else{
+  $("timerText").textContent=fmt((now-startAt)/1000);
+ }
+}
+
+/* ================= التنقل ================= */
+function goTo(index){
+ if(index<0||index>=questions.length)return;
+ current=index;
+ renderNav();
+ renderQuestion();
+ if(window.innerWidth<=900)window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function renderNav(){
+ const answered=questions.filter(q=>answers[String(q.id)]).length;
+ $("navGrid").innerHTML=questions.map((q,i)=>{
+  const cls=["num",i===current?"current":"",answers[String(q.id)]?"answered":""].join(" ");
+  return `<button type="button" class="${cls}" data-n="${i}">${i+1}</button>`;
+ }).join("");
+ $("navGrid").querySelectorAll("[data-n]").forEach(btn=>{
+  btn.addEventListener("click",()=>goTo(Number(btn.dataset.n)));
+ });
+ $("summary").textContent=`أجبت عن ${answered} من ${questions.length} سؤال`;
+}
+
+/* ================= السؤال ================= */
+function renderQuestion(){
+ const q=questions[current];
+ const total=questions.length;
+ const key=String(q.id);
+ const selected=answers[key]||"";
+ thumbUrl="";
+
+ const choices=[["A",q.option_a],["B",q.option_b],["C",q.option_c],["D",q.option_d]];
+
+ $("examArea").innerHTML=`
+  <div class="q-top">
+   <span class="q-badge">السؤال ${current+1} من ${total}</span>
+   <span class="q-state" id="qState">${selected?"✓ تمت الإجابة":"لم تتم الإجابة بعد"}</span>
+  </div>
+  <div class="bar"><span style="width:${(current+1)*100/total}%"></span></div>
+
+  <div class="q-body ${q.image_path?"has-img":""}">
+   <p class="q-text">${esc(q.question_text||"")}</p>
+   ${q.image_path?`
+    <button type="button" class="q-thumb" id="qThumb" title="تكبير الصورة">
+     <span class="ph" id="qThumbPh"><i class="fa-regular fa-image"></i>&nbsp;جارٍ التحميل</span>
+    </button>`:""}
+  </div>
+
+  <div class="choices">
+   ${choices.map(([letter,value])=>`
+    <button type="button" class="choice ${selected===letter?"selected":""}" data-answer="${letter}">
+     <b>${letter}</b><span>${esc(value||"")}</span>
+    </button>`).join("")}
+  </div>
+
+  <div class="q-nav">
+   <button type="button" class="btn btn-ghost" id="prevBtn" ${current===0?"disabled":""}>
+    <i class="fa-solid fa-arrow-right"></i> السابق
+   </button>
+   ${current<total-1
+    ?`<button type="button" class="btn btn-primary" id="nextBtn">التالي <i class="fa-solid fa-arrow-left"></i></button>`
+    :`<button type="button" class="btn btn-primary" id="finishBtn"><i class="fa-solid fa-flag-checkered"></i> إنهاء الاختبار</button>`}
+  </div>`;
+
+ $("examArea").querySelectorAll("[data-answer]").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+   answers[key]=btn.dataset.answer;
+   $("examArea").querySelectorAll("[data-answer]").forEach(b=>b.classList.toggle("selected",b===btn));
+   $("qState").textContent="✓ تمت الإجابة";
+   renderNav();
+  });
+ });
+
+ $("prevBtn")?.addEventListener("click",()=>goTo(current-1));
+ $("nextBtn")?.addEventListener("click",()=>goTo(current+1));
+ $("finishBtn")?.addEventListener("click",()=>submitExam(false));
+
+ if(q.image_path)loadThumb(q);
+}
+
+async function loadThumb(q){
+ const url=await getMediaUrl(q.image_path);
+ const btn=$("qThumb");
+ // تأكد إن السؤال لسه هو المعروض
+ if(!btn||String(questions[current]?.id)!==String(q.id))return;
+
+ if(!url){
+  btn.innerHTML='<span class="ph">تعذر تحميل الصورة</span>';
+  btn.style.cursor="default";
+  return;
+ }
+
+ thumbUrl=url;
+ btn.innerHTML=`
+  <img src="${esc(url)}" alt="صورة السؤال" loading="lazy">
+  <span class="zoom-tag"><i class="fa-solid fa-magnifying-glass-plus"></i> تكبير</span>`;
+ btn.addEventListener("click",()=>openLightbox(url));
+}
+
+/* ================= المكبّر ================= */
+function openLightbox(url){
+ $("lbImg").src=url;
+ $("lightbox").classList.remove("zoomed");
+ $("lightbox").classList.add("open");
+ setZoomLabel(false);
+}
+function closeLightbox(){
+ $("lightbox").classList.remove("open","zoomed");
+}
+function toggleZoom(){
+ const on=$("lightbox").classList.toggle("zoomed");
+ setZoomLabel(on);
+}
+function setZoomLabel(on){
+ $("lbZoom").innerHTML=on
+  ?'<i class="fa-solid fa-magnifying-glass-minus"></i> تصغير'
+  :'<i class="fa-solid fa-magnifying-glass-plus"></i> تكبير';
+}
+
+/* ================= التسليم ================= */
+async function submitExam(auto){
+ if(submitting||finished)return;
+
+ const answered=questions.filter(q=>answers[String(q.id)]).length;
+
+ if(!auto){
+  const msg=answered<questions.length
+   ?`أجبت عن ${answered} من ${questions.length} سؤال. متأكد إنك عايز تنهي الاختبار؟`
+   :"متأكد إنك عايز تنهي الاختبار وتسلّم إجاباتك؟";
+  if(!confirm(msg))return;
+ }
+
+ submitting=true;
+ $("endBtn").disabled=true;
+ $("navArea").hidden=true;
+ $("examArea").innerHTML=`<div class="loading-box"><i class="fa-solid fa-spinner fa-spin"></i> ${auto?"انتهى الوقت، جارٍ تسليم إجاباتك...":"جارٍ تصحيح الإجابات..."}</div>`;
+
+ const payload=questions.map(q=>({
+  question_id:q.id,
+  selected_answer:answers[String(q.id)]||null
+ }));
+
+ try{
+  const {data,error}=await supabaseClient.rpc("submit_lecture_assessment",{
+   p_assessment_id:ASSESSMENT_ID,
+   p_answers:payload
+  });
+  if(error)throw error;
+
+  const result=Array.isArray(data)?data[0]:data;
+  if(!result)throw Error("لم يتم إرجاع نتيجة");
+
+  finished=true;
+  clearInterval(timerId);
+  sessionStorage.removeItem(STORAGE_KEY);
+  $("timer").classList.remove("warn");
+  $("timerText").textContent="انتهى";
+  closeLightbox();
+  renderResult(result);
+ }catch(error){
+  console.error(error);
+  submitting=false;
+  $("endBtn").disabled=false;
+  $("navArea").hidden=false;
+  $("examArea").innerHTML=`
+   <div class="warn-box">تعذر تسليم الاختبار: ${esc(errText(error)||"خطأ غير معروف")}</div>
+   <div class="q-nav">
+    <button type="button" class="btn btn-primary" id="retryBtn"><i class="fa-solid fa-rotate-right"></i> إعادة المحاولة</button>
+   </div>`;
+  $("retryBtn").addEventListener("click",()=>{
+   renderQuestion();
+   submitExam(auto);
+  });
+ }
+}
+
+function renderResult(result){
+ const score=Number(result.score??0);
+ const max=Number(result.max_score??0);
+ const percent=max>0?Math.round(score*100/max):0;
+ const review=Array.isArray(result.review)?result.review:[];
+ const label=assessment.assessment_type==="homework"?"الواجب":"الاختبار";
+
+ $("examArea").innerHTML=`
+  <div class="result">
+   <i class="fa-solid fa-circle-check" style="font-size:46px;color:#008866"></i>
+   <h2 style="color:#004e4d;margin:10px 0 4px">تم تسليم ${label}</h2>
+   <p style="color:#6b7f98;margin:0">نتيجتك</p>
+   <div class="score">${esc(score)} / ${esc(max)}</div>
+   <strong>النسبة المئوية: ${percent}%</strong>
+   <div style="margin-top:18px">
+    <a class="btn btn-primary" href="index.html"><i class="fa-solid fa-arrow-right"></i> الرجوع للمحاضرات</a>
+   </div>
+  </div>
+  ${review.length?`
+   <div class="review-wrap">
+    <h3>مراجعة الإجابات</h3>
+    ${review.map((item,n)=>`
+     <div class="review-item">
+      <strong>السؤال ${n+1}</strong>
+      <p>${esc(item.question_text||"")}</p>
+      <p>إجابتك: <b>${esc(item.selected_answer||"لم تتم الإجابة")}</b></p>
+      <p>الإجابة الصحيحة: <b style="color:#008866">${esc(item.correct_answer||"")}</b></p>
+      ${item.explanation?`<p><strong>التفسير:</strong> ${esc(item.explanation)}</p>`:""}
+     </div>`).join("")}
+   </div>`:""}`;
+
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+init();
+</script>
+</body>
+</html>
