@@ -1448,23 +1448,30 @@ async function renderAssessments(index){
 
  function cards(type){
   const items=assessments.filter(x=>x.assessment_type===type);
+
   if(!items.length){
    return `<div class="empty">لا توجد ${type==="homework"?"واجبات":"امتحانات"} متاحة حاليًا.</div>`;
   }
+
   return items.map(item=>`
    <div class="assessment-card">
-    <strong><i class="fa-solid fa-clipboard-question" style="color:#008866;margin-left:6px"></i>${escapeHtml(item.title)}</strong>
-    <p>${item.duration_minutes?"المدة المحددة: "+escapeHtml(item.duration_minutes)+" دقيقة":"اختبار إلكتروني"}</p>
+    <strong>
+     <i class="fa-solid fa-clipboard-question" style="color:#008866;margin-left:6px"></i>
+     ${escapeHtml(item.title)}
+    </strong>
+    <p>${item.duration_minutes
+     ?"المدة المحددة: "+escapeHtml(item.duration_minutes)+" دقيقة"
+     :"اختبار إلكتروني"}</p>
     <a class="primary-btn" href="exam.html?id=${encodeURIComponent(item.id)}">
-     <i class="fa-solid fa-play"></i> ابدأ ${type==="homework"?"الواجب":"الامتحان"}
+     <i class="fa-solid fa-play"></i>
+     ابدأ ${type==="homework"?"الواجب":"الامتحان"}
     </a>
    </div>`).join("");
  }
 
  homework.innerHTML=cards("homework");
  exam.innerHTML=cards("exam");
-}
-
+ }
 /* ================= تنظيف المشغلات ================= */
 function destroyPlayers(){
  for(const player of players.values()){
