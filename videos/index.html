@@ -26,7 +26,6 @@
  --border:#e4ecf3;
  --text:#142f50;
  --muted:#6b7f98;
- --white:#fff;
  --radius:18px;
  --shadow:0 10px 30px #12375b0d;
 }
@@ -39,7 +38,7 @@ a{text-decoration:none;color:inherit}
 button:disabled{opacity:.55;cursor:not-allowed}
 [hidden]{display:none!important}
 
-/* ================= الشريط الجانبي (نفس لوحة الطالب) ================= */
+/* ===== الشريط الجانبي ===== */
 .sidebar{
  width:272px;background:linear-gradient(180deg,#004e4d 0%,#003d50 62%,#07375b 100%);
  color:#fff;position:fixed;right:0;top:0;bottom:0;display:flex;flex-direction:column;
@@ -86,15 +85,12 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .mobile-sidebar-button{display:none}
 .mobile-bottom{display:none}
 
-/* ================= المحتوى الرئيسي ================= */
+/* ===== المحتوى ===== */
 .main{margin-right:272px;padding:26px 28px 50px;transition:margin-right .25s;min-width:0}
 .main.expanded{margin-right:82px}
-
-/* Hero */
 .hero{
  position:relative;overflow:hidden;border-radius:22px;padding:28px 30px;color:#fff;
- background:
-  radial-gradient(circle at 90% 10%,#13a77c55 0,transparent 40%),
+ background:radial-gradient(circle at 90% 10%,#13a77c55 0,transparent 40%),
   linear-gradient(120deg,#004e4d 0%,#006e65 45%,#07375b 100%);
  box-shadow:0 18px 40px #004e4d33;
  display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;
@@ -117,17 +113,13 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .stat b{display:block;font-size:24px;font-weight:900}
 .stat span{font-size:11px;color:#d2e8e5}
 
-/* Notice */
 .notice{margin-top:14px}
 .empty,.loading{
  background:#fff;border:1px solid var(--border);border-radius:14px;padding:22px;text-align:center;
  color:var(--muted);font-size:13px;line-height:2;
 }
 
-/* Month tabs */
-.month-tabs{
- display:flex;gap:10px;overflow-x:auto;padding:18px 2px 6px;margin-top:6px;scrollbar-width:thin;
-}
+.month-tabs{display:flex;gap:10px;overflow-x:auto;padding:18px 2px 6px;margin-top:6px;scrollbar-width:thin}
 .month-tab{
  flex-shrink:0;display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--border);
  border-radius:14px;padding:11px 16px;color:var(--text);font-weight:800;font-size:13px;
@@ -146,7 +138,6 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .month-tab .mt-lock{color:#98621d;font-size:12px}
 .month-tab.active .mt-lock{color:#fff}
 
-/* Month banner */
 .month-banner{
  display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;
  background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin:8px 0 18px;
@@ -161,14 +152,12 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .status-chip.upgrade-error{background:#fff8ee;border-color:#f1dec3;color:#98621d}
 .status-chip a{color:inherit;text-decoration:underline}
 
-/* Workspace: stage + playlist */
 .workspace{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
-.stage-card{
- background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;
-}
+.stage-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
 .stage-empty{padding:70px 20px;text-align:center;color:var(--muted);font-size:14px}
 .stage-empty i{font-size:44px;color:#b6d9cc;display:block;margin-bottom:14px}
 
+/* ===== المشغل ===== */
 .player-wrap{padding:14px 14px 0}
 .earth-player{
  position:relative;width:100%;aspect-ratio:16/9;background:#07111d;border-radius:14px;overflow:hidden;
@@ -241,7 +230,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .quality-hint{padding:9px 7px 4px;font-size:10px;color:#9cabb9}
 .earth-player.quality-open .player-controls{opacity:1!important;visibility:visible!important;transform:none!important;pointer-events:auto!important}
 
-/* Lecture info */
+/* ===== معلومات المحاضرة ===== */
 .stage-info{padding:18px 20px 6px}
 .stage-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
 .lec-no{
@@ -257,10 +246,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .pill-btn:hover{border-color:var(--green);color:var(--green)}
 .pill-btn.on{background:#e2f6ec;border-color:#a6dec2;color:#087a57}
 
-/* Tabs */
-.tabs{
- display:flex;gap:6px;padding:14px 20px 0;border-bottom:1px solid #edf1f6;overflow-x:auto;scrollbar-width:none;
-}
+.tabs{display:flex;gap:6px;padding:14px 20px 0;border-bottom:1px solid #edf1f6;overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
 .tab-btn{
  flex-shrink:0;background:none;border:0;border-bottom:3px solid transparent;padding:11px 14px 12px;
@@ -271,7 +257,6 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .tab-panel{padding:18px 20px 22px;font-size:13px;line-height:2;color:#435a72;overflow-wrap:anywhere}
 .tab-panel p{white-space:pre-wrap;margin:0}
 
-/* Resources & assessments */
 .resource-card,.assessment-card{
  background:#f9fcfb;border:1px solid #e1eee8;border-radius:14px;padding:15px;margin:10px 0;
  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
@@ -285,6 +270,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 }
 .primary-btn{background:linear-gradient(110deg,#008866,#006e65);color:#fff}
 .secondary-btn{background:#fff;border:1px solid #dce8ef;color:#34536c}
+
 .lecture-locked{
  background:linear-gradient(140deg,#f9fcfb,#f1f8f6);border:1px solid #dcece6;border-radius:16px;
  padding:40px 22px;text-align:center;margin:14px;
@@ -296,21 +282,19 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .lecture-locked h3{margin:0 0 8px;color:#134b46;font-size:16px}
 .lecture-locked p{color:#627a77;font-size:12px;line-height:1.9;margin:0 auto 16px;max-width:430px}
 
-/* Reader (PDF) */
+/* ===== قارئ PDF ===== */
 .reader-shell{margin:6px 0 14px;border:1px solid #cbd5e1;border-radius:14px;background:#e9eef2;overflow:hidden}
 .reader-head{padding:13px;background:#07375b;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .reader-head button{flex-shrink:0}
 .reader-pages{max-height:70vh;overflow-y:auto;padding:12px;text-align:center}
 .reader-pages canvas{display:block;max-width:100%;height:auto;margin:0 auto 14px;box-shadow:0 3px 16px #0002;background:#fff}
 
-/* Playlist */
+/* ===== قائمة المحاضرات ===== */
 .playlist-card{
  background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);
  overflow:hidden;position:sticky;top:20px;
 }
-.playlist-head{
- display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid #edf1f6;
-}
+.playlist-head{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid #edf1f6}
 .playlist-head h3{margin:0;font-size:15px;font-weight:900;color:var(--dark)}
 .playlist-head span{font-size:11px;color:var(--muted);background:#f1f6fa;padding:4px 10px;border-radius:999px}
 .playlist{max-height:calc(100vh - 150px);overflow-y:auto;padding:8px}
@@ -331,7 +315,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .lec-state.done{background:#e2f6ec;color:#087a57}
 .lec-state.locked{background:#fff4e6;color:#98621d}
 
-/* Mobile */
+/* ===== الموبايل ===== */
 @media(max-width:1100px){
  .workspace{grid-template-columns:1fr}
  .playlist-card{position:static}
@@ -439,12 +423,8 @@ button:disabled{opacity:.55;cursor:not-allowed}
 
  <div class="workspace">
   <section class="stage-card" id="stage" aria-live="polite">
-   <div class="stage-empty">
-    <i class="fa-regular fa-circle-play"></i>
-    جارٍ تحميل المحاضرات...
-   </div>
+   <div class="stage-empty"><i class="fa-regular fa-circle-play"></i>جارٍ تحميل المحاضرات...</div>
   </section>
-
   <aside class="playlist-card">
    <div class="playlist-head">
     <h3>قائمة المحاضرات</h3>
@@ -468,12 +448,13 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <script>
 "use strict";
 
-/* إعدادات Supabase */
+/* ================= إعدادات Supabase ================= */
 const SUPABASE_URL="https://fpfbmjtpzamzlyzitmsd.supabase.co";
 const SUPABASE_KEY="sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 const $=id=>document.getElementById(id);
+const SUBSCRIPTION_PAGE="../subscriptions/index.html";
 
 let visibleMonths=[];
 let currentList=[];
@@ -487,7 +468,6 @@ let viewerIsAdmin=false;
 let paidAccess=[];
 let freeGrants=[];
 let accessLoadError=false;
-const SUBSCRIPTION_PAGE="../subscriptions/index.html";
 
 const players=new Map();
 const pdfReaders=new Map();
@@ -495,8 +475,7 @@ const resourcesCache=new Map();
 const assessmentsCache=new Map();
 
 if(window.pdfjsLib){
- pdfjsLib.GlobalWorkerOptions.workerSrc=
-  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+ pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 }
 
 /* ================= أدوات مساعدة ================= */
@@ -529,6 +508,11 @@ function formatTime(value){
   :m+":"+String(s).padStart(2,"0");
 }
 
+function errorText(error){
+ if(!error)return "خطأ غير معروف";
+ return [error.message,error.details,error.hint,error.code].filter(Boolean).join(" | ")||"خطأ غير معروف";
+}
+
 /* ================= الاشتراكات ================= */
 async function loadSubscriptionAccess(user){
  viewerId=user.id;
@@ -551,10 +535,8 @@ async function loadSubscriptionAccess(user){
 function canOpenMonth(month){
  if(viewerIsAdmin)return true;
  if(!viewerId||accessLoadError||!month)return false;
-
  const monthId=String(month.id??"").trim();
  const termCode=String(month.term_code??"").trim().toLowerCase();
-
  return [...paidAccess,...freeGrants].some(row=>{
   const grantMonth=row.month_id==null?"":String(row.month_id).trim();
   const grantTerm=String(row.term_code??"").trim().toLowerCase();
@@ -564,12 +546,8 @@ function canOpenMonth(month){
 }
 
 function getMonthStatus(month){
- if(accessLoadError){
-  return {type:"upgrade-error",icon:"fa-circle-exclamation",text:"تعذر فحص الاشتراك، حاول تحديث الصفحة"};
- }
- if(canOpenMonth(month)){
-  return {type:"unlocked",icon:"fa-circle-check",text:"الشهر متاح ليك، ابدأ المذاكرة براحتك"};
- }
+ if(accessLoadError)return {type:"upgrade-error",icon:"fa-circle-exclamation",text:"تعذر فحص الاشتراك، حاول تحديث الصفحة"};
+ if(canOpenMonth(month))return {type:"unlocked",icon:"fa-circle-check",text:"الشهر متاح ليك، ابدأ المذاكرة براحتك"};
  return {type:"",icon:"fa-lock",text:"محتوى الشهر ضمن الاشتراك"};
 }
 
@@ -617,7 +595,6 @@ document.addEventListener("keydown",event=>{if(event.key==="Escape")closeMobileS
 try{setSidebar(localStorage.getItem("ardAlahyaaSidebarCollapsed")==="true")}
 catch{setSidebar(false)}
 
-/* زر القائمة للموبايل */
 const mobileBtn=document.createElement("button");
 mobileBtn.type="button";
 mobileBtn.className="mobile-sidebar-button";
@@ -628,17 +605,15 @@ mobileBtn.innerHTML='<i class="fa-solid fa-bars"></i>';
 mobileBtn.addEventListener("click",openMobileSidebar);
 $("main").querySelector(".hero").prepend(mobileBtn);
 
-/* ================= روابط Supabase ================= */
+/* ================= روابط الملفات ================= */
 function storagePath(raw,bucket){
  const value=String(raw||"").trim();
  if(!value)return "";
-
  if(!/^https?:\/\//i.test(value)){
   let path=value.replace(/^\/+/,"");
   if(path.startsWith(bucket+"/"))path=path.slice(bucket.length+1);
   return path;
  }
-
  try{
   const parts=new URL(value).pathname.split("/").filter(Boolean);
   const objectIndex=parts.indexOf("object");
@@ -654,13 +629,10 @@ function storagePath(raw,bucket){
 async function resolveMedia(raw,bucket="lectures"){
  const value=String(raw||"").trim();
  if(!value)return "";
-
  if(/^https:\/\//i.test(value)){
   const url=safeUrl(value);
   if(!url)return "";
-  if(!url.includes("/storage/v1/object/")||url.includes("/storage/v1/object/public/")){
-   return url;
-  }
+  if(!url.includes("/storage/v1/object/")||url.includes("/storage/v1/object/public/"))return url;
   if(url.includes("/storage/v1/object/sign/")){
    try{
     const u=new URL(url);
@@ -668,10 +640,8 @@ async function resolveMedia(raw,bucket="lectures"){
    }catch{}
   }
  }
-
  const path=storagePath(value,bucket);
  if(!path)return "";
-
  const {data,error}=await supabaseClient.storage.from(bucket).createSignedUrl(path,3600);
  if(error){
   console.warn("Media error:",error);
@@ -691,34 +661,25 @@ function getEmbed(raw){
    const id=parts[0];
    if(/^[\w-]{11}$/.test(id||"")) return "https://www.youtube-nocookie.com/embed/"+id;
   }
-
   if(["youtube.com","www.youtube.com","m.youtube.com"].includes(host)){
-   const id=url.searchParams.get("v")||
-    (["embed","shorts","live"].includes(parts[0])?parts[1]:"");
+   const id=url.searchParams.get("v")||(["embed","shorts","live"].includes(parts[0])?parts[1]:"");
    if(/^[\w-]{11}$/.test(id||"")) return "https://www.youtube-nocookie.com/embed/"+id;
   }
-
   if(host==="drive.google.com"){
    const i=parts.indexOf("d");
    const id=i>=0?parts[i+1]:url.searchParams.get("id");
    if(id&&/^[\w-]+$/.test(id)) return "https://drive.google.com/file/d/"+id+"/preview";
   }
-
   if(host==="vimeo.com"||host==="www.vimeo.com"){
    const id=parts.find(p=>/^\d+$/.test(p));
    if(id) return "https://player.vimeo.com/video/"+id;
   }
-
   if(host==="www.loom.com"||host==="loom.com"){
-   if(parts[0]==="share"&&/^[\w-]+$/.test(parts[1]||"")){
-    return "https://www.loom.com/embed/"+parts[1];
-   }
+   if(parts[0]==="share"&&/^[\w-]+$/.test(parts[1]||"")) return "https://www.loom.com/embed/"+parts[1];
   }
-
   if(host==="canva.link"||host.endsWith(".canva.link")||host==="canva.com"||host.endsWith(".canva.com")){
    return safeUrl(raw);
   }
-
   return "";
  }catch{return ""}
 }
@@ -727,14 +688,12 @@ function getEmbed(raw){
 function getQualities(lecture){
  const list=[];
  const used=new Set();
-
  const fields=[
   [1080,["video_1080_url","quality_1080_url","video_url_1080"]],
   [720,["video_720_url","quality_720_url","video_url_720"]],
   [480,["video_480_url","quality_480_url","video_url_480"]],
   [360,["video_360_url","quality_360_url","video_url_360"]]
  ];
-
  for(const [height,keys] of fields){
   for(const key of keys){
    const src=lecture[key];
@@ -745,17 +704,14 @@ function getQualities(lecture){
    }
   }
  }
-
  let extra=lecture.qualities;
  if(typeof extra==="string"){
   try{extra=JSON.parse(extra)}catch{extra=null}
  }
-
  if(extra&&typeof extra==="object"){
   const entries=Array.isArray(extra)
    ?extra.map(q=>[String(q.label||q.quality||""),q.url||q.src])
    :Object.entries(extra);
-
   for(const [key,src] of entries){
    const match=key.match(/(1080|720|480|360)/);
    if(match&&typeof src==="string"&&src.trim()){
@@ -767,12 +723,10 @@ function getQualities(lecture){
    }
   }
  }
-
  const original=lecture.video_url||lecture.video_path||lecture.videoUrl||lecture.url;
  if(typeof original==="string"&&original.trim()&&!list.some(q=>q.src===original.trim())){
   list.push({label:"الجودة الأصلية",height:0,src:original.trim()});
  }
-
  return list.sort((a,b)=>b.height-a.height);
 }
 
@@ -809,11 +763,9 @@ async function loadProgress(){
 async function updateProgress(index,field){
  const lecture=currentList[index];
  if(!lecture||!window.ArdProgress)return;
-
  const id=String(lecture.id);
  const row=progress.get(id)||{};
  const next=!row[field];
-
  try{
   if(field==="saved"&&typeof ArdProgress.setSaved==="function"){
    await ArdProgress.setSaved(id,next);
@@ -837,7 +789,6 @@ function refreshActions(index){
  const row=progress.get(String(lecture.id))||{};
  const save=$("save-"+index);
  const done=$("done-"+index);
-
  if(save){
   save.classList.toggle("on",!!row.saved);
   save.innerHTML=row.saved
@@ -862,13 +813,11 @@ async function buildPlayer(index){
  players.delete(index);
 
  const qualities=getQualities(lecture);
-
  if(!qualities.length){
   box.innerHTML='<div class="player-loading">لم يتم إضافة فيديو لهذه المحاضرة بعد.</div>';
   return;
  }
 
- // جرّب رابط الفيديو الأصلي أولًا، ثم روابط الجودات البديلة
  const original=String(lecture.video_url||lecture.video_path||lecture.videoUrl||lecture.url||"").trim();
  const preferred=[...qualities].sort((a,b)=>Number(b.src===original)-Number(a.src===original));
 
@@ -1004,10 +953,8 @@ async function buildPlayer(index){
    button.addEventListener("click",async()=>{
     if(changing)return;
     if(i===currentQuality){closeQuality();return}
-
     changing=true;
     renderQualities();
-
     try{
      const nextEmbed=getEmbed(quality.src);
      if(nextEmbed){
@@ -1017,10 +964,8 @@ async function buildPlayer(index){
       players.delete(index);
       return;
      }
-
      const url=await resolveMedia(quality.src);
      if(!url)throw Error("رابط الجودة غير متاح");
-
      restore={time:video.currentTime,playing:!video.paused,speed:video.playbackRate};
      currentQuality=i;
      currentSourceIndex=preferred.findIndex(q=>q.src===quality.src);
@@ -1130,9 +1075,7 @@ async function buildPlayer(index){
    video.playbackRate=saved.speed;
    if(Number.isFinite(saved.time)){
     try{
-     video.currentTime=Number.isFinite(video.duration)
-      ?Math.min(saved.time,video.duration)
-      :saved.time;
+     video.currentTime=Number.isFinite(video.duration)?Math.min(saved.time,video.duration):saved.time;
     }catch{}
    }
    if(saved.playing)video.play().catch(()=>{});
@@ -1245,19 +1188,15 @@ function getOldHandouts(lecture){
 async function loadHandouts(lecture){
  const key=String(lecture.id);
  if(resourcesCache.has(key))return resourcesCache.get(key);
-
  const old=getOldHandouts(lecture);
  let fresh=[];
-
  const {data,error}=await supabaseClient
   .from("lecture_resources").select("id,title,file_path").eq("lecture_id",lecture.id);
-
  if(!error){
   fresh=(data||[]).filter(x=>x.file_path).map(x=>({title:x.title||"مذكرة المحاضرة",url:x.file_path}));
  }else{
   console.warn("lecture_resources:",error.message);
  }
-
  const seen=new Set();
  const combined=[...fresh,...old].filter(item=>{
   const url=String(item.url||"");
@@ -1265,7 +1204,6 @@ async function loadHandouts(lecture){
   seen.add(url);
   return true;
  });
-
  resourcesCache.set(key,combined);
  return combined;
 }
@@ -1273,20 +1211,16 @@ async function loadHandouts(lecture){
 async function resolveHandout(raw){
  const value=String(raw||"").trim();
  if(!value)return "";
-
  if(/^https:\/\//i.test(value)){
   const url=safeUrl(value);
   if(!url)return "";
-  if(!url.includes("/storage/v1/object/")||url.includes("/storage/v1/object/public/")){
-   return url;
-  }
+  if(!url.includes("/storage/v1/object/")||url.includes("/storage/v1/object/public/"))return url;
   if(url.includes("/storage/v1/object/sign/")){
    try{
     if(new URL(url).searchParams.has("token"))return url;
    }catch{}
   }
  }
-
  for(const bucket of ["lectures","handouts"]){
   const path=storagePath(value,bucket);
   if(!path)continue;
@@ -1300,15 +1234,12 @@ async function renderHandouts(index){
  const lecture=currentList[index];
  const box=$("handouts-list-"+index);
  if(!lecture||!box)return;
-
  const items=await loadHandouts(lecture);
  if(!box.isConnected)return;
-
  if(!items.length){
   box.innerHTML='<div class="empty">لم تتم إضافة مذكرات لهذه المحاضرة بعد.</div>';
   return;
  }
-
  box.innerHTML=items.map((item,n)=>`
   <div class="resource-card">
    <strong><i class="fa-solid fa-file-pdf" style="color:#008866;margin-left:8px"></i>${escapeHtml(item.title)}</strong>
@@ -1316,7 +1247,6 @@ async function renderHandouts(index){
     <i class="fa-solid fa-book-open-reader"></i> قراءة المذكرة
    </button>
   </div>`).join("")+`<div id="handout-viewer-${index}" hidden></div>`;
-
  box.querySelectorAll("[data-open-pdf]").forEach(button=>{
   button.addEventListener("click",()=>openLecturePdf(index,Number(button.dataset.openPdf)));
  });
@@ -1340,7 +1270,6 @@ function closeLecturePdf(index){
 async function openLecturePdf(index,number){
  const lecture=currentList[index];
  if(!lecture)return;
-
  const items=await loadHandouts(lecture);
  const item=items[number];
  const box=$("handout-viewer-"+index);
@@ -1350,9 +1279,7 @@ async function openLecturePdf(index,number){
   closeLecturePdf(index);
   return;
  }
-
  closeLecturePdf(index);
-
  box.hidden=false;
  box.dataset.opened=String(number);
 
@@ -1370,7 +1297,6 @@ async function openLecturePdf(index,number){
   </div>`;
 
  $("close-pdf-"+index).addEventListener("click",()=>closeLecturePdf(index));
-
  const pages=$("reader-pages-"+index);
 
  if(!window.pdfjsLib){
@@ -1381,31 +1307,24 @@ async function openLecturePdf(index,number){
  try{
   const url=await resolveHandout(item.url);
   if(!url)throw Error("رابط المذكرة غير متاح");
-
   const task=pdfjsLib.getDocument({url});
   const state={task,cancelled:false};
   pdfReaders.set(index,state);
-
   const pdf=await task.promise;
   if(state.cancelled)return;
-
   pages.innerHTML="";
-
   for(let n=1;n<=pdf.numPages;n++){
    if(state.cancelled)break;
-
    const page=await pdf.getPage(n);
    const viewport1=page.getViewport({scale:1});
    const width=Math.max(200,pages.clientWidth-24);
    const scale=Math.min(2,width/viewport1.width);
    const viewport=page.getViewport({scale});
-
    const canvas=document.createElement("canvas");
    canvas.width=Math.ceil(viewport.width);
    canvas.height=Math.ceil(viewport.height);
    canvas.setAttribute("aria-label","صفحة "+n);
    pages.appendChild(canvas);
-
    await page.render({canvasContext:canvas.getContext("2d"),viewport}).promise;
   }
  }catch(error){
@@ -1416,22 +1335,19 @@ async function openLecturePdf(index,number){
  }
 }
 
-/* ================= الواجبات والامتحانات (صفحة منفصلة) ================= */
+/* ================= الواجبات والامتحانات ================= */
 async function getAssessments(lectureId){
  const key=String(lectureId);
  if(assessmentsCache.has(key))return assessmentsCache.get(key);
-
  const {data,error}=await supabaseClient
   .from("lecture_assessments")
   .select("id,title,assessment_type,duration_minutes")
   .eq("lecture_id",lectureId)
   .eq("is_published",true);
-
  if(error){
   console.warn("lecture_assessments:",error.message);
   return [];
  }
-
  const items=data||[];
  assessmentsCache.set(key,items);
  return items;
@@ -1465,7 +1381,7 @@ async function renderAssessments(index){
  exam.innerHTML=cards("exam");
 }
 
-/* ================= تنظيف المشغلات ================= */
+/* ================= تنظيف ================= */
 function destroyPlayers(){
  for(const player of players.values()){
   try{player.destroy?.()}catch{}
@@ -1474,7 +1390,7 @@ function destroyPlayers(){
 }
 
 function destroyPdfReaders(){
- for(const index of [...pdfReaders.keys()]) closeLecturePdf(index);
+ for(const index of [...pdfReaders.keys()])closeLecturePdf(index);
 }
 
 /* ================= الشهور ================= */
@@ -1486,14 +1402,13 @@ async function loadMonths(){
   .from("lecture_months").select("*").order("sort_order",{ascending:true});
 
  if(error){
-  console.error(error);
-  tabs.innerHTML='<div class="empty">تعذر تحميل الشهور.</div>';
+  console.error("lecture_months:",error);
+  tabs.innerHTML=`<div class="empty">تعذر تحميل الشهور: ${escapeHtml(errorText(error))}</div>`;
   return;
  }
 
  visibleMonths=(data||[]).filter(month=>month.is_visible!==false&&month.visible!==false);
  $("statMonths").textContent=visibleMonths.length;
-
  renderMonths();
 
  if(visibleMonths.length){
@@ -1506,7 +1421,6 @@ async function loadMonths(){
 
 function renderMonths(){
  const tabs=$("monthsGrid");
-
  tabs.innerHTML=visibleMonths.map(month=>{
   const active=String(selectedMonth)===String(month.id);
   const locked=!canOpenMonth(month);
@@ -1517,7 +1431,6 @@ function renderMonths(){
     ${locked&&!viewerIsAdmin?'<i class="fa-solid fa-lock mt-lock" aria-hidden="true"></i>':""}
    </button>`;
  }).join("");
-
  tabs.querySelectorAll("[data-month-id]").forEach(button=>{
   button.addEventListener("click",()=>selectMonth(button.dataset.monthId));
  });
@@ -1526,10 +1439,8 @@ function renderMonths(){
 async function selectMonth(id){
  selectedMonth=id;
  renderMonths();
-
  const month=visibleMonths.find(x=>String(x.id)===String(id));
  const status=getMonthStatus(month);
-
  $("monthHeading").hidden=false;
  $("selectedMonthTitle").textContent=month?.title||"محاضرات الشهر";
  $("selectedMonthDescription").textContent=month?.description||"اختر المحاضرة التي تريد مشاهدتها.";
@@ -1539,14 +1450,12 @@ async function selectMonth(id){
    ${escapeHtml(status.text)}
    ${!canOpenMonth(month)&&!accessLoadError?`<a href="${escapeHtml(SUBSCRIPTION_PAGE)}">ترقية</a>`:""}
   </span>`;
-
  await loadLectures(id);
 }
 
 /* ================= المحاضرات ================= */
 async function loadLectures(monthId){
  const request=++monthRequest;
-
  destroyPlayers();
  destroyPdfReaders();
  selectedLecture=-1;
@@ -1560,9 +1469,10 @@ async function loadLectures(monthId){
  if(request!==monthRequest)return;
 
  if(error){
-  console.error(error);
-  $("lecturesList").innerHTML='<div class="empty">تعذر تحميل المحاضرات. تحقق من إعدادات جدول lectures.</div>';
-  $("stage").innerHTML='<div class="stage-empty">تعذر تحميل المحاضرات.</div>';
+  console.error("lectures:",error);
+  const msg=`تعذر تحميل المحاضرات: ${errorText(error)}`;
+  $("lecturesList").innerHTML=`<div class="empty">${escapeHtml(msg)}</div>`;
+  $("stage").innerHTML=`<div class="stage-empty">${escapeHtml(msg)}</div>`;
   return;
  }
 
@@ -1577,7 +1487,6 @@ async function loadLectures(monthId){
  }
 }
 
-/* قائمة المحاضرات الجانبية */
 function renderPlaylist(){
  const box=$("lecturesList");
  const activeMonth=visibleMonths.find(m=>String(m.id)===String(selectedMonth));
@@ -1612,7 +1521,6 @@ function renderPlaylist(){
  });
 }
 
-/* عرض محاضرة في المشغل */
 function selectLecture(index){
  const lecture=currentList[index];
  if(!lecture)return;
@@ -1674,7 +1582,6 @@ function selectLecture(index){
    <div id="exam-${index}"><div class="loading">جارٍ تحميل الامتحان...</div></div>
   </div>`;
 
- // التبويبات
  $("stage").querySelectorAll("[data-tab]").forEach(tab=>{
   tab.addEventListener("click",()=>{
    const name=tab.dataset.tab;
@@ -1689,12 +1596,10 @@ function selectLecture(index){
   });
  });
 
- // الحفظ والإكمال
  $("save-"+index).addEventListener("click",()=>updateProgress(index,"saved"));
  $("done-"+index).addEventListener("click",()=>updateProgress(index,"completed"));
  refreshActions(index);
 
- // المشغل والمحتويات الإضافية
  buildPlayer(index);
  Promise.allSettled([renderHandouts(index),renderAssessments(index)]);
 }
@@ -1722,7 +1627,7 @@ async function initializePage(){
   await loadMonths();
  }catch(error){
   console.error(error);
-  showMessage("حدث خطأ أثناء تحميل الصفحة. حاول تحديثها.");
+  showMessage("حدث خطأ أثناء تحميل الصفحة: "+errorText(error));
  }
 }
 
