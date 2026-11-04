@@ -14,8 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../auth-guard.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 
 <style>
 :root{
@@ -594,6 +593,11 @@ input:focus{
 const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
 
+/* مفتاح الجلسة الموحد لكل صفحات المنصة */
+const AUTH_STORAGE_KEY = "ardAlahyaaAuth";
+const LOGIN_AT_KEY = "ardLoginAt";
+const SESSION_MAX_MS = 24 * 60 * 60 * 1000;
+
 const loginForm = document.getElementById("loginForm");
 const loginBtn = document.getElementById("loginBtn");
 const loginBtnText = document.getElementById("loginBtnText");
@@ -603,6 +607,20 @@ const togglePassword = document.getElementById("togglePassword");
 
 let supabaseClient = null;
 
+function getClient() {
+  if (!supabaseClient) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        storageKey: AUTH_STORAGE_KEY
+      }
+    });
+  }
+  return supabaseClient;
+}
+
 function showMessage(text, type) {
   message.textContent = text;
   message.className = "message " + type;
@@ -611,6 +629,24 @@ function showMessage(text, type) {
 function setButtonLoading(loading) {
   loginBtn.disabled = loading;
   loginBtnText.textContent = loading ? "جاري تسجيل الدخول..." : "تسجيل الدخول";
+}
+
+/* الجلسة صالحة 24 ساعة من وقت الدخول */
+function loginIsFresh() {
+  const at = Number(localStorage.getItem(LOGIN_AT_KEY));
+  return !!at && Date.now() - at < SESSION_MAX_MS;
+}
+
+/* لو الطالب مسجل دخول والجلسة لسه صالحة، يتحول للمنصة مباشرة */
+async function redirectIfLoggedIn() {
+  try {
+    const { data } = await getClient().auth.getSession();
+    if (data && data.session && data.session.user && loginIsFresh()) {
+      window.location.replace("../index.html");
+    }
+  } catch (error) {
+    console.warn("تعذر التحقق من الجلسة:", error);
+  }
 }
 
 togglePassword.addEventListener("click", function () {
@@ -643,11 +679,7 @@ loginForm.addEventListener("submit", async function (event) {
   message.className = "message";
 
   try {
-    if (!supabaseClient) {
-      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    }
-
-    const { data, error } = await supabaseClient.auth.signInWithPassword({
+    const { data, error } = await getClient().auth.signInWithPassword({
       email: email,
       password: password
     });
@@ -655,10 +687,13 @@ loginForm.addEventListener("submit", async function (event) {
     if (error) throw error;
     if (!data || !data.user) throw new Error("تعذر العثور على الحساب.");
 
+    /* تسجيل وقت الدخول لحساب الـ 24 ساعة */
+    localStorage.setItem(LOGIN_AT_KEY, String(Date.now()));
+
     showMessage("تم تسجيل الدخول بنجاح، جاري فتح المنصة...", "success");
 
     window.setTimeout(function () {
-      window.location.href = "../index.html";
+      window.location.replace("../index.html");
     }, 700);
 
   } catch (error) {
@@ -673,10 +708,7 @@ loginForm.addEventListener("submit", async function (event) {
       text = "يجب تأكيد البريد الإلكتروني أولًا.";
     } else if (errorText.includes("rate limit")) {
       text = "تم إجراء محاولات كثيرة. حاول مرة أخرى لاحقًا.";
-    } else if (
-      errorText.includes("network") ||
-      errorText.includes("failed to fetch")
-    ) {
+    } else if (errorText.includes("network") || errorText.includes("failed to fetch")) {
       text = "تعذر الاتصال بالإنترنت. تحقق من اتصالك وحاول مجددًا.";
     }
 
@@ -684,6 +716,8 @@ loginForm.addEventListener("submit", async function (event) {
     setButtonLoading(false);
   }
 });
+
+redirectIfLoggedIn();
 </script>
 
 </body>
