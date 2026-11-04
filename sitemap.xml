@@ -1,30 +1,36 @@
-<urlset xmlns="http://sitemaps.org">
-  <!--  1. الصفحة الرئيسية للمنصة  -->
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- الصفحة الرئيسية لمنصة المصطفى -->
   <url>
     <loc>https://ard-al-ahyaa.vercel.app/</loc>
-    <lastmod>2026-09-25</lastmod>
+    <lastmod>2026-11-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
-  <!--  2. قسم المحاضرات (Videos)  -->
+
+  <!-- المحاضرات -->
   <url>
     <loc>https://ard-al-ahyaa.vercel.app/videos/</loc>
-    <lastmod>2026-09-25</lastmod>
+    <lastmod>2026-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
-  <!--  3. قسم المذكرات والملخصات (Notes)  -->
+
+  <!-- المذكرات -->
   <url>
     <loc>https://ard-al-ahyaa.vercel.app/notes/</loc>
-    <lastmod>2026-09-25</lastmod>
+    <lastmod>2026-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
-  <!--  4. المنتدى التعليمي للطلاب (Forum)  -->
+
+  <!-- المنتدى -->
   <url>
     <loc>https://ard-al-ahyaa.vercel.app/forum/</loc>
-    <lastmod>2026-09-25</lastmod>
+    <lastmod>2026-11-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
+
 </urlset>
