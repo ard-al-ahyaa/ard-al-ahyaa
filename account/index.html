@@ -9,7 +9,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="manifest" href="../manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="../progress.js"></script>
 
@@ -199,13 +198,24 @@ function showMsg(id,text,type){const m=$(id);m.textContent=text;m.className="msg
 
 /* ================= الجلسة (24 ساعة) ================= */
 function sessionAgeOk(){
-  let at=Number(localStorage.getItem(LOGIN_AT_KEY));
-  if(!at){at=Date.now();localStorage.setItem(LOGIN_AT_KEY,String(at))}
-  return Date.now()-at<SESSION_MAX_MS;
+  try{
+    let at=Number(localStorage.getItem(LOGIN_AT_KEY));
+    if(!Number.isFinite(at)||at<=0){
+      at=Date.now();
+      localStorage.setItem(LOGIN_AT_KEY,String(at));
+    }
+    return Date.now()-at<SESSION_MAX_MS;
+  }catch(e){
+    console.warn("تعذر قراءة وقت الجلسة:",e);
+    return true;
+  }
 }
+let expiringSession=false;
 async function expireSession(){
-  try{await sb.auth.signOut()}catch{}
-  localStorage.removeItem(LOGIN_AT_KEY);
+  if(expiringSession)return;
+  expiringSession=true;
+  try{await sb.auth.signOut()}catch(e){console.warn(e)}
+  try{localStorage.removeItem(LOGIN_AT_KEY)}catch{}
   location.replace(LOGIN_URL);
 }
 async function requireSession(){
@@ -221,10 +231,12 @@ setInterval(()=>{if(!sessionAgeOk())expireSession()},5*60*1000);
 function applySidebar(c){
   $("sidebar").classList.toggle("collapsed",c);
   $("main").classList.toggle("expanded",c);
-  try{localStorage.setItem("ardAlahyaaSidebarCollapsed",String(c))}catch{}
+  try{localStorage.setItem("ardAlahyaaSidebarCollapsed",String(c))}catch(e){console.warn(e)}
 }
 function setupSidebar(){
-  applySidebar(localStorage.getItem("ardAlahyaaSidebarCollapsed")==="true");
+  let collapsed=false;
+  try{collapsed=localStorage.getItem("ardAlahyaaSidebarCollapsed")==="true"}catch{}
+  applySidebar(collapsed);
   $("sbToggle").onclick=()=>{
     if(innerWidth<=768){document.body.classList.toggle("m-open");return}
     applySidebar(!$("sidebar").classList.contains("collapsed"));
@@ -243,32 +255,63 @@ document.querySelectorAll("[data-tab]").forEach(b=>{
 
 /* ================= البيانات الشخصية ================= */
 async function loadProfile(){
-  const {data,error}=await sb.from("profiles").select("full_name,phone").eq("id",user.id).maybeSingle();
-  if(error)console.warn(error);
-  const name=data?.full_name||user.user_metadata?.full_name||user.email||"الطالب";
-  $("hName").textContent="أهلاً، "+name;
-  $("fName").value=name;
   $("fEmail").value=user.email||"";
-  $("fPhone").value=data?.phone||"";
+  try{
+    const {data,error}=await sb.from("profiles").select("full_name,phone").eq("id",user.id).maybeSingle();
+    if(error)throw error;
+    const name=data?.full_name||user.user_metadata?.full_name||user.email||"الطالب";
+    $("hName").textContent="أهلاً، "+name;
+    $("fName").value=name;
+    $("fPhone").value=data?.phone||"";
+  }catch(e){
+    console.error("loadProfile:",e);
+    const name=user.user_metadata?.full_name||user.email||"الطالب";
+    $("hName").textContent="أهلاً، "+name;
+    $("fName").value=name;
+    $("fPhone").value="";
+    showMsg("profileMsg","تعذر تحميل بعض بيانات الحساب. يمكنك المحاولة مرة أخرى بعد التأكد من الاتصال.","err");
+  }
 }
 
 async function saveProfile(){
   const phone=$("fPhone").value.trim();
   if(phone.length>25){showMsg("profileMsg","رقم الهاتف طويل أكثر من اللازم","err");return}
   if(!navigator.onLine){showMsg("profileMsg","لا يوجد اتصال بالإنترنت","err");return}
-  const {error}=await sb.from("profiles").update({phone:phone||null}).eq("id",user.id);
-  if(error){showMsg("profileMsg","تعذر الحفظ: "+errText(error),"err");return}
-  showMsg("profileMsg","تم حفظ رقم الهاتف بنجاح","ok");
+  const btn=$("saveProfile");
+  btn.disabled=true;
+  btn.style.opacity=".65";
+  try{
+    const {data,error}=await sb.from("profiles").update({phone:phone||null}).eq("id",user.id).select("id");
+    if(error)throw error;
+    if(!data?.length){
+      showMsg("profileMsg","لم يتم العثور على سجل الطالب لتحديثه. تواصل مع الإدارة.","err");
+      return;
+    }
+    showMsg("profileMsg","تم حفظ رقم الهاتف بنجاح","ok");
+  }catch(e){
+    showMsg("profileMsg","تعذر الحفظ: "+errText(e),"err");
+  }finally{
+    btn.disabled=false;
+    btn.style.opacity="";
+  }
 }
 
 /* ================= الإحصائيات ================= */
 async function loadStats(){
-  const [tot,att]=await Promise.all([
-    sb.from("lectures").select("id",{count:"exact",head:true}),
-    sb.from("assessment_attempts").select("id",{count:"exact",head:true}).eq("student_id",user.id)
-  ]);
-  $("sTotal").textContent=tot.count??"—";
-  $("sExams").textContent=att.count??"—";
+  try{
+    const [tot,att]=await Promise.all([
+      sb.from("lectures").select("id",{count:"exact",head:true}),
+      sb.from("assessment_attempts").select("id",{count:"exact",head:true}).eq("student_id",user.id)
+    ]);
+    if(tot.error)console.warn("lectures count:",tot.error);
+    if(att.error)console.warn("attempts count:",att.error);
+    $("sTotal").textContent=tot.error?"—":(tot.count??0);
+    $("sExams").textContent=att.error?"—":(att.count??0);
+  }catch(e){
+    console.warn("loadStats:",e);
+    $("sTotal").textContent="—";
+    $("sExams").textContent="—";
+  }
   try{
     if(window.ArdProgress){
       await ArdProgress.init(sb);
@@ -276,7 +319,7 @@ async function loadStats(){
       $("sSaved").textContent=rows.filter(r=>r.saved).length;
       $("sDone").textContent=rows.filter(r=>r.completed).length;
     }
-  }catch(e){console.warn(e)}
+  }catch(e){console.warn("progress:",e)}
 }
 
 /* ================= النتائج ================= */
@@ -319,11 +362,19 @@ function buildResult(at){
 
 async function loadResults(){
   const box=$("resultsList");
-  const {data:att,error}=await sb.from("assessment_attempts")
-    .select("assessment_id,score,max_score,answers,submitted_at")
-    .eq("student_id",user.id)
-    .order("submitted_at",{ascending:false});
-
+  let att,error;
+  try{
+    const result=await sb.from("assessment_attempts")
+      .select("assessment_id,score,max_score,answers,submitted_at")
+      .eq("student_id",user.id)
+      .order("submitted_at",{ascending:false});
+    att=result.data;
+    error=result.error;
+  }catch(e){
+    box.innerHTML=`<div class="empty">تعذر الاتصال لتحميل النتائج. تحقق من الإنترنت ثم أعد تحميل الصفحة.</div>`;
+    console.error("loadResults:",e);
+    return;
+  }
   if(error){box.innerHTML=`<div class="empty">تعذر تحميل النتائج: ${esc(errText(error))}</div>`;return}
   if(!att?.length){box.innerHTML='<div class="empty">لم تسلّم أي امتحان أو واجب بعد.</div>';return}
 
@@ -358,14 +409,27 @@ async function loadResults(){
 
 /* ================= الاشتراكات ================= */
 async function loadSubs(){
+  const box=$("subsBox");
   const now=new Date().toISOString();
-  const [acc,gr,req,ms]=await Promise.all([
-    sb.from("student_access").select("month_id,term_code").eq("student_id",user.id),
-    sb.from("student_subscription_grants").select("month_id,term_code,expires_at").eq("student_id",user.id).gt("expires_at",now),
-    sb.from("subscription_requests").select("created_at,package_type,amount_egp,status").eq("student_id",user.id).order("created_at",{ascending:false}).limit(20),
-    sb.from("lecture_months").select("id,title,term_code")
-  ]);
-
+  let acc,gr,req,ms;
+  try{
+    [acc,gr,req,ms]=await Promise.all([
+      sb.from("student_access").select("month_id,term_code").eq("student_id",user.id),
+      sb.from("student_subscription_grants").select("month_id,term_code,expires_at").eq("student_id",user.id).gt("expires_at",now),
+      sb.from("subscription_requests").select("created_at,package_type,amount_egp,status").eq("student_id",user.id).order("created_at",{ascending:false}).limit(20),
+      sb.from("lecture_months").select("id,title,term_code")
+    ]);
+  }catch(e){
+    console.error("loadSubs:",e);
+    box.innerHTML='<div class="empty">تعذر تحميل الاشتراكات بسبب مشكلة في الاتصال. حاول مرة أخرى لاحقًا.</div>';
+    return;
+  }
+  const failed=[acc,gr,req,ms].find(x=>x?.error);
+  if(failed){
+    console.error("subscription query:",failed.error);
+    box.innerHTML=`<div class="empty">تعذر تحميل الاشتراكات: ${esc(errText(failed.error))}</div>`;
+    return;
+  }
   const months=ms.data||[];
   const name=(mid,tc)=>{
     const m=months.find(x=>String(x.id)===String(mid));
@@ -398,11 +462,12 @@ async function loadSubs(){
 
 /* ================= بدء الصفحة ================= */
 async function init(){
-  user=await requireSession();
-  if(!user)return;
-  setupSidebar();
+  try{
+    user=await requireSession();
+    if(!user)return;
+    setupSidebar();
 
-  $("saveProfile").onclick=saveProfile;
+    $("saveProfile").onclick=saveProfile;
   $("logoutBtn").onclick=async()=>{
     if(!confirm("هل تريد تسجيل الخروج؟"))return;
     try{await sb.auth.signOut()}catch{}
@@ -410,7 +475,12 @@ async function init(){
     location.replace(LOGIN_URL);
   };
 
-  await Promise.allSettled([loadProfile(),loadStats(),loadResults(),loadSubs()]);
+    await Promise.allSettled([loadProfile(),loadStats(),loadResults(),loadSubs()]);
+  }catch(e){
+    console.error("تهيئة صفحة الحساب:",e);
+    document.querySelector(".main").insertAdjacentHTML("afterbegin",
+      '<div class="empty" style="margin-bottom:14px">حدث خطأ أثناء تحميل الصفحة. أعد تحميلها، وإذا استمرت المشكلة تواصل مع الإدارة.</div>');
+  }
 }
 
 init();
