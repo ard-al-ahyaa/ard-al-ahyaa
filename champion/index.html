@@ -7,14 +7,14 @@
 <meta name="description" content="ترتيب أبطال الأحياء ودرجات الطلاب في منصة أرض الأحياء للصف الثالث الثانوي.">
 <meta name="theme-color" content="#004e4d">
 
+<link rel="manifest" href="../manifest.json">
 <link rel="icon" href="../favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script src="/auth-guard.js"></script>
-  
+
 <style>
 :root{
   --green:#008866;
@@ -55,9 +55,7 @@ a{color:inherit;text-decoration:none}
   stroke-linejoin:round;
 }
 
-/* =================================
-   الشريط الجانبي - نفس الصفحة الرئيسية
-================================= */
+/* ================= الشريط الجانبي ================= */
 
 .sidebar{
   width:var(--sidebar-width);
@@ -103,9 +101,7 @@ a{color:inherit;text-decoration:none}
   transition:background .2s;
 }
 
-.sidebar-toggle:hover{
-  background:rgba(255,255,255,.18);
-}
+.sidebar-toggle:hover{background:rgba(255,255,255,.18)}
 
 .sidebar-toggle i{
   font-size:17px;
@@ -195,9 +191,7 @@ a{color:inherit;text-decoration:none}
   color:#fff;
 }
 
-.side-link:hover{
-  transform:translateX(-2px);
-}
+.side-link:hover{transform:translateX(-2px)}
 
 .side-link i{
   width:25px;
@@ -230,39 +224,18 @@ a{color:inherit;text-decoration:none}
   margin-left:4px;
 }
 
-/* تصغير الشريط الجانبي */
+body.sidebar-collapsed{--sidebar-width:82px}
 
-body.sidebar-collapsed{
-  --sidebar-width:82px;
-}
-
-body.sidebar-collapsed .sidebar-inner{
-  padding:15px 9px;
-}
-
-body.sidebar-collapsed .sidebar-top-actions{
-  justify-content:center;
-}
-
-body.sidebar-collapsed .sidebar-toggle i{
-  transform:rotate(180deg);
-}
-
-body.sidebar-collapsed .brand{
-  padding-bottom:15px;
-}
-
-body.sidebar-collapsed .brand-logo-wrap{
-  width:54px;
-  height:54px;
-}
+body.sidebar-collapsed .sidebar-inner{padding:15px 9px}
+body.sidebar-collapsed .sidebar-top-actions{justify-content:center}
+body.sidebar-collapsed .sidebar-toggle i{transform:rotate(180deg)}
+body.sidebar-collapsed .brand{padding-bottom:15px}
+body.sidebar-collapsed .brand-logo-wrap{width:54px;height:54px}
 
 body.sidebar-collapsed .brand-text,
 body.sidebar-collapsed .menu-label,
 body.sidebar-collapsed .side-link-text,
-body.sidebar-collapsed .sidebar-bottom span{
-  display:none;
-}
+body.sidebar-collapsed .sidebar-bottom span{display:none}
 
 body.sidebar-collapsed .side-link{
   justify-content:center;
@@ -270,18 +243,10 @@ body.sidebar-collapsed .side-link{
   padding:13px 5px;
 }
 
-body.sidebar-collapsed .side-link:hover{
-  transform:none;
-}
+body.sidebar-collapsed .side-link:hover{transform:none}
+body.sidebar-collapsed .sidebar-bottom{padding:12px 3px;margin:0 5px 15px}
 
-body.sidebar-collapsed .sidebar-bottom{
-  padding:12px 3px;
-  margin:0 5px 15px;
-}
-
-/* =================================
-   المحتوى الرئيسي
-================================= */
+/* ================= المحتوى الرئيسي ================= */
 
 .main{
   margin-right:var(--sidebar-width);
@@ -564,13 +529,8 @@ body.sidebar-collapsed .sidebar-bottom{
   box-shadow:0 7px 22px rgba(191,149,39,.09);
 }
 
-.podium-card.second{
-  background:linear-gradient(180deg,#fff,#f7f9fc);
-}
-
-.podium-card.third{
-  background:linear-gradient(180deg,#fff,#fff9f4);
-}
+.podium-card.second{background:linear-gradient(180deg,#fff,#f7f9fc)}
+.podium-card.third{background:linear-gradient(180deg,#fff,#fff9f4)}
 
 .podium-medal{
   width:60px;
@@ -708,20 +668,9 @@ body.sidebar-collapsed .sidebar-bottom{
   font-weight:900;
 }
 
-.rank-row:nth-child(1) .rank-number{
-  background:#fff0bd;
-  color:#956a0d;
-}
-
-.rank-row:nth-child(2) .rank-number{
-  background:#edf1f5;
-  color:#53687d;
-}
-
-.rank-row:nth-child(3) .rank-number{
-  background:#ffeadc;
-  color:#9a5f31;
-}
+.rank-row:nth-child(1) .rank-number{background:#fff0bd;color:#956a0d}
+.rank-row:nth-child(2) .rank-number{background:#edf1f5;color:#53687d}
+.rank-row:nth-child(3) .rank-number{background:#ffeadc;color:#9a5f31}
 
 .rank-student{min-width:0}
 
@@ -814,12 +763,9 @@ body.sidebar-collapsed .sidebar-bottom{
   font-size:11px;
 }
 
-/* القائمة السفلية للموبايل */
 .mobile-nav{display:none}
 
-/* =================================
-   استجابة الشاشات
-================================= */
+/* ================= التوافق ================= */
 
 @media(max-width:1250px) and (min-width:761px){
   :root{--sidebar-width:225px}
@@ -856,22 +802,13 @@ body.sidebar-collapsed .sidebar-bottom{
     max-width:145px;
   }
 
-  .student-avatar{
-    width:32px;
-    height:32px;
-  }
-
+  .student-avatar{width:32px;height:32px}
   .student-info strong{font-size:10px}
   .student-info small{font-size:9px}
 
-  .welcome-card{
-    padding:19px 16px;
-    margin-bottom:19px;
-  }
-
+  .welcome-card{padding:19px 16px;margin-bottom:19px}
   .welcome-card h2{font-size:16px}
   .welcome-card p{font-size:11px}
-
   .welcome-decoration{left:7px}
   .welcome-decoration .icon{width:105px;height:105px}
 
@@ -885,13 +822,7 @@ body.sidebar-collapsed .sidebar-bottom{
   }
 
   .stat-card{padding:13px 15px}
-
-  .stat-icon{
-    width:45px;
-    height:45px;
-    min-width:45px;
-  }
-
+  .stat-icon{width:45px;height:45px;min-width:45px}
   .stat-info strong{font-size:19px}
   .panel{padding:13px}
 
@@ -914,10 +845,7 @@ body.sidebar-collapsed .sidebar-bottom{
     margin-bottom:8px;
   }
 
-  .podium-medal .icon{
-    width:23px;
-    height:23px;
-  }
+  .podium-medal .icon{width:23px;height:23px}
 
   .podium-rank{
     min-width:0;
@@ -925,11 +853,7 @@ body.sidebar-collapsed .sidebar-bottom{
     font-size:9px;
   }
 
-  .podium-name{
-    font-size:11px;
-    line-height:1.7;
-  }
-
+  .podium-name{font-size:11px;line-height:1.7}
   .podium-score{font-size:18px}
   .podium-score small{font-size:9px}
   .podium-date{font-size:9px}
@@ -996,9 +920,7 @@ body.sidebar-collapsed .sidebar-bottom{
 }
 
 @media(prefers-reduced-motion:reduce){
-  *,
-  *::before,
-  *::after{
+  *,*::before,*::after{
     scroll-behavior:auto!important;
     transition-duration:.01ms!important;
   }
@@ -1008,14 +930,8 @@ body.sidebar-collapsed .sidebar-bottom{
 
 <body>
 
-<!-- الأيقونات المستخدمة في محتوى الصفحة -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
   <symbol id="icon-plant" viewBox="0 0 24 24"><path d="M12 21v-9"/><path d="M12 14C5 14 3 9 3 4c6 0 9 3 9 10"/><path d="M12 17c0-6 3-10 9-11 0 6-2 10-9 11"/><path d="M7 21h10"/></symbol>
-  <symbol id="icon-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7"/><path d="M5 9v12h14V9"/><path d="M9 21v-7h6v7"/></symbol>
-  <symbol id="icon-video" viewBox="0 0 24 24"><rect x="3" y="5" width="13" height="14" rx="2"/><path d="m16 10 5-3v10l-5-3"/><path d="m8 9 4 3-4 3z" fill="currentColor" stroke="none"/></symbol>
-  <symbol id="icon-notes" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5"/><path d="M8 12h8M8 16h8"/></symbol>
-  <symbol id="icon-trophy" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4"/><path d="M7 4h10v6a5 5 0 0 1-10 0z"/><path d="M7 6H3v2a5 5 0 0 0 5 5"/><path d="M17 6h4v2a5 5 0 0 1-5 5"/></symbol>
-  <symbol id="icon-forum" viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l-2 2v-7.5A7.5 7.5 0 0 1 10.5 6H12"/><path d="M16 3v7M12.5 6.5h7"/><path d="M7 12h6M7 15h4"/></symbol>
   <symbol id="icon-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2z"/></symbol>
   <symbol id="icon-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
   <symbol id="icon-medal" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="m8.2 13-1.2 9 5-3 5 3-1.2-9"/><path d="m9.5 8 1.7 1.7L15 6"/></symbol>
@@ -1023,35 +939,22 @@ body.sidebar-collapsed .sidebar-bottom{
   <symbol id="icon-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5"/><path d="M4 17v-5h5"/><path d="M5.6 9a7 7 0 0 1 11.8-2L20 12M4 12l2.6 5a7 7 0 0 0 11.8-2"/></symbol>
   <symbol id="icon-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 2.2 18a2 2 0 0 0 1.7 3h16.2a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
   <symbol id="icon-crown" viewBox="0 0 24 24"><path d="m2 7 5 4 5-7 5 7 5-4-2 13H4z"/><path d="M4 22h16"/></symbol>
+  <symbol id="icon-trophy" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4"/><path d="M7 4h10v6a5 5 0 0 1-10 0z"/><path d="M7 6H3v2a5 5 0 0 0 5 5"/><path d="M17 6h4v2a5 5 0 0 1-5 5"/></symbol>
 </svg>
 
-<!-- الشريط الجانبي -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-inner">
 
     <div class="sidebar-top-actions">
-      <button
-        type="button"
-        class="sidebar-toggle"
-        id="sidebarToggle"
-        aria-label="تصغير القائمة الجانبية"
-        aria-expanded="true"
-        title="تصغير القائمة"
-      >
+      <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="تصغير القائمة الجانبية" aria-expanded="true" title="تصغير القائمة">
         <i class="fa-solid fa-angles-right"></i>
       </button>
     </div>
 
     <div class="brand">
       <div class="brand-logo-wrap">
-        <img
-          src="../logo.png"
-          class="brand-logo"
-          alt="شعار أرض الأحياء"
-          onerror="this.style.display='none'"
-        >
+        <img src="../logo.png" class="brand-logo" alt="شعار أرض الأحياء" onerror="this.style.display='none'">
       </div>
-
       <div class="brand-text">
         <h2>أرض الأحياء</h2>
         <small>الثانوية العامة</small>
@@ -1065,37 +968,30 @@ body.sidebar-collapsed .sidebar-bottom{
         <i class="fa-solid fa-house"></i>
         <span class="side-link-text">الرئيسية</span>
       </a>
-
       <a href="../videos/index.html" class="side-link" data-title="المحاضرات">
         <i class="fa-regular fa-circle-play"></i>
         <span class="side-link-text">المحاضرات</span>
       </a>
-
       <a href="../notes/index.html" class="side-link" data-title="المذكرات">
         <i class="fa-regular fa-book-open"></i>
         <span class="side-link-text">المذكرات</span>
       </a>
-
       <a href="./index.html" class="side-link active" data-title="بطل الفصل" aria-current="page">
         <i class="fa-solid fa-trophy"></i>
         <span class="side-link-text">بطل الفصل</span>
       </a>
-
       <a href="../forum/index.html" class="side-link" data-title="المنتدى">
         <i class="fa-regular fa-comments"></i>
         <span class="side-link-text">المنتدى</span>
       </a>
-
       <a href="../account/index.html" class="side-link" data-title="حساب الطالب">
         <i class="fa-regular fa-user"></i>
         <span class="side-link-text">حساب الطالب</span>
       </a>
     </nav>
   </div>
-
 </aside>
 
-<!-- المحتوى الرئيسي -->
 <main class="main">
 
   <header class="topbar">
@@ -1108,7 +1004,6 @@ body.sidebar-collapsed .sidebar-bottom{
       <div class="student-avatar">
         <svg class="icon"><use href="#icon-user"></use></svg>
       </div>
-
       <div class="student-info">
         <strong id="studentName">جارٍ التحقق...</strong>
         <small>طالب بالمنصة</small>
@@ -1120,20 +1015,13 @@ body.sidebar-collapsed .sidebar-bottom{
     <div class="welcome-decoration">
       <svg class="icon"><use href="#icon-trophy"></use></svg>
     </div>
-
     <h2>🏆 مين هيكون بطل الفصل؟</h2>
-    <p>
-      هنا بنحتفي بأبطال الأحياء! تابع ترتيب الطلاب وأعلى الدرجات،
-      واجتهد علشان يكون اسمك في مقدمة لوحة الشرف.
-    </p>
+    <p>هنا بنحتفي بأبطال الأحياء! تابع ترتيب الطلاب وأعلى الدرجات، واجتهد علشان يكون اسمك في مقدمة لوحة الشرف.</p>
   </section>
 
   <section class="stats-grid" aria-label="إحصائيات لوحة الشرف">
-
     <article class="stat-card">
-      <div class="stat-icon">
-        <svg class="icon"><use href="#icon-users"></use></svg>
-      </div>
+      <div class="stat-icon"><svg class="icon"><use href="#icon-users"></use></svg></div>
       <div class="stat-info">
         <span>عدد المشاركين</span>
         <strong id="totalStudents">—</strong>
@@ -1142,9 +1030,7 @@ body.sidebar-collapsed .sidebar-bottom{
     </article>
 
     <article class="stat-card">
-      <div class="stat-icon">
-        <svg class="icon"><use href="#icon-crown"></use></svg>
-      </div>
+      <div class="stat-icon"><svg class="icon"><use href="#icon-crown"></use></svg></div>
       <div class="stat-info">
         <span>بطل الفصل الحالي</span>
         <strong id="firstPlaceName">—</strong>
@@ -1153,16 +1039,13 @@ body.sidebar-collapsed .sidebar-bottom{
     </article>
 
     <article class="stat-card">
-      <div class="stat-icon">
-        <svg class="icon"><use href="#icon-star"></use></svg>
-      </div>
+      <div class="stat-icon"><svg class="icon"><use href="#icon-star"></use></svg></div>
       <div class="stat-info">
         <span>أعلى درجة</span>
         <strong id="highestScore">—</strong>
         <small>درجة المركز الأول</small>
       </div>
     </article>
-
   </section>
 
   <div class="section-title">
@@ -1172,15 +1055,12 @@ body.sidebar-collapsed .sidebar-bottom{
 
   <section class="panel">
     <div id="podium" class="podium-grid">
-      <div class="state-box" style="grid-column:1/-1">
-        جارٍ تحميل أبطال الفصل...
-      </div>
+      <div class="state-box" style="grid-column:1/-1">جارٍ تحميل أبطال الفصل...</div>
     </div>
   </section>
 
   <div class="section-title">
     <h2>ترتيب الطلاب</h2>
-
     <button type="button" class="refresh-button" id="refreshBtn">
       <svg class="icon"><use href="#icon-refresh"></use></svg>
       <span>تحديث الترتيب</span>
@@ -1192,7 +1072,6 @@ body.sidebar-collapsed .sidebar-bottom{
       <h3>لوحة الشرف</h3>
       <span id="rankingCount">جارٍ تحميل الترتيب...</span>
     </div>
-
     <div id="rankingList" class="ranking-list" aria-live="polite">
       <div class="state-box">جارٍ تحميل الترتيب...</div>
     </div>
@@ -1202,37 +1081,13 @@ body.sidebar-collapsed .sidebar-bottom{
 
 </main>
 
-<!-- شريط التنقل للموبايل -->
 <nav class="mobile-nav" aria-label="التنقل الرئيسي">
-  <a href="../index.html">
-    <i class="fa-solid fa-house"></i>
-    <span>الرئيسية</span>
-  </a>
-
-  <a href="../videos/index.html">
-    <i class="fa-solid fa-circle-play"></i>
-    <span>المحاضرات</span>
-  </a>
-
-  <a href="../notes/index.html">
-    <i class="fa-regular fa-file-lines"></i>
-    <span>المذكرات</span>
-  </a>
-
-  <a href="./index.html" class="active" aria-current="page">
-    <i class="fa-solid fa-trophy"></i>
-    <span>البطل</span>
-  </a>
-
-  <a href="../forum/index.html">
-    <i class="fa-regular fa-comments"></i>
-    <span>المنتدى</span>
-  </a>
-
-  <a href="../account/index.html">
-    <i class="fa-regular fa-user"></i>
-    <span>حسابي</span>
-  </a>
+  <a href="../index.html"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
+  <a href="../videos/index.html"><i class="fa-solid fa-circle-play"></i><span>المحاضرات</span></a>
+  <a href="../notes/index.html"><i class="fa-regular fa-file-lines"></i><span>المذكرات</span></a>
+  <a href="./index.html" class="active" aria-current="page"><i class="fa-solid fa-trophy"></i><span>البطل</span></a>
+  <a href="../forum/index.html"><i class="fa-regular fa-comments"></i><span>المنتدى</span></a>
+  <a href="../account/index.html"><i class="fa-regular fa-user"></i><span>حسابي</span></a>
 </nav>
 
 <script>
@@ -1242,6 +1097,9 @@ const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
 const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
 const LOGIN_URL = "../login/index.html";
 const SIDEBAR_KEY = "ardAlahyaaSidebarCollapsed";
+const AUTH_STORAGE_KEY = "ardAlahyaaAuth";
+const LOGIN_AT_KEY = "ardLoginAt";
+const SESSION_MAX_MS = 24 * 60 * 60 * 1000;
 
 const $ = id => document.getElementById(id);
 
@@ -1259,40 +1117,28 @@ let supabaseClient = null;
 let currentUser = null;
 let isLoading = false;
 
-/* الشريط الجانبي */
+/* ================= الشريط الجانبي ================= */
 function applySidebarState(collapsed, save = true) {
   document.body.classList.toggle("sidebar-collapsed", collapsed);
 
-  const label = collapsed
-    ? "توسيع الشريط الجانبي"
-    : "تصغير الشريط الجانبي";
-
+  const label = collapsed ? "توسيع الشريط الجانبي" : "تصغير الشريط الجانبي";
   sidebarToggle.setAttribute("aria-expanded", String(!collapsed));
   sidebarToggle.setAttribute("aria-label", label);
   sidebarToggle.title = label;
 
   document.querySelectorAll(".side-link[data-title]").forEach(link => {
-    if (collapsed) {
-      link.title = link.dataset.title;
-    } else {
-      link.removeAttribute("title");
-    }
+    if (collapsed) link.title = link.dataset.title;
+    else link.removeAttribute("title");
   });
 
   if (save) {
-    try {
-      localStorage.setItem(SIDEBAR_KEY, collapsed ? "true" : "false");
-    } catch (error) {
-      console.warn("تعذر حفظ حالة القائمة الجانبية.");
-    }
+    try { localStorage.setItem(SIDEBAR_KEY, collapsed ? "true" : "false"); } catch {}
   }
 }
 
-function toggleSidebar() {
+sidebarToggle.addEventListener("click", () => {
   applySidebarState(!document.body.classList.contains("sidebar-collapsed"));
-}
-
-sidebarToggle.addEventListener("click", toggleSidebar);
+});
 
 try {
   applySidebarState(localStorage.getItem(SIDEBAR_KEY) === "true", false);
@@ -1300,28 +1146,38 @@ try {
   applySidebarState(false, false);
 }
 
-/* أدوات عامة */
+/* ================= الجلسة (24 ساعة) ================= */
+function loginIsFresh() {
+  let at = Number(localStorage.getItem(LOGIN_AT_KEY));
+  if (!at) {
+    at = Date.now();
+    localStorage.setItem(LOGIN_AT_KEY, String(at));
+  }
+  return Date.now() - at < SESSION_MAX_MS;
+}
+
+async function sendToLogin() {
+  localStorage.removeItem(LOGIN_AT_KEY);
+  try { await supabaseClient.auth.signOut(); } catch {}
+  window.location.replace(LOGIN_URL);
+}
+
+/* ================= أدوات عامة ================= */
 function makeIcon(symbolId) {
   const ns = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(ns, "svg");
   const use = document.createElementNS(ns, "use");
-
   svg.setAttribute("class", "icon");
   svg.setAttribute("aria-hidden", "true");
   use.setAttribute("href", "#" + symbolId);
-
   svg.appendChild(use);
   return svg;
 }
 
 function makeElement(tag, className, text) {
   const el = document.createElement(tag);
-
   if (className) el.className = className;
-  if (text !== undefined && text !== null) {
-    el.textContent = String(text);
-  }
-
+  if (text !== undefined && text !== null) el.textContent = String(text);
   return el;
 }
 
@@ -1330,122 +1186,61 @@ function formatNumber(value) {
 }
 
 function getNumericScore(value) {
-  if (typeof value === "number") {
-    return Number.isFinite(value) ? value : 0;
-  }
+  if (typeof value === "number") return Number.isFinite(value) ? value : 0;
 
   const arabicDigits = "٠١٢٣٤٥٦٧٨٩";
   const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
 
   const normalized = String(value ?? "")
-    .replace(/[٠-٩]/g, digit => String(arabicDigits.indexOf(digit)))
-    .replace(/[۰-۹]/g, digit => String(persianDigits.indexOf(digit)))
-    .replace(/[٬،]/g, "")
+    .replace(/[٠-٩]/g, d => String(arabicDigits.indexOf(d)))
+    .replace(/[۰-۹]/g, d => String(persianDigits.indexOf(d)))
+    .replace(/[٬،,]/g, "")
     .replace(/٫/g, ".")
-    .replace(/,/g, "")
-    .replace(/[^\d.+-]/g, "")
-    .trim();
+    .replace(/[^\d.+-]/g, "");
 
   const result = Number(normalized);
   return Number.isFinite(result) ? result : 0;
 }
 
-function getScoreLabel(score) {
-  return formatNumber(score);
-}
-
 function formatDate(value) {
   if (!value) return "";
-
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
-
-  return date.toLocaleDateString("ar-EG", {
-    year: "numeric",
-    month: "short",
-    day: "numeric"
-  });
+  return date.toLocaleDateString("ar-EG", { year: "numeric", month: "short", day: "numeric" });
 }
 
 function showState(container, title, details, isError = false, retry = null) {
-  const box = makeElement(
-    "div",
-    "state-box" + (isError ? " error-box" : "")
-  );
-
+  const box = makeElement("div", "state-box" + (isError ? " error-box" : ""));
   const iconWrap = makeElement("div", "state-icon");
   iconWrap.appendChild(makeIcon(isError ? "icon-alert" : "icon-plant"));
   box.appendChild(iconWrap);
-
-  if (title) {
-    box.appendChild(makeElement("strong", "", title));
-  }
-
+  if (title) box.appendChild(makeElement("strong", "", title));
   box.appendChild(makeElement("p", "", details));
-
   if (retry) {
     const button = makeElement("button", "", "إعادة المحاولة");
     button.addEventListener("click", retry);
     box.appendChild(button);
   }
-
   container.replaceChildren(box);
 }
 
-/* التحقق من تسجيل الدخول */
+/* ================= التحقق من تسجيل الدخول ================= */
 async function checkUser() {
-  if (!window.supabase) {
-    showState(
-      rankingListElement,
-      "تعذر الاتصال",
-      "مكتبة Supabase لم يتم تحميلها. تحقق من الإنترنت وأعد تحميل الصفحة.",
-      true
-    );
-    return false;
-  }
-
-  if (!supabaseClient) {
-    supabaseClient = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
-  }
-
   const { data, error } = await supabaseClient.auth.getSession();
+  const session = data?.session;
 
-  if (error || !data?.session?.user) {
-    currentUser = null;
-    studentNameElement.textContent = "غير مسجل الدخول";
+  if (error) throw error;
 
-    showState(
-      rankingListElement,
-      "سجّل الدخول أولًا",
-      "يجب تسجيل الدخول إلى حسابك لمتابعة لوحة الشرف."
-    );
-
-    const loginButton = makeElement("button", "", "تسجيل الدخول");
-
-    loginButton.addEventListener("click", () => {
-      window.location.href = LOGIN_URL;
-    });
-
-    rankingListElement.firstElementChild.appendChild(loginButton);
-
-    podiumElement.replaceChildren();
-    totalStudentsElement.textContent = "—";
-    firstPlaceNameElement.textContent = "—";
-    highestScoreElement.textContent = "—";
-    rankingCountElement.textContent = "يلزم تسجيل الدخول";
-
+  if (!session?.user || !loginIsFresh()) {
+    await sendToLogin();
     return false;
   }
 
-  currentUser = data.session.user;
+  currentUser = session.user;
 
   let name =
     currentUser.user_metadata?.full_name ||
     currentUser.user_metadata?.name ||
-    currentUser.user_metadata?.fullName ||
     "";
 
   try {
@@ -1455,182 +1250,98 @@ async function checkUser() {
       .eq("id", currentUser.id)
       .maybeSingle();
 
-    if (!profileError && profile?.full_name) {
-      name = profile.full_name;
-    }
-  } catch (error) {
-    console.warn("تعذر تحميل اسم الطالب:", error);
+    if (!profileError && profile?.full_name) name = profile.full_name;
+  } catch (e) {
+    console.warn("تعذر تحميل اسم الطالب:", e);
   }
 
-  studentNameElement.textContent =
-    String(name || "").trim() || "طالب بالمنصة";
-
+  studentNameElement.textContent = String(name || "").trim() || "طالب بالمنصة";
   return true;
 }
 
-/* ترتيب الدرجات */
+/* ================= الترتيب ================= */
 function sortStudents(students) {
   return [...students].sort((a, b) => {
-    const scoreDifference =
-      getNumericScore(b.score) - getNumericScore(a.score);
-
-    if (scoreDifference !== 0) return scoreDifference;
-
-    const dateA = new Date(a.created_at || 0).getTime();
-    const dateB = new Date(b.created_at || 0).getTime();
-
-    return dateA - dateB;
+    const diff = getNumericScore(b.score) - getNumericScore(a.score);
+    if (diff !== 0) return diff;
+    return new Date(a.created_at || 0) - new Date(b.created_at || 0);
   });
 }
 
-/* بطاقة منصة التتويج */
 function createPodiumCard(student, rank) {
-  const classes = {
-    1: "podium-card first",
-    2: "podium-card second",
-    3: "podium-card third"
-  };
-
-  const labels = {
-    1: "المركز الأول",
-    2: "المركز الثاني",
-    3: "المركز الثالث"
-  };
+  const classes = { 1: "podium-card first", 2: "podium-card second", 3: "podium-card third" };
+  const labels = { 1: "المركز الأول", 2: "المركز الثاني", 3: "المركز الثالث" };
 
   const card = makeElement("article", classes[rank]);
   const medal = makeElement("div", "podium-medal");
-
-  medal.appendChild(
-    makeIcon(rank === 1 ? "icon-crown" : "icon-medal")
-  );
-
-  const rankLabel = makeElement("div", "podium-rank", labels[rank]);
-
-  const name = makeElement(
-    "h3",
-    "podium-name",
-    student.student_name || "طالب بالمنصة"
-  );
+  medal.appendChild(makeIcon(rank === 1 ? "icon-crown" : "icon-medal"));
 
   const score = makeElement("div", "podium-score");
-
-  score.appendChild(
-    document.createTextNode(getScoreLabel(student.score) + " ")
-  );
-
+  score.appendChild(document.createTextNode(formatNumber(getNumericScore(student.score)) + " "));
   score.appendChild(makeElement("small", "", "درجة"));
 
-  card.append(medal, rankLabel, name, score);
+  card.append(
+    medal,
+    makeElement("div", "podium-rank", labels[rank]),
+    makeElement("h3", "podium-name", student.student_name || "طالب بالمنصة"),
+    score
+  );
 
   const dateText = formatDate(student.created_at);
-
-  if (dateText) {
-    card.appendChild(
-      makeElement("div", "podium-date", "تاريخ التسجيل: " + dateText)
-    );
-  }
+  if (dateText) card.appendChild(makeElement("div", "podium-date", "تاريخ التسجيل: " + dateText));
 
   return card;
 }
 
-/* بطاقة طالب في الترتيب */
 function createStudentCard(student, index) {
   const row = makeElement("article", "rank-row");
+  const number = makeElement("div", "rank-number", formatNumber(index + 1));
 
-  const number = makeElement(
-    "div",
-    "rank-number",
-    formatNumber(index + 1)
-  );
-
-  const studentInfo = makeElement("div", "rank-student");
-
-  studentInfo.appendChild(
-    makeElement(
-      "strong",
-      "",
-      student.student_name || "طالب بالمنصة"
-    )
-  );
-
+  const info = makeElement("div", "rank-student");
+  info.appendChild(makeElement("strong", "", student.student_name || "طالب بالمنصة"));
   const date = formatDate(student.created_at);
-
-  studentInfo.appendChild(
-    makeElement(
-      "small",
-      "",
-      date ? "تاريخ التسجيل: " + date : "من أبطال أرض الأحياء"
-    )
-  );
+  info.appendChild(makeElement("small", "", date ? "تاريخ التسجيل: " + date : "من أبطال أرض الأحياء"));
 
   const score = makeElement("div", "rank-score");
-
-  score.appendChild(
-    document.createTextNode(getScoreLabel(student.score) + " ")
-  );
-
+  score.appendChild(document.createTextNode(formatNumber(getNumericScore(student.score)) + " "));
   score.appendChild(makeElement("small", "", "درجة"));
 
-  row.append(number, studentInfo, score);
-
+  row.append(number, info, score);
   return row;
 }
 
-/* تحديث الإحصائيات ومنصة التتويج */
 function updateStats(students) {
   totalStudentsElement.textContent = formatNumber(students.length);
 
   if (!students.length) {
     firstPlaceNameElement.textContent = "—";
     highestScoreElement.textContent = "—";
-    podiumElement.replaceChildren();
-
-    showState(
-      podiumElement,
-      "لسه البداية!",
-      "لم تتم إضافة نتائج للطلاب حتى الآن. ستظهر الأسماء هنا بمجرد توفرها."
-    );
-
+    showState(podiumElement, "لسه البداية!", "لم تتم إضافة نتائج للطلاب حتى الآن. ستظهر الأسماء هنا بمجرد توفرها.");
     return;
   }
 
   const first = students[0];
-
   firstPlaceNameElement.textContent = first.student_name || "طالب";
-  highestScoreElement.textContent = getScoreLabel(first.score);
+  highestScoreElement.textContent = formatNumber(getNumericScore(first.score));
 
-  const podiumStudents = students.slice(0, 3);
+  const top = students.slice(0, 3);
+  const order = top.length === 3 ? [top[1], top[0], top[2]] : top;
+  const ranks = top.length === 3 ? [2, 1, 3] : top.map((_, i) => i + 1);
 
-  const order = podiumStudents.length === 3
-    ? [podiumStudents[1], podiumStudents[0], podiumStudents[2]]
-    : podiumStudents;
-
-  const ranks = podiumStudents.length === 3
-    ? [2, 1, 3]
-    : podiumStudents.map((_, index) => index + 1);
-
-  podiumElement.replaceChildren(
-    ...order.map((student, index) =>
-      createPodiumCard(student, ranks[index])
-    )
-  );
+  podiumElement.replaceChildren(...order.map((s, i) => createPodiumCard(s, ranks[i])));
 }
 
-/* تحميل النتائج */
+/* ================= تحميل النتائج ================= */
 async function loadChampions() {
   if (isLoading) return;
 
   isLoading = true;
   refreshBtn.disabled = true;
   refreshBtn.querySelector("span").textContent = "جارٍ التحديث...";
-
-  rankingListElement.replaceChildren(
-    makeElement("div", "state-box", "جارٍ تحميل ترتيب الطلاب...")
-  );
+  rankingListElement.replaceChildren(makeElement("div", "state-box", "جارٍ تحميل ترتيب الطلاب..."));
 
   try {
     const loggedIn = await checkUser();
-
     if (!loggedIn) return;
 
     const { data, error } = await supabaseClient
@@ -1641,60 +1352,30 @@ async function loadChampions() {
 
     if (error) {
       console.error("خطأ تحميل أبطال الفصل:", error);
-
-      showState(
-        rankingListElement,
-        "تعذر تحميل الترتيب",
-        "تحقق من جدول champions وصلاحيات القراءة في Supabase، ثم حاول مجددًا.",
-        true,
-        loadChampions
-      );
-
-      showState(
-        podiumElement,
-        "تعذر تحميل النتائج",
-        "لم نتمكن من جلب بيانات منصة التتويج.",
-        true,
-        loadChampions
-      );
-
+      showState(rankingListElement, "تعذر تحميل الترتيب",
+        "تحقق من جدول champions وصلاحيات القراءة في Supabase، ثم حاول مجددًا.", true, loadChampions);
+      showState(podiumElement, "تعذر تحميل النتائج",
+        "لم نتمكن من جلب بيانات منصة التتويج.", true, loadChampions);
       rankingCountElement.textContent = "تعذر التحميل";
       return;
     }
 
     const students = sortStudents(Array.isArray(data) ? data : []);
-
     updateStats(students);
-
-    rankingCountElement.textContent =
-      formatNumber(students.length) + " طالب";
+    rankingCountElement.textContent = formatNumber(students.length) + " طالب";
 
     if (!students.length) {
-      showState(
-        rankingListElement,
-        "لا توجد نتائج حتى الآن",
-        "عندما تتوفر درجات الطلاب ستظهر هنا مرتبة من الأعلى إلى الأقل."
-      );
+      showState(rankingListElement, "لا توجد نتائج حتى الآن",
+        "عندما تتوفر درجات الطلاب ستظهر هنا مرتبة من الأعلى إلى الأقل.");
       return;
     }
 
-    rankingListElement.replaceChildren(
-      ...students.map((student, index) =>
-        createStudentCard(student, index)
-      )
-    );
+    rankingListElement.replaceChildren(...students.map((s, i) => createStudentCard(s, i)));
 
   } catch (error) {
     console.error("حدث خطأ أثناء تحميل الترتيب:", error);
-
-    showState(
-      rankingListElement,
-      "حدث خطأ",
-      "تعذر الاتصال بالخادم. تحقق من الإنترنت وحاول مرة أخرى.",
-      true,
-      loadChampions
-    );
-
+    showState(rankingListElement, "حدث خطأ",
+      "تعذر الاتصال بالخادم. تحقق من الإنترنت وحاول مرة أخرى.", true, loadChampions);
   } finally {
     isLoading = false;
     refreshBtn.disabled = false;
@@ -1704,35 +1385,29 @@ async function loadChampions() {
 
 refreshBtn.addEventListener("click", loadChampions);
 
-/* بدء الصفحة */
+/* ================= بدء الصفحة ================= */
 async function initPage() {
   if (!window.supabase) {
-    showState(
-      rankingListElement,
-      "تعذر تحميل المكتبة",
-      "تحقق من اتصال الإنترنت ثم أعد تحميل الصفحة.",
-      true
-    );
-
-    showState(
-      podiumElement,
-      "تعذر الاتصال",
-      "لم يتم تحميل مكتبة Supabase.",
-      true
-    );
-
+    showState(rankingListElement, "تعذر تحميل المكتبة",
+      "تحقق من اتصال الإنترنت ثم أعد تحميل الصفحة.", true);
+    showState(podiumElement, "تعذر الاتصال", "لم يتم تحميل مكتبة Supabase.", true);
     refreshBtn.disabled = true;
     return;
   }
 
-  supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      storageKey: AUTH_STORAGE_KEY
+    }
+  });
 
-  supabaseClient.auth.onAuthStateChange((event) => {
-    if (event === "SIGNED_OUT") {
-      window.location.href = LOGIN_URL;
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_OUT" && !session) {
+      localStorage.removeItem(LOGIN_AT_KEY);
+      window.location.replace(LOGIN_URL);
     }
   });
 
@@ -1741,78 +1416,5 @@ async function initPage() {
 
 initPage();
 </script>
-```html
-<script>
-(() => {
-  "use strict";
-
-  /* منع تشغيل الكود أكثر من مرة */
-  if (window.__ardAlahyaaSpeedLoaded) return;
-  window.__ardAlahyaaSpeedLoaded = true;
-
-  /* 1- تحميل الصفحات عند اقتراب المستخدم من الروابط */
-  const prefetched = new Set();
-
-  function prefetchPage(url) {
-    try {
-      const target = new URL(url, location.href);
-
-      /* نفس الموقع فقط، مع تجاهل الصفحات الحالية */
-      if (
-        target.origin !== location.origin ||
-        target.pathname === location.pathname ||
-        prefetched.has(target.href)
-      ) return;
-
-      /* عدم استهلاك بيانات الهاتف دون داعٍ */
-      if (
-        navigator.connection &&
-        (
-          navigator.connection.saveData ||
-          /2g/.test(navigator.connection.effectiveType || "")
-        )
-      ) return;
-
-      prefetched.add(target.href);
-
-      const link = document.createElement("link");
-      link.rel = "prefetch";
-      link.href = target.href;
-      link.as = "document";
-
-      document.head.appendChild(link);
-    } catch (error) {
-      /* تجاهل أخطاء التحميل المسبق */
-    }
-  }
-
-  /* تحميل الصفحة مسبقًا عند المرور على الرابط */
-  document.addEventListener("pointerover", event => {
-    const link = event.target.closest("a[href]");
-    if (link) prefetchPage(link.href);
-  }, { passive: true });
-
-  /* دعم شاشات اللمس */
-  document.addEventListener("touchstart", event => {
-    const link = event.target.closest("a[href]");
-    if (link) prefetchPage(link.href);
-  }, { passive: true });
-
-  /* 2- إبقاء الصفحات المفتوحة في ذاكرة المتصفح */
-  window.addEventListener("pageshow", () => {
-    document.documentElement.classList.add("page-ready");
-  });
-
-  /* 3- تحسين عرض الصور التي لم تظهر بعد */
-  document.querySelectorAll("img").forEach(img => {
-    if (!img.hasAttribute("decoding")) {
-      img.decoding = "async";
-    }
-  });
-
-})();
-  
-</script>
-  <script src="sidebar.js"></script>
 </body>
 </html>
