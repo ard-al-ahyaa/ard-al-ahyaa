@@ -336,68 +336,242 @@ body.sidebar-collapsed .main{margin-right:var(--collapsed)}
 .handout-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px dashed #e1e8ef}
 .handout-row:last-child{border-bottom:0}
 .handout-row span{font-weight:700;min-width:0;overflow-wrap:anywhere}
+/* ===== أرض الأحياء - ثيم المحاضرات الجديد ===== */
+
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',sans-serif}
+:root{
+ --ink:#0c1d2b;
+ --ink-2:#2a3d4f;
+ --muted:#7a8a99;
+ --paper:#f5f3ee;
+ --card:#ffffff;
+ --line:#e7e3da;
+ --accent:#00a67e;
+ --accent-2:#006e5c;
+ --accent-soft:#dff6ee;
+ --gold:#f5b942;
+ --sidebar:260px;
+ --collapsed:84px;
+ --radius:20px;
+ --shadow:0 1px 2px #0c1d2b08,0 10px 30px -12px #0c1d2b18;
+}
+body{min-height:100vh;background:var(--paper);color:var(--ink);background-image:radial-gradient(#0c1d2b0d 1px,transparent 1px);background-size:22px 22px}
+button,a{-webkit-tap-highlight-color:transparent}
+button{font-family:inherit}
+
+/* ----- القائمة الجانبية ----- */
+.sidebar{position:fixed;right:0;top:0;bottom:0;width:var(--sidebar);z-index:1000;background:var(--ink);color:#fff;display:flex;flex-direction:column;justify-content:space-between;overflow-y:auto;overflow-x:hidden;transition:width .25s}
+.sidebar-top{padding:20px 16px}
+.sidebar-control{display:flex;justify-content:flex-start;margin-bottom:12px}
+.sidebar-toggle{width:38px;height:38px;border:0;border-radius:12px;background:#ffffff14;color:#fff;cursor:pointer;display:grid;place-items:center}
+.sidebar-toggle:hover{background:#ffffff24}
+.sidebar-toggle svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.logo-box{display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin:6px 0 28px;padding:4px 6px 22px;border-bottom:1px solid #ffffff1a}
+.logo-box img{width:56px;height:56px;object-fit:contain;border-radius:14px;background:#fff;padding:6px;margin-bottom:10px}
+.logo-box h2{font-size:21px;font-weight:900;white-space:nowrap}
+.logo-box p{font-size:12px;color:#ffffff99}
+.menu-title{font-size:11px;color:#ffffff66;font-weight:700;margin:0 10px 12px;letter-spacing:.3px}
+.menu{display:flex;flex-direction:column;gap:6px}
+.menu a{display:flex;align-items:center;gap:14px;min-height:50px;padding:12px 14px;border-radius:14px;text-decoration:none;color:#ffffffd0;font-size:14px;font-weight:700;white-space:nowrap;transition:background .2s,color .2s}
+.menu a:hover{background:#ffffff12;color:#fff}
+.menu a.active{background:var(--accent);color:#fff;box-shadow:0 8px 20px -8px #00a67e}
+.menu-icon{width:28px;min-width:28px;display:flex;align-items:center;justify-content:center}
+.menu-icon svg,.mobile-bottom svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.menu-text{overflow:hidden;text-overflow:ellipsis}
+.sidebar-bottom{margin:0 15px 17px;padding:12px 10px;border-radius:14px;background:#ffffff0d;text-align:center;font-size:11px;line-height:2;color:#ffffff99}
+.sidebar-bottom strong{font-size:13px;color:#fff}
+body.sidebar-collapsed .sidebar{width:var(--collapsed)}
+body.sidebar-collapsed .sidebar-top{padding:20px 12px}
+body.sidebar-collapsed .logo-box{align-items:center;padding-bottom:18px}
+body.sidebar-collapsed .logo-box img{width:44px;height:44px;padding:4px}
+body.sidebar-collapsed .logo-box h2,body.sidebar-collapsed .logo-box p,body.sidebar-collapsed .menu-title,body.sidebar-collapsed .menu-text,body.sidebar-collapsed .sidebar-bottom{display:none}
+body.sidebar-collapsed .menu a{justify-content:center;padding:13px 6px}
+body.sidebar-collapsed .sidebar-control{justify-content:center}
+
+/* ----- المحتوى الرئيسي ----- */
+.main{margin-right:var(--sidebar);padding:28px 32px 48px;min-width:0;transition:margin-right .25s}
+body.sidebar-collapsed .main{margin-right:var(--collapsed)}
+
+.topbar{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:28px 30px;margin-bottom:26px;border-radius:24px;background:linear-gradient(120deg,#0c1d2b 0%,#0f3b3a 60%,#00745f 100%);color:#fff;box-shadow:var(--shadow)}
+.topbar:after{content:"";position:absolute;left:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:#ffffff0f}
+.topbar h1{font-size:26px;font-weight:900;position:relative;z-index:1}
+.topbar p{font-size:13px;color:#ffffffb3;margin-top:6px;line-height:1.9;position:relative;z-index:1}
+.top-icon{width:56px;height:56px;border-radius:18px;background:#ffffff1f;display:grid;place-items:center;flex-shrink:0;position:relative;z-index:1}
+.top-icon svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+.notice{display:none;padding:14px 18px;border-radius:16px;background:#fff7e0;border:1px solid #f3dc9b;color:#7a5510;font-size:13px;line-height:2;margin-bottom:20px}
+.notice a{color:var(--accent-2);font-weight:800}
+
+/* ----- الشهور ----- */
+.months-title{font-size:17px;font-weight:900;margin:0 0 14px;color:var(--ink)}
+.months-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:26px}
+.month-button{min-width:0;text-align:right;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;color:var(--ink);cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s;box-shadow:var(--shadow)}
+.month-button:hover{transform:translateY(-3px);border-color:#9fdcc8}
+.month-button.active{border-color:var(--accent);box-shadow:0 0 0 3px #00a67e22,var(--shadow)}
+.month-cover{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--accent-soft)}
+.month-button-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.month-button strong{font-size:14px;font-weight:800}
+.month-number{width:32px;height:32px;border-radius:11px;display:grid;place-items:center;background:var(--ink);color:#fff;font-weight:900;font-size:13px;flex-shrink:0}
+.month-button.active .month-number{background:var(--accent)}
+.month-button small{display:block;margin-top:8px;color:var(--muted);font-size:12px;font-weight:600}
+
+/* ----- عنوان الشهر المختار ----- */
+.month-heading{display:none;align-items:center;justify-content:space-between;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 20px;margin-bottom:18px;box-shadow:var(--shadow)}
+.month-info{display:flex;align-items:center;gap:14px;min-width:0}
+.month-heading img{width:80px;aspect-ratio:16/9;object-fit:cover;border-radius:12px}
+.month-heading h2{font-size:17px;font-weight:900;color:var(--ink)}
+.month-heading p{font-size:12px;color:var(--muted);margin-top:4px}
+.badge{padding:8px 13px;border-radius:999px;background:var(--gold);color:var(--ink);font-size:12px;font-weight:800;white-space:nowrap}
+
+/* ----- كارت المحاضرة ----- */
+.lecture-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow)}
+.lecture-header{display:flex;align-items:center;gap:16px;padding:16px 18px;cursor:pointer;transition:background .2s}
+.lecture-header:hover{background:#fbfaf7}
+.lecture-thumb{width:110px;aspect-ratio:16/9;object-fit:cover;border-radius:14px;background:var(--accent-soft);flex-shrink:0}
+.lecture-title{flex:1;min-width:0}
+.lecture-title h3{font-size:16px;font-weight:900;color:var(--ink);overflow-wrap:anywhere;line-height:1.6}
+.lecture-title p{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.8}
+.arrow-icon{width:36px;height:36px;display:grid;place-items:center;background:var(--ink);color:#fff;border-radius:12px;flex-shrink:0;transition:transform .25s,background .2s}
+.lecture-body{display:none;border-top:1px solid var(--line);padding:20px;background:#fcfbf8}
+.lecture-body.open{display:block}
+
+/* ----- المشغل ----- */
+.video-container{position:relative;width:100%;aspect-ratio:16/9;background:#0a141e;border-radius:18px;overflow:hidden;margin-bottom:18px;isolation:isolate;box-shadow:0 18px 40px -18px #0c1d2b80}
+.video-container video,.video-container iframe{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:contain;background:#0a141e}
+.video-container iframe{z-index:1}
+.video-container video{z-index:1}
+.edu-player{position:absolute;inset:0;z-index:3;color:#fff;direction:ltr;background:linear-gradient(180deg,#0a141e55 0%,transparent 22%,transparent 55%,#0a141ef0 100%);opacity:1;transition:opacity .3s}
+.edu-player.controls-hidden{opacity:0;cursor:none}
+.edu-center-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:78px;height:78px;display:grid;place-items:center;border:0;border-radius:50%;background:var(--accent);color:#fff;cursor:pointer;box-shadow:0 0 0 10px #00a67e33;transition:transform .2s}
+.edu-center-play:hover{transform:translate(-50%,-50%) scale(1.08)}
+.edu-center-play svg{width:30px;height:30px;fill:currentColor}
+.edu-player.playing .edu-center-play{opacity:0;pointer-events:none}
+.edu-player-bottom{position:absolute;bottom:0;left:0;right:0;padding:44px 18px 14px}
+.edu-progress{width:100%;height:5px;border-radius:10px;background:#ffffff4d;cursor:pointer;position:relative;margin-bottom:14px;direction:ltr}
+.edu-progress:hover{height:8px}
+.edu-progress-fill{height:100%;width:0;border-radius:10px;background:var(--accent);position:relative}
+.edu-progress-fill:after{content:"";position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:12px;height:12px;border-radius:50%;background:#fff;opacity:0;transition:.2s}
+.edu-progress:hover .edu-progress-fill:after{opacity:1}
+.edu-controls{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.edu-controls-group{display:flex;align-items:center;gap:12px}
+.edu-control{border:0;background:transparent;color:#fff;display:grid;place-items:center;cursor:pointer;padding:5px;border-radius:9px;min-width:32px;min-height:32px;font-size:13px;font-weight:800}
+.edu-control:hover{background:#ffffff1f}
+.edu-control svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.edu-time{color:#fff;font-size:11px;direction:ltr;white-space:nowrap;font-weight:700}
+.edu-settings{position:relative}
+.edu-settings-menu{display:none;position:absolute;bottom:42px;right:0;width:200px;padding:8px;background:#0c1d2bf5;border:1px solid #ffffff1f;border-radius:14px;box-shadow:0 10px 30px #0008;direction:rtl}
+.edu-settings-menu.open{display:block}
+.edu-settings-title{color:#9fb3c2;font-size:10px;font-weight:800;padding:7px 9px 5px}
+.edu-setting-option{width:100%;display:flex;align-items:center;justify-content:space-between;padding:9px 10px;border:0;border-radius:9px;background:transparent;color:#fff;font-size:12px;cursor:pointer;text-align:right}
+.edu-setting-option:hover,.edu-setting-option.active{background:#ffffff1a;color:#5ee0b5}
+.edu-setting-divider{height:1px;background:#ffffff1f;margin:6px 0}
+.edu-volume{width:76px;accent-color:var(--accent);cursor:pointer}
+.edu-player-message{position:absolute;inset:0;z-index:5;display:grid;place-items:center;color:#fff;text-align:center;padding:20px;font-size:13px;line-height:2;background:#0a141e}
+.watermark{position:absolute;z-index:4;pointer-events:none;color:#fff;opacity:.28;font-size:clamp(10px,2vw,16px);font-weight:800;text-shadow:0 1px 4px #000;direction:ltr;white-space:nowrap}
+
+/* ----- الأزرار ----- */
+.video-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+.primary-btn,.secondary-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:12px 18px;text-decoration:none;font-size:13px;font-weight:800;cursor:pointer;transition:transform .15s,background .2s,box-shadow .2s}
+.primary-btn{background:var(--ink);color:#fff;box-shadow:0 8px 18px -10px #0c1d2b}
+.primary-btn:hover{background:#17324a;transform:translateY(-1px)}
+.secondary-btn{background:#fff;border:1px solid var(--line);color:var(--ink-2)}
+.secondary-btn:hover{border-color:#9fdcc8;background:var(--accent-soft)}
+.action-btn{flex:1;min-width:140px}
+.action-btn.on{background:var(--accent-soft);border-color:#9fdcc8;color:var(--accent-2)}
+.action-btn:disabled{opacity:.6;cursor:wait}
+.quality-wrap{position:relative}
+.quality-menu{display:none;position:absolute;top:calc(100% + 6px);right:0;z-index:20;width:170px;padding:6px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.quality-menu.open{display:block}
+.quality-option{display:flex;justify-content:space-between;width:100%;padding:10px;border:0;border-radius:9px;background:#fff;color:var(--ink);text-align:right;font-size:12px;cursor:pointer}
+.quality-option:hover,.quality-option.active{background:var(--accent-soft);color:var(--accent-2);font-weight:800}
+
+/* ----- محتويات المحاضرة ----- */
+.details-title{font-size:15px;font-weight:900;margin:0 0 14px;color:var(--ink)}
+.lesson-sections{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.lesson-section{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;min-width:0;transition:border-color .2s,box-shadow .2s}
+.lesson-section.open{border-color:#9fdcc8;box-shadow:0 8px 20px -14px #00a67e}
+.section-header{display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer;list-style:none}
+.section-header::-webkit-details-marker{display:none}
+.section-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:var(--ink);color:#fff;flex-shrink:0}
+.lesson-section:nth-child(2) .section-icon{background:var(--gold);color:var(--ink)}
+.lesson-section:nth-child(3) .section-icon{background:var(--accent)}
+.lesson-section:nth-child(4) .section-icon{background:#7c5cff}
+.section-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.section-name{flex:1;min-width:0}
+.section-name strong{display:block;font-size:13px;font-weight:900}
+.section-name small{display:block;font-size:11px;color:var(--muted);margin-top:3px}
+.section-chevron{color:var(--muted);font-size:14px;transition:transform .2s}
+.lesson-section[open] .section-chevron{transform:rotate(180deg)}
+.section-content{border-top:1px solid #efece5;padding:14px;font-size:13px;line-height:2.1;color:var(--ink-2);overflow-wrap:anywhere}
+.section-content p{white-space:pre-wrap}
+.section-content .primary-btn{margin-top:10px}
+.handout-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.handout-row:last-child{border-bottom:0}
+.handout-row span{font-weight:700;min-width:0;overflow-wrap:anywhere}
 .handout-row .primary-btn{flex-shrink:0;margin:0}
 .muted{color:var(--muted)}
-.loading,.empty{background:white;border:1px solid var(--border);border-radius:15px;padding:29px;text-align:center;font-size:13px;line-height:2;color:var(--muted)}
+.loading,.empty{background:#fff;border:1px dashed #d6d0c3;border-radius:18px;padding:32px;text-align:center;font-size:14px;line-height:2;color:var(--muted)}
+
+/* ----- شريط التنقل السفلي للموبايل ----- */
 .mobile-bottom{display:none}
 
+/* ----- Responsive ----- */
 @media(max-width:1100px){
  .months-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
  .main{padding:22px}
 }
 @media(max-width:768px){
  .sidebar{display:none}
- .main,body.sidebar-collapsed .main{margin-right:0;padding:14px 13px 95px}
- .topbar{padding:15px;margin-bottom:17px}
- .topbar h1{font-size:18px}
- .topbar p{font-size:11px}
- .top-icon{width:42px;height:42px}
- .months-grid{gap:9px}
- .month-button{padding:10px}
- .month-button strong{font-size:12px}
- .month-heading{padding:12px}
- .month-heading h2{font-size:14px}
- .month-heading img{width:55px}
- .badge{font-size:10px;padding:6px}
- .lecture-header{padding:12px;gap:10px}
- .lecture-thumb{width:75px}
- .lecture-title h3{font-size:13px}
- .lecture-title p{font-size:10px}
+ .main,body.sidebar-collapsed .main{margin-right:0;padding:14px 14px 100px}
+ .topbar{padding:20px;margin-bottom:18px;border-radius:20px}
+ .topbar h1{font-size:20px}
+ .topbar p{font-size:12px}
+ .top-icon{width:46px;height:46px;border-radius:14px}
+ .months-grid{gap:10px}
+ .month-button{padding:10px;border-radius:15px}
+ .month-button strong{font-size:13px}
+ .month-heading{padding:12px 14px;border-radius:15px}
+ .month-heading h2{font-size:15px}
+ .month-heading img{width:60px}
+ .badge{font-size:10px;padding:6px 10px}
+ .lecture-header{padding:12px;gap:12px}
+ .lecture-thumb{width:82px;border-radius:11px}
+ .lecture-title h3{font-size:14px}
+ .lecture-title p{font-size:11px}
  .lecture-body{padding:12px}
- .video-container{border-radius:10px}
- .lesson-sections{grid-template-columns:1fr;gap:9px}
- .section-header{padding:11px}
- .section-content{padding:11px}
- .video-actions{gap:7px}
- .primary-btn,.secondary-btn{padding:10px 12px}
- .mobile-bottom{display:flex;position:fixed;right:0;bottom:0;left:0;z-index:1500;background:#fff;border-top:1px solid #e6edf4;box-shadow:0 -4px 20px #12375b12;justify-content:space-around;padding:8px 3px calc(8px + env(safe-area-inset-bottom))}
- .mobile-bottom a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#6b7f98;font-size:9px;flex:1;min-width:0;text-decoration:none}
- .mobile-bottom a.active{color:var(--green);font-weight:900}
- .mobile-bottom svg{width:21px;height:21px}
+ .video-container{border-radius:13px}
+ .lesson-sections{grid-template-columns:1fr;gap:10px}
+ .section-header{padding:12px}
+ .section-content{padding:12px}
+ .video-actions{gap:8px}
+ .primary-btn,.secondary-btn{padding:11px 14px}
+ .mobile-bottom{display:flex;position:fixed;right:12px;bottom:12px;left:12px;z-index:1500;background:var(--ink);border-radius:22px;box-shadow:0 14px 30px -10px #0c1d2b;justify-content:space-around;padding:8px 6px calc(8px + env(safe-area-inset-bottom))}
+ .mobile-bottom a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#ffffff8c;font-size:9px;flex:1;min-width:0;text-decoration:none;padding:6px 0;border-radius:14px}
+ .mobile-bottom a.active{color:#fff;background:var(--accent);font-weight:900}
+ .mobile-bottom svg{width:20px;height:20px}
 }
 @media(max-width:600px){
- .video-container{border-radius:11px}
- .edu-player-bottom{padding:35px 9px 9px}
+ .video-container{border-radius:12px}
+ .edu-player-bottom{padding:34px 10px 10px}
  .edu-controls{gap:5px}
  .edu-controls-group{gap:5px}
- .edu-control{min-width:27px;min-height:27px;padding:3px}
+ .edu-control{min-width:28px;min-height:28px;padding:3px}
  .edu-control svg{width:19px;height:19px}
  .edu-time{font-size:9px}
- .edu-volume{width:48px}
- .edu-center-play{width:59px;height:59px}
- .edu-center-play svg{width:25px;height:25px}
- .edu-settings-menu{width:175px}
+ .edu-volume{width:50px}
+ .edu-center-play{width:60px;height:60px}
+ .edu-center-play svg{width:24px;height:24px}
+ .edu-settings-menu{width:180px}
 }
 @media(max-width:360px){
  .months-grid{grid-template-columns:1fr}
  .month-heading{align-items:flex-start}
  .month-info{gap:8px}
- .lecture-thumb{width:62px}
- .month-badge{font-size:9px}
+ .lecture-thumb{width:64px}
 }
 @media(prefers-reduced-motion:reduce){
  *,*::before,*::after{transition:none!important;scroll-behavior:auto!important}
-}
+ }
 </style>
 </head>
 
