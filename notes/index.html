@@ -13,12 +13,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="/auth-guard.js"></script>
-  
+
 <style>
 :root{
   --green:#008866;
@@ -35,13 +34,9 @@
   --sidebar-small:82px;
 }
 
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
-html{
-  scroll-behavior:smooth;
-}
+html{scroll-behavior:smooth}
 
 body{
   margin:0;
@@ -51,19 +46,10 @@ body{
   color:var(--text);
 }
 
-a{
-  color:inherit;
-  text-decoration:none;
-}
+a{color:inherit;text-decoration:none}
 
-button,
-input{
-  font-family:inherit;
-}
-
-button{
-  cursor:pointer;
-}
+button,input{font-family:inherit}
+button{cursor:pointer}
 
 .icon{
   width:22px;
@@ -77,9 +63,7 @@ button{
   stroke-linejoin:round;
 }
 
-/* ========================================
-   الشريط الجانبي — تصميم منصة أرض الأحياء
-======================================== */
+/* القائمة الجانبية */
 
 .sidebar{
   position:fixed;
@@ -94,21 +78,12 @@ button{
   justify-content:space-between;
   padding:0;
   color:#fff;
-  background:linear-gradient(
-    180deg,
-    #004e4d 0%,
-    #003d50 62%,
-    #07375b 100%
-  );
+  background:linear-gradient(180deg,#004e4d 0%,#003d50 62%,#07375b 100%);
   z-index:1000;
-  box-shadow:none;
   transition:width .25s ease;
 }
 
-.sidebar-inner{
-  padding:18px 15px 15px;
-  min-width:0;
-}
+.sidebar-inner{padding:18px 15px 15px;min-width:0}
 
 .sidebar-top-actions{
   display:flex;
@@ -126,29 +101,21 @@ button{
   display:grid;
   place-items:center;
   flex-shrink:0;
-  transition:background .2s,transform .2s;
+  transition:background .2s;
 }
 
-.sidebar-toggle:hover{
-  background:#ffffff25;
-}
-
-.sidebar-toggle i{
-  font-size:17px;
-  transition:transform .25s;
-}
+.sidebar-toggle:hover{background:#ffffff25}
+.sidebar-toggle i{font-size:17px;transition:transform .25s}
 
 .brand{
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:0;
   text-align:center;
   margin:0 0 27px;
   padding:0 0 23px;
   border-bottom:1px solid #ffffff20;
-  min-width:0;
 }
 
 .brand-logo-wrap{
@@ -165,15 +132,9 @@ button{
   width:100%;
   height:100%;
   object-fit:contain;
-  display:block;
 }
 
-.brand-text{
-  min-width:0;
-  overflow:hidden;
-  white-space:nowrap;
-  transition:opacity .2s;
-}
+.brand-text{min-width:0;overflow:hidden;white-space:nowrap}
 
 .brand h2{
   font-size:23px;
@@ -183,27 +144,17 @@ button{
   color:#fff;
 }
 
-.brand small{
-  display:block;
-  font-size:12px;
-  opacity:.85;
-  font-weight:500;
-}
+.brand small{display:block;font-size:12px;opacity:.85}
 
 .menu-label{
   font-size:11px;
   color:#ffffff88;
   font-weight:700;
   margin:0 10px 12px;
-  padding:0;
   white-space:nowrap;
 }
 
-.side-menu{
-  display:flex;
-  flex-direction:column;
-  gap:7px;
-}
+.side-menu{display:flex;flex-direction:column;gap:7px}
 
 .side-link{
   display:flex;
@@ -211,7 +162,6 @@ button{
   gap:15px;
   min-height:48px;
   padding:12px 15px;
-  margin:0;
   border-radius:12px;
   color:#f2fbff;
   font-size:14px;
@@ -221,7 +171,7 @@ button{
   position:relative;
 }
 
-.side-link > i{
+.side-link>i{
   width:27px;
   min-width:27px;
   height:27px;
@@ -232,10 +182,7 @@ button{
   flex-shrink:0;
 }
 
-.side-link:hover{
-  background:#ffffff18;
-  transform:translateX(-2px);
-}
+.side-link:hover{background:#ffffff18;transform:translateX(-2px)}
 
 .side-link.active{
   background:linear-gradient(110deg,#1da77b,#159b78);
@@ -243,10 +190,7 @@ button{
   color:#fff;
 }
 
-.side-link-text{
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
+.side-link-text{overflow:hidden;text-overflow:ellipsis}
 
 .sidebar-bottom{
   margin:0 15px 18px;
@@ -256,58 +200,31 @@ button{
   font-size:11px;
   line-height:2;
   color:#ffffffc9;
-  white-space:normal;
 }
 
-.sidebar-bottom i{
-  margin-left:5px;
-  color:#9be4c7;
-}
+.sidebar-bottom i{margin-left:5px;color:#9be4c7}
 
-/* حالة تصغير الشريط الجانبي */
+/* تصغير القائمة */
 
-body.sidebar-collapsed{
-  --sidebar-width:82px;
-}
+body.sidebar-collapsed{--sidebar-width:82px}
 
-body.sidebar-collapsed .sidebar-inner{
-  padding:18px 10px 15px;
-}
-
-body.sidebar-collapsed .brand{
-  padding-bottom:18px;
-}
-
-body.sidebar-collapsed .brand-logo-wrap{
-  width:48px;
-  height:48px;
-}
+body.sidebar-collapsed .sidebar-inner{padding:18px 10px 15px}
+body.sidebar-collapsed .brand{padding-bottom:18px}
+body.sidebar-collapsed .brand-logo-wrap{width:48px;height:48px}
 
 body.sidebar-collapsed .brand-text,
 body.sidebar-collapsed .menu-label,
 body.sidebar-collapsed .side-link-text,
-body.sidebar-collapsed .sidebar-bottom{
-  display:none;
-}
+body.sidebar-collapsed .sidebar-bottom{display:none}
 
 body.sidebar-collapsed .side-link{
   justify-content:center;
   padding:13px 5px;
 }
 
-body.sidebar-collapsed .side-link:hover{
-  transform:none;
-}
-
-body.sidebar-collapsed .sidebar-top-actions{
-  justify-content:center;
-}
-
-body.sidebar-collapsed .sidebar-toggle i{
-  transform:rotate(180deg);
-}
-
-/* تلميحات الروابط عند التصغير */
+body.sidebar-collapsed .side-link:hover{transform:none}
+body.sidebar-collapsed .sidebar-top-actions{justify-content:center}
+body.sidebar-collapsed .sidebar-toggle i{transform:rotate(180deg)}
 
 body.sidebar-collapsed .side-link[title]::after{
   content:attr(title);
@@ -334,9 +251,7 @@ body.sidebar-collapsed .side-link[title]:hover::after{
   visibility:visible;
 }
 
-/* ========================================
-   المحتوى الرئيسي
-======================================== */
+/* المحتوى الرئيسي */
 
 .main{
   margin-right:var(--sidebar-width);
@@ -346,9 +261,7 @@ body.sidebar-collapsed .side-link[title]:hover::after{
   transition:margin-right .25s ease;
 }
 
-body.sidebar-collapsed .main{
-  margin-right:var(--sidebar-small);
-}
+body.sidebar-collapsed .main{margin-right:var(--sidebar-small)}
 
 .topbar{
   display:flex;
@@ -382,7 +295,6 @@ body.sidebar-collapsed .main{
   align-items:center;
   gap:9px;
   background:#f4f8fb;
-  border:0;
   border-radius:12px;
   padding:9px 13px;
   max-width:230px;
@@ -400,13 +312,8 @@ body.sidebar-collapsed .main{
   color:var(--green);
 }
 
-.student-avatar i{
-  font-size:18px;
-}
-
-.student-info{
-  min-width:0;
-}
+.student-avatar i{font-size:18px}
+.student-info{min-width:0}
 
 .student-info strong{
   display:block;
@@ -414,14 +321,9 @@ body.sidebar-collapsed .main{
   overflow-wrap:anywhere;
 }
 
-.student-info small{
-  color:var(--muted);
-  font-size:10px;
-}
+.student-info small{color:var(--muted);font-size:10px}
 
-/* ========================================
-   بطاقة الترحيب
-======================================== */
+/* الترحيب */
 
 .welcome-card{
   position:relative;
@@ -430,12 +332,7 @@ body.sidebar-collapsed .main{
   border-radius:16px;
   margin-bottom:23px;
   color:#fff;
-  background:linear-gradient(
-    110deg,
-    #004e4d,
-    #008866 65%,
-    #07375b
-  );
+  background:linear-gradient(110deg,#004e4d,#008866 65%,#07375b);
   box-shadow:0 8px 25px rgba(2,104,87,.12);
 }
 
@@ -466,13 +363,9 @@ body.sidebar-collapsed .main{
   pointer-events:none;
 }
 
-.welcome-decoration i{
-  font-size:145px;
-}
+.welcome-decoration i{font-size:145px}
 
-/* ========================================
-   البحث
-======================================== */
+/* البحث */
 
 .search-area{
   display:flex;
@@ -481,11 +374,7 @@ body.sidebar-collapsed .main{
   margin-bottom:23px;
 }
 
-.search-box{
-  flex:1;
-  position:relative;
-  min-width:0;
-}
+.search-box{flex:1;position:relative;min-width:0}
 
 .search-icon{
   position:absolute;
@@ -496,9 +385,7 @@ body.sidebar-collapsed .main{
   pointer-events:none;
 }
 
-.search-icon i{
-  font-size:17px;
-}
+.search-icon i{font-size:17px}
 
 .search-box input{
   width:100%;
@@ -529,9 +416,7 @@ body.sidebar-collapsed .main{
   white-space:nowrap;
 }
 
-/* ========================================
-   عناوين الأقسام
-======================================== */
+/* العناوين */
 
 .section-heading{
   display:flex;
@@ -558,14 +443,9 @@ body.sidebar-collapsed .main{
   border-radius:5px;
 }
 
-.section-heading span{
-  font-size:12px;
-  color:var(--muted);
-}
+.section-heading span{font-size:12px;color:var(--muted)}
 
-/* ========================================
-   شبكة المذكرات
-======================================== */
+/* شبكة المذكرات */
 
 .notes-grid{
   display:grid;
@@ -582,7 +462,7 @@ body.sidebar-collapsed .main{
   box-shadow:var(--shadow);
   display:flex;
   flex-direction:column;
-  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+  transition:transform .22s,box-shadow .22s,border-color .22s;
   animation:fadeIn .35s ease both;
 }
 
@@ -607,12 +487,10 @@ body.sidebar-collapsed .main{
   height:100%;
   object-fit:cover;
   display:block;
-  transition:transform .3s ease;
+  transition:transform .3s;
 }
 
-.note-card:hover .note-cover img{
-  transform:scale(1.035);
-}
+.note-card:hover .note-cover img{transform:scale(1.035)}
 
 .cover-placeholder{
   display:flex;
@@ -623,14 +501,8 @@ body.sidebar-collapsed .main{
   color:var(--green-dark);
 }
 
-.cover-placeholder i{
-  font-size:48px;
-}
-
-.cover-placeholder small{
-  font-size:11px;
-  font-weight:800;
-}
+.cover-placeholder i{font-size:48px}
+.cover-placeholder small{font-size:11px;font-weight:800}
 
 .note-type{
   position:absolute;
@@ -669,9 +541,7 @@ body.sidebar-collapsed .main{
   margin-bottom:16px;
 }
 
-.note-date i{
-  font-size:14px;
-}
+.note-date i{font-size:14px}
 
 .note-actions{
   display:flex;
@@ -694,9 +564,7 @@ body.sidebar-collapsed .main{
   cursor:pointer;
 }
 
-.note-btn i{
-  font-size:14px;
-}
+.note-btn i{font-size:14px}
 
 .note-btn.open{
   background:var(--green);
@@ -704,9 +572,7 @@ body.sidebar-collapsed .main{
   border-color:var(--green);
 }
 
-.note-btn.open:hover{
-  background:#006e65;
-}
+.note-btn.open:hover{background:#006e65}
 
 .note-btn.download{
   background:#f5f9fc;
@@ -733,9 +599,7 @@ body.sidebar-collapsed .main{
   text-align:center;
 }
 
-/* ========================================
-   حالات التحميل والفراغ والأخطاء
-======================================== */
+/* حالات الصفحة */
 
 .state-box{
   grid-column:1/-1;
@@ -747,7 +611,7 @@ body.sidebar-collapsed .main{
   color:var(--muted);
 }
 
-.state-box .state-icon{
+.state-icon{
   display:flex;
   align-items:center;
   justify-content:center;
@@ -755,9 +619,7 @@ body.sidebar-collapsed .main{
   color:var(--green);
 }
 
-.state-box .state-icon i{
-  font-size:43px;
-}
+.state-icon i{font-size:43px}
 
 .state-box h3{
   font-size:16px;
@@ -765,11 +627,7 @@ body.sidebar-collapsed .main{
   margin:0 0 6px;
 }
 
-.state-box p{
-  font-size:12px;
-  line-height:2;
-  margin:0;
-}
+.state-box p{font-size:12px;line-height:2;margin:0}
 
 .loader{
   width:34px;
@@ -788,9 +646,7 @@ body.sidebar-collapsed .main{
   overflow-wrap:anywhere;
 }
 
-/* ========================================
-   التذييل
-======================================== */
+/* التذييل */
 
 .page-footer{
   text-align:center;
@@ -800,17 +656,11 @@ body.sidebar-collapsed .main{
   line-height:2;
 }
 
-/* ========================================
-   شريط التنقل للموبايل
-======================================== */
+/* الموبايل */
 
-.mobile-nav{
-  display:none;
-}
+.mobile-nav{display:none}
 
-@keyframes spin{
-  to{transform:rotate(360deg)}
-}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 @keyframes fadeIn{
   from{opacity:0;transform:translateY(8px)}
@@ -818,19 +668,12 @@ body.sidebar-collapsed .main{
 }
 
 @media(max-width:1000px){
-  .main{
-    padding:22px;
-  }
-
-  .notes-grid{
-    grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
-  }
+  .main{padding:22px}
+  .notes-grid{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
 }
 
 @media(max-width:760px){
-  .sidebar{
-    display:none;
-  }
+  .sidebar{display:none}
 
   .main,
   body.sidebar-collapsed .main{
@@ -845,13 +688,8 @@ body.sidebar-collapsed .main{
     gap:8px;
   }
 
-  .page-heading h1{
-    font-size:18px;
-  }
-
-  .page-heading p{
-    font-size:11px;
-  }
+  .page-heading h1{font-size:18px}
+  .page-heading p{font-size:11px}
 
   .student-badge{
     padding:6px 8px;
@@ -859,101 +697,42 @@ body.sidebar-collapsed .main{
     max-width:145px;
   }
 
-  .student-avatar{
-    width:32px;
-    height:32px;
-  }
-
-  .student-info strong{
-    font-size:10px;
-  }
-
-  .student-info small{
-    font-size:9px;
-  }
+  .student-avatar{width:32px;height:32px}
+  .student-info strong{font-size:10px}
+  .student-info small{font-size:9px}
 
   .welcome-card{
     padding:18px 16px;
     margin-bottom:19px;
   }
 
-  .welcome-card h2{
-    font-size:16px;
-  }
+  .welcome-card h2{font-size:16px}
+  .welcome-card p{font-size:11px}
+  .welcome-decoration{left:7px}
+  .welcome-decoration i{font-size:105px}
 
-  .welcome-card p{
-    font-size:11px;
-  }
+  .search-area{gap:8px}
+  .search-box input{height:44px;font-size:12px}
+  .search-icon{right:12px}
 
-  .welcome-decoration{
-    left:7px;
-  }
+  .notes-count{padding:10px 8px;font-size:10px}
 
-  .welcome-decoration i{
-    font-size:105px;
-  }
-
-  .search-area{
-    gap:8px;
-  }
-
-  .search-box input{
-    height:44px;
-    font-size:12px;
-  }
-
-  .search-icon{
-    right:12px;
-  }
-
-  .notes-count{
-    padding:10px 8px;
-    font-size:10px;
-  }
-
-  .section-heading{
-    margin:22px 0 13px;
-  }
-
-  .section-heading h2{
-    font-size:16px;
-  }
-
-  .section-heading span{
-    font-size:10px;
-  }
+  .section-heading{margin:22px 0 13px}
+  .section-heading h2{font-size:16px}
+  .section-heading span{font-size:10px}
 
   .notes-grid{
     grid-template-columns:repeat(2,minmax(0,1fr));
     gap:12px;
   }
 
-  .note-cover{
-    height:140px;
-  }
+  .note-cover{height:140px}
+  .note-body{padding:12px}
+  .note-title{font-size:12px}
+  .note-date{font-size:10px;margin-bottom:12px}
 
-  .note-body{
-    padding:12px;
-  }
-
-  .note-title{
-    font-size:12px;
-  }
-
-  .note-date{
-    font-size:10px;
-    margin-bottom:12px;
-  }
-
-  .note-actions{
-    flex-direction:column;
-    gap:7px;
-  }
-
-  .note-btn{
-    min-height:36px;
-    font-size:10px;
-  }
+  .note-actions{flex-direction:column;gap:7px}
+  .note-btn{min-height:36px;font-size:10px}
 
   .mobile-nav{
     display:flex;
@@ -982,31 +761,16 @@ body.sidebar-collapsed .main{
     color:var(--muted);
     font-size:9px;
     font-weight:700;
-    transition:color .2s;
   }
 
-  .mobile-nav a i{
-    font-size:19px;
-  }
-
-  .mobile-nav a.active{
-    color:var(--green);
-    font-weight:900;
-  }
+  .mobile-nav a i{font-size:19px}
+  .mobile-nav a.active{color:var(--green);font-weight:900}
 }
 
 @media(max-width:360px){
-  .notes-grid{
-    grid-template-columns:1fr;
-  }
-
-  .note-cover{
-    height:190px;
-  }
-
-  .student-info small{
-    display:none;
-  }
+  .notes-grid{grid-template-columns:1fr}
+  .note-cover{height:190px}
+  .student-info small{display:none}
 }
 
 @media(prefers-reduced-motion:reduce){
@@ -1023,7 +787,8 @@ body.sidebar-collapsed .main{
 
 <body>
 
-<!-- الشريط الجانبي -->
+<!-- القائمة الجانبية -->
+
 <aside class="sidebar" aria-label="القائمة الرئيسية">
 
   <div class="sidebar-inner">
@@ -1042,6 +807,7 @@ body.sidebar-collapsed .main{
     </div>
 
     <div class="brand">
+
       <div class="brand-logo-wrap">
         <img
           src="../logo.png"
@@ -1052,53 +818,41 @@ body.sidebar-collapsed .main{
 
       <div class="brand-text">
         <h2>أرض الأحياء</h2>
-        <small>الثانوية العامة</small>
+        <small>الصف الثالث الثانوي</small>
       </div>
+
     </div>
 
     <p class="menu-label">القائمة الرئيسية</p>
 
     <nav class="side-menu" aria-label="التنقل بين صفحات المنصة">
 
-      <a href="../index.html"
-         class="side-link"
-         data-title="الرئيسية">
+      <a href="../index.html" class="side-link" data-title="الرئيسية">
         <i class="fa-solid fa-house" aria-hidden="true"></i>
         <span class="side-link-text">الرئيسية</span>
       </a>
 
-      <a href="../videos/index.html"
-         class="side-link"
-         data-title="المحاضرات">
+      <a href="../videos/index.html" class="side-link" data-title="المحاضرات">
         <i class="fa-regular fa-circle-play" aria-hidden="true"></i>
         <span class="side-link-text">المحاضرات</span>
       </a>
 
-      <a href="./index.html"
-         class="side-link active"
-         data-title="المذكرات"
-         aria-current="page">
+      <a href="./index.html" class="side-link active" data-title="المذكرات" aria-current="page">
         <i class="fa-solid fa-book-open" aria-hidden="true"></i>
         <span class="side-link-text">المذكرات</span>
       </a>
 
-      <a href="../champion/index.html"
-         class="side-link"
-         data-title="بطل الفصل">
+      <a href="../champion/index.html" class="side-link" data-title="بطل الفصل">
         <i class="fa-solid fa-trophy" aria-hidden="true"></i>
         <span class="side-link-text">بطل الفصل</span>
       </a>
 
-      <a href="../forum/index.html"
-         class="side-link"
-         data-title="المنتدى">
+      <a href="../forum/index.html" class="side-link" data-title="المنتدى">
         <i class="fa-regular fa-comments" aria-hidden="true"></i>
         <span class="side-link-text">المنتدى</span>
       </a>
 
-      <a href="../account/index.html"
-         class="side-link"
-         data-title="حساب الطالب">
+      <a href="../account/index.html" class="side-link" data-title="حساب الطالب">
         <i class="fa-regular fa-user" aria-hidden="true"></i>
         <span class="side-link-text">حساب الطالب</span>
       </a>
@@ -1109,15 +863,18 @@ body.sidebar-collapsed .main{
 </aside>
 
 <!-- المحتوى الرئيسي -->
+
 <main class="main">
 
   <header class="topbar">
+
     <div class="page-heading">
       <h1>المذكرات</h1>
       <p>كل مذكرات ومراجعات الأحياء في مكان واحد.</p>
     </div>
 
     <div class="student-badge">
+
       <div class="student-avatar">
         <i class="fa-regular fa-user" aria-hidden="true"></i>
       </div>
@@ -1126,10 +883,13 @@ body.sidebar-collapsed .main{
         <strong id="studentName">جارٍ التحقق...</strong>
         <small>الصف الثالث الثانوي</small>
       </div>
+
     </div>
+
   </header>
 
   <section class="welcome-card">
+
     <div class="welcome-decoration" aria-hidden="true">
       <i class="fa-solid fa-leaf"></i>
     </div>
@@ -1140,10 +900,13 @@ body.sidebar-collapsed .main{
       هتلاقي هنا المذكرات والمراجعات اللي بتساعدك تفهم المنهج وتراجع أهم النقاط.
       اختار المذكرة المناسبة ليك، وافتحها أو حمّلها بسهولة.
     </p>
+
   </section>
 
   <section class="search-area" aria-label="البحث عن المذكرات">
+
     <div class="search-box">
+
       <span class="search-icon" aria-hidden="true">
         <i class="fa-solid fa-magnifying-glass"></i>
       </span>
@@ -1155,26 +918,32 @@ body.sidebar-collapsed .main{
         aria-label="البحث في المذكرات"
         autocomplete="off"
       >
+
     </div>
 
     <div class="notes-count" id="notesCount" aria-live="polite">
       جاري التحميل...
     </div>
+
   </section>
 
   <section>
+
     <div class="section-heading">
       <h2>مكتبة المذكرات</h2>
       <span>اختر المذكرة وابدأ المراجعة</span>
     </div>
 
     <div class="notes-grid" id="notesGrid" aria-live="polite">
+
       <div class="state-box">
         <div class="loader"></div>
         <h3>جاري تحميل المذكرات</h3>
         <p>لحظات ونجهز لك المحتوى.</p>
       </div>
+
     </div>
+
   </section>
 
   <footer class="page-footer">
@@ -1184,7 +953,8 @@ body.sidebar-collapsed .main{
 
 </main>
 
-<!-- شريط التنقل للموبايل -->
+<!-- شريط الموبايل -->
+
 <nav class="mobile-nav" aria-label="التنقل الرئيسي">
 
   <a href="../index.html">
@@ -1226,8 +996,12 @@ body.sidebar-collapsed .main{
    إعدادات Supabase
 ======================================== */
 
-const SUPABASE_URL = "https://fpfbmjtpzamzlyzitmsd.supabase.co";
-const SUPABASE_KEY = "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+const SUPABASE_URL =
+  "https://fpfbmjtpzamzlyzitmsd.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_J10919zw5BMKBqXnId0NyA_qLTz8X7d";
+
 const STORAGE_BUCKET = "lectures";
 
 const notesGrid = document.getElementById("notesGrid");
@@ -1238,28 +1012,89 @@ const sidebarToggle = document.getElementById("sidebarToggle");
 
 let allNotes = [];
 let renderVersion = 0;
+let db = null;
+
+/* ========================================
+   إنشاء اتصال Supabase
+======================================== */
 
 if (!window.supabase) {
-  notesGrid.textContent =
-    "تعذر تحميل مكتبة Supabase. تحقق من الإنترنت ثم أعد تحميل الصفحة.";
 
   notesCount.textContent = "تعذر التحميل";
 
-  throw new Error("Missing dependency: supabase-js");
+  showInitialError(
+    "تعذر تحميل مكتبة Supabase",
+    "تحقق من اتصال الإنترنت وأعد تحميل الصفحة."
+  );
+
+} else {
+
+  try {
+
+    db = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY,
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      }
+    );
+
+  } catch (error) {
+
+    console.error("Supabase initialization error:", error);
+
+    showInitialError(
+      "تعذر تشغيل المنصة",
+      "حدث خطأ أثناء الاتصال بقاعدة البيانات."
+    );
+
+  }
+
 }
 
-const db = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+/* ========================================
+   عرض رسالة أولية
+======================================== */
+
+function showInitialError(title, message) {
+
+  if (!notesGrid) return;
+
+  notesGrid.replaceChildren();
+
+  const box = document.createElement("div");
+  box.className = "state-box";
+
+  const icon = document.createElement("div");
+  icon.className = "state-icon";
+
+  icon.appendChild(
+    createIcon("fa-solid fa-triangle-exclamation")
+  );
+
+  const heading = document.createElement("h3");
+  heading.textContent = title;
+
+  const description = document.createElement("p");
+  description.textContent = message;
+
+  box.append(icon, heading, description);
+  notesGrid.appendChild(box);
+
+}
 
 /* ========================================
-   التحكم في الشريط الجانبي
+   التحكم في القائمة الجانبية
 ======================================== */
 
 const SIDEBAR_KEY = "ardAlahyaaSidebarCollapsed";
 
 function applySidebarState(collapsed, save = true) {
+
   document.body.classList.toggle(
     "sidebar-collapsed",
     collapsed
@@ -1269,79 +1104,114 @@ function applySidebarState(collapsed, save = true) {
     ? "توسيع الشريط الجانبي"
     : "تصغير الشريط الجانبي";
 
-  sidebarToggle.setAttribute(
-    "aria-expanded",
-    String(!collapsed)
-  );
+  if (sidebarToggle) {
 
-  sidebarToggle.setAttribute("aria-label", label);
-  sidebarToggle.title = label;
+    sidebarToggle.setAttribute(
+      "aria-expanded",
+      String(!collapsed)
+    );
+
+    sidebarToggle.setAttribute("aria-label", label);
+    sidebarToggle.title = label;
+
+  }
 
   document.querySelectorAll(".side-link[data-title]").forEach(link => {
+
     if (collapsed) {
       link.title = link.dataset.title;
     } else {
       link.removeAttribute("title");
     }
+
   });
 
   if (save) {
+
     try {
+
       localStorage.setItem(
         SIDEBAR_KEY,
         String(collapsed)
       );
+
     } catch (error) {
-      console.warn("تعذر حفظ وضع الشريط الجانبي.");
+
+      console.warn("تعذر حفظ حالة القائمة الجانبية.");
+
     }
+
   }
+
 }
 
-sidebarToggle.addEventListener("click", () => {
-  const collapsed = document.body.classList.contains(
-    "sidebar-collapsed"
-  );
+if (sidebarToggle) {
 
-  applySidebarState(!collapsed);
-});
+  sidebarToggle.addEventListener("click", () => {
+
+    const collapsed = document.body.classList.contains(
+      "sidebar-collapsed"
+    );
+
+    applySidebarState(!collapsed);
+
+  });
+
+}
 
 try {
+
   applySidebarState(
     localStorage.getItem(SIDEBAR_KEY) === "true",
     false
   );
+
 } catch (error) {
+
   applySidebarState(false, false);
+
 }
 
 /* ========================================
-   إنشاء أيقونة Font Awesome
+   إنشاء أيقونة
 ======================================== */
 
 function createIcon(iconClass) {
+
   const icon = document.createElement("i");
 
   icon.className = iconClass;
   icon.setAttribute("aria-hidden", "true");
 
   return icon;
+
 }
 
 /* ========================================
-   عرض حالات التحميل والخطأ والفراغ
+   حالات التحميل والخطأ والفراغ
 ======================================== */
 
-function showState(iconClass, title, message, errorMessage = "") {
+function showState(
+  iconClass,
+  title,
+  message,
+  errorMessage = ""
+) {
+
   notesGrid.replaceChildren();
 
   const box = document.createElement("div");
   box.className = "state-box";
 
   if (iconClass === "loading") {
+
     const loader = document.createElement("div");
     loader.className = "loader";
+
     box.appendChild(loader);
+
   } else {
+
     const icon = document.createElement("div");
     icon.className = "state-icon";
 
@@ -1350,40 +1220,43 @@ function showState(iconClass, title, message, errorMessage = "") {
     );
 
     box.appendChild(icon);
+
   }
 
   const heading = document.createElement("h3");
   heading.textContent = title;
-  box.appendChild(heading);
 
   const description = document.createElement("p");
   description.textContent = message;
-  box.appendChild(description);
+
+  box.append(heading, description);
 
   if (errorMessage) {
+
     const errorBox = document.createElement("div");
+
     errorBox.className = "error-message";
     errorBox.textContent = errorMessage;
+
     box.appendChild(errorBox);
+
   }
 
   notesGrid.appendChild(box);
+
 }
 
 /* ========================================
-   تحويل مسار Storage إلى رابط
+   تنظيف مسارات الملفات
 ======================================== */
 
-async function getStorageURL(path) {
+function cleanStoragePath(path) {
+
   if (!path) return "";
 
-  const value = String(path).trim();
+  let value = String(path).trim();
 
-  if (/^https?:\/\//i.test(value)) {
-    return value;
-  }
-
-  let cleanPath = value;
+  if (!value) return "";
 
   const publicMarker =
     `/storage/v1/object/public/${STORAGE_BUCKET}/`;
@@ -1391,50 +1264,148 @@ async function getStorageURL(path) {
   const signedMarker =
     `/storage/v1/object/sign/${STORAGE_BUCKET}/`;
 
-  if (cleanPath.includes(publicMarker)) {
-    cleanPath = cleanPath.split(publicMarker).pop();
-  } else if (cleanPath.includes(signedMarker)) {
-    cleanPath = cleanPath
-      .split(signedMarker)
-      .pop()
-      .split("?")[0];
+  const authenticatedMarker =
+    `/storage/v1/object/authenticated/${STORAGE_BUCKET}/`;
+
+  if (value.includes(publicMarker)) {
+
+    value = value.split(publicMarker).pop();
+
+  } else if (value.includes(signedMarker)) {
+
+    value = value.split(signedMarker).pop().split("?")[0];
+
+  } else if (value.includes(authenticatedMarker)) {
+
+    value = value.split(authenticatedMarker).pop();
+
   }
 
-  cleanPath = cleanPath
-    .replace(/^\/+/, "")
-    .split("/")
-    .map(part => {
-      try {
-        return decodeURIComponent(part);
-      } catch {
-        return part;
-      }
-    })
-    .join("/");
+  value = value.replace(/^\/+/, "");
 
-  if (!cleanPath) return "";
+  // إزالة اسم المجلد إذا كان مخزنًا ضمن المسار
 
-  const { data, error } = await db.storage
-    .from(STORAGE_BUCKET)
-    .createSignedUrl(cleanPath, 3600);
+  if (value.startsWith(STORAGE_BUCKET + "/")) {
 
-  if (error) {
-    console.error("خطأ إنشاء رابط الملف:", error);
-    return "";
+    value = value.substring(STORAGE_BUCKET.length + 1);
+
   }
 
-  return data?.signedUrl || "";
+  try {
+
+    value = value
+      .split("/")
+      .map(part => decodeURIComponent(part))
+      .join("/");
+
+  } catch (error) {
+
+    console.warn("تعذر فك ترميز مسار الملف.");
+
+  }
+
+  return value;
+
 }
 
 /* ========================================
-   تحديد نوع الملف والتاريخ
+   تحويل مسار Storage إلى رابط
+======================================== */
+
+async function getStorageURL(path, download = false) {
+
+  if (!path || !db) return "";
+
+  const value = String(path).trim();
+
+  if (!value) return "";
+
+  // إذا كان الرابط خارجيًا أو رابط Supabase جاهزًا
+
+  if (/^https?:\/\//i.test(value)) {
+
+    // لا نعيد معالجة الروابط الخارجية
+
+    if (!value.includes("/storage/v1/object/")) {
+      return value;
+    }
+
+    // الروابط الجاهزة نستخدمها كما هي
+    // إذا كان المسار رابطًا عامًا أو موقعًا خارجيًا
+
+    if (value.includes("/storage/v1/object/public/")) {
+
+      return download
+        ? value + (value.includes("?") ? "&" : "?") + "download"
+        : value;
+
+    }
+
+    if (value.includes("/storage/v1/object/sign/")) {
+      return value;
+    }
+
+  }
+
+  const cleanPath = cleanStoragePath(value);
+
+  if (!cleanPath) return "";
+
+  try {
+
+    const options = download
+      ? { download: true }
+      : undefined;
+
+    const { data, error } = await db.storage
+      .from(STORAGE_BUCKET)
+      .createSignedUrl(
+        cleanPath,
+        3600,
+        options
+      );
+
+    if (!error && data?.signedUrl) {
+      return data.signedUrl;
+    }
+
+    console.warn(
+      "تعذر إنشاء رابط مؤقت:",
+      error?.message
+    );
+
+    // محاولة استخدام الرابط العام إذا كان المجلد عامًا
+
+    const { data: publicData } = db.storage
+      .from(STORAGE_BUCKET)
+      .getPublicUrl(cleanPath);
+
+    return publicData?.publicUrl || "";
+
+  } catch (error) {
+
+    console.error("Storage URL error:", error);
+
+    return "";
+
+  }
+
+}
+
+/* ========================================
+   نوع الملف والتاريخ
 ======================================== */
 
 function isPDF(path) {
-  return /\.pdf(?:$|[?#])/i.test(String(path || ""));
+
+  return /\.pdf(?:$|[?#])/i.test(
+    String(path || "")
+  );
+
 }
 
 function formatDate(dateValue) {
+
   if (!dateValue) return "مذكرة تعليمية";
 
   const date = new Date(dateValue);
@@ -1448,6 +1419,7 @@ function formatDate(dateValue) {
     month: "long",
     day: "numeric"
   });
+
 }
 
 /* ========================================
@@ -1461,28 +1433,43 @@ function createActionLink(
   url,
   download = false
 ) {
+
   const link = document.createElement("a");
 
   link.className = "note-btn " + className;
   link.href = url;
-  link.target = "_blank";
+  link.target = download ? "_self" : "_blank";
   link.rel = "noopener noreferrer";
 
   if (download) {
+
     link.setAttribute("download", "");
+    link.setAttribute("aria-label", "تحميل " + label);
+
+  } else {
+
+    link.setAttribute("aria-label", "فتح " + label);
+
   }
 
   link.appendChild(createIcon(iconClass));
-  link.appendChild(document.createTextNode(label));
+
+  link.appendChild(
+    document.createTextNode(label)
+  );
 
   return link;
+
 }
 
 /* ========================================
-   تحميل المذكرات من Supabase
+   تحميل المذكرات من قاعدة البيانات
 ======================================== */
 
 async function loadNotes() {
+
+  if (!db) return;
+
   showState(
     "loading",
     "جاري تحميل المذكرات",
@@ -1492,18 +1479,22 @@ async function loadNotes() {
   notesCount.textContent = "جاري التحميل...";
 
   try {
+
     const { data, error } = await db
       .from("notes")
       .select("id,title,file_path,cover_path,created_at")
-      .order("created_at", { ascending: false });
+      .order("created_at", {
+        ascending: false
+      });
 
     if (error) throw error;
 
-    allNotes = data || [];
+    allNotes = Array.isArray(data) ? data : [];
 
     await renderNotes(allNotes);
 
   } catch (error) {
+
     console.error("خطأ تحميل المذكرات:", error);
 
     notesCount.textContent = "تعذر التحميل";
@@ -1514,7 +1505,9 @@ async function loadNotes() {
       "راجع اتصال الإنترنت وصلاحيات قراءة جدول notes وملفات Storage.",
       error.message || "حدث خطأ غير معروف."
     );
+
   }
+
 }
 
 /* ========================================
@@ -1522,6 +1515,7 @@ async function loadNotes() {
 ======================================== */
 
 async function createNoteCard(note) {
+
   const title = note.title || "مذكرة أحياء";
 
   const card = document.createElement("article");
@@ -1541,33 +1535,52 @@ async function createNoteCard(note) {
   placeholderText.textContent = "مذكرة أحياء";
 
   placeholder.appendChild(placeholderText);
+
   cover.appendChild(placeholder);
 
-  const [coverURL, fileURL] = await Promise.all([
+  // تحميل رابط الغلاف ورابط الملف بالتوازي
+
+  const [coverURL, fileURL, downloadURL] = await Promise.all([
+
     getStorageURL(note.cover_path),
-    getStorageURL(note.file_path)
+
+    getStorageURL(note.file_path),
+
+    getStorageURL(note.file_path, true)
+
   ]);
 
+  // الغلاف
+
   if (coverURL) {
+
     const img = document.createElement("img");
 
     img.src = coverURL;
-    img.alt = `غلاف ${title}`;
+    img.alt = "غلاف " + title;
     img.loading = "lazy";
     img.decoding = "async";
 
     img.addEventListener("load", () => {
+
       placeholder.remove();
-    });
+
+    }, { once: true });
 
     img.addEventListener("error", () => {
+
       img.remove();
-    });
+
+    }, { once: true });
 
     cover.insertBefore(img, cover.firstChild);
+
   }
 
+  // نوع الملف
+
   const typeBadge = document.createElement("span");
+
   typeBadge.className = "note-type";
 
   typeBadge.textContent = fileURL
@@ -1576,10 +1589,13 @@ async function createNoteCard(note) {
 
   cover.appendChild(typeBadge);
 
+  // محتوى البطاقة
+
   const body = document.createElement("div");
   body.className = "note-body";
 
   const heading = document.createElement("h3");
+
   heading.className = "note-title";
   heading.textContent = title;
 
@@ -1591,13 +1607,16 @@ async function createNoteCard(note) {
   );
 
   date.appendChild(
-    document.createTextNode(formatDate(note.created_at))
+    document.createTextNode(
+      formatDate(note.created_at)
+    )
   );
 
   const actions = document.createElement("div");
   actions.className = "note-actions";
 
   if (fileURL) {
+
     actions.appendChild(
       createActionLink(
         "open",
@@ -1612,23 +1631,28 @@ async function createNoteCard(note) {
         "download",
         "fa-solid fa-download",
         "تحميل",
-        fileURL,
+        downloadURL || fileURL,
         true
       )
     );
+
   } else {
+
     const unavailable = document.createElement("div");
 
     unavailable.className = "note-unavailable";
     unavailable.textContent = "الملف غير متاح حاليًا";
 
     actions.appendChild(unavailable);
+
   }
 
   body.append(heading, date, actions);
+
   card.append(cover, body);
 
   return card;
+
 }
 
 /* ========================================
@@ -1636,11 +1660,14 @@ async function createNoteCard(note) {
 ======================================== */
 
 async function renderNotes(notes) {
+
   const currentRender = ++renderVersion;
 
-  notesCount.textContent = `عدد المذكرات: ${notes.length}`;
+  notesCount.textContent =
+    `عدد المذكرات: ${notes.length}`;
 
   if (!notes.length) {
+
     showState(
       "fa-solid fa-book-open",
       "لا توجد مذكرات حاليًا",
@@ -1648,36 +1675,73 @@ async function renderNotes(notes) {
     );
 
     return;
+
   }
 
   notesGrid.replaceChildren();
 
-  for (const note of notes) {
-    const card = await createNoteCard(note);
+  try {
 
-    /* تجاهل أي عملية عرض قديمة عند تغيير البحث */
+    // إنشاء البطاقات بالتوازي لتسريع التحميل
+
+    const cards = await Promise.all(
+      notes.map(note => createNoteCard(note))
+    );
+
+    // منع عرض نتائج بحث قديمة
+
     if (currentRender !== renderVersion) {
       return;
     }
 
-    notesGrid.appendChild(card);
+    const fragment = document.createDocumentFragment();
+
+    cards.forEach(card => {
+      fragment.appendChild(card);
+    });
+
+    notesGrid.replaceChildren(fragment);
+
+  } catch (error) {
+
+    if (currentRender !== renderVersion) {
+      return;
+    }
+
+    console.error("خطأ عرض المذكرات:", error);
+
+    showState(
+      "fa-solid fa-triangle-exclamation",
+      "تعذر عرض المذكرات",
+      "حدث خطأ أثناء تجهيز البطاقات.",
+      error.message || ""
+    );
+
   }
+
 }
 
 /* ========================================
-   البحث في المذكرات
+   البحث الفوري
 ======================================== */
 
 searchInput.addEventListener("input", function () {
-  const query = this.value.trim().toLocaleLowerCase("ar");
 
-  const filteredNotes = allNotes.filter(note =>
-    String(note.title || "")
-      .toLocaleLowerCase("ar")
-      .includes(query)
-  );
+  const query = this.value
+    .trim()
+    .toLocaleLowerCase("ar");
+
+  const filteredNotes = allNotes.filter(note => {
+
+    const title = String(note.title || "")
+      .toLocaleLowerCase("ar");
+
+    return title.includes(query);
+
+  });
 
   renderNotes(filteredNotes);
+
 });
 
 /* ========================================
@@ -1685,7 +1749,11 @@ searchInput.addEventListener("input", function () {
 ======================================== */
 
 async function initializePage() {
+
+  if (!db) return;
+
   try {
+
     const { data, error } = await db.auth.getSession();
 
     if (error) throw error;
@@ -1693,36 +1761,57 @@ async function initializePage() {
     const session = data?.session;
 
     if (!session) {
-      window.location.href = "../index.html";
+
+      window.location.replace("../index.html");
       return;
+
     }
 
-    const { data: profile, error: profileError } = await db
-      .from("profiles")
-      .select("full_name")
-      .eq("id", session.user.id)
-      .maybeSingle();
+    // الاسم الافتراضي حتى لو تعذر تحميل الملف الشخصي
 
-    if (profileError) {
+    studentName.textContent =
+      session.user.user_metadata?.full_name ||
+      session.user.user_metadata?.name ||
+      "الطالب";
+
+    // تحميل اسم الطالب من جدول profiles
+
+    try {
+
+      const { data: profile, error: profileError } = await db
+        .from("profiles")
+        .select("full_name")
+        .eq("id", session.user.id)
+        .maybeSingle();
+
+      if (profileError) {
+
+        console.warn(
+          "تعذر تحميل اسم الطالب:",
+          profileError.message
+        );
+
+      } else if (profile?.full_name) {
+
+        studentName.textContent = profile.full_name;
+
+      }
+
+    } catch (profileError) {
+
       console.warn(
-        "تعذر تحميل اسم الطالب:",
-        profileError.message
+        "Profile loading error:",
+        profileError
       );
+
     }
 
-    if (profile?.full_name) {
-      studentName.textContent = profile.full_name;
-    } else {
-      const fallbackName =
-        session.user.user_metadata?.full_name ||
-        session.user.user_metadata?.name;
-
-      studentName.textContent = fallbackName || "الطالب";
-    }
+    // تحميل المذكرات بعد التحقق من الجلسة
 
     await loadNotes();
 
   } catch (error) {
+
     console.error("خطأ التحقق من الجلسة:", error);
 
     notesCount.textContent = "خطأ في الاتصال";
@@ -1731,13 +1820,22 @@ async function initializePage() {
       "fa-solid fa-triangle-exclamation",
       "تعذر الاتصال",
       "تأكد من اتصال الإنترنت وإعدادات تسجيل الدخول في المنصة.",
-      error.message || ""
+      error.message || "حدث خطأ غير معروف."
     );
+
   }
+
 }
 
-initializePage();
+/* ========================================
+   تشغيل الصفحة
+======================================== */
+
+if (db) {
+  initializePage();
+}
+
 </script>
-<script src="sidebar.js"></script>
+
 </body>
 </html>
