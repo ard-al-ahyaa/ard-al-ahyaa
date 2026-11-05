@@ -92,12 +92,158 @@ a{text-decoration:none;color:inherit}
 .lock-box i{font-size:26px;color:#0a8a6a;display:block;margin-bottom:8px}
 .motiv{margin-top:10px;padding:11px 13px;background:linear-gradient(100deg,#fff7e6,#fffdf6);border-radius:12px;color:#8a5a00;font-weight:800;font-size:13px}
 
-/* ===== المشغل ===== */
-.player{position:relative;background:#07111d;border-radius:14px;overflow:hidden;aspect-ratio:16/9;direction:ltr}
-.player video,.player iframe{width:100%;height:100%;border:0;display:block}
-.wm{position:absolute;bottom:52px;right:12px;color:#fff;opacity:.35;font-size:12px;font-weight:800;pointer-events:none;text-shadow:0 1px 3px #000;z-index:3}
-.q-select{position:absolute;top:8px;left:8px;z-index:4;background:#0008;color:#fff;border:1px solid #ffffff40;border-radius:8px;padding:5px 8px;font-size:12px}
-.q-select option{color:#142f50}
+/* ===== مشغل الفيديو المطور ===== */
+.player{
+  position:relative;
+  background:#07111d;
+  border-radius:14px;
+  overflow:hidden;
+  aspect-ratio:16/9;
+  direction:ltr;
+  isolation:isolate;
+}
+.player video,.player iframe{
+  width:100%;
+  height:100%;
+  border:0;
+  display:block;
+}
+.player video{
+  object-fit:contain;
+  background:#07111d;
+}
+.player:fullscreen{
+  width:100vw;
+  height:100vh;
+  max-width:none;
+  max-height:none;
+  aspect-ratio:auto;
+  border-radius:0;
+  background:#000;
+}
+.player:fullscreen video{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+.player:-webkit-full-screen{
+  width:100%;
+  height:100%;
+  border-radius:0;
+  background:#000;
+}
+.player:-webkit-full-screen video{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+.player:fullscreen .wm,
+.player:-webkit-full-screen .wm{
+  bottom:85px;
+}
+.wm{
+  position:absolute;
+  bottom:55px;
+  right:12px;
+  color:#fff;
+  opacity:.35;
+  font-size:12px;
+  font-weight:800;
+  pointer-events:none;
+  text-shadow:0 1px 3px #000;
+  z-index:3;
+}
+.q-select{
+  position:absolute;
+  top:10px;
+  left:10px;
+  z-index:5;
+  background:#102a3dcc;
+  color:#fff;
+  border:1px solid #ffffff45;
+  border-radius:9px;
+  padding:7px 10px;
+  font-family:Cairo,sans-serif;
+  font-size:12px;
+  font-weight:800;
+  outline:none;
+  max-width:120px;
+}
+.q-select option{color:#142f50;background:#fff}
+.player-controls{
+  position:absolute;
+  left:10px;
+  bottom:9px;
+  z-index:5;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:7px;
+  border-radius:12px;
+  background:#071827d9;
+  border:1px solid #ffffff24;
+  backdrop-filter:blur(8px);
+  direction:ltr;
+}
+.player-control-btn{
+  width:35px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border:1px solid #ffffff25;
+  border-radius:9px;
+  background:#ffffff12;
+  color:#fff;
+  font-size:13px;
+  transition:.2s;
+}
+.player-control-btn:hover{background:#008866}
+.player-control-btn:active{transform:scale(.94)}
+.speed-select{
+  height:34px;
+  min-width:72px;
+  padding:0 7px;
+  border-radius:9px;
+  border:1px solid #ffffff25;
+  background:#ffffff12;
+  color:#fff;
+  font-family:Cairo,sans-serif;
+  font-size:12px;
+  font-weight:800;
+  outline:none;
+  direction:ltr;
+}
+.speed-select option{background:#fff;color:#142f50}
+.player-status{
+  position:absolute;
+  top:10px;
+  right:10px;
+  z-index:4;
+  color:#fff;
+  background:#071827b8;
+  padding:5px 9px;
+  border-radius:8px;
+  font-size:10px;
+  font-weight:800;
+  pointer-events:none;
+}
+.player:fullscreen .player-controls,
+.player:-webkit-full-screen .player-controls{
+  bottom:20px;
+  left:20px;
+}
+.player:fullscreen .q-select,
+.player:-webkit-full-screen .q-select{
+  top:18px;
+  left:18px;
+}
+@media(max-width:600px){
+  .player-controls{gap:5px;padding:5px;bottom:7px;left:7px}
+  .player-control-btn{width:31px;height:31px;font-size:11px}
+  .speed-select{height:31px;min-width:65px;font-size:11px}
+  .q-select{top:7px;left:7px;padding:5px 7px;font-size:11px}
+  .wm{font-size:10px;bottom:48px}
+}
 
 /* ===== النتائج ===== */
 .cats{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
@@ -337,8 +483,6 @@ async function loadAttempts(){
 }
 
 /* ================= التحقق من الاشتراك ================= */
-/* الطريقة الأساسية: دالة my_month_access في Supabase */
-/* الطريقة الاحتياطية: قراءة student_access و student_subscription_grants مباشرة */
 async function hasAccessFallback(month){
   const monthId=String(month.id);
   const termCode=String(month.term_code||"").trim();
@@ -522,7 +666,6 @@ async function renderLecture(i,body){
   const handouts=resources.filter(r=>r.kind==="homework");
   const notes=resources.filter(r=>r.kind!=="homework");
 
-  /* 1) الامتحان */
   const examsHTML=exams.length?exams.map(a=>{
     const at=attempts.get(String(a.id));
     const passed=at&&at.max_score>0&&at.score>=at.max_score/2;
@@ -538,7 +681,6 @@ async function renderLecture(i,body){
       <div data-result-box="${esc(a.id)}"></div>`;
   }).join(""):'<p class="muted">لا يوجد امتحان لهذه المحاضرة.</p>';
 
-  /* 2) الشرح والفيديو */
   const videoHTML=!unlocked
     ?lockBox("امتحن الامتحان واحصل على 50% على الأقل علشان تفتح الشرح والمذكرات")
     :`<div class="player" data-player></div>
@@ -547,12 +689,10 @@ async function renderLecture(i,body){
         ${notes.length?notes.map(fileItem).join(""):'<p class="muted">لا توجد مذكرات لهذه المحاضرة.</p>'}
       </div>`;
 
-  /* 3) صفحات الواجب */
   const pagesHTML=!unlocked
     ?lockBox("صفحات الواجب تفتح بعد الامتحان")
     :(handouts.length?handouts.map(fileItem).join(""):'<p class="muted">لا توجد صفحات واجب لهذه المحاضرة.</p>');
 
-  /* 4) تسليم الواجب */
   const submitHTML=!unlocked
     ?lockBox("سلّم الامتحان الأول علشان تفتح الواجب")
     :(homeworks.length?homeworks.map(a=>{
@@ -588,52 +728,247 @@ async function renderLecture(i,body){
   if(unlocked&&content)mountVideo(body.querySelector("[data-player]"),content.lecture,id);
 }
 
-/* ================= المشغل ================= */
+/* ================= أدوات حفظ واستكمال الفيديو ================= */
+function videoProgressKey(lectureId){
+  return "ardVideoPosition_"+user.id+"_"+lectureId;
+}
+
+function getSavedVideoPosition(lectureId){
+  try{
+    const value=Number(localStorage.getItem(videoProgressKey(lectureId)));
+    return Number.isFinite(value)&&value>0?value:0;
+  }catch{return 0}
+}
+
+function saveVideoPosition(video,lectureId){
+  if(!video||!Number.isFinite(video.currentTime))return;
+  if(video.currentTime<1)return;
+  try{
+    localStorage.setItem(videoProgressKey(lectureId),String(video.currentTime));
+  }catch(e){console.warn("video position save:",e)}
+}
+
+function enterPlayerFullscreen(box,video){
+  try{
+    if(document.fullscreenElement===box)return;
+
+    if(box.requestFullscreen){
+      const result=box.requestFullscreen();
+      if(result&&typeof result.catch==="function")result.catch(()=>{});
+      return;
+    }
+
+    if(box.webkitRequestFullscreen){
+      box.webkitRequestFullscreen();
+      return;
+    }
+
+    if(video&&video.webkitEnterFullscreen){
+      video.webkitEnterFullscreen();
+    }
+  }catch(e){
+    console.warn("fullscreen:",e);
+  }
+}
+
+/* ================= المشغل المطور ================= */
 async function mountVideo(box,lecture,lectureId){
   if(!box)return;
+
   const qs=getQualities(lecture);
-  if(!qs.length){box.innerHTML='<div class="lock-box">لم يتم رفع فيديو لهذه المحاضرة بعد.</div>';return}
+  if(!qs.length){
+    box.innerHTML='<div class="lock-box">لم يتم رفع فيديو لهذه المحاضرة بعد.</div>';
+    return;
+  }
 
   for(const q of qs){
     const embed=getEmbed(q.src);
     if(embed){
-      box.innerHTML=`<iframe src="${esc(embed)}" allow="autoplay;fullscreen" allowfullscreen></iframe><div class="wm">${esc(watermark)}</div>`;
+      box.innerHTML=`
+        <iframe src="${esc(embed)}"
+          allow="autoplay;fullscreen;picture-in-picture"
+          allowfullscreen></iframe>
+        <div class="wm">${esc(watermark)}</div>`;
       return;
     }
   }
 
   let url="",idx=0;
-  for(let i=0;i<qs.length&&!url;i++){url=await resolveMedia(qs[i].src);idx=i}
-  if(!url){box.innerHTML='<div class="lock-box">تعذر تشغيل الفيديو. تحقق من رابط الفيديو.</div>';return}
 
-  box.innerHTML=`<video controls playsinline controlsList="nodownload noremoteplayback" disablePictureInPicture></video>
-                 <div class="wm">${esc(watermark)}</div>`;
-  const video=box.querySelector("video");
-  video.src=url;
-
-  if(qs.length>1){
-    const sel=document.createElement("select");
-    sel.className="q-select";
-    qs.forEach((q,i)=>{
-      const o=document.createElement("option");
-      o.value=i;o.textContent=q.label;
-      if(i===idx)o.selected=true;
-      sel.appendChild(o);
-    });
-    sel.onchange=async()=>{
-      const u=await resolveMedia(qs[sel.value].src);
-      if(!u)return;
-      const t=video.currentTime,playing=!video.paused;
-      video.src=u;
-      video.onloadedmetadata=()=>{video.currentTime=t;if(playing)video.play().catch(()=>{})};
-    };
-    box.appendChild(sel);
+  for(let i=0;i<qs.length&&!url;i++){
+    url=await resolveMedia(qs[i].src);
+    idx=i;
   }
 
+  if(!url){
+    box.innerHTML='<div class="lock-box">تعذر تشغيل الفيديو. تحقق من رابط الفيديو.</div>';
+    return;
+  }
+
+  box.innerHTML=`
+    <video controls playsinline webkit-playsinline
+      controlsList="nodownload noremoteplayback"
+      disablePictureInPicture
+      preload="metadata"></video>
+
+    <div class="wm">${esc(watermark)}</div>
+    <div class="player-status">مشغل أرض الأحياء</div>
+
+    <div class="player-controls">
+      <button class="player-control-btn" type="button" data-back title="تأخير 10 ثوانٍ">
+        <i class="fa-solid fa-backward"></i>
+      </button>
+
+      <button class="player-control-btn" type="button" data-forward title="تقديم 10 ثوانٍ">
+        <i class="fa-solid fa-forward"></i>
+      </button>
+
+      <select class="speed-select" data-speed aria-label="سرعة التشغيل">
+        <option value="0.5">0.5x</option>
+        <option value="0.75">0.75x</option>
+        <option value="1" selected>1x</option>
+        <option value="1.25">1.25x</option>
+        <option value="1.5">1.5x</option>
+        <option value="1.75">1.75x</option>
+        <option value="2">2x</option>
+        <option value="2.5">2.5x</option>
+        <option value="3">3x</option>
+        <option value="4">4x</option>
+        <option value="5">5x</option>
+        <option value="6">6x</option>
+        <option value="7">7x</option>
+        <option value="8">8x</option>
+        <option value="9">9x</option>
+        <option value="10">10x</option>
+      </select>
+    </div>
+  `;
+
+  const video=box.querySelector("video");
+  const speedSelect=box.querySelector("[data-speed]");
+  const backBtn=box.querySelector("[data-back]");
+  const forwardBtn=box.querySelector("[data-forward]");
+
+  video.src=url;
+
+  /* استكمال المشاهدة من آخر نقطة */
+  let restored=false;
+  const savedPosition=getSavedVideoPosition(lectureId);
+
+  video.addEventListener("loadedmetadata",()=>{
+    if(restored)return;
+    restored=true;
+
+    if(savedPosition>5&&Number.isFinite(video.duration)&&savedPosition<video.duration-3){
+      video.currentTime=savedPosition;
+    }
+  });
+
+  /* ملء الشاشة عند بدء التشغيل */
+  video.addEventListener("play",()=>{
+    enterPlayerFullscreen(box,video);
+  });
+
+  /* سرعة التشغيل بحد أقصى 10x */
+  speedSelect.addEventListener("change",()=>{
+    const speed=Math.min(10,Math.max(0.5,Number(speedSelect.value)||1));
+    video.playbackRate=speed;
+  });
+
+  /* تقديم 10 ثوانٍ */
+  backBtn.addEventListener("click",()=>{
+    video.currentTime=Math.max(0,video.currentTime-10);
+  });
+
+  /* تأخير/تقديم للأمام 10 ثوانٍ */
+  forwardBtn.addEventListener("click",()=>{
+    const end=Number.isFinite(video.duration)?video.duration:video.currentTime+10;
+    video.currentTime=Math.min(end,video.currentTime+10);
+  });
+
+  /* حفظ نقطة المشاهدة بشكل دوري */
+  const saveTimer=setInterval(()=>{
+    if(!video.paused&&!video.ended){
+      saveVideoPosition(video,lectureId);
+    }
+  },3000);
+
+  video.addEventListener("pause",()=>{
+    saveVideoPosition(video,lectureId);
+  });
+
+  video.addEventListener("seeked",()=>{
+    saveVideoPosition(video,lectureId);
+  });
+
   video.addEventListener("ended",()=>{
+    clearInterval(saveTimer);
+
+    try{
+      localStorage.removeItem(videoProgressKey(lectureId));
+    }catch{}
+
     const row=progress.get(String(lectureId))||{};
     if(!row.completed)setFlag(lectureId,"completed",true);
   });
+
+  window.addEventListener("pagehide",()=>{
+    saveVideoPosition(video,lectureId);
+  },{once:true});
+
+  /* اختيار جودة الفيديو مع الاحتفاظ بالوقت والسرعة */
+  if(qs.length>1){
+    const sel=document.createElement("select");
+    sel.className="q-select";
+    sel.setAttribute("aria-label","جودة الفيديو");
+
+    qs.forEach((q,i)=>{
+      const o=document.createElement("option");
+      o.value=i;
+      o.textContent=q.label;
+      if(i===idx)o.selected=true;
+      sel.appendChild(o);
+    });
+
+    sel.addEventListener("change",async()=>{
+      const selectedIndex=Number(sel.value);
+      const selected=qs[selectedIndex];
+      if(!selected)return;
+
+      const u=await resolveMedia(selected.src);
+      if(!u){
+        alert("تعذر تحميل الجودة المختارة");
+        sel.value=String(idx);
+        return;
+      }
+
+      const t=video.currentTime;
+      const playing=!video.paused;
+      const rate=video.playbackRate;
+
+      video.src=u;
+
+      video.addEventListener("loadedmetadata",function restoreQuality(){
+        video.removeEventListener("loadedmetadata",restoreQuality);
+
+        if(Number.isFinite(video.duration)){
+          video.currentTime=Math.min(t,Math.max(0,video.duration-1));
+        }else{
+          video.currentTime=t;
+        }
+
+        video.playbackRate=rate;
+
+        if(playing){
+          video.play().catch(()=>{});
+        }
+      });
+
+      idx=selectedIndex;
+    });
+
+    box.appendChild(sel);
+  }
 }
 
 /* ================= التقدم ================= */
